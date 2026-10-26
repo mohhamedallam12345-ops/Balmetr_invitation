@@ -1,1503 +1,1771 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>منصة دعوات بالمتر | B.almeter VIP Cloud</title>
-    <style>
-      :root {
-        --bg: #07131f;
-        --card: #0d1f33;
-        --border: #1d3b58;
-        --accent: #22d3ee;
-        --gold: #f59e0b;
-        --text: #f1f5f9;
-        --muted: #94a3b8;
-        --ok: #10b981;
-        --err: #ef4444;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Tahoma, sans-serif;
-      }
-      body {
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-        padding: 14px;
-      }
-      .wrap {
-        max-width: 1220px;
-        margin: 0 auto;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>B.almeter VIP | نظام الدعوات الموحد</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #070d19;
+      --bg-card: #0f172a;
+      --bg-input: #090f1d;
+      --border: #1e293b;
+      --border-light: #334155;
+      --primary: #06b6d4;
+      --primary-hover: #0891b2;
+      --gold: #f59e0b;
+      --gold-hover: #d97706;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 12px;
+    }
+
+    /* Header */
+    .top-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 0.2px;
+    }
+
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .sync-badge.offline {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #0284c7);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #000;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-outline {
+      background: #1e293b;
+      color: var(--text-main);
+      border-color: var(--border-light);
+    }
+
+    .btn-block {
+      width: 100%;
+      padding: 13px;
+      font-size: 1rem;
+    }
+
+    /* Exhibition Selector Bar */
+    .exhibition-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .exhibition-list-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .exhibition-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    .exh-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .exh-pill {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      background: var(--bg-input);
+      color: var(--text-muted);
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .exh-pill.active {
+      background: var(--primary);
+      color: #031525;
+      border-color: var(--primary);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
+    }
+
+    /* Main Sales Workspace Grid */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px; /* 16px prevents mobile zoom on focus */
+      font-weight: 600;
+      color: var(--text-main);
+      background: var(--bg-input);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
+    }
+
+    textarea.form-control {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* Canvas Preview Area */
+    .preview-container {
+      background: var(--bg-input);
+      border: 1px dashed var(--border-light);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      position: relative;
+    }
+
+    #invitationCanvas {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .ticket-status-box {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-align: center;
+      display: none;
+    }
+
+    /* Admin Section */
+    #adminPanel {
+      display: none;
+      margin-top: 22px;
+      border-top: 2px dashed var(--gold);
+      padding-top: 20px;
+    }
+
+    .admin-banner {
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(6, 182, 212, 0.1));
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-tab-btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border-light);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      flex: 1;
+      text-align: center;
+    }
+
+    .admin-tab-btn.active {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+    }
+
+    .admin-tab-content {
+      display: none;
+    }
+
+    .admin-tab-content.active {
+      display: block;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .kpi-card .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .kpi-card .val {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+    /* Tables */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: #131c31;
+      color: var(--primary);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge-code {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 0.8rem;
+    }
+
+    .badge-count {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .admin-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .range-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--primary);
+    }
+
+    .range-val {
+      min-width: 48px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--gold);
+      font-size: 0.85rem;
+    }
+
+    /* Modal for Admin Login */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 22px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Mobile Responsive Adjustments */
+    @media (max-width: 820px) {
+      .workspace-grid,
+      .admin-two-col {
+        grid-template-columns: 1fr;
       }
 
-      /* الشريط العلوي */
-      .topbar {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        padding: 12px 16px;
-        border-radius: 12px;
-        margin-bottom: 14px;
-      }
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .brand h1 {
-        font-size: 1.15rem;
-        color: var(--accent);
-      }
-      .status-pill {
-        font-size: 0.8rem;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-weight: bold;
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--ok);
-        border: 1px solid var(--ok);
-      }
-      .status-pill.offline {
-        background: rgba(245, 158, 11, 0.15);
-        color: var(--gold);
-        border-color: var(--gold);
-      }
-
-      /* شريط المحافظات */
-      .gov-bar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-        background: var(--card);
-        border: 1px solid var(--border);
-        padding: 10px 14px;
-        border-radius: 12px;
-        margin-bottom: 14px;
-      }
-      .gov-tab {
-        padding: 8px 16px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: #091726;
-        color: var(--text);
-        cursor: pointer;
-        font-weight: bold;
-        transition: 0.2s;
-        font-size: 0.9rem;
-      }
-      .gov-tab.active {
-        background: var(--accent);
-        color: #04101c;
-        border-color: var(--accent);
-      }
-
-      /* الشبكة الرئيسية */
-      .grid {
-        display: grid;
-        grid-template-columns: 1fr 1.1fr;
-        gap: 16px;
-      }
-      @media (max-width: 900px) {
-        .grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .panel {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 14px;
-      }
-      .panel h2 {
-        font-size: 1.05rem;
-        color: var(--accent);
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      label {
-        display: block;
-        font-size: 0.88rem;
-        color: var(--muted);
-        margin: 10px 0 5px;
-      }
-      input,
-      select,
-      textarea {
-        width: 100%;
-        padding: 11px 12px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: #06101b;
-        color: var(--text);
-        font-size: 0.96rem;
-        outline: none;
-      }
-      input:focus,
-      select:focus,
-      textarea:focus {
-        border-color: var(--accent);
-      }
-
-      .btn {
-        padding: 11px 16px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 0.95rem;
-        transition: 0.2s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-      }
-      .btn-primary {
-        background: var(--accent);
-        color: #04101c;
-        width: 100%;
-        margin-top: 14px;
-        font-size: 1.05rem;
-      }
-      .btn-primary:hover {
-        opacity: 0.92;
-      }
-      .btn-sm {
-        padding: 6px 12px;
-        font-size: 0.82rem;
-        background: #16304b;
-        color: var(--text);
-        border: 1px solid var(--border);
-      }
-      .btn-gold {
-        background: var(--gold);
-        color: #06101b;
-      }
-      .btn-danger {
-        background: var(--err);
-        color: #fff;
-      }
-
-      /* منطقة المعاينة والضبط بالماوس */
-      .canvas-wrap {
-        position: relative;
-        width: 100%;
-        max-width: 480px;
-        margin: 0 auto;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 2px solid var(--border);
-        background: #040b12;
-        user-select: none;
-      }
-      canvas {
-        width: 100%;
-        display: block;
-      }
-      .drag-box {
-        position: absolute;
-        border: 2px dashed var(--gold);
-        background: rgba(245, 158, 11, 0.2);
-        cursor: move;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.72rem;
-        color: #fff;
-        font-weight: bold;
-        text-shadow: 0 1px 3px #000;
-      }
-      .drag-box.show {
-        display: flex;
-      }
-      .resizer {
-        width: 12px;
-        height: 12px;
-        background: var(--accent);
-        position: absolute;
-        bottom: -6px;
-        left: -6px;
-        cursor: nwse-resize;
-        border-radius: 50%;
-      }
-
-      /* بطاقات الأرقام */
-      .badges {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        margin-top: 12px;
-      }
-      .badge-card {
-        background: #071422;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 10px;
+      .top-header {
+        flex-direction: column;
+        align-items: stretch;
         text-align: center;
       }
-      .badge-card span {
-        display: block;
-        font-size: 0.78rem;
-        color: var(--muted);
-      }
-      .badge-card strong {
-        font-size: 1.2rem;
-        color: var(--gold);
+
+      .brand-box {
+        justify-content: center;
       }
 
-      /* الجداول */
-      .table-box {
-        max-height: 340px;
-        overflow-y: auto;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        margin-top: 10px;
+      .header-actions {
+        justify-content: center;
       }
-      table {
+
+      .header-actions .btn {
+        flex: 1;
+      }
+
+      .exh-pills {
         width: 100%;
-        border-collapse: collapse;
-        font-size: 0.88rem;
-      }
-      th,
-      td {
-        padding: 9px 10px;
-        border-bottom: 1px solid var(--border);
-        text-align: right;
-      }
-      th {
-        background: #071422;
-        color: var(--accent);
-        position: sticky;
-        top: 0;
       }
 
-      .admin-only {
-        display: none;
+      .exh-pill {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
+        padding: 10px 8px;
       }
-      body.is-admin .admin-only {
-        display: block;
+
+      .card {
+        padding: 14px;
       }
-      body.is-admin .admin-flex {
-        display: flex !important;
+
+      .admin-tab-btn {
+        font-size: 0.82rem;
+        padding: 9px 12px;
       }
-      .msg {
-        margin-top: 10px;
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        display: none;
-      }
-      .msg.ok {
-        display: block;
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--ok);
-        border: 1px solid var(--ok);
-      }
-      .msg.err {
-        display: block;
-        background: rgba(239, 68, 68, 0.15);
-        color: var(--err);
-        border: 1px solid var(--err);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <!-- الشريط العلوي -->
-      <div class="topbar">
-        <div class="brand">
-          <h1>B.almeter VIP | نظام الدعوات الموحد</h1>
-          <span id="cloudStatus" class="status-pill offline"
-            >⚡ وضع محلي (أضف رابط السحابة للمزامنة)</span
-          >
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- Top Bar -->
+  <header class="top-header">
+    <div class="brand-box">
+      <div class="brand-title">B.almeter VIP | نظام الدعوات الموحد</div>
+      <div id="syncStatusBadge" class="sync-badge">🟢 متصل بالسحابة لايف</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" onclick="syncFromCloud(true)">🔄 تحديث</button>
+      <button id="adminToggleBtn" class="btn btn-gold" onclick="handleAdminButtonClick()">🔒 وضع المدير</button>
+    </div>
+  </header>
+
+  <!-- Exhibition Bar -->
+  <section class="exhibition-bar">
+    <div class="exhibition-list-wrap">
+      <span class="exhibition-label">📍 اختر المعرض:</span>
+      <div id="exhibitionPills" class="exh-pills"></div>
+    </div>
+  </section>
+
+  <!-- Main Sales Interface (Clean & Simple for Sales Reps) -->
+  <main class="workspace-grid">
+    
+    <!-- Right Column: Form Input -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎫 إصدار دعوة عميل (<span id="activeExhTitle">معرض المنصورة</span>)</div>
+      </div>
+
+      <!-- Sales Rep Search & Select -->
+      <div class="form-group">
+        <label class="form-label">1. ابحث عن اسمك أو كودك (للسيلز):</label>
+        <input type="text" id="salesSearchInput" class="form-control" placeholder="🔍 اكتب أول حرف من اسمك أو الكود للفلترة..." oninput="filterSalesDropdown()" style="margin-bottom: 8px;" />
+        <select id="salesSelect" class="form-control" onchange="onSalesRepChange()"></select>
+      </div>
+
+      <!-- Client Name Input -->
+      <div class="form-group">
+        <label class="form-label">2. اسم العميل الثلاثي أو الثنائي (يُضبط تلقائياً على الكارت):</label>
+        <input type="text" id="clientNameInput" class="form-control" placeholder="مثال: أ / أحمد محمود عبد الرحمن" oninput="renderCanvasPreview()" />
+      </div>
+
+      <!-- Issue & Download Action -->
+      <button id="issueBtn" class="btn btn-primary btn-block" onclick="issueAndDownloadInvitation()">
+        ✨ إصدار وتحميل بطاقة الدعوة الآن
+      </button>
+
+      <div id="ticketConfirmBox" class="ticket-status-box"></div>
+    </div>
+
+    <!-- Left Column: Live Card Preview -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🖼️ معاينة الدعوة مباشرة</div>
+        <button id="redownloadLastBtn" class="btn btn-success" style="display:none; padding:6px 12px; font-size:0.8rem;" onclick="downloadCurrentCanvas()">⬇️ تنزيل الصورة</button>
+      </div>
+      <div class="preview-container">
+        <canvas id="invitationCanvas" width="1080" height="1350"></canvas>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- ADMIN PANEL (HIDDEN FOR NORMAL SALES REPS) -->
+  <!-- ========================================== -->
+  <section id="adminPanel">
+    <div class="admin-banner">
+      <div>
+        <strong style="color: var(--gold); font-size: 1.05rem;">👑 لوحة تحكم المدير (تظهر لك أنت فقط)</strong>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">متابعة أداء الـ 30+ سيلز، سجل العملاء، التقارير، وإعدادات القوالب والمعارض.</p>
+      </div>
+      <button class="btn btn-danger" onclick="logoutAdmin()">إغلاق وضع المدير ✖</button>
+    </div>
+
+    <!-- Admin Navigation Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('tabSales', this)">👥 إدارة ومتابعة السيلز</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabReports', this)">📋 سجل العملاء والتقارير</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabTemplate', this)">🎨 القالب والمعارض</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabCloud', this)">⚙️ السحابة والأمان</button>
+    </div>
+
+    <!-- TAB 1: SALES MANAGEMENT & PERFORMANCE TRACKING -->
+    <div id="tabSales" class="admin-tab-content active">
+      <!-- KPI Summary -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="label">إجمالي دعوات المعرض الحالي</div>
+          <div class="val" id="kpiCurrentExhTotal">0</div>
         </div>
-        <div style="display: flex; gap: 8px">
-          <button class="btn btn-sm" onclick="refreshFromCloud()">
-            🔄 تحديث الآن
-          </button>
-          <button
-            id="adminToggleBtn"
-            class="btn btn-sm btn-gold"
-            onclick="toggleAdminMode()"
-          >
-            🔒 وضع المدير
-          </button>
+        <div class="kpi-card">
+          <div class="label">الرقم التسلسلي القادم</div>
+          <div class="val" id="kpiNextSeq">#131</div>
+        </div>
+        <div class="kpi-card">
+          <div class="label">عدد السيلز المسجلين</div>
+          <div class="val" id="kpiSalesCount">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="label">أعلى سيلز في المعرض</div>
+          <div class="val" id="kpiTopSales" style="font-size: 1.1rem; color: var(--gold);">-</div>
         </div>
       </div>
 
-      <!-- إعداد السحابة (للمدير فقط) -->
-      <div class="panel admin-only">
-        <h2>
-          <span
-            >☁️ إعدادات الربط السحابي (Firebase Realtime DB) ومفتاح المدير</span
-          >
-          <button class="btn btn-sm" onclick="saveCloudConfig()">
-            حفظ الإعدادات
-          </button>
-        </h2>
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px">
-          <div>
-            <label>رابط قاعدة البيانات السحابية (Firebase Database URL):</label>
-            <input
-              type="text"
-              id="dbUrlInput"
-              placeholder="https://your-project-default-rtdb.firebaseio.com"
-            />
+      <div class="admin-two-col">
+        <!-- Leaderboard & Tracking Table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📊 متابعة إنجاز كل سيلز (كم عميل لكل سيلز)</div>
           </div>
-          <div>
-            <label>كلمة سر المدير (Admin PIN):</label>
-            <input type="text" id="adminPinInput" placeholder="1234" />
-          </div>
-        </div>
-        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 6px">
-          💡 نصيحة: لتثبيت الرابط عند كل السيلز تلقائياً على GitHub، ضع الرابط
-          داخل متغير <code>DEFAULT_FIREBASE_URL</code> في أول سطر في
-          الجافاسكريبت.
-        </p>
-      </div>
-
-      <!-- شريط اختيار المعرض / المحافظة -->
-      <div class="gov-bar">
-        <span style="font-size: 0.88rem; color: var(--muted); margin-left: 6px"
-          >📍 اختر المعرض:</span
-        >
-        <div
-          id="govTabs"
-          style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1"
-        ></div>
-        <button class="btn btn-sm btn-gold admin-only" onclick="addNewGov()">
-          + إضافة معرض / محافظة
-        </button>
-      </div>
-
-      <div class="grid">
-        <!-- العمود الأيمن: إدخال بيانات العميل وإصدار الدعوة -->
-        <div>
-          <div class="panel">
-            <h2>
-              <span
-                >🎫 إصدار دعوة عميل (<span id="currentGovTitle"></span>)</span
-              >
-            </h2>
-
-            <!-- بحث واختيار السيلز (مناسب لأكثر من 30 سيلز) -->
-            <label>1. ابحث عن اسمك أو كودك (للسيلز):</label>
-            <input
-              type="text"
-              id="salesSearch"
-              placeholder="🔍 اكتب أول حرف من اسمك أو رقم الكود للفلترة..."
-              oninput="renderSalesSelect()"
-            />
-
-            <label>اختر اسم السيلز (بيتحفظ تلقائياً على موبايلك):</label>
-            <select id="salesSelect" onchange="onSalesChange()"></select>
-
-            <!-- اسم العميل -->
-            <label
-              >2. اسم العميل الثلاثي أو الثنائي (سيتم ضبط المقاس
-              تلقائياً):</label
-            >
-            <input
-              type="text"
-              id="clientNameInput"
-              placeholder="مثال: أ / أحمد محمود عبد الرحمن"
-              oninput="drawPreview()"
-            />
-
-            <!-- ملخص الكود الذي سيطبع -->
-            <div class="badges">
-              <div class="badge-card">
-                <span>كود السيلز</span>
-                <strong id="previewSalesCode">S11</strong>
-              </div>
-              <div class="badge-card">
-                <span>تسلسل المعرض القادم</span>
-                <strong id="previewNextSeq">131</strong>
-              </div>
-              <div class="badge-card">
-                <span>عملاؤك بهذا المعرض</span>
-                <strong id="previewMyCount">0</strong>
-              </div>
-            </div>
-
-            <button
-              id="generateBtn"
-              class="btn btn-primary"
-              onclick="issueInvitation()"
-            >
-              ✅ تسجيل العميل وتحميل صورة الدعوة (JPG)
-            </button>
-            <div id="statusMsg" class="msg"></div>
-          </div>
-
-          <!-- إدارة السيلز (للمدير فقط - يدعم إضافة 30+ سيلز دفعة واحدة) -->
-          <div class="panel admin-only">
-            <h2>
-              <span
-                >👥 إدارة فريق السيلز (<span id="totalSalesCount">0</span>
-                سيلز)</span
-              >
-            </h2>
-            <label
-              >إضافة مجموعة سيلز دفعة واحدة (كل سطر: الاسم => الكود):</label
-            >
-            <textarea
-              id="bulkSalesInput"
-              rows="4"
-              placeholder="شريف => 25&#10;ندى => 26&#10;كريم => 27"
-            ></textarea>
-            <div style="display: flex; gap: 8px; margin-top: 8px">
-              <button class="btn btn-sm btn-gold" onclick="addBulkSales()">
-                + إضافة القائمة وحفظ بالسحابة
-              </button>
-              <button
-                class="btn btn-sm btn-danger"
-                onclick="removeSelectedSales()"
-              >
-                حذف السيلز المحدد حالياً
-              </button>
-            </div>
-          </div>
-
-          <!-- إعدادات تصميم المحافظة الحالية (للمدير فقط) -->
-          <div class="panel admin-only">
-            <h2>⚙️ إعدادات صورة وتسلسل المعرض الحالي (للمدير)</h2>
-            <label
-              >رفع صورة الدعوة الفارغة لهذا المعرض (تُحفظ بالسحابة لكل
-              السيلز):</label
-            >
-            <input
-              type="file"
-              accept="image/*"
-              onchange="handleTemplateUpload(event)"
-            />
-
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-                margin-top: 8px;
-              "
-            >
-              <div>
-                <label>الرقم التالي لتسلسل العملاء:</label>
-                <input
-                  type="number"
-                  id="adminSeqInput"
-                  onchange="updateNextSeqManually()"
-                />
-              </div>
-              <div style="display: flex; align-items: flex-end; gap: 6px">
-                <button
-                  class="btn btn-sm"
-                  style="width: 100%; height: 42px"
-                  onclick="toggleDragMode()"
-                >
-                  🎯 ضبط مكان الخانات بالماوس
-                </button>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 8px; margin-top: 12px">
-              <button class="btn btn-sm btn-gold" onclick="pushAllToCloud()">
-                ☁️ حفظ التصميم والإعدادات للسحابة
-              </button>
-              <button
-                class="btn btn-sm btn-danger"
-                onclick="deleteCurrentGov()"
-              >
-                🗑️ حذف هذا المعرض
-              </button>
-            </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>الكود</th>
+                  <th>اسم السيلز</th>
+                  <th>عملاء هذا المعرض</th>
+                  <th>إجمالي كل المعارض</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="salesPerformanceTbody"></tbody>
+            </table>
           </div>
         </div>
 
-        <!-- العمود الأيسر: معاينة البطاقة الحية -->
-        <div>
-          <div class="panel">
-            <h2>
-              <span>🖼️ معاينة الدعوة مباشرة</span>
-              <span
-                id="dragHint"
-                style="font-size: 0.78rem; color: var(--gold); display: none"
-                >اسحب المستطيلات أو كبرها من الدائرة الزرقاء</span
-              >
-            </h2>
-            <div class="canvas-wrap" id="canvasContainer">
-              <canvas id="invCanvas" width="1024" height="1536"></canvas>
-              <!-- مستطيلات الضبط بالماوس للمدير -->
-              <div id="box_name" class="drag-box" data-key="name">
-                اسم العميل
-                <div class="resizer"></div>
-              </div>
-              <div id="box_sales" class="drag-box" data-key="sales">
-                SXX
-                <div class="resizer"></div>
-              </div>
-              <div id="box_seq" class="drag-box" data-key="seq">
-                XXX
-                <div class="resizer"></div>
-              </div>
+        <!-- Add / Edit Sales Team -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">➕ إضافة أو تعديل فريق السيلز</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">إضافة سيلز واحد سريعاً:</label>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <input type="text" id="newSalesName" class="form-control" placeholder="اسم السيلز (مثال: عمر خالد)" style="flex:2; min-width:150px;" />
+              <input type="text" id="newSalesCode" class="form-control" placeholder="الكود (اتركه فارغاً للتلقائي)" style="flex:1; min-width:110px;" />
+              <button class="btn btn-primary" onclick="addSingleSalesRep()">+ إضافة</button>
             </div>
           </div>
+
+          <hr style="border:0; border-top:1px solid var(--border); margin: 16px 0;" />
+
+          <div class="form-group">
+            <label class="form-label">إضافة مجموعة سيلز دفعة واحدة (اسم في كل سطر):</label>
+            <textarea id="bulkSalesTextarea" class="form-control" placeholder="اكتب أسماء السيلز هنا (كل اسم في سطر مستقل) وسيتم إعطاؤهم أكواد S تلقائياً..."></textarea>
+          </div>
+          <button class="btn btn-gold btn-block" onclick="addBulkSalesReps()">⚡ إضافة القائمة دفعة واحدة وحفظ بالسحابة</button>
         </div>
       </div>
+    </div>
 
-      <!-- لوحة الإحصائيات وسجل العملاء -->
-      <div class="panel">
-        <h2>
-          <span
-            >📊 إحصائيات السيلز وسجل دعوات (<span id="statsGovTitle"></span
-            >)</span
-          >
-          <div style="display: flex; gap: 8px">
-            <button class="btn btn-sm" onclick="copyWhatsAppReport()">
-              📋 نسخ تقرير واتساب
-            </button>
-            <button class="btn btn-sm btn-gold" onclick="exportExcelCSV()">
-              📥 تصدير شيت Excel (CSV)
-            </button>
+    <!-- TAB 2: CLIENT LOGS & REPORTS -->
+    <div id="tabReports" class="admin-tab-content">
+      <div class="card">
+        <div class="card-header" style="flex-wrap: wrap; gap: 10px;">
+          <div class="card-title">📋 سجل الدعوات والتقارير (<span id="reportExhName"></span>)</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-success" onclick="copyWhatsAppReport()">🟢 نسخ تقرير الواتساب</button>
+            <button class="btn btn-primary" onclick="exportExcelCSV()">📊 تحميل شيت إكسيل (CSV)</button>
           </div>
-        </h2>
+        </div>
 
-        <div class="grid" style="grid-template-columns: 1fr 1.5fr">
-          <!-- ترتيب السيلز -->
-          <div>
-            <h3
-              style="
-                font-size: 0.92rem;
-                color: var(--muted);
-                margin-bottom: 6px;
-              "
-            >
-              🏆 حصيلة كل سيلز في هذا المعرض
-            </h3>
-            <div class="table-box">
-              <table>
-                <thead>
-                  <tr>
-                    <th>السيلز</th>
-                    <th>الكود</th>
-                    <th>عدد العملاء</th>
-                  </tr>
-                </thead>
-                <tbody id="salesStatsBody"></tbody>
-              </table>
+        <!-- Filters -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
+          <input type="text" id="logSearchInput" class="form-control" placeholder="🔍 بحث باسم العميل أو رقم الدعوة..." oninput="renderClientLogsTable()" />
+          <select id="logSalesFilter" class="form-control" onchange="renderClientLogsTable()">
+            <option value="ALL">كل السيلز (عرض الجميع)</option>
+          </select>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>رقم الدعوة</th>
+                <th>اسم العميل</th>
+                <th>السيلز</th>
+                <th>التوقيت</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="clientLogsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: TEMPLATE & EXHIBITIONS SETTINGS -->
+    <div id="tabTemplate" class="admin-tab-content">
+      <div class="admin-two-col">
+        <!-- Upload Template & Adjust Text Coordinates -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🖼️ قالب الدعوة وإعدادات الكتابة للمعرض الحالي</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">رفع صورة القالب الفارغ لهذا المعرض (تظهر لكل السيلز لايف):</label>
+            <input type="file" id="templateUploadInput" accept="image/*" class="form-control" onchange="handleTemplateUpload(event)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">الرقم التسلسلي القادم لهذا المعرض (الافتراضي يبدأ من 131):</label>
+            <div style="display:flex; gap:8px;">
+              <input type="number" id="adminNextSeqInput" class="form-control" min="1" />
+              <button class="btn btn-primary" onclick="saveExhibitionSettings()">حفظ الرقم</button>
             </div>
           </div>
 
-          <!-- سجل العملاء بالتفصيل -->
-          <div>
-            <h3
-              style="
-                font-size: 0.92rem;
-                color: var(--muted);
-                margin-bottom: 6px;
-              "
-            >
-              📝 سجل العملاء المصدرة دعواتهم
-            </h3>
-            <div class="table-box">
-              <table>
-                <thead>
-                  <tr>
-                    <th>INVITATION ID</th>
-                    <th>اسم العميل</th>
-                    <th>السيلز</th>
-                    <th>ترتيبه لدى السيلز</th>
-                    <th>إجراء</th>
-                  </tr>
-                </thead>
-                <tbody id="logsTableBody"></tbody>
-              </table>
+          <div class="form-group">
+            <label class="form-label">مكان اسم العميل رأسياً (Y%):</label>
+            <div class="range-row">
+              <input type="range" id="nameYRange" min="10" max="90" value="52" oninput="updateTemplatePlacement()" />
+              <span id="nameYVal" class="range-val">52%</span>
             </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">مكان اسم العميل أفقياً (X%):</label>
+            <div class="range-row">
+              <input type="range" id="nameXRange" min="10" max="90" value="50" oninput="updateTemplatePlacement()" />
+              <span id="nameXVal" class="range-val">50%</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">حجم خط اسم العميل ولونه:</label>
+            <div class="range-row">
+              <input type="range" id="nameSizeRange" min="24" max="90" value="52" oninput="updateTemplatePlacement()" />
+              <span id="nameSizeVal" class="range-val">52px</span>
+              <input type="color" id="nameColorPicker" value="#ffffff" onchange="updateTemplatePlacement()" style="width:45px; height:38px; border:0; background:transparent; cursor:pointer;" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">مكان كود الدعوة والسيلز (#131 - S11) رأسياً (Y%):</label>
+            <div class="range-row">
+              <input type="range" id="codeYRange" min="5" max="95" value="88" oninput="updateTemplatePlacement()" />
+              <span id="codeYVal" class="range-val">88%</span>
+            </div>
+          </div>
+
+          <button class="btn btn-gold btn-block" onclick="saveExhibitionSettings()">💾 حفظ إعدادات القالب بالسحابة</button>
+        </div>
+
+        <!-- Manage Exhibitions (Add / Delete) -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📍 إدارة المعارض والمحافظات</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">إضافة معرض / محافظة جديدة:</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="newExhNameInput" class="form-control" placeholder="مثال: معرض أسيوط" />
+              <button class="btn btn-gold" onclick="addNewExhibition()">+ إضافة معرض</button>
+            </div>
+          </div>
+
+          <hr style="border:0; border-top:1px solid var(--border); margin: 16px 0;" />
+
+          <div class="form-group">
+            <label class="form-label">إجراءات المعرض المحدد حالياً:</label>
+            <button class="btn btn-danger btn-block" onclick="deleteCurrentExhibition()">🗑️ حذف المعرض الحالي</button>
           </div>
         </div>
       </div>
     </div>
 
-    <script>
-      /**
-       * ============================================================================
-       * ضع رابط Firebase Realtime Database هنا بين علامتي التنصيص قبل رفعه على GitHub
-       * مثال: "https://balmeter-vip-default-rtdb.firebaseio.com"
-       * ============================================================================
-       */
-      const DEFAULT_FIREBASE_URL =
-        "https://balmeter-vip-default-rtdb.firebaseio.com/";
-      const DEFAULT_ADMIN_PIN = "2242006,mo";
+    <!-- TAB 4: CLOUD & SECURITY SETTINGS -->
+    <div id="tabCloud" class="admin-tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">☁️ إعدادات الربط السحابي (Firebase) وكلمة سر المدير</div>
+        </div>
 
-      // القائمة الافتراضية للسيلز (ويمكنك إضافة باقي الـ 30+ من لوحة المدير)
-      const INITIAL_SALES = [
-        { name: "محمد", code: "11" },
-        { name: "اروي", code: "12" },
-        { name: "ملك", code: "13" },
-        { name: "آية", code: "14" },
-        { name: "الاء", code: "15" },
-        { name: "مريم", code: "16" },
-        { name: "شيماء", code: "17" },
-        { name: "مني", code: "18" },
-        { name: "يوسف", code: "19" },
-        { name: "اميرة", code: "20" },
-        { name: "عبير", code: "21" },
-        { name: "امل", code: "22" },
-        { name: "فاطمة", code: "23" },
-        { name: "هاني", code: "24" },
-      ];
+        <div class="form-group">
+          <label class="form-label">رابط قاعدة البيانات السحابية (Firebase Realtime Database URL):</label>
+          <input type="text" id="firebaseUrlInput" class="form-control" dir="ltr" />
+        </div>
 
-      // الإحداثيات الافتراضية الدقيقة لتصميم دعوة بالمتر (نسب مئوية من أبعاد الصورة)
-      const DEFAULT_BOXES = {
-        name: { x: 0.245, y: 0.567, w: 0.51, h: 0.045 },
-        sales: { x: 0.505, y: 0.896, w: 0.11, h: 0.028 },
-        seq: { x: 0.655, y: 0.896, w: 0.115, h: 0.028 },
+        <div class="form-group">
+          <label class="form-label">كلمة سر المدير (Admin PIN):</label>
+          <input type="text" id="adminPinInput" class="form-control" dir="ltr" />
+        </div>
+
+        <button class="btn btn-primary" onclick="saveCloudAndSecuritySettings()">💾 حفظ الإعدادات ومزامنة السحابة</button>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- Admin PIN Login Modal -->
+<div id="pinModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3 style="color: var(--gold); margin-bottom: 8px;">🔒 الدخول لوضع المدير</h3>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">أدخل كلمة سر المدير لإدارة السيلز، التقارير، والقوالب:</p>
+    <input type="password" id="pinModalInput" class="form-control" placeholder="اكتب كلمة السر هنا..." dir="ltr" style="margin-bottom: 14px;" onkeydown="if(event.key==='Enter') verifyAdminPin()" />
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-gold" style="flex:1;" onclick="verifyAdminPin()">دخول</button>
+      <button class="btn btn-outline" style="flex:1;" onclick="closePinModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // =========================================================
+  // 1. الثوابت والإعدادات الافتراضية المدمجة
+  // =========================================================
+  const DEFAULT_FIREBASE_URL = "https://balmeter-vip-default-rtdb.firebaseio.com";
+  const DEFAULT_ADMIN_PIN = "mo,2242006";
+  const BACKUP_ADMIN_PIN = "1234";
+  const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V2";
+
+  const INITIAL_SALES_TEAM = [
+    { code: "S11", name: "محمد" },
+    { code: "S12", name: "أحمد" },
+    { code: "S13", name: "محمود" },
+    { code: "S14", name: "مصطفى" },
+    { code: "S15", name: "سارة" },
+    { code: "S16", name: "نور" },
+    { code: "S17", name: "هدى" },
+    { code: "S18", name: "كريم" },
+    { code: "S19", name: "ياسمين" },
+    { code: "S20", name: "عمر" },
+    { code: "S21", name: "خالد" },
+    { code: "S22", name: "ندى" },
+    { code: "S23", name: "إسلام" },
+    { code: "S24", name: "آية" }
+  ];
+
+  let appState = {
+    firebaseUrl: DEFAULT_FIREBASE_URL,
+    adminPin: DEFAULT_ADMIN_PIN,
+    activeExhibitionId: "exh_mansoura",
+    salesTeam: [...INITIAL_SALES_TEAM],
+    exhibitions: {
+      "exh_mansoura": {
+        id: "exh_mansoura",
+        name: "معرض المنصورة",
+        nextSeq: 131,
+        templateDataUrl: "",
+        nameX: 50,
+        nameY: 52,
+        nameSize: 52,
+        nameColor: "#ffffff",
+        codeY: 88
+      },
+      "exh_sohag": {
+        id: "exh_sohag",
+        name: "معرض سوهاج",
+        nextSeq: 131,
+        templateDataUrl: "",
+        nameX: 50,
+        nameY: 52,
+        nameSize: 52,
+        nameColor: "#ffffff",
+        codeY: 88
+      }
+    },
+    invitations: []
+  };
+
+  let isAdminMode = false;
+  let loadedTemplateImg = null;
+  let lastLoadedTemplateSrc = "";
+  let lastIssuedTicket = null;
+  let isSyncing = false;
+
+  // =========================================================
+  // 2. التهيئة والتحميل الأولي
+  // =========================================================
+  window.addEventListener("DOMContentLoaded", async () => {
+    loadLocalState();
+    renderAllUI();
+    await syncFromCloud(false);
+
+    // مزامنة تلقائية في الخلفية كل 6 ثوانٍ لضمان تحديث الأرقام بين الـ 30 سيلز
+    setInterval(() => {
+      if (!isSyncing) syncFromCloud(false);
+    }, 6000);
+  });
+
+  function cleanFirebaseUrl(url) {
+    if (!url) return DEFAULT_FIREBASE_URL;
+    return url.trim().replace(/\/+$/, "");
+  }
+
+  function loadLocalState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        mergeState(parsed);
+      }
+    } catch (e) {
+      console.warn("Local storage load warning:", e);
+    }
+    appState.firebaseUrl = cleanFirebaseUrl(appState.firebaseUrl || DEFAULT_FIREBASE_URL);
+  }
+
+  function saveLocalState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    } catch (e) {
+      console.warn("Local storage quota warning:", e);
+    }
+  }
+
+  function mergeState(incoming) {
+    if (!incoming || typeof incoming !== "object") return;
+    if (incoming.adminPin) appState.adminPin = incoming.adminPin;
+    if (incoming.salesTeam && Array.isArray(incoming.salesTeam) && incoming.salesTeam.length > 0) {
+      appState.salesTeam = incoming.salesTeam;
+    }
+    if (incoming.exhibitions && typeof incoming.exhibitions === "object") {
+      appState.exhibitions = incoming.exhibitions;
+    }
+    if (incoming.invitations) {
+      // يمكن أن تكون مصفوفة أو كائن في فايربيز
+      const invArr = Array.isArray(incoming.invitations)
+        ? incoming.invitations.filter(Boolean)
+        : Object.values(incoming.invitations).filter(Boolean);
+      appState.invitations = invArr;
+    }
+    if (!appState.exhibitions[appState.activeExhibitionId]) {
+      const firstKey = Object.keys(appState.exhibitions)[0];
+      if (firstKey) appState.activeExhibitionId = firstKey;
+    }
+  }
+
+  // =========================================================
+  // 3. المزامنة السحابية مع Firebase Realtime Database
+  // =========================================================
+  function updateSyncBadge(online, text) {
+    const badge = document.getElementById("syncStatusBadge");
+    if (!badge) return;
+    if (online) {
+      badge.className = "sync-badge";
+      badge.textContent = text || "🟢 متصل بالسحابة لايف";
+    } else {
+      badge.className = "sync-badge offline";
+      badge.textContent = text || "🟠 وضع محلي (جاري الاتصال...)";
+    }
+  }
+
+  async function syncFromCloud(showToast = false) {
+    const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+    if (!baseUrl) return;
+
+    isSyncing = true;
+    try {
+      const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, { cache: "no-store" });
+      if (!res.ok) throw new Error("Network response not ok");
+      const cloudData = await res.json();
+
+      if (cloudData) {
+        mergeState(cloudData);
+        saveLocalState();
+        renderAllUI();
+      } else {
+        // إذا كانت قاعدة البيانات فارغة لأول مرة، نرفع الحالة الابتدائية
+        await pushStateToCloud();
+      }
+      updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
+      if (showToast) alert("تم تحديث البيانات من السحابة بنجاح ✅");
+    } catch (err) {
+      console.warn("Cloud sync warning:", err);
+      updateSyncBadge(false, "🟠 اتصال ضعيف (محفوظ مؤقتاً)");
+    } finally {
+      isSyncing = false;
+    }
+  }
+
+  async function pushStateToCloud() {
+    const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+    saveLocalState();
+    if (!baseUrl) return false;
+
+    try {
+      const payload = {
+        adminPin: appState.adminPin,
+        salesTeam: appState.salesTeam,
+        exhibitions: appState.exhibitions,
+        invitations: appState.invitations,
+        lastUpdated: Date.now()
       };
-
-      let appState = {
-        dbUrl: localStorage.getItem("balmeter_db_url") || DEFAULT_FIREBASE_URL,
-        adminPin:
-          localStorage.getItem("balmeter_admin_pin") || DEFAULT_ADMIN_PIN,
-        isAdmin: false,
-        dragMode: false,
-        currentGovId: "sohag",
-        salesList:
-          JSON.parse(localStorage.getItem("balmeter_sales")) || INITIAL_SALES,
-        govs: JSON.parse(localStorage.getItem("balmeter_govs")) || {
-          sohag: {
-            id: "sohag",
-            name: "معرض سوهاج",
-            nextSeq: 131,
-            boxes: JSON.parse(JSON.stringify(DEFAULT_BOXES)),
-            imageBase64: null,
-            logs: [],
-          },
-          mansoura: {
-            id: "mansoura",
-            name: "معرض المنصورة",
-            nextSeq: 131,
-            boxes: JSON.parse(JSON.stringify(DEFAULT_BOXES)),
-            imageBase64: null,
-            logs: [],
-          },
-        },
-      };
-
-      const canvas = document.getElementById("invCanvas");
-      const ctx = canvas.getContext("2d");
-      let loadedImage = null;
-
-      // تشغيل التطبيق عند الفتح
-      window.addEventListener("DOMContentLoaded", async () => {
-        document.getElementById("dbUrlInput").value = appState.dbUrl;
-        document.getElementById("adminPinInput").value = appState.adminPin;
-        setupDragBoxes();
-        renderGovTabs();
-        renderSalesSelect();
-        loadCurrentGovImage();
-        if (appState.dbUrl) {
-          await refreshFromCloud();
-          // تحديث تلقائي كل 12 ثانية لمزامنة الـ 30 سيلز
-          setInterval(refreshFromCloud, 12000);
-        }
+      const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
-
-      function cleanDbUrl(url) {
-        return (url || "").trim().replace(/\/+$/, "");
+      if (res.ok) {
+        updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
+        return true;
       }
+    } catch (e) {
+      console.error("Push error:", e);
+      updateSyncBadge(false, "🟠 خطأ في الرفع للسحابة");
+    }
+    return false;
+  }
 
-      function saveLocalBackup() {
-        localStorage.setItem(
-          "balmeter_sales",
-          JSON.stringify(appState.salesList),
-        );
-        localStorage.setItem("balmeter_govs", JSON.stringify(appState.govs));
+  // =========================================================
+  // 4. عرض وتحديث عناصر الواجهة
+  // =========================================================
+  function renderAllUI() {
+    renderExhibitionPills();
+    renderSalesSelectDropdown();
+    loadActiveExhibitionTemplate();
+    if (isAdminMode) {
+      renderAdminDashboard();
+    }
+  }
+
+  function getActiveExhibition() {
+    return appState.exhibitions[appState.activeExhibitionId] || Object.values(appState.exhibitions)[0];
+  }
+
+  function renderExhibitionPills() {
+    const container = document.getElementById("exhibitionPills");
+    container.innerHTML = "";
+    const activeExh = getActiveExhibition();
+
+    Object.values(appState.exhibitions).forEach(exh => {
+      const btn = document.createElement("button");
+      btn.className = "exh-pill" + (exh.id === activeExh.id ? " active" : "");
+      // في وضع المدير نعرض رقم التسلسل، وللسيلز نعرض اسم المعرض فقط بشكل نظيف
+      btn.textContent = isAdminMode ? `${exh.name} (#${getCalculatedNextSeq(exh.id)})` : exh.name;
+      btn.onclick = () => {
+        appState.activeExhibitionId = exh.id;
+        lastIssuedTicket = null;
+        document.getElementById("ticketConfirmBox").style.display = "none";
+        saveLocalState();
+        renderAllUI();
+      };
+      container.appendChild(btn);
+    });
+
+    document.getElementById("activeExhTitle").textContent = activeExh ? activeExh.name : "";
+  }
+
+  function renderSalesSelectDropdown() {
+    const select = document.getElementById("salesSelect");
+    const searchVal = (document.getElementById("salesSearchInput").value || "").trim().toLowerCase();
+    const savedSalesCode = localStorage.getItem("BALMETER_SAVED_SALES_CODE") || "";
+
+    const filtered = appState.salesTeam.filter(s =>
+      s.name.toLowerCase().includes(searchVal) || s.code.toLowerCase().includes(searchVal)
+    );
+
+    select.innerHTML = "";
+    filtered.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.code;
+      opt.textContent = `${s.name} (كود: ${s.code})`;
+      select.appendChild(opt);
+    });
+
+    if (savedSalesCode && filtered.some(s => s.code === savedSalesCode)) {
+      select.value = savedSalesCode;
+    }
+    renderCanvasPreview();
+  }
+
+  function filterSalesDropdown() {
+    renderSalesSelectDropdown();
+  }
+
+  function onSalesRepChange() {
+    const code = document.getElementById("salesSelect").value;
+    if (code) {
+      localStorage.setItem("BALMETER_SAVED_SALES_CODE", code);
+    }
+    renderCanvasPreview();
+  }
+
+  function getCalculatedNextSeq(exhId) {
+    const exh = appState.exhibitions[exhId];
+    const baseNext = exh && exh.nextSeq ? Number(exh.nextSeq) : 131;
+    const exhInvitations = appState.invitations.filter(inv => inv && inv.exhibitionId === exhId);
+    if (exhInvitations.length === 0) return baseNext;
+    const maxUsed = Math.max(...exhInvitations.map(i => Number(i.seqNumber) || 130));
+    return Math.max(baseNext, maxUsed + 1);
+  }
+
+  // =========================================================
+  // 5. رسم ومعاينة بطاقة الدعوة (Canvas Auto-Fit)
+  // =========================================================
+  function loadActiveExhibitionTemplate() {
+    const exh = getActiveExhibition();
+    if (!exh) return;
+
+    if (exh.templateDataUrl && exh.templateDataUrl !== lastLoadedTemplateSrc) {
+      const img = new Image();
+      img.onload = () => {
+        loadedTemplateImg = img;
+        lastLoadedTemplateSrc = exh.templateDataUrl;
+        renderCanvasPreview();
+      };
+      img.src = exh.templateDataUrl;
+    } else if (!exh.templateDataUrl) {
+      loadedTemplateImg = null;
+      lastLoadedTemplateSrc = "";
+      renderCanvasPreview();
+    } else {
+      renderCanvasPreview();
+    }
+  }
+
+  function renderCanvasPreview(customTicket = null) {
+    const canvas = document.getElementById("invitationCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const exh = getActiveExhibition();
+    if (!exh) return;
+
+    // ضبط أبعاد الكانفاس على أبعاد الصورة المرفوعة أو جودة عالية افتراضية
+    if (loadedTemplateImg) {
+      canvas.width = loadedTemplateImg.naturalWidth || 1080;
+      canvas.height = loadedTemplateImg.naturalHeight || 1350;
+      ctx.drawImage(loadedTemplateImg, 0, 0, canvas.width, canvas.height);
+    } else {
+      canvas.width = 1080;
+      canvas.height = 1350;
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, "#0b192c");
+      grad.addColorStop(1, "#050b14");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // إطار ذهبي أنيق عند عدم وجود قالب مرفوع بعد
+      ctx.strokeStyle = "#f59e0b";
+      ctx.lineWidth = 6;
+      ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+      ctx.fillStyle = "#06b6d4";
+      ctx.textAlign = "center";
+      ctx.font = "800 54px 'Cairo', sans-serif";
+      ctx.fillText(exh.name, canvas.width / 2, 260);
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "600 30px 'Cairo', sans-serif";
+      ctx.fillText("دعوة حضور خاصة VIP", canvas.width / 2, 330);
+    }
+
+    // قراءة البيانات المراد رسمها
+    const clientName = customTicket
+      ? customTicket.clientName
+      : (document.getElementById("clientNameInput").value || "").trim() || "اسم العميل يظهر هنا";
+
+    const salesCode = customTicket
+      ? customTicket.salesCode
+      : (document.getElementById("salesSelect").value || "S11");
+
+    const seqNum = customTicket
+      ? customTicket.seqNumber
+      : (lastIssuedTicket ? lastIssuedTicket.seqNumber : getCalculatedNextSeq(exh.id));
+
+    // رسم اسم العميل مع تصغير الخط تلقائياً لو الاسم طويل (Auto-Fit)
+    const nameX = ((exh.nameX || 50) / 100) * canvas.width;
+    const nameY = ((exh.nameY || 52) / 100) * canvas.height;
+    const maxWidth = canvas.width * 0.82;
+    let fontSize = Math.round(((exh.nameSize || 52) / 1080) * canvas.width);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = exh.nameColor || "#ffffff";
+
+    do {
+      ctx.font = `800 ${fontSize}px 'Cairo', sans-serif`;
+      if (ctx.measureText(clientName).width <= maxWidth || fontSize <= 20) break;
+      fontSize -= 2;
+    } while (fontSize > 20);
+
+    ctx.shadowColor = "rgba(0,0,0,0.65)";
+    ctx.shadowBlur = 8;
+    ctx.fillText(clientName, nameX, nameY);
+
+    // رسم ختم رقم الدعوة وكود السيلز
+    const codeY = ((exh.codeY || 88) / 100) * canvas.height;
+    const codeFontSize = Math.max(22, Math.round((34 / 1080) * canvas.width));
+    ctx.font = `800 ${codeFontSize}px 'Cairo', sans-serif`;
+    ctx.fillStyle = "#f59e0b";
+    ctx.fillText(`#${seqNum}  |  ${salesCode}`, canvas.width / 2, codeY);
+    ctx.shadowBlur = 0;
+  }
+
+  // =========================================================
+  // 6. إصدار الدعوة للعميل وتنزيلها (منع تكرار الأرقام 100%)
+  // =========================================================
+  async function issueAndDownloadInvitation() {
+    const clientNameInput = document.getElementById("clientNameInput");
+    const clientName = (clientNameInput.value || "").trim();
+    const salesCode = document.getElementById("salesSelect").value;
+    const exh = getActiveExhibition();
+
+    if (!clientName) {
+      alert("من فضلك اكتب اسم العميل أولاً!");
+      clientNameInput.focus();
+      return;
+    }
+    if (!salesCode) {
+      alert("من فضلك اختر اسمك من قائمة السيلز!");
+      return;
+    }
+
+    const btn = document.getElementById("issueBtn");
+    btn.disabled = true;
+    btn.textContent = "⏳ جاري الحجز والمزامنة مع السحابة...";
+
+    try {
+      // سحب أحدث نسخة من السحابة أولاً لضمان عدم أخذ نفس الرقم من سيلز آخر في نفس اللحظة
+      await syncFromCloud(false);
+
+      const currentExh = getActiveExhibition();
+      const assignedSeq = getCalculatedNextSeq(currentExh.id);
+      const salesObj = appState.salesTeam.find(s => s.code === salesCode) || { code: salesCode, name: salesCode };
+
+      const newTicket = {
+        id: "inv_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6),
+        exhibitionId: currentExh.id,
+        exhibitionName: currentExh.name,
+        seqNumber: assignedSeq,
+        clientName: clientName,
+        salesCode: salesObj.code,
+        salesName: salesObj.name,
+        createdAt: new Date().toLocaleString("ar-EG")
+      };
+
+      appState.invitations.push(newTicket);
+      currentExh.nextSeq = assignedSeq + 1;
+      lastIssuedTicket = newTicket;
+
+      await pushStateToCloud();
+
+      // رسم الكارت بالبيانات المعتمدة وتحميله فوراً على الموبايل
+      renderCanvasPreview(newTicket);
+      downloadCurrentCanvas(`${currentExh.name}_${clientName}_${assignedSeq}.png`);
+
+      // إظهار رسالة نجاح للسيلز
+      const confirmBox = document.getElementById("ticketConfirmBox");
+      confirmBox.style.display = "block";
+      confirmBox.innerHTML = `✅ تم إصدار وحفظ الدعوة رقم <strong>#${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!`;
+      document.getElementById("redownloadLastBtn").style.display = "inline-flex";
+
+      // تفريغ خانة اسم العميل استعداداً للعميل التالي
+      clientNameInput.value = "";
+      renderAllUI();
+    } catch (e) {
+      alert("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
+      console.error(e);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✨ إصدار وتحميل بطاقة الدعوة الآن";
+    }
+  }
+
+  function downloadCurrentCanvas(filename) {
+    const canvas = document.getElementById("invitationCanvas");
+    const defaultName = lastIssuedTicket
+      ? `VIP_${lastIssuedTicket.seqNumber}_${lastIssuedTicket.clientName}.png`
+      : `Balmeter_VIP_Invitation.png`;
+
+    const link = document.createElement("a");
+    link.download = filename || defaultName;
+    link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // =========================================================
+  // 7. نظام وضع المدير (Admin Mode) والتبويبات
+  // =========================================================
+  function handleAdminButtonClick() {
+    if (isAdminMode) {
+      logoutAdmin();
+    } else {
+      document.getElementById("pinModalInput").value = "";
+      document.getElementById("pinModal").style.display = "flex";
+      setTimeout(() => document.getElementById("pinModalInput").focus(), 100);
+    }
+  }
+
+  function closePinModal() {
+    document.getElementById("pinModal").style.display = "none";
+  }
+
+  function verifyAdminPin() {
+    const entered = (document.getElementById("pinModalInput").value || "").trim();
+    if (entered === appState.adminPin || entered === DEFAULT_ADMIN_PIN || entered === BACKUP_ADMIN_PIN) {
+      isAdminMode = true;
+      closePinModal();
+      document.getElementById("adminPanel").style.display = "block";
+      document.getElementById("adminToggleBtn").textContent = "🔓 إغلاق وضع المدير";
+      renderAllUI();
+      document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
+    } else {
+      alert("❌ كلمة سر المدير غير صحيحة!");
+    }
+  }
+
+  function logoutAdmin() {
+    isAdminMode = false;
+    document.getElementById("adminPanel").style.display = "none";
+    document.getElementById("adminToggleBtn").textContent = "🔒 وضع المدير";
+    renderAllUI();
+  }
+
+  function switchAdminTab(tabId, btnEl) {
+    document.querySelectorAll(".admin-tab-content").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".admin-tab-btn").forEach(el => el.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+    if (btnEl) btnEl.classList.add("active");
+  }
+
+  // =========================================================
+  // 8. دوال لوحة المدير (إدارة ومتابعة السيلز + التقارير + القوالب)
+  // =========================================================
+  function renderAdminDashboard() {
+    const exh = getActiveExhibition();
+    if (!exh) return;
+
+    const exhInvs = appState.invitations.filter(i => i && i.exhibitionId === exh.id);
+
+    // 1. تحديث أرقام KPIs
+    document.getElementById("kpiCurrentExhTotal").textContent = exhInvs.length;
+    document.getElementById("kpiNextSeq").textContent = "#" + getCalculatedNextSeq(exh.id);
+    document.getElementById("kpiSalesCount").textContent = appState.salesTeam.length;
+
+    // 2. جدول متابعة أداء كل سيلز
+    const perfTbody = document.getElementById("salesPerformanceTbody");
+    perfTbody.innerHTML = "";
+
+    let topSalesName = "-";
+    let topSalesCount = 0;
+
+    const salesStats = appState.salesTeam.map(s => {
+      const currentCount = exhInvs.filter(i => i.salesCode === s.code).length;
+      const allCount = appState.invitations.filter(i => i && i.salesCode === s.code).length;
+      if (currentCount > topSalesCount) {
+        topSalesCount = currentCount;
+        topSalesName = `${s.name} (${currentCount})`;
       }
+      return { ...s, currentCount, allCount };
+    }).sort((a, b) => b.currentCount - a.currentCount);
 
-      // ============================================================================
-      // المزامنة السحابية (Firebase REST API + Atomic ETag Transactions)
-      // ============================================================================
-      async function refreshFromCloud() {
-        const baseUrl = cleanDbUrl(appState.dbUrl);
-        const pill = document.getElementById("cloudStatus");
-        if (!baseUrl) {
-          pill.textContent = "⚡ وضع محلي (غير مربوط بالسحابة)";
-          pill.className = "status-pill offline";
-          return;
-        }
-        try {
-          const res = await fetch(`${baseUrl}/balmeter_data.json`);
-          if (!res.ok) throw new Error("Cloud error");
-          const data = await res.json();
-          if (data) {
-            if (data.salesList) appState.salesList = data.salesList;
-            if (data.govs) {
-              for (const k in data.govs) {
-                const g = data.govs[k];
-                g.logs = g.logs ? Object.values(g.logs) : [];
-                g.boxes = g.boxes || JSON.parse(JSON.stringify(DEFAULT_BOXES));
-              }
-              appState.govs = data.govs;
-            }
-            saveLocalBackup();
-            renderGovTabs();
-            renderSalesSelect();
-            loadCurrentGovImage();
-            renderStatsAndLogs();
+    document.getElementById("kpiTopSales").textContent = topSalesName;
+
+    salesStats.forEach(s => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="badge-code">${s.code}</span></td>
+        <td style="font-weight:700;">${s.name}</td>
+        <td><span class="badge-count">${s.currentCount} عميل</span></td>
+        <td style="color:var(--text-muted); font-weight:700;">${s.allCount}</td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="filterLogsBySales('${s.code}')">عرض عملائه</button>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteSalesRep('${s.code}')">حذف</button>
+          </div>
+        </td>
+      `;
+      perfTbody.appendChild(tr);
+    });
+
+    // 3. تحديث قائمة فلتر السيلز في سجل العملاء
+    const logFilter = document.getElementById("logSalesFilter");
+    const currentFilterVal = logFilter.value || "ALL";
+    logFilter.innerHTML = `<option value="ALL">كل السيلز (${exhInvs.length} دعوة)</option>`;
+    appState.salesTeam.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.code;
+      opt.textContent = `${s.name} (${s.code})`;
+      logFilter.appendChild(opt);
+    });
+    logFilter.value = currentFilterVal;
+
+    document.getElementById("reportExhName").textContent = exh.name;
+    renderClientLogsTable();
+
+    // 4. تعبئة إعدادات القالب للمعرض الحالي
+    document.getElementById("adminNextSeqInput").value = getCalculatedNextSeq(exh.id);
+    document.getElementById("nameYRange").value = exh.nameY || 52;
+    document.getElementById("nameYVal").textContent = (exh.nameY || 52) + "%";
+    document.getElementById("nameXRange").value = exh.nameX || 50;
+    document.getElementById("nameXVal").textContent = (exh.nameX || 50) + "%";
+    document.getElementById("nameSizeRange").value = exh.nameSize || 52;
+    document.getElementById("nameSizeVal").textContent = (exh.nameSize || 52) + "px";
+    document.getElementById("nameColorPicker").value = exh.nameColor || "#ffffff";
+    document.getElementById("codeYRange").value = exh.codeY || 88;
+    document.getElementById("codeYVal").textContent = (exh.codeY || 88) + "%";
+
+    // 5. تعبئة إعدادات السحابة والأمان
+    document.getElementById("firebaseUrlInput").value = appState.firebaseUrl;
+    document.getElementById("adminPinInput").value = appState.adminPin;
+  }
+
+  function getNextAvailableSalesCode() {
+    let maxNum = 10;
+    appState.salesTeam.forEach(s => {
+      const match = String(s.code).match(/\d+/);
+      if (match) {
+        const num = parseInt(match[0], 10);
+        if (num > maxNum) maxNum = num;
+      }
+    });
+    return "S" + (maxNum + 1);
+  }
+
+  async function addSingleSalesRep() {
+    const nameInput = document.getElementById("newSalesName");
+    const codeInput = document.getElementById("newSalesCode");
+    const name = (nameInput.value || "").trim();
+    let code = (codeInput.value || "").trim().toUpperCase();
+
+    if (!name) {
+      alert("اكتب اسم السيلز أولاً!");
+      return;
+    }
+    if (!code) {
+      code = getNextAvailableSalesCode();
+    }
+    if (appState.salesTeam.some(s => s.code.toUpperCase() === code)) {
+      alert("هذا الكود موجود بالفعل لسيلز آخر!");
+      return;
+    }
+
+    appState.salesTeam.push({ code, name });
+    nameInput.value = "";
+    codeInput.value = "";
+    await pushStateToCloud();
+    renderAllUI();
+    alert(`✅ تم إضافة السيلز (${name} - كود ${code}) بنجاح!`);
+  }
+
+  async function addBulkSalesReps() {
+    const raw = document.getElementById("bulkSalesTextarea").value || "";
+    const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (lines.length === 0) {
+      alert("اكتب اسماً واحداً على الأقل في المربع!");
+      return;
+    }
+
+    let addedCount = 0;
+    lines.forEach(line => {
+      const code = getNextAvailableSalesCode();
+      appState.salesTeam.push({ code, name: line });
+      addedCount++;
+    });
+
+    document.getElementById("bulkSalesTextarea").value = "";
+    await pushStateToCloud();
+    renderAllUI();
+    alert(`✅ تم إضافة ${addedCount} سيلز جديد وحفظهم بالسحابة بنجاح!`);
+  }
+
+  async function deleteSalesRep(code) {
+    if (!confirm(`هل أنت متأكد من حذف السيلز كود (${code})؟`)) return;
+    appState.salesTeam = appState.salesTeam.filter(s => s.code !== code);
+    await pushStateToCloud();
+    renderAllUI();
+  }
+
+  function filterLogsBySales(code) {
+    const tabBtn = document.querySelectorAll(".admin-tab-btn")[1];
+    switchAdminTab("tabReports", tabBtn);
+    document.getElementById("logSalesFilter").value = code;
+    renderClientLogsTable();
+  }
+
+  function renderClientLogsTable() {
+    const exh = getActiveExhibition();
+    if (!exh) return;
+
+    const search = (document.getElementById("logSearchInput").value || "").trim().toLowerCase();
+    const salesFilter = document.getElementById("logSalesFilter").value || "ALL";
+    const tbody = document.getElementById("clientLogsTbody");
+    tbody.innerHTML = "";
+
+    const list = appState.invitations
+      .filter(i => i && i.exhibitionId === exh.id)
+      .filter(i => salesFilter === "ALL" || i.salesCode === salesFilter)
+      .filter(i =>
+        i.clientName.toLowerCase().includes(search) ||
+        String(i.seqNumber).includes(search) ||
+        i.salesName.toLowerCase().includes(search)
+      )
+      .slice()
+      .reverse();
+
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث في هذا المعرض.</td></tr>`;
+      return;
+    }
+
+    list.forEach(inv => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong style="color:var(--gold);">#${inv.seqNumber}</strong></td>
+        <td style="font-weight:700;">${inv.clientName}</td>
+        <td><span class="badge-code">${inv.salesName} (${inv.salesCode})</span></td>
+        <td style="font-size:0.8rem; color:var(--text-muted);">${inv.createdAt || "-"}</td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="redownloadOldInvitation('${inv.id}')">⬇️ البطاقة</button>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteInvitationRecord('${inv.id}')">حذف</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function redownloadOldInvitation(invId) {
+    const inv = appState.invitations.find(i => i && i.id === invId);
+    if (!inv) return;
+    renderCanvasPreview(inv);
+    downloadCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
+  }
+
+  async function deleteInvitationRecord(invId) {
+    if (!confirm("هل تريد حذف هذه الدعوة من السجل؟")) return;
+    appState.invitations = appState.invitations.filter(i => i && i.id !== invId);
+    await pushStateToCloud();
+    renderAllUI();
+  }
+
+  // =========================================================
+  // 9. تقارير الواتساب والإكسيل (للمدير فقط)
+  // =========================================================
+  function copyWhatsAppReport() {
+    const exh = getActiveExhibition();
+    const exhInvs = appState.invitations.filter(i => i && i.exhibitionId === exh.id);
+
+    let text = `📊 *تقرير دعوات ${exh.name} - B.almeter VIP*\n`;
+    text += `إجمالي الدعوات الصادرة: *${exhInvs.length}* دعوة\n`;
+    text += `--------------------------\n`;
+    text += `👥 *إنجاز فريق السيلز:*\n`;
+
+    appState.salesTeam.forEach(s => {
+      const count = exhInvs.filter(i => i.salesCode === s.code).length;
+      if (count > 0) {
+        text += `- ${s.name} (${s.code}): *${count}* عميل\n`;
+      }
+    });
+
+    text += `--------------------------\n`;
+    text += `🎫 *قائمة العملاء المسجلين:*\n`;
+    exhInvs.forEach(i => {
+      text += `#${i.seqNumber} | ${i.clientName} (${i.salesName} - ${i.salesCode})\n`;
+    });
+
+    navigator.clipboard.writeText(text).then(() => {
+      alert("✅ تم نسخ تقرير الواتساب الشامل! يمكنك لصقه الآن في جروب الإدارة.");
+    });
+  }
+
+  function exportExcelCSV() {
+    const exh = getActiveExhibition();
+    const exhInvs = appState.invitations.filter(i => i && i.exhibitionId === exh.id);
+    if (exhInvs.length === 0) {
+      alert("لا توجد بيانات لتصديرها في هذا المعرض حتى الآن.");
+      return;
+    }
+
+    let csv = "\uFEFFرقم الدعوة,اسم العميل,اسم السيلز,كود السيلز,المعرض,التاريخ والوقت\n";
+    exhInvs.forEach(i => {
+      csv += `"${i.seqNumber}","${i.clientName}","${i.salesName}","${i.salesCode}","${i.exhibitionName}","${i.createdAt || ""}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `تقرير_${exh.name}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  // =========================================================
+  // 10. رفع صورة القالب وضبط الإحداثيات والمعارض
+  // =========================================================
+  function handleTemplateUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = async function() {
+        // ضغط ذكي للصورة لكي تفتح فوراً عند الـ 30 سيلز عبر فايربيز بدون بطء
+        const offCanvas = document.createElement("canvas");
+        const maxDim = 1280;
+        let w = img.naturalWidth;
+        let h = img.naturalHeight;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
           } else {
-            // لو السحابة فارغة أول مرة نرفع البيانات الافتراضية
-            await pushAllToCloud();
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
           }
-          pill.textContent = "🟢 متصل بالسحابة لايف (متزامن مع كل السيلز)";
-          pill.className = "status-pill";
-        } catch (err) {
-          pill.textContent = "🔴 تعذر الاتصال بالسحابة (تأكد من الرابط)";
-          pill.className = "status-pill offline";
         }
-      }
-
-      async function pushAllToCloud() {
-        saveLocalBackup();
-        const baseUrl = cleanDbUrl(appState.dbUrl);
-        if (!baseUrl) return;
-        try {
-          await fetch(`${baseUrl}/balmeter_data.json`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              salesList: appState.salesList,
-              govs: appState.govs,
-            }),
-          });
-          showMsg(
-            "تم حفظ ومزامنة الإعدادات على السحابة لجميع السيلز بنجاح ✅",
-            "ok",
-          );
-          await refreshFromCloud();
-        } catch (e) {
-          showMsg("حدث خطأ أثناء الرفع للسحابة", "err");
-        }
-      }
-
-      // حجز رقم تسلسلي ذري (Atomic) يمنع تكرار الرقم حتى لو ضغط 30 سيلز في نفس اللحظة
-      async function reserveNextSequenceAtomically(govId) {
-        const baseUrl = cleanDbUrl(appState.dbUrl);
-        const gov = appState.govs[govId];
-        if (!baseUrl) {
-          const allocated = gov.nextSeq;
-          gov.nextSeq = allocated + 1;
-          saveLocalBackup();
-          return allocated;
-        }
-
-        const seqUrl = `${baseUrl}/balmeter_data/govs/${govId}/nextSeq.json`;
-        for (let attempt = 0; attempt < 8; attempt++) {
-          const getRes = await fetch(seqUrl, {
-            headers: { "X-Firebase-ETag": "true" },
-          });
-          const etag = getRes.headers.get("ETag");
-          let currentSeq = await getRes.json();
-          if (!currentSeq || isNaN(currentSeq)) currentSeq = gov.nextSeq || 131;
-
-          const putRes = await fetch(seqUrl, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "if-match": etag,
-            },
-            body: JSON.stringify(currentSeq + 1),
-          });
-
-          if (putRes.status === 200) {
-            gov.nextSeq = currentSeq + 1;
-            return currentSeq;
-          }
-          // إذا ضغط سيلز آخر في نفس الجزء من الثانية يعيد المحاولة تلقائياً بالرقم الجديد
-          await new Promise((r) => setTimeout(r, 80));
-        }
-        throw new Error("ازدحام في الشبكة، اضغط مرة أخرى");
-      }
-
-      // ============================================================================
-      // إدارة واجهة المعارض والسيلز
-      // ============================================================================
-      function renderGovTabs() {
-        const container = document.getElementById("govTabs");
-        container.innerHTML = "";
-        const ids = Object.keys(appState.govs);
-        if (!appState.govs[appState.currentGovId] && ids.length) {
-          appState.currentGovId = ids[0];
-        }
-        ids.forEach((id) => {
-          const g = appState.govs[id];
-          const btn = document.createElement("button");
-          btn.className =
-            "gov-tab" + (id === appState.currentGovId ? " active" : "");
-          btn.textContent = `${g.name} (#${g.nextSeq})`;
-          btn.onclick = () => selectGov(id);
-          container.appendChild(btn);
-        });
-
-        const cur = appState.govs[appState.currentGovId];
-        if (cur) {
-          document.getElementById("currentGovTitle").textContent = cur.name;
-          document.getElementById("statsGovTitle").textContent = cur.name;
-          document.getElementById("adminSeqInput").value = cur.nextSeq;
-          document.getElementById("previewNextSeq").textContent = cur.nextSeq;
-        }
-      }
-
-      function selectGov(id) {
-        appState.currentGovId = id;
-        renderGovTabs();
-        loadCurrentGovImage();
-        renderStatsAndLogs();
-        positionDragBoxesFromState();
-      }
-
-      function renderSalesSelect() {
-        const q = (document.getElementById("salesSearch").value || "")
-          .trim()
-          .toLowerCase();
-        const sel = document.getElementById("salesSelect");
-        const savedCode = localStorage.getItem("balmeter_my_sales_code");
-
-        sel.innerHTML = "";
-        const filtered = appState.salesList.filter(
-          (s) =>
-            s.name.toLowerCase().includes(q) ||
-            String(s.code).toLowerCase().includes(q),
-        );
-
-        filtered.forEach((s) => {
-          const opt = document.createElement("option");
-          opt.value = s.code;
-          opt.textContent = `${s.name} (كود: S${s.code})`;
-          if (String(s.code) === String(savedCode)) opt.selected = true;
-          sel.appendChild(opt);
-        });
-
-        document.getElementById("totalSalesCount").textContent =
-          appState.salesList.length;
-        onSalesChange();
-      }
-
-      function onSalesChange() {
-        const sel = document.getElementById("salesSelect");
-        const code =
-          sel.value ||
-          (appState.salesList[0] && appState.salesList[0].code) ||
-          "11";
-        localStorage.setItem("balmeter_my_sales_code", code);
-        document.getElementById("previewSalesCode").textContent = `S${code}`;
-        updateBadgesAndPreview();
-      }
-
-      function updateBadgesAndPreview() {
-        const gov = appState.govs[appState.currentGovId];
-        if (!gov) return;
-        const code = document.getElementById("salesSelect").value;
-        const myClients = (gov.logs || []).filter(
-          (l) => String(l.salesCode) === String(code),
-        ).length;
-        document.getElementById("previewMyCount").textContent = myClients;
-        document.getElementById("previewNextSeq").textContent = gov.nextSeq;
-        drawPreview();
-      }
-
-      // ============================================================================
-      // الرسم على البطاقة بخاصية الاحتواء التلقائي (Auto-Fit)
-      // ============================================================================
-      function loadCurrentGovImage() {
-        const gov = appState.govs[appState.currentGovId];
-        if (gov && gov.imageBase64) {
-          const img = new Image();
-          img.onload = () => {
-            loadedImage = img;
-            canvas.width = img.width;
-            canvas.height = img.height;
-            drawPreview();
-            positionDragBoxesFromState();
-          };
-          img.src = gov.imageBase64;
-        } else {
-          loadedImage = null;
-          canvas.width = 1024;
-          canvas.height = 1536;
-          drawPreview();
-          positionDragBoxesFromState();
-        }
-      }
-
-      function fitTextInBox(
-        text,
-        boxPx,
-        fontFamily,
-        maxFontPt,
-        minFontPt,
-        color,
-      ) {
-        ctx.save();
-        let fontSize = maxFontPt;
-        while (fontSize >= minFontPt) {
-          ctx.font = `bold ${fontSize}px ${fontFamily}`;
-          const metrics = ctx.measureText(text);
-          if (metrics.width <= boxPx.w * 0.9) break;
-          fontSize -= 2;
-        }
-        ctx.fillStyle = color;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(text, boxPx.x + boxPx.w / 2, boxPx.y + boxPx.h / 2);
-        ctx.restore();
-      }
-
-      function drawPreview(overrideSeq = null) {
-        const gov = appState.govs[appState.currentGovId];
-        if (!gov) return;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (loadedImage) {
-          ctx.drawImage(loadedImage, 0, 0, canvas.width, canvas.height);
-        } else {
-          // خلفية احتياطية أنيقة في حال لم يرفع المدير الصورة بعد
-          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-          grad.addColorStop(0, "#05192d");
-          grad.addColorStop(1, "#092c48");
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = "#38bdf8";
-          ctx.font = "bold 44px Cairo, Segoe UI, Tahoma";
-          ctx.textAlign = "center";
-          ctx.fillText(gov.name, canvas.width / 2, 420);
-          ctx.font = "26px Segoe UI, Tahoma";
-          ctx.fillStyle = "#94a3b8";
-          ctx.fillText(
-            "(قم برفع صورة الدعوة من وضع المدير لتظهر لكل السيلز)",
-            canvas.width / 2,
-            480,
-          );
-        }
-
-        const b = gov.boxes || DEFAULT_BOXES;
-        const toPx = (box) => ({
-          x: box.x * canvas.width,
-          y: box.y * canvas.height,
-          w: box.w * canvas.width,
-          h: box.h * canvas.height,
-        });
-
-        const nameBox = toPx(b.name);
-        const salesBox = toPx(b.sales);
-        const seqBox = toPx(b.seq);
-
-        // تغطية النقاط ومكان الأكواد القديمة بلون الخلفية الداكنة للدعوة
-        ctx.save();
-        ctx.fillStyle = "#0b293f";
-        ctx.beginPath();
-        ctx.roundRect(
-          nameBox.x,
-          nameBox.y,
-          nameBox.w,
-          nameBox.h,
-          nameBox.h / 2,
-        );
-        ctx.fill();
-
-        ctx.fillStyle = "#02182b";
-        ctx.fillRect(salesBox.x, salesBox.y, salesBox.w, salesBox.h);
-        ctx.fillRect(seqBox.x, seqBox.y, seqBox.w, seqBox.h);
-        ctx.restore();
-
-        const clientName =
-          (document.getElementById("clientNameInput").value || "").trim() ||
-          "اسم العميل يظهر هنا";
-        const salesCode =
-          "S" + (document.getElementById("salesSelect").value || "11");
-        const seqNum = String(overrideSeq !== null ? overrideSeq : gov.nextSeq);
-
-        // كتابة اسم العميل والكود بخاصية Auto-Fit على مقاس الخانة بالضبط
-        fitTextInBox(
-          clientName,
-          nameBox,
-          "'Segoe UI', Tahoma, sans-serif",
-          Math.round(nameBox.h * 0.62),
-          16,
-          "#ffffff",
-        );
-        fitTextInBox(
-          salesCode,
-          salesBox,
-          "'Segoe UI', Tahoma, sans-serif",
-          Math.round(salesBox.h * 0.78),
-          14,
-          "#38e8ff",
-        );
-        fitTextInBox(
-          seqNum,
-          seqBox,
-          "'Segoe UI', Tahoma, sans-serif",
-          Math.round(seqBox.h * 0.78),
-          14,
-          "#38e8ff",
-        );
-      }
-
-      // ============================================================================
-      // إصدار الدعوة وتحميلها وتسجيلها في السحابة
-      // ============================================================================
-      async function issueInvitation() {
-        const clientName = (
-          document.getElementById("clientNameInput").value || ""
-        ).trim();
-        if (!clientName) {
-          showMsg("⚠️ من فضلك اكتب اسم العميل أولاً", "err");
-          return;
-        }
-
-        const salesCode = document.getElementById("salesSelect").value;
-        const salesObj = appState.salesList.find(
-          (s) => String(s.code) === String(salesCode),
-        );
-        const salesName = salesObj ? salesObj.name : `سيلز ${salesCode}`;
-        const govId = appState.currentGovId;
-        const gov = appState.govs[govId];
-
-        const btn = document.getElementById("generateBtn");
-        btn.disabled = true;
-        btn.textContent = "⏳ جاري حجز رقم التسلسل وإصدار البطاقة...";
-
-        try {
-          // 1. حجز الرقم التسلسلي بدون أي تضارب
-          const allocatedSeq = await reserveNextSequenceAtomically(govId);
-
-          // 2. رسم البطاقة بالرقم المحجوز
-          drawPreview(allocatedSeq);
-
-          // 3. حساب ترتيب العميل بالنسبة لهذا السيلز
-          const baseUrl = cleanDbUrl(appState.dbUrl);
-          const existingForSales = (gov.logs || []).filter(
-            (l) => String(l.salesCode) === String(salesCode),
-          ).length;
-          const salesClientOrder = existingForSales + 1;
-
-          const record = {
-            id: Date.now() + "_" + allocatedSeq,
-            seq: allocatedSeq,
-            invitationId: `S${salesCode} - ${allocatedSeq}`,
-            clientName,
-            salesCode,
-            salesName,
-            salesClientOrder,
-            timestamp: new Date().toLocaleString("ar-EG"),
-          };
-
-          if (baseUrl) {
-            await fetch(
-              `${baseUrl}/balmeter_data/govs/${govId}/logs/${record.id}.json`,
-              {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(record),
-              },
-            );
-            await refreshFromCloud();
-          } else {
-            gov.logs.push(record);
-            saveLocalBackup();
-            renderGovTabs();
-            renderStatsAndLogs();
-          }
-
-          // 4. تحميل صورة الدعوة فوراً
-          const link = document.createElement("a");
-          link.download = `B.almeter_${gov.name}_S${salesCode}_${allocatedSeq}_${clientName}.jpg`;
-          link.href = canvas.toDataURL("image/jpeg", 0.94);
-          link.click();
-
-          document.getElementById("clientNameInput").value = "";
-          drawPreview();
-          showMsg(
-            `تم إصدار الدعوة (${record.invitationId}) للعميل "${clientName}" وتحميلها بنجاح! 🎉`,
-            "ok",
-          );
-        } catch (err) {
-          showMsg("حدث خطأ أثناء الحجز: " + err.message, "err");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "✅ تسجيل العميل وتحميل صورة الدعوة (JPG)";
-        }
-      }
-
-      // ============================================================================
-      // الإحصائيات والتقارير
-      // ============================================================================
-      function renderStatsAndLogs() {
-        const gov = appState.govs[appState.currentGovId];
-        if (!gov) return;
-        const logs = [...(gov.logs || [])].sort((a, b) => b.seq - a.seq);
-
-        // حساب ترتيب كل عميل لكل سيلز ديناميكياً
-        const ascLogs = [...(gov.logs || [])].sort((a, b) => a.seq - b.seq);
-        const perSalesCounter = {};
-        ascLogs.forEach((item) => {
-          perSalesCounter[item.salesCode] =
-            (perSalesCounter[item.salesCode] || 0) + 1;
-          item.computedOrder = perSalesCounter[item.salesCode];
-        });
-
-        // جدول إحصائيات السيلز
-        const statsBody = document.getElementById("salesStatsBody");
-        statsBody.innerHTML = "";
-        const summary = appState.salesList
-          .map((s) => ({
-            name: s.name,
-            code: s.code,
-            count: perSalesCounter[s.code] || 0,
-          }))
-          .sort((a, b) => b.count - a.count);
-
-        summary.forEach((row) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-      <td><strong>${row.name}</strong></td>
-      <td>S${row.code}</td>
-      <td><strong style="color:var(--accent)">${row.count}</strong> عميل</td>
-    `;
-          statsBody.appendChild(tr);
-        });
-
-        // جدول سجل العملاء
-        const logsBody = document.getElementById("logsTableBody");
-        logsBody.innerHTML = "";
-        logs.forEach((l) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-      <td dir="ltr" style="font-weight:bold; color:var(--gold)">S${l.salesCode} - ${l.seq}</td>
-      <td>${l.clientName}</td>
-      <td>${l.salesName} (S${l.salesCode})</td>
-      <td>العميل رقم <strong>#${l.computedOrder || l.salesClientOrder}</strong> لدى ${l.salesName}</td>
-      <td>
-        <button class="btn btn-sm" onclick="redownloadCard('${l.clientName.replace(/'/g, "\\'")}', '${l.salesCode}', ${l.seq})">⬇️ تحميل</button>
-      </td>
-    `;
-          logsBody.appendChild(tr);
-        });
-
-        updateBadgesAndPreview();
-      }
-
-      function redownloadCard(clientName, salesCode, seq) {
-        document.getElementById("clientNameInput").value = clientName;
-        document.getElementById("salesSelect").value = salesCode;
-        drawPreview(seq);
-        const gov = appState.govs[appState.currentGovId];
-        const link = document.createElement("a");
-        link.download = `B.almeter_${gov.name}_S${salesCode}_${seq}_${clientName}.jpg`;
-        link.href = canvas.toDataURL("image/jpeg", 0.94);
-        link.click();
-        document.getElementById("clientNameInput").value = "";
-        drawPreview();
-      }
-
-      function copyWhatsAppReport() {
-        const gov = appState.govs[appState.currentGovId];
-        const logs = gov.logs || [];
-        let txt = `📊 *تقرير دعوات ${gov.name}*\n`;
-        txt += `إجمالي الدعوات المصدرة: *${logs.length}* دعوة\n`;
-        txt += `آخر رقم تسلسلي: *${gov.nextSeq - 1}*\n`;
-        txt += `━━━━━━━━━━━━━━\n`;
-        appState.salesList.forEach((s) => {
-          const c = logs.filter(
-            (l) => String(l.salesCode) === String(s.code),
-          ).length;
-          if (c > 0) txt += `🔹 ${s.name} (S${s.code}): *${c}* عملاء\n`;
-        });
-        navigator.clipboard.writeText(txt);
-        showMsg("تم نسخ تقرير الواتساب بنجاح 📋", "ok");
-      }
-
-      function exportExcelCSV() {
-        const gov = appState.govs[appState.currentGovId];
-        const logs = [...(gov.logs || [])].sort((a, b) => a.seq - b.seq);
-        let csv =
-          "\uFEFFINVITATION ID,رقم العميل العام,اسم العميل,اسم السيلز,كود السيلز,ترتيب العميل لدى السيلز,التوقيت\n";
-        const counts = {};
-        logs.forEach((l) => {
-          counts[l.salesCode] = (counts[l.salesCode] || 0) + 1;
-          csv += `"S${l.salesCode} - ${l.seq}",${l.seq},"${l.clientName}","${l.salesName}","S${l.salesCode}",${counts[l.salesCode]},"${l.timestamp}"\n`;
-        });
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `تقرير_${gov.name}.csv`;
-        link.click();
-      }
-
-      // ============================================================================
-      // أدوات المدير (Admin PIN + إضافة سيلز بالجملة + رفع التصميم + السحب بالماوس)
-      // ============================================================================
-      function toggleAdminMode() {
-        if (appState.isAdmin) {
-          appState.isAdmin = false;
-          document.body.classList.remove("is-admin");
-          document.getElementById("adminToggleBtn").textContent =
-            "🔒 وضع المدير";
-          appState.dragMode = false;
-          updateDragBoxesVisibility();
-          return;
-        }
-        const pin = prompt("أدخل الرقم السري للمدير (الافتراضي 1234):");
-        if (pin === appState.adminPin) {
-          appState.isAdmin = true;
-          document.body.classList.add("is-admin");
-          document.getElementById("adminToggleBtn").textContent =
-            "🔓 إغلاق وضع المدير";
-        } else if (pin !== null) {
-          alert("❌ رقم سري غير صحيح!");
-        }
-      }
-
-      function saveCloudConfig() {
-        appState.dbUrl = cleanDbUrl(
-          document.getElementById("dbUrlInput").value,
-        );
-        appState.adminPin = (
-          document.getElementById("adminPinInput").value || "1234"
-        ).trim();
-        localStorage.setItem("balmeter_db_url", appState.dbUrl);
-        localStorage.setItem("balmeter_admin_pin", appState.adminPin);
-        refreshFromCloud();
-        showMsg("تم حفظ إعدادات السحابة ومفتاح المدير ✅", "ok");
-      }
-
-      function addBulkSales() {
-        const raw = document.getElementById("bulkSalesInput").value.trim();
-        if (!raw) return;
-        const lines = raw.split("\n");
-        let added = 0;
-        lines.forEach((line) => {
-          const parts = line.split(/=>|[-:,]/);
-          if (parts.length >= 2) {
-            const name = parts[0].trim();
-            const code = parts[1].trim().replace(/^S/i, "");
-            if (name && code) {
-              const exists = appState.salesList.find(
-                (s) => String(s.code) === String(code),
-              );
-              if (exists) exists.name = name;
-              else appState.salesList.push({ name, code });
-              added++;
-            }
-          }
-        });
-        document.getElementById("bulkSalesInput").value = "";
-        renderSalesSelect();
-        pushAllToCloud();
-        showMsg(`تمت إضافة/تحديث ${added} سيلز ومزامنتهم مع السحابة ✅`, "ok");
-      }
-
-      function removeSelectedSales() {
-        const code = document.getElementById("salesSelect").value;
-        if (!confirm(`هل تريد حذف السيلز كود S${code}؟`)) return;
-        appState.salesList = appState.salesList.filter(
-          (s) => String(s.code) !== String(code),
-        );
-        renderSalesSelect();
-        pushAllToCloud();
-      }
-
-      function addNewGov() {
-        const name = prompt(
-          "اكتب اسم المعرض / المحافظة الجديدة (مثال: معرض المنصورة أو معرض طنطا):",
-        );
-        if (!name) return;
-        const startSeq =
-          parseInt(
-            prompt("يبدأ تسلسل العملاء من رقم كام؟ (الافتراضي 131):", "131"),
-            10,
-          ) || 131;
-        const id = "gov_" + Date.now();
-        appState.govs[id] = {
-          id,
-          name: name.trim(),
-          nextSeq: startSeq,
-          boxes: JSON.parse(JSON.stringify(DEFAULT_BOXES)),
-          imageBase64: null,
-          logs: [],
-        };
-        appState.currentGovId = id;
-        renderGovTabs();
-        loadCurrentGovImage();
-        pushAllToCloud();
-      }
-
-      function deleteCurrentGov() {
-        const ids = Object.keys(appState.govs);
-        if (ids.length <= 1) return alert("لا يمكن حذف المعرض الوحيد المتبقي!");
-        const gov = appState.govs[appState.currentGovId];
-        if (!confirm(`هل أنت متأكد من حذف (${gov.name}) بكل سجلاته؟`)) return;
-        delete appState.govs[appState.currentGovId];
-        appState.currentGovId = Object.keys(appState.govs)[0];
-        renderGovTabs();
-        loadCurrentGovImage();
-        pushAllToCloud();
-      }
-
-      function updateNextSeqManually() {
-        const val = parseInt(
-          document.getElementById("adminSeqInput").value,
-          10,
-        );
-        if (val > 0) {
-          appState.govs[appState.currentGovId].nextSeq = val;
-          renderGovTabs();
-          drawPreview();
-        }
-      }
-
-      // ضغط صورة الدعوة تلقائياً وحفظها في السحابة لتعمل عند الـ 30 سيلز فوراً
-      function handleTemplateUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const img = new Image();
-          img.onload = () => {
-            const maxW = 1080;
-            const scale = img.width > maxW ? maxW / img.width : 1;
-            const tempCanvas = document.createElement("canvas");
-            tempCanvas.width = Math.round(img.width * scale);
-            tempCanvas.height = Math.round(img.height * scale);
-            tempCanvas
-              .getContext("2d")
-              .drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
-
-            const compressedBase64 = tempCanvas.toDataURL("image/jpeg", 0.84);
-            appState.govs[appState.currentGovId].imageBase64 = compressedBase64;
-            loadCurrentGovImage();
-            pushAllToCloud();
-          };
-          img.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-
-      // التحكم في مكان ومقاس الخانات بالماوس
-      function toggleDragMode() {
-        appState.dragMode = !appState.dragMode;
-        updateDragBoxesVisibility();
-      }
-
-      function updateDragBoxesVisibility() {
-        document.getElementById("dragHint").style.display = appState.dragMode
-          ? "inline"
-          : "none";
-        ["box_name", "box_sales", "box_seq"].forEach((id) => {
-          const el = document.getElementById(id);
-          if (appState.dragMode) el.classList.add("show");
-          else el.classList.remove("show");
-        });
-        positionDragBoxesFromState();
-      }
-
-      function positionDragBoxesFromState() {
-        const gov = appState.govs[appState.currentGovId];
-        if (!gov) return;
-        const b = gov.boxes || DEFAULT_BOXES;
-        ["name", "sales", "seq"].forEach((k) => {
-          const el = document.getElementById("box_" + k);
-          el.style.left = b[k].x * 100 + "%";
-          el.style.top = b[k].y * 100 + "%";
-          el.style.width = b[k].w * 100 + "%";
-          el.style.height = b[k].h * 100 + "%";
-        });
-      }
-
-      function setupDragBoxes() {
-        const container = document.getElementById("canvasContainer");
-        ["box_name", "box_sales", "box_seq"].forEach((id) => {
-          const el = document.getElementById(id);
-          const key = el.dataset.key;
-          const resizer = el.querySelector(".resizer");
-
-          let isResizing = false;
-          let startX, startY, startLeft, startTop, startW, startH;
-
-          const onDown = (e, resizeFlag) => {
-            e.stopPropagation();
-            isResizing = resizeFlag;
-            const touch = e.touches ? e.touches[0] : e;
-            startX = touch.clientX;
-            startY = touch.clientY;
-            const rect = container.getBoundingClientRect();
-            const b = appState.govs[appState.currentGovId].boxes[key];
-            startLeft = b.x * rect.width;
-            startTop = b.y * rect.height;
-            startW = b.w * rect.width;
-            startH = b.h * rect.height;
-
-            const onMove = (ev) => {
-              const t = ev.touches ? ev.touches[0] : ev;
-              const dx = t.clientX - startX;
-              const dy = t.clientY - startY;
-              const r = container.getBoundingClientRect();
-              const box = appState.govs[appState.currentGovId].boxes[key];
-
-              if (isResizing) {
-                box.w = Math.max(0.05, (startW - dx) / r.width);
-                box.h = Math.max(0.02, (startH + dy) / r.height);
-              } else {
-                box.x = Math.min(0.95, Math.max(0, (startLeft + dx) / r.width));
-                box.y = Math.min(0.95, Math.max(0, (startTop + dy) / r.height));
-              }
-              positionDragBoxesFromState();
-              drawPreview();
-            };
-
-            const onUp = () => {
-              window.removeEventListener("mousemove", onMove);
-              window.removeEventListener("mouseup", onUp);
-              window.removeEventListener("touchmove", onMove);
-              window.removeEventListener("touchend", onUp);
-              saveLocalBackup();
-            };
-
-            window.addEventListener("mousemove", onMove);
-            window.addEventListener("mouseup", onUp);
-            window.addEventListener("touchmove", onMove);
-            window.addEventListener("touchend", onUp);
-          };
-
-          el.addEventListener("mousedown", (e) => onDown(e, false));
-          el.addEventListener("touchstart", (e) => onDown(e, false));
-          resizer.addEventListener("mousedown", (e) => onDown(e, true));
-          resizer.addEventListener("touchstart", (e) => onDown(e, true));
-        });
-      }
-
-      function showMsg(text, type) {
-        const m = document.getElementById("statusMsg");
-        m.textContent = text;
-        m.className = "msg " + type;
-        setTimeout(() => {
-          m.className = "msg";
-        }, 4500);
-      }
-    </script>
-  </body>
+        offCanvas.width = w;
+        offCanvas.height = h;
+        const offCtx = offCanvas.getContext("2d");
+        offCtx.drawImage(img, 0, 0, w, h);
+
+        const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.85);
+        const exh = getActiveExhibition();
+        exh.templateDataUrl = compressedDataUrl;
+
+        await pushStateToCloud();
+        loadActiveExhibitionTemplate();
+        alert("✅ تم رفع وحفظ قالب الدعوة في السحابة! سيظهر الآن لكل السيلز تلقائياً.");
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updateTemplatePlacement() {
+    const exh = getActiveExhibition();
+    if (!exh) return;
+
+    exh.nameY = Number(document.getElementById("nameYRange").value);
+    exh.nameX = Number(document.getElementById("nameXRange").value);
+    exh.nameSize = Number(document.getElementById("nameSizeRange").value);
+    exh.nameColor = document.getElementById("nameColorPicker").value;
+    exh.codeY = Number(document.getElementById("codeYRange").value);
+
+    document.getElementById("nameYVal").textContent = exh.nameY + "%";
+    document.getElementById("nameXVal").textContent = exh.nameX + "%";
+    document.getElementById("nameSizeVal").textContent = exh.nameSize + "px";
+    document.getElementById("codeYVal").textContent = exh.codeY + "%";
+
+    renderCanvasPreview();
+  }
+
+  async function saveExhibitionSettings() {
+    const exh = getActiveExhibition();
+    if (!exh) return;
+
+    const newSeq = parseInt(document.getElementById("adminNextSeqInput").value, 10);
+    if (!isNaN(newSeq) && newSeq > 0) {
+      exh.nextSeq = newSeq;
+    }
+
+    await pushStateToCloud();
+    renderAllUI();
+    alert("✅ تم حفظ إعدادات القالب والرقم التسلسلي في السحابة!");
+  }
+
+  async function addNewExhibition() {
+    const input = document.getElementById("newExhNameInput");
+    const name = (input.value || "").trim();
+    if (!name) {
+      alert("اكتب اسم المعرض أولاً!");
+      return;
+    }
+
+    const id = "exh_" + Date.now();
+    appState.exhibitions[id] = {
+      id,
+      name,
+      nextSeq: 131,
+      templateDataUrl: "",
+      nameX: 50,
+      nameY: 52,
+      nameSize: 52,
+      nameColor: "#ffffff",
+      codeY: 88
+    };
+    appState.activeExhibitionId = id;
+    input.value = "";
+
+    await pushStateToCloud();
+    renderAllUI();
+    alert(`✅ تم إضافة (${name}) بنجاح!`);
+  }
+
+  async function deleteCurrentExhibition() {
+    const keys = Object.keys(appState.exhibitions);
+    if (keys.length <= 1) {
+      alert("لا يمكن حذف المعرض الوحيد الموجود بالنظام!");
+      return;
+    }
+    const exh = getActiveExhibition();
+    if (!confirm(`هل أنت متأكد من حذف (${exh.name})؟`)) return;
+
+    delete appState.exhibitions[exh.id];
+    appState.activeExhibitionId = Object.keys(appState.exhibitions)[0];
+    await pushStateToCloud();
+    renderAllUI();
+  }
+
+  async function saveCloudAndSecuritySettings() {
+    const newUrl = cleanFirebaseUrl(document.getElementById("firebaseUrlInput").value);
+    const newPin = (document.getElementById("adminPinInput").value || "").trim();
+
+    if (newUrl) appState.firebaseUrl = newUrl;
+    if (newPin) appState.adminPin = newPin;
+
+    await pushStateToCloud();
+    alert("✅ تم حفظ إعدادات السحابة وكلمة سر المدير بنجاح!");
+  }
+</script>
+
+</body>
 </html>
