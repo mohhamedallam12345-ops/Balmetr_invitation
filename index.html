@@ -42,7 +42,7 @@
     }
 
     .app-container {
-      max-width: 1140px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 12px;
     }
@@ -73,7 +73,6 @@
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--primary);
-      letter-spacing: 0.2px;
     }
 
     .sync-badge {
@@ -232,12 +231,14 @@
       align-items: center;
       justify-content: space-between;
       padding-bottom: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .card-title {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       font-weight: 800;
       color: var(--primary);
       display: flex;
@@ -247,21 +248,21 @@
 
     /* Form Controls */
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .form-label {
       display: block;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: #cbd5e1;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .form-control {
       width: 100%;
-      padding: 12px 14px;
-      font-size: 16px; /* 16px prevents mobile zoom on focus */
+      padding: 11px 14px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--text-main);
       background: var(--bg-input);
@@ -277,7 +278,7 @@
     }
 
     textarea.form-control {
-      min-height: 100px;
+      min-height: 95px;
       resize: vertical;
     }
 
@@ -291,16 +292,41 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 280px;
+      min-height: 260px;
       position: relative;
     }
 
-    #invitationCanvas {
+    #invitationCanvas,
+    #adminStudioCanvas {
       max-width: 100%;
+      max-height: 620px;
+      width: auto;
       height: auto;
       border-radius: 8px;
       display: block;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    }
+
+    #adminStudioCanvas {
+      cursor: grab;
+      touch-action: none;
+    }
+
+    #adminStudioCanvas:active {
+      cursor: grabbing;
+    }
+
+    .drag-hint-badge {
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      text-align: center;
+      width: 100%;
     }
 
     .ticket-status-box {
@@ -372,6 +398,37 @@
 
     .admin-tab-content.active {
       display: block;
+    }
+
+    /* Studio Two Columns (Settings on Right, Sticky Live Preview on Left) */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .sticky-preview-card {
+      position: sticky;
+      top: 12px;
+    }
+
+    .control-section-box {
+      background: rgba(9, 15, 29, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .control-section-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     /* KPI Grid */
@@ -463,19 +520,33 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .range-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .range-row label {
+      min-width: 78px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
     }
 
     .range-row input[type="range"] {
       flex: 1;
       accent-color: var(--primary);
+      cursor: pointer;
     }
 
     .range-val {
       min-width: 48px;
-      text-align: center;
-      font-weight: 700;
+      text-align: left;
+      font-weight: 800;
       color: var(--gold);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
+      direction: ltr;
     }
 
     /* Modal for Admin Login */
@@ -494,7 +565,7 @@
     .modal-box {
       background: var(--bg-card);
       border: 1px solid var(--border-light);
-      border-radius: var(--radius);
+      border-radius: 14px;
       padding: 22px;
       width: 100%;
       max-width: 380px;
@@ -502,10 +573,16 @@
     }
 
     /* Mobile Responsive Adjustments */
-    @media (max-width: 820px) {
+    @media (max-width: 860px) {
       .workspace-grid,
-      .admin-two-col {
+      .admin-two-col,
+      .studio-grid {
         grid-template-columns: 1fr;
+      }
+
+      .sticky-preview-card {
+        position: static;
+        order: -1; /* يظهر القالب فوق التعديلات على الفون ليسهل رؤيته */
       }
 
       .top-header {
@@ -590,7 +667,7 @@
       <!-- Client Name Input -->
       <div class="form-group">
         <label class="form-label">2. اسم العميل الثلاثي أو الثنائي (يُضبط تلقائياً على الكارت):</label>
-        <input type="text" id="clientNameInput" class="form-control" placeholder="مثال: أ / أحمد محمود عبد الرحمن" oninput="renderCanvasPreview()" />
+        <input type="text" id="clientNameInput" class="form-control" placeholder="مثال: أ / أحمد محمود عبد الرحمن" oninput="renderAllCanvases()" />
       </div>
 
       <!-- Issue & Download Action -->
@@ -621,7 +698,7 @@
     <div class="admin-banner">
       <div>
         <strong style="color: var(--gold); font-size: 1.05rem;">👑 لوحة تحكم المدير (تظهر لك أنت فقط)</strong>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">متابعة أداء الـ 30+ سيلز، سجل العملاء، التقارير، وإعدادات القوالب والمعارض.</p>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">متابعة أداء الـ 30+ سيلز، سجل العملاء، التقارير، واستوديو ضبط القالب بالماوس والمقاسات.</p>
       </div>
       <button class="btn btn-danger" onclick="logoutAdmin()">إغلاق وضع المدير ✖</button>
     </div>
@@ -629,14 +706,13 @@
     <!-- Admin Navigation Tabs -->
     <div class="admin-tabs">
       <button class="admin-tab-btn active" onclick="switchAdminTab('tabSales', this)">👥 إدارة ومتابعة السيلز</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabTemplate', this)">🎨 القالب والمعارض (استوديو التعديل)</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('tabReports', this)">📋 سجل العملاء والتقارير</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tabTemplate', this)">🎨 القالب والمعارض</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('tabCloud', this)">⚙️ السحابة والأمان</button>
     </div>
 
     <!-- TAB 1: SALES MANAGEMENT & PERFORMANCE TRACKING -->
     <div id="tabSales" class="admin-tab-content active">
-      <!-- KPI Summary -->
       <div class="kpi-grid">
         <div class="kpi-card">
           <div class="label">إجمالي دعوات المعرض الحالي</div>
@@ -704,10 +780,140 @@
       </div>
     </div>
 
-    <!-- TAB 2: CLIENT LOGS & REPORTS -->
+    <!-- TAB 2: TEMPLATE STUDIO (SIDE-BY-SIDE LIVE PREVIEW + MOUSE DRAG + 7 SIZE CONTROLS) -->
+    <div id="tabTemplate" class="admin-tab-content">
+      
+      <!-- Top quick bar for adding/deleting exhibitions -->
+      <div class="card" style="margin-bottom: 16px; padding: 14px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:260px;">
+            <span style="font-weight:800; color:var(--gold); white-space:nowrap;">📍 إدارة المعارض:</span>
+            <input type="text" id="newExhNameInput" class="form-control" placeholder="اسم معرض جديد (مثال: معرض أسيوط)" style="max-width:260px; padding:8px 12px;" />
+            <button class="btn btn-gold" onclick="addNewExhibition()">+ إضافة معرض</button>
+          </div>
+          <button class="btn btn-danger" onclick="deleteCurrentExhibition()">🗑️ حذف المعرض المحدد حالياً</button>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Studio: Right = Controls, Left = Live Interactive Preview -->
+      <div class="studio-grid">
+        
+        <!-- Right Column: The 7 Comprehensive Controls -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🛠️ إعدادات ومقاسات القالب (<span id="studioExhName"></span>)</div>
+            <button class="btn btn-gold" style="padding:6px 12px; font-size:0.82rem;" onclick="saveExhibitionSettings()">💾 حفظ بالسحابة</button>
+          </div>
+
+          <!-- 1. Upload & Next Sequence -->
+          <div class="control-section-box">
+            <div class="control-section-title">
+              <span>1️⃣ صورة القالب الفارغ والترقيم التسلسلي</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">رفع صورة التصميم الفارغ (تظهر فوراً في الجنب ولكل السيلز):</label>
+              <input type="file" id="templateUploadInput" accept="image/*" class="form-control" onchange="handleTemplateUpload(event)" />
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">الرقم التسلسلي القادم لهذا المعرض (الافتراضي 131):</label>
+              <div style="display:flex; gap:8px;">
+                <input type="number" id="adminNextSeqInput" class="form-control" min="1" />
+                <button class="btn btn-primary" onclick="saveExhibitionSettings()">تثبيت الرقم</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Client Name Size, Box Width & Position -->
+          <div class="control-section-box">
+            <div class="control-section-title">
+              <span>2️⃣ مقاس ومكان ولون (اسم العميل)</span>
+              <input type="color" id="nameColorPicker" value="#ffffff" onchange="updateTemplatePlacement()" title="لون اسم العميل" style="width:38px; height:30px; border:0; background:transparent; cursor:pointer;" />
+            </div>
+
+            <div class="range-row">
+              <label>حجم الخط:</label>
+              <input type="range" id="nameSizeRange" min="20" max="110" value="52" oninput="updateTemplatePlacement()" />
+              <span id="nameSizeVal" class="range-val">52px</span>
+            </div>
+
+            <div class="range-row">
+              <label>عرض المستطيل:</label>
+              <input type="range" id="nameBoxWidthRange" min="25" max="95" value="80" oninput="updateTemplatePlacement()" />
+              <span id="nameBoxWidthVal" class="range-val">80%</span>
+            </div>
+
+            <div class="range-row">
+              <label>المكان رأسي Y:</label>
+              <input type="range" id="nameYRange" min="5" max="95" value="52" oninput="updateTemplatePlacement()" />
+              <span id="nameYVal" class="range-val">52%</span>
+            </div>
+
+            <div class="range-row">
+              <label>المكان أفقي X:</label>
+              <input type="range" id="nameXRange" min="5" max="95" value="50" oninput="updateTemplatePlacement()" />
+              <span id="nameXVal" class="range-val">50%</span>
+            </div>
+          </div>
+
+          <!-- 3. Code & Sales Stamp Size, Color & Position -->
+          <div class="control-section-box">
+            <div class="control-section-title">
+              <span>3️⃣ مقاس ومكان ولون (كود الدعوة والسيلز #131 | S11)</span>
+              <input type="color" id="codeColorPicker" value="#f59e0b" onchange="updateTemplatePlacement()" title="لون الكود" style="width:38px; height:30px; border:0; background:transparent; cursor:pointer;" />
+            </div>
+
+            <div class="range-row">
+              <label>حجم الكود:</label>
+              <input type="range" id="codeSizeRange" min="16" max="80" value="34" oninput="updateTemplatePlacement()" />
+              <span id="codeSizeVal" class="range-val">34px</span>
+            </div>
+
+            <div class="range-row">
+              <label>المكان رأسي Y:</label>
+              <input type="range" id="codeYRange" min="5" max="96" value="88" oninput="updateTemplatePlacement()" />
+              <span id="codeYVal" class="range-val">88%</span>
+            </div>
+
+            <div class="range-row">
+              <label>المكان أفقي X:</label>
+              <input type="range" id="codeXRange" min="5" max="95" value="50" oninput="updateTemplatePlacement()" />
+              <span id="codeXVal" class="range-val">50%</span>
+            </div>
+          </div>
+
+          <!-- Helper Guide Box Toggle -->
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:6px 4px;">
+            <label style="font-size:0.85rem; font-weight:700; color:#cbd5e1; cursor:pointer; display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" id="showGuidesCheckbox" checked onchange="renderAllCanvases()" style="width:18px; height:18px; accent-color:var(--gold);" />
+              إظهار مستطيل المقاس التوضيحي على القالب أثناء التعديل
+            </label>
+          </div>
+
+          <button class="btn btn-gold btn-block" onclick="saveExhibitionSettings()">
+            💾 حفظ جميع التعديلات والمقاسات بالسحابة لكل السيلز
+          </button>
+        </div>
+
+        <!-- Left Column: Sticky Side-by-Side Interactive Template Canvas -->
+        <div class="card sticky-preview-card">
+          <div class="card-header">
+            <div class="card-title">🖼️ القالب قدامك (اسحب بالماوس للتعديل مباشرة)</div>
+          </div>
+          <div class="drag-hint-badge">
+            💡 اضغط بالماوس (أو بإصبعك) على <strong>اسم العميل</strong> أو <strong>الكود</strong> داخل الصورة واسحبه لأي مكان!
+          </div>
+          <div class="preview-container">
+            <canvas id="adminStudioCanvas" width="1080" height="1350"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: CLIENT LOGS & REPORTS -->
     <div id="tabReports" class="admin-tab-content">
       <div class="card">
-        <div class="card-header" style="flex-wrap: wrap; gap: 10px;">
+        <div class="card-header">
           <div class="card-title">📋 سجل الدعوات والتقارير (<span id="reportExhName"></span>)</div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn btn-success" onclick="copyWhatsAppReport()">🟢 نسخ تقرير الواتساب</button>
@@ -715,7 +921,6 @@
           </div>
         </div>
 
-        <!-- Filters -->
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
           <input type="text" id="logSearchInput" class="form-control" placeholder="🔍 بحث باسم العميل أو رقم الدعوة..." oninput="renderClientLogsTable()" />
           <select id="logSalesFilter" class="form-control" onchange="renderClientLogsTable()">
@@ -736,88 +941,6 @@
             </thead>
             <tbody id="clientLogsTbody"></tbody>
           </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: TEMPLATE & EXHIBITIONS SETTINGS -->
-    <div id="tabTemplate" class="admin-tab-content">
-      <div class="admin-two-col">
-        <!-- Upload Template & Adjust Text Coordinates -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">🖼️ قالب الدعوة وإعدادات الكتابة للمعرض الحالي</div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">رفع صورة القالب الفارغ لهذا المعرض (تظهر لكل السيلز لايف):</label>
-            <input type="file" id="templateUploadInput" accept="image/*" class="form-control" onchange="handleTemplateUpload(event)" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">الرقم التسلسلي القادم لهذا المعرض (الافتراضي يبدأ من 131):</label>
-            <div style="display:flex; gap:8px;">
-              <input type="number" id="adminNextSeqInput" class="form-control" min="1" />
-              <button class="btn btn-primary" onclick="saveExhibitionSettings()">حفظ الرقم</button>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">مكان اسم العميل رأسياً (Y%):</label>
-            <div class="range-row">
-              <input type="range" id="nameYRange" min="10" max="90" value="52" oninput="updateTemplatePlacement()" />
-              <span id="nameYVal" class="range-val">52%</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">مكان اسم العميل أفقياً (X%):</label>
-            <div class="range-row">
-              <input type="range" id="nameXRange" min="10" max="90" value="50" oninput="updateTemplatePlacement()" />
-              <span id="nameXVal" class="range-val">50%</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">حجم خط اسم العميل ولونه:</label>
-            <div class="range-row">
-              <input type="range" id="nameSizeRange" min="24" max="90" value="52" oninput="updateTemplatePlacement()" />
-              <span id="nameSizeVal" class="range-val">52px</span>
-              <input type="color" id="nameColorPicker" value="#ffffff" onchange="updateTemplatePlacement()" style="width:45px; height:38px; border:0; background:transparent; cursor:pointer;" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">مكان كود الدعوة والسيلز (#131 - S11) رأسياً (Y%):</label>
-            <div class="range-row">
-              <input type="range" id="codeYRange" min="5" max="95" value="88" oninput="updateTemplatePlacement()" />
-              <span id="codeYVal" class="range-val">88%</span>
-            </div>
-          </div>
-
-          <button class="btn btn-gold btn-block" onclick="saveExhibitionSettings()">💾 حفظ إعدادات القالب بالسحابة</button>
-        </div>
-
-        <!-- Manage Exhibitions (Add / Delete) -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">📍 إدارة المعارض والمحافظات</div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">إضافة معرض / محافظة جديدة:</label>
-            <div style="display:flex; gap:8px;">
-              <input type="text" id="newExhNameInput" class="form-control" placeholder="مثال: معرض أسيوط" />
-              <button class="btn btn-gold" onclick="addNewExhibition()">+ إضافة معرض</button>
-            </div>
-          </div>
-
-          <hr style="border:0; border-top:1px solid var(--border); margin: 16px 0;" />
-
-          <div class="form-group">
-            <label class="form-label">إجراءات المعرض المحدد حالياً:</label>
-            <button class="btn btn-danger btn-block" onclick="deleteCurrentExhibition()">🗑️ حذف المعرض الحالي</button>
-          </div>
         </div>
       </div>
     </div>
@@ -867,7 +990,7 @@
   const DEFAULT_FIREBASE_URL = "https://balmeter-vip-default-rtdb.firebaseio.com";
   const DEFAULT_ADMIN_PIN = "mo,2242006";
   const BACKUP_ADMIN_PIN = "1234";
-  const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V2";
+  const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V3";
 
   const INITIAL_SALES_TEAM = [
     { code: "S11", name: "محمد" },
@@ -900,8 +1023,12 @@
         nameX: 50,
         nameY: 52,
         nameSize: 52,
+        nameBoxWidth: 80,
         nameColor: "#ffffff",
-        codeY: 88
+        codeX: 50,
+        codeY: 88,
+        codeSize: 34,
+        codeColor: "#f59e0b"
       },
       "exh_sohag": {
         id: "exh_sohag",
@@ -911,8 +1038,12 @@
         nameX: 50,
         nameY: 52,
         nameSize: 52,
+        nameBoxWidth: 80,
         nameColor: "#ffffff",
-        codeY: 88
+        codeX: 50,
+        codeY: 88,
+        codeSize: 34,
+        codeColor: "#f59e0b"
       }
     },
     invitations: []
@@ -923,18 +1054,19 @@
   let lastLoadedTemplateSrc = "";
   let lastIssuedTicket = null;
   let isSyncing = false;
+  let draggingTarget = null; // 'name' or 'code'
 
   // =========================================================
-  // 2. التهيئة والتحميل الأولي
+  // 2. التهيئة والتحميل الأولي + إعداد الماوس والتاتش على الكانفاس
   // =========================================================
   window.addEventListener("DOMContentLoaded", async () => {
     loadLocalState();
+    setupStudioCanvasDragging();
     renderAllUI();
     await syncFromCloud(false);
 
-    // مزامنة تلقائية في الخلفية كل 6 ثوانٍ لضمان تحديث الأرقام بين الـ 30 سيلز
     setInterval(() => {
-      if (!isSyncing) syncFromCloud(false);
+      if (!isSyncing && !draggingTarget) syncFromCloud(false);
     }, 6000);
   });
 
@@ -971,10 +1103,22 @@
       appState.salesTeam = incoming.salesTeam;
     }
     if (incoming.exhibitions && typeof incoming.exhibitions === "object") {
+      // ضمان وجود خصائص المقاسات الجديدة لكل معرض
+      Object.keys(incoming.exhibitions).forEach(k => {
+        const ex = incoming.exhibitions[k];
+        if (ex.nameX === undefined) ex.nameX = 50;
+        if (ex.nameY === undefined) ex.nameY = 52;
+        if (ex.nameSize === undefined) ex.nameSize = 52;
+        if (ex.nameBoxWidth === undefined) ex.nameBoxWidth = 80;
+        if (ex.nameColor === undefined) ex.nameColor = "#ffffff";
+        if (ex.codeX === undefined) ex.codeX = 50;
+        if (ex.codeY === undefined) ex.codeY = 88;
+        if (ex.codeSize === undefined) ex.codeSize = 34;
+        if (ex.codeColor === undefined) ex.codeColor = "#f59e0b";
+      });
       appState.exhibitions = incoming.exhibitions;
     }
     if (incoming.invitations) {
-      // يمكن أن تكون مصفوفة أو كائن في فايربيز
       const invArr = Array.isArray(incoming.invitations)
         ? incoming.invitations.filter(Boolean)
         : Object.values(incoming.invitations).filter(Boolean);
@@ -1016,7 +1160,6 @@
         saveLocalState();
         renderAllUI();
       } else {
-        // إذا كانت قاعدة البيانات فارغة لأول مرة، نرفع الحالة الابتدائية
         await pushStateToCloud();
       }
       updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
@@ -1082,7 +1225,6 @@
     Object.values(appState.exhibitions).forEach(exh => {
       const btn = document.createElement("button");
       btn.className = "exh-pill" + (exh.id === activeExh.id ? " active" : "");
-      // في وضع المدير نعرض رقم التسلسل، وللسيلز نعرض اسم المعرض فقط بشكل نظيف
       btn.textContent = isAdminMode ? `${exh.name} (#${getCalculatedNextSeq(exh.id)})` : exh.name;
       btn.onclick = () => {
         appState.activeExhibitionId = exh.id;
@@ -1117,7 +1259,7 @@
     if (savedSalesCode && filtered.some(s => s.code === savedSalesCode)) {
       select.value = savedSalesCode;
     }
-    renderCanvasPreview();
+    renderAllCanvases();
   }
 
   function filterSalesDropdown() {
@@ -1129,7 +1271,7 @@
     if (code) {
       localStorage.setItem("BALMETER_SAVED_SALES_CODE", code);
     }
-    renderCanvasPreview();
+    renderAllCanvases();
   }
 
   function getCalculatedNextSeq(exhId) {
@@ -1142,7 +1284,7 @@
   }
 
   // =========================================================
-  // 5. رسم ومعاينة بطاقة الدعوة (Canvas Auto-Fit)
+  // 5. رسم ومعاينة بطاقة الدعوة (في الواجهة الرئيسية + استوديو المدير الجانبي)
   // =========================================================
   function loadActiveExhibitionTemplate() {
     const exh = getActiveExhibition();
@@ -1153,26 +1295,32 @@
       img.onload = () => {
         loadedTemplateImg = img;
         lastLoadedTemplateSrc = exh.templateDataUrl;
-        renderCanvasPreview();
+        renderAllCanvases();
       };
       img.src = exh.templateDataUrl;
     } else if (!exh.templateDataUrl) {
       loadedTemplateImg = null;
       lastLoadedTemplateSrc = "";
-      renderCanvasPreview();
+      renderAllCanvases();
     } else {
-      renderCanvasPreview();
+      renderAllCanvases();
     }
   }
 
-  function renderCanvasPreview(customTicket = null) {
-    const canvas = document.getElementById("invitationCanvas");
+  function renderAllCanvases(customTicket = null) {
+    drawSingleCanvas(document.getElementById("invitationCanvas"), customTicket, false);
+    if (isAdminMode) {
+      const showGuides = document.getElementById("showGuidesCheckbox")?.checked;
+      drawSingleCanvas(document.getElementById("adminStudioCanvas"), customTicket, showGuides);
+    }
+  }
+
+  function drawSingleCanvas(canvas, customTicket = null, drawGuides = false) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     const exh = getActiveExhibition();
     if (!exh) return;
 
-    // ضبط أبعاد الكانفاس على أبعاد الصورة المرفوعة أو جودة عالية افتراضية
     if (loadedTemplateImg) {
       canvas.width = loadedTemplateImg.naturalWidth || 1080;
       canvas.height = loadedTemplateImg.naturalHeight || 1350;
@@ -1186,7 +1334,6 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // إطار ذهبي أنيق عند عدم وجود قالب مرفوع بعد
       ctx.strokeStyle = "#f59e0b";
       ctx.lineWidth = 6;
       ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
@@ -1198,13 +1345,12 @@
 
       ctx.fillStyle = "#94a3b8";
       ctx.font = "600 30px 'Cairo', sans-serif";
-      ctx.fillText("دعوة حضور خاصة VIP", canvas.width / 2, 330);
+      ctx.fillText("ارفع صورة القالب من تبويب (القالب والمعارض)", canvas.width / 2, 330);
     }
 
-    // قراءة البيانات المراد رسمها
     const clientName = customTicket
       ? customTicket.clientName
-      : (document.getElementById("clientNameInput").value || "").trim() || "اسم العميل يظهر هنا";
+      : (document.getElementById("clientNameInput").value || "").trim() || "أ / أحمد محمود عبد الرحمن";
 
     const salesCode = customTicket
       ? customTicket.salesCode
@@ -1214,43 +1360,168 @@
       ? customTicket.seqNumber
       : (lastIssuedTicket ? lastIssuedTicket.seqNumber : getCalculatedNextSeq(exh.id));
 
-    // رسم اسم العميل مع تصغير الخط تلقائياً لو الاسم طويل (Auto-Fit)
-    const nameX = ((exh.nameX || 50) / 100) * canvas.width;
-    const nameY = ((exh.nameY || 52) / 100) * canvas.height;
-    const maxWidth = canvas.width * 0.82;
-    let fontSize = Math.round(((exh.nameSize || 52) / 1080) * canvas.width);
+    // إحداثيات ومقاس اسم العميل
+    const nameX = ((exh.nameX ?? 50) / 100) * canvas.width;
+    const nameY = ((exh.nameY ?? 52) / 100) * canvas.height;
+    const boxWidthPct = exh.nameBoxWidth ?? 80;
+    const maxWidth = (boxWidthPct / 100) * canvas.width;
+    let fontSize = Math.round(((exh.nameSize ?? 52) / 1080) * canvas.width);
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = exh.nameColor || "#ffffff";
 
     do {
       ctx.font = `800 ${fontSize}px 'Cairo', sans-serif`;
-      if (ctx.measureText(clientName).width <= maxWidth || fontSize <= 20) break;
+      if (ctx.measureText(clientName).width <= maxWidth || fontSize <= 18) break;
       fontSize -= 2;
-    } while (fontSize > 20);
+    } while (fontSize > 18);
 
+    // رسم الإطار الإرشادي للمقاس في استوديو المدير فقط
+    if (drawGuides) {
+      const boxH = fontSize * 1.45;
+      ctx.save();
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.85)";
+      ctx.fillStyle = "rgba(6, 182, 212, 0.12)";
+      ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
+      ctx.setLineDash([10, 6]);
+      ctx.fillRect(nameX - maxWidth / 2, nameY - boxH / 2, maxWidth, boxH);
+      ctx.strokeRect(nameX - maxWidth / 2, nameY - boxH / 2, maxWidth, boxH);
+      ctx.restore();
+    }
+
+    ctx.save();
+    ctx.fillStyle = exh.nameColor || "#ffffff";
     ctx.shadowColor = "rgba(0,0,0,0.65)";
     ctx.shadowBlur = 8;
     ctx.fillText(clientName, nameX, nameY);
+    ctx.restore();
 
-    // رسم ختم رقم الدعوة وكود السيلز
-    const codeY = ((exh.codeY || 88) / 100) * canvas.height;
-    const codeFontSize = Math.max(22, Math.round((34 / 1080) * canvas.width));
+    // إحداثيات ومقاس كود الدعوة والسيلز
+    const codeX = ((exh.codeX ?? 50) / 100) * canvas.width;
+    const codeY = ((exh.codeY ?? 88) / 100) * canvas.height;
+    const codeFontSize = Math.max(16, Math.round(((exh.codeSize ?? 34) / 1080) * canvas.width));
+    const codeText = `#${seqNum}  |  ${salesCode}`;
+
     ctx.font = `800 ${codeFontSize}px 'Cairo', sans-serif`;
-    ctx.fillStyle = "#f59e0b";
-    ctx.fillText(`#${seqNum}  |  ${salesCode}`, canvas.width / 2, codeY);
-    ctx.shadowBlur = 0;
+    const codeMetricsWidth = ctx.measureText(codeText).width + 40;
+    const codeBoxH = codeFontSize * 1.45;
+
+    if (drawGuides) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(245, 158, 11, 0.85)";
+      ctx.fillStyle = "rgba(245, 158, 11, 0.12)";
+      ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
+      ctx.setLineDash([8, 5]);
+      ctx.fillRect(codeX - codeMetricsWidth / 2, codeY - codeBoxH / 2, codeMetricsWidth, codeBoxH);
+      ctx.strokeRect(codeX - codeMetricsWidth / 2, codeY - codeBoxH / 2, codeMetricsWidth, codeBoxH);
+      ctx.restore();
+    }
+
+    ctx.save();
+    ctx.fillStyle = exh.codeColor || "#f59e0b";
+    ctx.shadowColor = "rgba(0,0,0,0.65)";
+    ctx.shadowBlur = 6;
+    ctx.fillText(codeText, codeX, codeY);
+    ctx.restore();
   }
 
   // =========================================================
-  // 6. إصدار الدعوة للعميل وتنزيلها (منع تكرار الأرقام 100%)
+  // 6. التعديل بالماوس والتاتش مباشرة على القالب (Interactive Drag)
+  // =========================================================
+  function setupStudioCanvasDragging() {
+    const canvas = document.getElementById("adminStudioCanvas");
+    if (!canvas) return;
+
+    function getPointerPct(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const xPct = Math.min(95, Math.max(5, Math.round(((clientX - rect.left) / rect.width) * 100)));
+      const yPct = Math.min(96, Math.max(5, Math.round(((clientY - rect.top) / rect.height) * 100)));
+      return { xPct, yPct };
+    }
+
+    function onStart(e) {
+      const exh = getActiveExhibition();
+      if (!exh) return;
+      const { xPct, yPct } = getPointerPct(e);
+
+      const distToName = Math.hypot(xPct - (exh.nameX ?? 50), yPct - (exh.nameY ?? 52));
+      const distToCode = Math.hypot(xPct - (exh.codeX ?? 50), yPct - (exh.codeY ?? 88));
+
+      if (distToName <= distToCode && distToName < 28) {
+        draggingTarget = "name";
+      } else if (distToCode < 28) {
+        draggingTarget = "code";
+      } else {
+        draggingTarget = "name";
+      }
+      onMove(e);
+    }
+
+    function onMove(e) {
+      if (!draggingTarget) return;
+      if (e.cancelable) e.preventDefault();
+      const exh = getActiveExhibition();
+      if (!exh) return;
+
+      const { xPct, yPct } = getPointerPct(e);
+      if (draggingTarget === "name") {
+        exh.nameX = xPct;
+        exh.nameY = yPct;
+      } else if (draggingTarget === "code") {
+        exh.codeX = xPct;
+        exh.codeY = yPct;
+      }
+
+      syncSlidersFromExhibition(exh);
+      renderAllCanvases();
+    }
+
+    function onEnd() {
+      if (draggingTarget) {
+        draggingTarget = null;
+        saveLocalState();
+      }
+    }
+
+    canvas.addEventListener("mousedown", onStart);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onEnd);
+
+    canvas.addEventListener("touchstart", onStart, { passive: false });
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", onEnd);
+  }
+
+  function syncSlidersFromExhibition(exh) {
+    if (!exh) return;
+    document.getElementById("nameYRange").value = exh.nameY ?? 52;
+    document.getElementById("nameYVal").textContent = (exh.nameY ?? 52) + "%";
+    document.getElementById("nameXRange").value = exh.nameX ?? 50;
+    document.getElementById("nameXVal").textContent = (exh.nameX ?? 50) + "%";
+    document.getElementById("nameSizeRange").value = exh.nameSize ?? 52;
+    document.getElementById("nameSizeVal").textContent = (exh.nameSize ?? 52) + "px";
+    document.getElementById("nameBoxWidthRange").value = exh.nameBoxWidth ?? 80;
+    document.getElementById("nameBoxWidthVal").textContent = (exh.nameBoxWidth ?? 80) + "%";
+    document.getElementById("nameColorPicker").value = exh.nameColor || "#ffffff";
+
+    document.getElementById("codeYRange").value = exh.codeY ?? 88;
+    document.getElementById("codeYVal").textContent = (exh.codeY ?? 88) + "%";
+    document.getElementById("codeXRange").value = exh.codeX ?? 50;
+    document.getElementById("codeXVal").textContent = (exh.codeX ?? 50) + "%";
+    document.getElementById("codeSizeRange").value = exh.codeSize ?? 34;
+    document.getElementById("codeSizeVal").textContent = (exh.codeSize ?? 34) + "px";
+    document.getElementById("codeColorPicker").value = exh.codeColor || "#f59e0b";
+  }
+
+  // =========================================================
+  // 7. إصدار الدعوة للعميل وتنزيلها
   // =========================================================
   async function issueAndDownloadInvitation() {
     const clientNameInput = document.getElementById("clientNameInput");
     const clientName = (clientNameInput.value || "").trim();
     const salesCode = document.getElementById("salesSelect").value;
-    const exh = getActiveExhibition();
 
     if (!clientName) {
       alert("من فضلك اكتب اسم العميل أولاً!");
@@ -1267,7 +1538,6 @@
     btn.textContent = "⏳ جاري الحجز والمزامنة مع السحابة...";
 
     try {
-      // سحب أحدث نسخة من السحابة أولاً لضمان عدم أخذ نفس الرقم من سيلز آخر في نفس اللحظة
       await syncFromCloud(false);
 
       const currentExh = getActiveExhibition();
@@ -1291,17 +1561,15 @@
 
       await pushStateToCloud();
 
-      // رسم الكارت بالبيانات المعتمدة وتحميله فوراً على الموبايل
-      renderCanvasPreview(newTicket);
+      // رسم الكارت بدون خطوط التحديد المساعدة وتحميله
+      drawSingleCanvas(document.getElementById("invitationCanvas"), newTicket, false);
       downloadCurrentCanvas(`${currentExh.name}_${clientName}_${assignedSeq}.png`);
 
-      // إظهار رسالة نجاح للسيلز
       const confirmBox = document.getElementById("ticketConfirmBox");
       confirmBox.style.display = "block";
       confirmBox.innerHTML = `✅ تم إصدار وحفظ الدعوة رقم <strong>#${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!`;
       document.getElementById("redownloadLastBtn").style.display = "inline-flex";
 
-      // تفريغ خانة اسم العميل استعداداً للعميل التالي
       clientNameInput.value = "";
       renderAllUI();
     } catch (e) {
@@ -1328,7 +1596,7 @@
   }
 
   // =========================================================
-  // 7. نظام وضع المدير (Admin Mode) والتبويبات
+  // 8. نظام وضع المدير (Admin Mode) والتبويبات
   // =========================================================
   function handleAdminButtonClick() {
     if (isAdminMode) {
@@ -1370,10 +1638,11 @@
     document.querySelectorAll(".admin-tab-btn").forEach(el => el.classList.remove("active"));
     document.getElementById(tabId).classList.add("active");
     if (btnEl) btnEl.classList.add("active");
+    renderAllCanvases();
   }
 
   // =========================================================
-  // 8. دوال لوحة المدير (إدارة ومتابعة السيلز + التقارير + القوالب)
+  // 9. دوال لوحة المدير (إدارة ومتابعة السيلز + التقارير + القوالب)
   // =========================================================
   function renderAdminDashboard() {
     const exh = getActiveExhibition();
@@ -1381,12 +1650,11 @@
 
     const exhInvs = appState.invitations.filter(i => i && i.exhibitionId === exh.id);
 
-    // 1. تحديث أرقام KPIs
     document.getElementById("kpiCurrentExhTotal").textContent = exhInvs.length;
     document.getElementById("kpiNextSeq").textContent = "#" + getCalculatedNextSeq(exh.id);
     document.getElementById("kpiSalesCount").textContent = appState.salesTeam.length;
+    document.getElementById("studioExhName").textContent = exh.name;
 
-    // 2. جدول متابعة أداء كل سيلز
     const perfTbody = document.getElementById("salesPerformanceTbody");
     perfTbody.innerHTML = "";
 
@@ -1422,7 +1690,6 @@
       perfTbody.appendChild(tr);
     });
 
-    // 3. تحديث قائمة فلتر السيلز في سجل العملاء
     const logFilter = document.getElementById("logSalesFilter");
     const currentFilterVal = logFilter.value || "ALL";
     logFilter.innerHTML = `<option value="ALL">كل السيلز (${exhInvs.length} دعوة)</option>`;
@@ -1437,21 +1704,12 @@
     document.getElementById("reportExhName").textContent = exh.name;
     renderClientLogsTable();
 
-    // 4. تعبئة إعدادات القالب للمعرض الحالي
     document.getElementById("adminNextSeqInput").value = getCalculatedNextSeq(exh.id);
-    document.getElementById("nameYRange").value = exh.nameY || 52;
-    document.getElementById("nameYVal").textContent = (exh.nameY || 52) + "%";
-    document.getElementById("nameXRange").value = exh.nameX || 50;
-    document.getElementById("nameXVal").textContent = (exh.nameX || 50) + "%";
-    document.getElementById("nameSizeRange").value = exh.nameSize || 52;
-    document.getElementById("nameSizeVal").textContent = (exh.nameSize || 52) + "px";
-    document.getElementById("nameColorPicker").value = exh.nameColor || "#ffffff";
-    document.getElementById("codeYRange").value = exh.codeY || 88;
-    document.getElementById("codeYVal").textContent = (exh.codeY || 88) + "%";
+    syncSlidersFromExhibition(exh);
 
-    // 5. تعبئة إعدادات السحابة والأمان
     document.getElementById("firebaseUrlInput").value = appState.firebaseUrl;
     document.getElementById("adminPinInput").value = appState.adminPin;
+    renderAllCanvases();
   }
 
   function getNextAvailableSalesCode() {
@@ -1521,7 +1779,7 @@
   }
 
   function filterLogsBySales(code) {
-    const tabBtn = document.querySelectorAll(".admin-tab-btn")[1];
+    const tabBtn = document.querySelectorAll(".admin-tab-btn")[2];
     switchAdminTab("tabReports", tabBtn);
     document.getElementById("logSalesFilter").value = code;
     renderClientLogsTable();
@@ -1573,7 +1831,7 @@
   function redownloadOldInvitation(invId) {
     const inv = appState.invitations.find(i => i && i.id === invId);
     if (!inv) return;
-    renderCanvasPreview(inv);
+    drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
     downloadCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
   }
 
@@ -1585,7 +1843,7 @@
   }
 
   // =========================================================
-  // 9. تقارير الواتساب والإكسيل (للمدير فقط)
+  // 10. تقارير الواتساب والإكسيل
   // =========================================================
   function copyWhatsAppReport() {
     const exh = getActiveExhibition();
@@ -1638,7 +1896,7 @@
   }
 
   // =========================================================
-  // 10. رفع صورة القالب وضبط الإحداثيات والمعارض
+  // 11. رفع صورة القالب وضبط المقاسات والإحداثيات والمعارض
   // =========================================================
   function handleTemplateUpload(event) {
     const file = event.target.files[0];
@@ -1648,7 +1906,6 @@
     reader.onload = function(e) {
       const img = new Image();
       img.onload = async function() {
-        // ضغط ذكي للصورة لكي تفتح فوراً عند الـ 30 سيلز عبر فايربيز بدون بطء
         const offCanvas = document.createElement("canvas");
         const maxDim = 1280;
         let w = img.naturalWidth;
@@ -1667,13 +1924,13 @@
         const offCtx = offCanvas.getContext("2d");
         offCtx.drawImage(img, 0, 0, w, h);
 
-        const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.85);
+        const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.86);
         const exh = getActiveExhibition();
         exh.templateDataUrl = compressedDataUrl;
 
         await pushStateToCloud();
         loadActiveExhibitionTemplate();
-        alert("✅ تم رفع وحفظ قالب الدعوة في السحابة! سيظهر الآن لكل السيلز تلقائياً.");
+        alert("✅ تم رفع القالب بنجاح! يظهر الآن أمامك في الجنب ويمكنك سحب الاسم والكود بالماوس عليه مباشرة.");
       };
       img.src = e.target.result;
     };
@@ -1687,15 +1944,16 @@
     exh.nameY = Number(document.getElementById("nameYRange").value);
     exh.nameX = Number(document.getElementById("nameXRange").value);
     exh.nameSize = Number(document.getElementById("nameSizeRange").value);
+    exh.nameBoxWidth = Number(document.getElementById("nameBoxWidthRange").value);
     exh.nameColor = document.getElementById("nameColorPicker").value;
+
     exh.codeY = Number(document.getElementById("codeYRange").value);
+    exh.codeX = Number(document.getElementById("codeXRange").value);
+    exh.codeSize = Number(document.getElementById("codeSizeRange").value);
+    exh.codeColor = document.getElementById("codeColorPicker").value;
 
-    document.getElementById("nameYVal").textContent = exh.nameY + "%";
-    document.getElementById("nameXVal").textContent = exh.nameX + "%";
-    document.getElementById("nameSizeVal").textContent = exh.nameSize + "px";
-    document.getElementById("codeYVal").textContent = exh.codeY + "%";
-
-    renderCanvasPreview();
+    syncSlidersFromExhibition(exh);
+    renderAllCanvases();
   }
 
   async function saveExhibitionSettings() {
@@ -1709,7 +1967,7 @@
 
     await pushStateToCloud();
     renderAllUI();
-    alert("✅ تم حفظ إعدادات القالب والرقم التسلسلي في السحابة!");
+    alert("✅ تم حفظ جميع مقاسات وإعدادات القالب في السحابة بنجاح!");
   }
 
   async function addNewExhibition() {
@@ -1729,8 +1987,12 @@
       nameX: 50,
       nameY: 52,
       nameSize: 52,
+      nameBoxWidth: 80,
       nameColor: "#ffffff",
-      codeY: 88
+      codeX: 50,
+      codeY: 88,
+      codeSize: 34,
+      codeColor: "#f59e0b"
     };
     appState.activeExhibitionId = id;
     input.value = "";
