@@ -133,8 +133,9 @@
     }
 
     .btn-success {
-      background: var(--success);
+      background: linear-gradient(135deg, #10b981, #059669);
       color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
     }
 
     .btn-danger {
@@ -330,16 +331,23 @@
     }
 
     .ticket-status-box {
-      margin-top: 12px;
-      padding: 10px 14px;
-      border-radius: 10px;
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 12px;
       background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      border: 1px solid rgba(16, 185, 129, 0.35);
       color: #34d399;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 700;
       text-align: center;
       display: none;
+    }
+
+    .share-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
     }
 
     /* Admin Section */
@@ -668,16 +676,30 @@
       </div>
 
       <button id="issueBtn" class="btn btn-primary btn-block" onclick="issueAndDownloadInvitation()">
-        ✨ إصدار وتحميل بطاقة الدعوة الآن
+        ✨ إصدار ومشاركة بطاقة الدعوة الآن
       </button>
 
-      <div id="ticketConfirmBox" class="ticket-status-box"></div>
+      <!-- صندوق التأكيد وأزرار المشاركة الفورية للآيفون والأندرويد -->
+      <div id="ticketConfirmBox" class="ticket-status-box">
+        <div id="ticketConfirmText"></div>
+        <div class="share-actions-row">
+          <button class="btn btn-success" style="flex: 2; padding: 12px;" onclick="shareCurrentCanvas()">
+            📲 مشاركة سريعة (واتساب / حفظ للآيفون)
+          </button>
+          <button class="btn btn-outline" style="flex: 1; padding: 12px;" onclick="downloadCurrentCanvas()">
+            ⬇️ تنزيل
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="card">
       <div class="card-header">
         <div class="card-title">🖼️ معاينة الدعوة مباشرة</div>
-        <button id="redownloadLastBtn" class="btn btn-success" style="display:none; padding:6px 12px; font-size:0.8rem;" onclick="downloadCurrentCanvas()">⬇️ تنزيل الصورة</button>
+        <div id="previewTopActions" style="display:none; gap:6px;">
+          <button class="btn btn-success" style="padding:6px 12px; font-size:0.8rem;" onclick="shareCurrentCanvas()">📲 شير واتساب / آيفون</button>
+          <button class="btn btn-outline" style="padding:6px 10px; font-size:0.8rem;" onclick="downloadCurrentCanvas()">⬇️ تنزيل</button>
+        </div>
       </div>
       <div class="preview-container">
         <canvas id="invitationCanvas" width="1080" height="1350"></canvas>
@@ -691,14 +713,14 @@
     <div class="admin-banner">
       <div>
         <strong style="color: var(--gold); font-size: 1.05rem;">👑 لوحة تحكم المدير</strong>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">متابعة السيلز، حماية منع تكرار أرقام التليفونات، والتقارير.</p>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">متابعة السيلز، التقارير الذكية، واستوديو القوالب.</p>
       </div>
       <button class="btn btn-danger" onclick="logoutAdmin()">إغلاق وضع المدير ✖</button>
     </div>
 
     <div class="admin-tabs">
       <button class="admin-tab-btn active" onclick="switchAdminTab('tabSales', this)">👥 إدارة ومتابعة السيلز</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tabTemplate', this)">🎨 القالب والمعارض (استوديو التعديل)</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabTemplate', this)">🎨 القالب والمعارض</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('tabReports', this)">📋 سجل العملاء والتليفونات</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('tabCloud', this)">⚙️ السحابة والأمان</button>
     </div>
@@ -876,7 +898,8 @@
   const DEFAULT_FIREBASE_URL = "https://balmeter-vip-default-rtdb.firebaseio.com";
   const DEFAULT_ADMIN_PIN = "mo,2242006";
   const BACKUP_ADMIN_PIN = "1234";
-  const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V6";
+  const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V7";
+  const LEGACY_KEYS = ["BALMETER_VIP_UNIFIED_STATE_V6", "BALMETER_VIP_UNIFIED_STATE_V5"];
 
   const INITIAL_SALES_TEAM = [
     { code: "S11", name: "محمد" },
@@ -940,7 +963,15 @@
 
   function loadLocalState() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      let raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        for (const k of LEGACY_KEYS) {
+          if (localStorage.getItem(k)) {
+            raw = localStorage.getItem(k);
+            break;
+          }
+        }
+      }
       if (raw) {
         const parsed = JSON.parse(raw);
         mergeState(parsed);
@@ -1086,6 +1117,7 @@
         appState.activeExhibitionId = exh.id;
         lastIssuedTicket = null;
         document.getElementById("ticketConfirmBox").style.display = "none";
+        document.getElementById("previewTopActions").style.display = "none";
         saveLocalState();
         renderAllUI();
       };
@@ -1203,7 +1235,7 @@
 
     const clientName = customTicket
       ? customTicket.clientName
-      : (document.getElementById("clientNameInput").value || "").trim() || "أ / أحمد محمود عبد الرحمن";
+      : (document.getElementById("clientNameInput").value || "").trim() || (lastIssuedTicket ? lastIssuedTicket.clientName : "أ / أحمد محمود عبد الرحمن");
 
     const salesCode = customTicket
       ? customTicket.salesCode
@@ -1362,6 +1394,69 @@
     document.getElementById("codeColorPicker").value = exh.codeColor || "#f59e0b";
   }
 
+  // تحويل الكانفاس إلى ملف صورة جاهز للمشاركة الفورية على الآيفون والأندرويد
+  function dataURLtoFile(dataurl, filename) {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
+
+  async function shareCurrentCanvas(customFilename) {
+    const canvas = document.getElementById("invitationCanvas");
+    const cleanClient = lastIssuedTicket ? lastIssuedTicket.clientName : "VIP";
+    const seq = lastIssuedTicket ? lastIssuedTicket.seqNumber : "131";
+    const fileName = customFilename || `VIP_${seq}_${cleanClient}.png`;
+
+    try {
+      const dataUrl = canvas.toDataURL("image/png");
+      const file = dataURLtoFile(dataUrl, fileName);
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `دعوة VIP - ${cleanClient}`,
+          text: `دعوة حضور خاصة باسم: ${cleanClient}`
+        });
+        return true;
+      } else if (navigator.share) {
+        await navigator.share({
+          files: [file],
+          title: `دعوة VIP - ${cleanClient}`
+        });
+        return true;
+      } else {
+        downloadCurrentCanvas(fileName);
+        return false;
+      }
+    } catch (err) {
+      // إذا ألغى المستخدم قائمة المشاركة لا نقوم بتحميل مكرر، أما لو المتصفح لا يدعم المشاركة نحملها مباشرة
+      if (err && err.name !== "AbortError") {
+        downloadCurrentCanvas(fileName);
+      }
+      return false;
+    }
+  }
+
+  function downloadCurrentCanvas(filename) {
+    const canvas = document.getElementById("invitationCanvas");
+    const defaultName = lastIssuedTicket
+      ? `VIP_${lastIssuedTicket.seqNumber}_${lastIssuedTicket.clientName}.png`
+      : `Balmeter_VIP_Invitation.png`;
+
+    const link = document.createElement("a");
+    link.download = filename || defaultName;
+    link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   async function issueAndDownloadInvitation() {
     const clientNameInput = document.getElementById("clientNameInput");
     const clientPhoneInput = document.getElementById("clientPhoneInput");
@@ -1393,7 +1488,7 @@
 
       const currentExh = getActiveExhibition();
 
-      // التحقق من عدم تكرار رقم التليفون فقط (الأسماء يمكن أن تتكرر)
+      // التحقق من تكرار رقم التليفون فقط (الأسماء تكرر عادي)
       const isDuplicate = appState.invitations.some(inv => 
         inv && inv.exhibitionId === currentExh.id && inv.clientPhone === clientPhone
       );
@@ -1401,7 +1496,7 @@
       if (isDuplicate) {
         alert(`❌ تنبيه: رقم التليفون (${clientPhone}) مسجل مسبقاً في هذا المعرض! لا يمكن تكراره.`);
         btn.disabled = false;
-        btn.textContent = "✨ إصدار وتحميل بطاقة الدعوة الآن";
+        btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
         return;
       }
 
@@ -1426,38 +1521,28 @@
 
       await pushStateToCloud();
 
-      drawSingleCanvas(document.getElementById("invitationCanvas"), newTicket, false);
-      downloadCurrentCanvas(`${currentExh.name}_${clientName}_${assignedSeq}.png`);
-
-      const confirmBox = document.getElementById("ticketConfirmBox");
-      confirmBox.style.display = "block";
-      confirmBox.innerHTML = `✅ تم إصدار وحفظ الدعوة رقم <strong>#${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!`;
-      document.getElementById("redownloadLastBtn").style.display = "inline-flex";
-
       clientNameInput.value = "";
       clientPhoneInput.value = "";
+
+      drawSingleCanvas(document.getElementById("invitationCanvas"), newTicket, false);
+
+      const confirmBox = document.getElementById("ticketConfirmBox");
+      const confirmText = document.getElementById("ticketConfirmText");
+      confirmBox.style.display = "block";
+      confirmText.innerHTML = `✅ تم إصدار الدعوة رقم <strong>#${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
+      document.getElementById("previewTopActions").style.display = "flex";
+
       renderAllUI();
+
+      // فتح قائمة المشاركة تلقائياً إن أمكن، أو استخدام الزر المباشر للآيفون
+      await shareCurrentCanvas(`${currentExh.name}_${clientName}_${assignedSeq}.png`);
     } catch (e) {
       alert("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
       console.error(e);
     } finally {
       btn.disabled = false;
-      btn.textContent = "✨ إصدار وتحميل بطاقة الدعوة الآن";
+      btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
     }
-  }
-
-  function downloadCurrentCanvas(filename) {
-    const canvas = document.getElementById("invitationCanvas");
-    const defaultName = lastIssuedTicket
-      ? `VIP_${lastIssuedTicket.seqNumber}_${lastIssuedTicket.clientName}.png`
-      : `Balmeter_VIP_Invitation.png`;
-
-    const link = document.createElement("a");
-    link.download = filename || defaultName;
-    link.href = canvas.toDataURL("image/png");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   }
 
   function handleAdminButtonClick() {
@@ -1644,16 +1729,14 @@
     renderClientLogsTable();
   }
 
-  function renderClientLogsTable() {
+  function getFilteredReportList() {
     const exh = getActiveExhibition();
-    if (!exh) return;
+    if (!exh) return [];
 
     const search = (document.getElementById("logSearchInput").value || "").trim().toLowerCase();
     const salesFilter = document.getElementById("logSalesFilter").value || "ALL";
-    const tbody = document.getElementById("clientLogsTbody");
-    tbody.innerHTML = "";
 
-    const list = appState.invitations
+    return appState.invitations
       .filter(i => i && i.exhibitionId === exh.id)
       .filter(i => salesFilter === "ALL" || i.salesCode === salesFilter)
       .filter(i =>
@@ -1664,9 +1747,16 @@
       )
       .slice()
       .reverse();
+  }
+
+  function renderClientLogsTable() {
+    const tbody = document.getElementById("clientLogsTbody");
+    tbody.innerHTML = "";
+
+    const list = getFilteredReportList();
 
     if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث في هذا المعرض.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث.</td></tr>`;
       return;
     }
 
@@ -1680,7 +1770,8 @@
         <td style="font-size:0.8rem; color:var(--text-muted);">${inv.createdAt || "-"}</td>
         <td>
           <div style="display:flex; gap:6px;">
-            <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="redownloadOldInvitation('${inv.id}')">⬇️ البطاقة</button>
+            <button class="btn btn-success" style="padding:4px 8px; font-size:0.75rem;" onclick="shareOldInvitation('${inv.id}')">📲 مشاركة</button>
+            <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="redownloadOldInvitation('${inv.id}')">⬇️ تنزيل</button>
             <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteInvitationRecord('${inv.id}')">حذف</button>
           </div>
         </td>
@@ -1689,9 +1780,18 @@
     });
   }
 
+  function shareOldInvitation(invId) {
+    const inv = appState.invitations.find(i => i && i.id === invId);
+    if (!inv) return;
+    lastIssuedTicket = inv;
+    drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
+    shareCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
+  }
+
   function redownloadOldInvitation(invId) {
     const inv = appState.invitations.find(i => i && i.id === invId);
     if (!inv) return;
+    lastIssuedTicket = inv;
     drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
     downloadCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
   }
@@ -1705,41 +1805,43 @@
 
   function copyWhatsAppReport() {
     const exh = getActiveExhibition();
-    const exhInvs = appState.invitations.filter(i => i && i.exhibitionId === exh.id);
+    const list = getFilteredReportList();
+    const salesFilter = document.getElementById("logSalesFilter").value;
+    const salesObj = appState.salesTeam.find(s => s.code === salesFilter);
+    const titleName = salesObj ? `للسيلز: ${salesObj.name} (${salesObj.code})` : "لكل السيلز (المعرض كامل)";
 
-    let text = `📊 *تقرير دعوات ${exh.name} - B.almeter VIP*\n`;
-    text += `إجمالي الدعوات الصادرة: *${exhInvs.length}* دعوة\n`;
-    text += `--------------------------\n`;
-    text += `👥 *إنجاز فريق السيلز:*\n`;
+    if (list.length === 0) {
+      alert("لا توجد بيانات لنسخها!");
+      return;
+    }
 
-    appState.salesTeam.forEach(s => {
-      const count = exhInvs.filter(i => i.salesCode === s.code).length;
-      if (count > 0) {
-        text += `- ${s.name} (${s.code}): *${count}* عميل\n`;
-      }
-    });
-
+    let text = `📊 *تقرير دعوات ${exh.name} - ${titleName}*\n`;
+    text += `إجمالي الدعوات: *${list.length}* عميل\n`;
     text += `--------------------------\n`;
     text += `🎫 *قائمة العملاء وأرقامهم:*\n`;
-    exhInvs.forEach(i => {
+    list.forEach(i => {
       text += `#${i.seqNumber} | ${i.clientName} (${i.clientPhone}) - ${i.salesName} (${i.salesCode})\n`;
     });
 
     navigator.clipboard.writeText(text).then(() => {
-      alert("✅ تم نسخ تقرير الواتساب الشامل مع أرقام التليفونات!");
+      alert("✅ تم نسخ التقرير المخصص بنجاح!");
     });
   }
 
   function exportExcelCSV() {
     const exh = getActiveExhibition();
-    const exhInvs = appState.invitations.filter(i => i && i.exhibitionId === exh.id);
-    if (exhInvs.length === 0) {
-      alert("لا توجد بيانات لتصديرها في هذا المعرض حتى الآن.");
+    const list = getFilteredReportList();
+    const salesFilter = document.getElementById("logSalesFilter").value;
+    const salesObj = appState.salesTeam.find(s => s.code === salesFilter);
+    const fileSuffix = salesObj ? `_السيلز_${salesObj.name}` : "_كل_السيلز";
+
+    if (list.length === 0) {
+      alert("لا توجد بيانات لتصديرها.");
       return;
     }
 
     let csv = "\uFEFFرقم الدعوة,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,المعرض,التاريخ والوقت\n";
-    exhInvs.forEach(i => {
+    list.forEach(i => {
       csv += `"${i.seqNumber}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${i.salesCode}","${i.exhibitionName}","${i.createdAt || ""}"\n`;
     });
 
@@ -1747,7 +1849,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `تقرير_${exh.name}_مع_أرقام_العملاء.csv`;
+    a.download = `تقرير_${exh.name}${fileSuffix}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
