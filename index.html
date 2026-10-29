@@ -808,7 +808,14 @@
 
       <div class="admin-two-col">
         <div class="card">
-          <div class="card-header"><div class="card-title">📊 متابعة إنجاز كل سيلز</div></div>
+          <div class="card-header">
+            <div class="card-title">📊 متابعة إنجاز كل سيلز</div>
+            <!-- زرارين لاختيار طريقة الترتيب -->
+            <div style="display:flex; gap:6px;">
+              <button id="sortCodeBtn" class="btn btn-gold" style="padding:4px 10px; font-size:0.75rem;" onclick="setSalesSortMode('code')">ترتيب بالكود</button>
+              <button id="sortCountBtn" class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="setSalesSortMode('count')">ترتيب بالإنجاز</button>
+            </div>
+          </div>
           <div class="table-responsive">
             <table>
               <thead>
@@ -1022,6 +1029,7 @@
   let lastIssuedTicket = null;
   let isSyncing = false;
   let draggingTarget = null;
+  let salesSortMode = "code"; // "code" (الافتراضي) أو "count" (حسب عدد الدعوات)
 
   window.addEventListener("DOMContentLoaded", async () => {
     loadLocalState();
@@ -1033,6 +1041,16 @@
       if (!isSyncing && !draggingTarget) syncFromCloud(false);
     }, 6000);
   });
+
+  // دالة ذكية لاستخراج الرقم من الكود وترتيب السيلز تصاعدياً رقمياً (1, 2, 3 ... 11, 12)
+  function sortSalesTeamByCode(teamArray) {
+    return [...teamArray].sort((a, b) => {
+      const numA = parseInt(String(a.code).replace(/\D/g, ""), 10) || 0;
+      const numB = parseInt(String(b.code).replace(/\D/g, ""), 10) || 0;
+      if (numA !== numB) return numA - numB;
+      return String(a.code).localeCompare(String(b.code), 'ar');
+    });
+  }
 
   // تحويل أي أرقام عربية أو هندية إلى أرقام إنجليزية (0-9)
   function toEnglishDigits(str) {
@@ -1046,31 +1064,26 @@
   function handlePhoneInput(inputEl) {
     let val = toEnglishDigits(inputEl.value);
 
-    // السماح فقط بالأرقام وعلامة + في أول الخانة فقط
     const hasPlus = val.trim().startsWith("+");
     let digits = val.replace(/\D/g, "");
     val = (hasPlus ? "+" : "") + digits;
 
-    // معالجة وتقييد عدد الأرقام حسب طريقة الكتابة (محلي 11 رقم أو بكود الدولة)
     if (val.startsWith("+20")) {
-      // لو كتب +20010 بنصلحها تلقائياً إلى +2010
       if (val.startsWith("+200")) val = "+20" + val.slice(4);
-      val = val.slice(0, 13); // +20 + 10 أرقام = 13 حرف
+      val = val.slice(0, 13);
     } else if (val.startsWith("0020")) {
       if (val.startsWith("00200")) val = "0020" + val.slice(5);
-      val = val.slice(0, 14); // 0020 + 10 أرقام = 14 رقم
+      val = val.slice(0, 14);
     } else if (val.startsWith("201")) {
-      val = val.slice(0, 12); // 20 + 10 أرقام = 12 رقم (عند النسخ من واتساب مثلاً)
+      val = val.slice(0, 12);
     } else if (val.startsWith("+")) {
-      val = val.slice(0, 15); // كود دولة دولي آخر
+      val = val.slice(0, 15);
     } else if (val.startsWith("00")) {
-      val = val.slice(0, 16); // كود دولة دولي يبدأ بـ 00
+      val = val.slice(0, 16);
     } else {
-      // لو بدأ بـ 1 مباشرة (مثل 1012345678) نضيف صفر في البداية تلقائياً
       if (/^1[0125]/.test(val)) {
         val = "0" + val;
       }
-      // الرقم المصري المحلي أقصى حاجة 11 رقم فقط
       val = val.slice(0, 11);
     }
 
@@ -1079,7 +1092,6 @@
     onClientInputChange();
   }
 
-  // توحيد صيغة الرقم المصري (سواء كُتب بـ +20 أو 0020 أو 20 أو 01) ليكون 11 رقم دائماً لمنع التحايل في التكرار
   function normalizePhoneNumber(raw) {
     let v = toEnglishDigits(raw || "").trim();
     const hasPlus = v.startsWith("+");
@@ -1101,11 +1113,9 @@
     return v;
   }
 
-  // التحقق من صحة الرقم قبل الإصدار
   function validatePhoneNumber(raw) {
     const normalized = normalizePhoneNumber(raw);
 
-    // 1. إذا كان رقم مصري: يجب أن يكون 11 رقم بالضبط ويبدأ بـ 010 أو 011 أو 012 أو 015
     if (normalized.startsWith("01") || raw.startsWith("+20") || raw.startsWith("0020") || raw.startsWith("20")) {
       if (/^01[0125]\d{8}$/.test(normalized)) {
         return { valid: true, normalized };
@@ -1116,7 +1126,6 @@
       };
     }
 
-    // 2. إذا كان رقم دولي خارج مصر (يبدأ بـ + أو 00)
     if ((normalized.startsWith("+") || normalized.startsWith("00")) && normalized.replace(/\D/g, "").length >= 10) {
       return { valid: true, normalized };
     }
@@ -1328,12 +1337,14 @@
     document.getElementById("activeExhTitle").textContent = activeExh ? activeExh.name : "";
   }
 
+  // هنا يتم ترتيب السيلز تصاعدياً حسب الكود في القائمة المنسدلة
   function renderSalesSelectDropdown() {
     const select = document.getElementById("salesSelect");
     const searchVal = (document.getElementById("salesSearchInput").value || "").trim().toLowerCase();
     const savedSalesCode = localStorage.getItem("BALMETER_SAVED_SALES_CODE") || "";
 
-    const filtered = appState.salesTeam.filter(s =>
+    const sortedTeam = sortSalesTeamByCode(appState.salesTeam);
+    const filtered = sortedTeam.filter(s =>
       s.name.toLowerCase().includes(searchVal) || s.code.toLowerCase().includes(searchVal)
     );
 
@@ -1371,7 +1382,6 @@
     );
   }
 
-  // عند كتابة اسم عميل جديد أو رقم تليفون، نلغي وضع البطاقة السابقة لمنع استغلال رقمها في اسكرين شوت
   function onClientInputChange() {
     const typedName = (document.getElementById("clientNameInput").value || "").trim();
     const typedPhone = (document.getElementById("clientPhoneInput").value || "").trim();
@@ -1470,7 +1480,6 @@
     const typedName = (document.getElementById("clientNameInput")?.value || "").trim();
     const typedPhone = (document.getElementById("clientPhoneInput")?.value || "").trim();
 
-    // البطاقة تعتبر رسمية ومعتمدة فقط إذا تم إصدارها فعلياً ولم يبدأ السيلز في كتابة بيانات عميل جديد
     const activeIssuedTicket = customTicket || (!typedName && !typedPhone ? lastIssuedTicket : null);
     const isUnissuedPreview = !isStudioCanvas && !activeIssuedTicket;
 
@@ -1522,7 +1531,6 @@
     const codeY = ((exh.codeY ?? 90.5) / 100) * canvas.height;
     const codeFontSize = Math.max(16, Math.round(((exh.codeSize ?? 32) / 1080) * canvas.width));
 
-    // إخفاء الرقم التسلسلي تماماً في شاشة السيلز قبل الإصدار الفعلي لمنع أخذ اسكرين شوت برقم غير محجوز
     let codeText = "";
     if (isStudioCanvas) {
       codeText = `#${getCalculatedNextSeq(exh.id)}  |  ${salesCode}`;
@@ -1556,7 +1564,6 @@
     ctx.fillText(codeText, codeX, codeY);
     ctx.restore();
 
-    // ختم حماية على المعاينة قبل الإصدار يمنع السيلز من أخذ اسكرين شوت وإرسالها للعميل بدون تسجيل رسمي
     if (isUnissuedPreview) {
       ctx.save();
       ctx.translate(canvas.width / 2, nameY);
@@ -1671,7 +1678,6 @@
     document.getElementById("codeColorPicker").value = exh.codeColor || "#f59e0b";
   }
 
-  // تحويل الكانفاس إلى ملف صورة جاهز للمشاركة الفورية على الآيفون والأندرويد
   function dataURLtoFile(dataurl, filename) {
     const arr = dataurl.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -1751,7 +1757,6 @@
       return;
     }
 
-    // فحص صحة الرقم (11 رقم مصري بالإنجليزي أو كود الدولة)
     const phoneCheck = validatePhoneNumber(rawPhone);
     if (!phoneCheck.valid) {
       alert(phoneCheck.message);
@@ -1775,7 +1780,6 @@
 
       const currentExh = getActiveExhibition();
 
-      // التحقق من تكرار رقم التليفون بعد توحيد صيغته
       const isDuplicate = isPhoneDuplicateInExhibition(currentExh.id, clientPhone);
 
       if (isDuplicate) {
@@ -1823,7 +1827,6 @@
 
       renderAllUI();
 
-      // فتح قائمة المشاركة تلقائياً إن أمكن، أو استخدام الزر المباشر للآيفون
       await shareCurrentCanvas(`${currentExh.name}_${clientName}_${assignedSeq}.png`);
     } catch (e) {
       alert("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
@@ -1877,6 +1880,20 @@
     renderAllCanvases();
   }
 
+  function setSalesSortMode(mode) {
+    salesSortMode = mode;
+    const btnCode = document.getElementById("sortCodeBtn");
+    const btnCount = document.getElementById("sortCountBtn");
+    if (mode === 'code') {
+      btnCode.className = "btn btn-gold";
+      btnCount.className = "btn btn-outline";
+    } else {
+      btnCode.className = "btn btn-outline";
+      btnCount.className = "btn btn-gold";
+    }
+    renderAdminDashboard();
+  }
+
   function renderAdminDashboard() {
     const exh = getActiveExhibition();
     if (!exh) return;
@@ -1902,7 +1919,14 @@
         topSalesName = `${s.name} (${currentCount})`;
       }
       return { ...s, currentCount, allCount };
-    }).sort((a, b) => b.currentCount - a.currentCount);
+    });
+
+    // ترتيب السيلز في لوحة المدير بناءً على الأوبشن المختار (حسب الكود أو حسب عدد الدعوات)
+    if (salesSortMode === 'count') {
+      salesStats.sort((a, b) => b.currentCount - a.currentCount || (parseInt(String(a.code).replace(/\D/g,""),10)||0) - (parseInt(String(b.code).replace(/\D/g,""),10)||0));
+    } else {
+      salesStats.sort((a, b) => (parseInt(String(a.code).replace(/\D/g,""),10)||0) - (parseInt(String(b.code).replace(/\D/g,""),10)||0));
+    }
 
     document.getElementById("kpiTopSales").textContent = topSalesName;
 
@@ -1926,7 +1950,10 @@
     const logFilter = document.getElementById("logSalesFilter");
     const currentFilterVal = logFilter.value || "ALL";
     logFilter.innerHTML = `<option value="ALL">كل السيلز (${exhInvs.length} دعوة)</option>`;
-    appState.salesTeam.forEach(s => {
+    
+    // ترتيب السيلز في قائمة الفلتر أيضاً تصاعدياً حسب الكود
+    const sortedForFilter = sortSalesTeamByCode(appState.salesTeam);
+    sortedForFilter.forEach(s => {
       const opt = document.createElement("option");
       opt.value = s.code;
       opt.textContent = `${s.name} (${s.code})`;
