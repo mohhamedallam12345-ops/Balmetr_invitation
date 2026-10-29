@@ -282,6 +282,16 @@
       box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
     }
 
+    .phone-hint {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+      font-weight: 700;
+    }
+
     textarea.form-control {
       min-height: 95px;
       resize: vertical;
@@ -716,8 +726,22 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">3. رقم تليفون العميل <span style="color:var(--danger)">* (إجباري لمنع التكرار)</span>:</label>
-        <input type="tel" id="clientPhoneInput" class="form-control" placeholder="مثال: 01012345678" dir="ltr" style="text-align: right;" oninput="onClientInputChange()" />
+        <label class="form-label">3. رقم تليفون العميل <span style="color:var(--danger)">* (11 رقم إنجليزي أو بكود الدولة)</span>:</label>
+        <input
+          type="tel"
+          id="clientPhoneInput"
+          class="form-control"
+          placeholder="01012345678 أو +201012345678"
+          dir="ltr"
+          inputmode="tel"
+          autocomplete="off"
+          style="text-align: right; font-family: monospace, 'Cairo', sans-serif; font-size: 17px; letter-spacing: 1px;"
+          oninput="handlePhoneInput(this)"
+        />
+        <div class="phone-hint">
+          <span id="phoneStatusHint">يقبل 11 رقم مصري (أو كود الدولة +20)</span>
+          <span id="phoneCounterBadge" dir="ltr" style="color: var(--primary);">0 / 11</span>
+        </div>
       </div>
 
       <div id="duplicateWarningBox" class="duplicate-warning-box">
@@ -1010,6 +1034,129 @@
     }, 6000);
   });
 
+  // تحويل أي أرقام عربية أو هندية إلى أرقام إنجليزية (0-9)
+  function toEnglishDigits(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+      .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+  }
+
+  // تنظيف وتحديد طول رقم التليفون أثناء الكتابة (11 رقم للمصري أو السماح بكود الدولة)
+  function handlePhoneInput(inputEl) {
+    let val = toEnglishDigits(inputEl.value);
+
+    // السماح فقط بالأرقام وعلامة + في أول الخانة فقط
+    const hasPlus = val.trim().startsWith("+");
+    let digits = val.replace(/\D/g, "");
+    val = (hasPlus ? "+" : "") + digits;
+
+    // معالجة وتقييد عدد الأرقام حسب طريقة الكتابة (محلي 11 رقم أو بكود الدولة)
+    if (val.startsWith("+20")) {
+      // لو كتب +20010 بنصلحها تلقائياً إلى +2010
+      if (val.startsWith("+200")) val = "+20" + val.slice(4);
+      val = val.slice(0, 13); // +20 + 10 أرقام = 13 حرف
+    } else if (val.startsWith("0020")) {
+      if (val.startsWith("00200")) val = "0020" + val.slice(5);
+      val = val.slice(0, 14); // 0020 + 10 أرقام = 14 رقم
+    } else if (val.startsWith("201")) {
+      val = val.slice(0, 12); // 20 + 10 أرقام = 12 رقم (عند النسخ من واتساب مثلاً)
+    } else if (val.startsWith("+")) {
+      val = val.slice(0, 15); // كود دولة دولي آخر
+    } else if (val.startsWith("00")) {
+      val = val.slice(0, 16); // كود دولة دولي يبدأ بـ 00
+    } else {
+      // لو بدأ بـ 1 مباشرة (مثل 1012345678) نضيف صفر في البداية تلقائياً
+      if (/^1[0125]/.test(val)) {
+        val = "0" + val;
+      }
+      // الرقم المصري المحلي أقصى حاجة 11 رقم فقط
+      val = val.slice(0, 11);
+    }
+
+    inputEl.value = val;
+    updatePhoneHelperUI(val);
+    onClientInputChange();
+  }
+
+  // توحيد صيغة الرقم المصري (سواء كُتب بـ +20 أو 0020 أو 20 أو 01) ليكون 11 رقم دائماً لمنع التحايل في التكرار
+  function normalizePhoneNumber(raw) {
+    let v = toEnglishDigits(raw || "").trim();
+    const hasPlus = v.startsWith("+");
+    const digits = v.replace(/\D/g, "");
+    v = (hasPlus ? "+" : "") + digits;
+
+    if (/^\+200?1[0125]\d{8}$/.test(v)) {
+      return "0" + v.replace(/^\+200?/, "");
+    }
+    if (/^00200?1[0125]\d{8}$/.test(v)) {
+      return "0" + v.replace(/^00200?/, "");
+    }
+    if (/^200?1[0125]\d{8}$/.test(v)) {
+      return "0" + v.replace(/^200?/, "");
+    }
+    if (/^1[0125]\d{8}$/.test(v)) {
+      return "0" + v;
+    }
+    return v;
+  }
+
+  // التحقق من صحة الرقم قبل الإصدار
+  function validatePhoneNumber(raw) {
+    const normalized = normalizePhoneNumber(raw);
+
+    // 1. إذا كان رقم مصري: يجب أن يكون 11 رقم بالضبط ويبدأ بـ 010 أو 011 أو 012 أو 015
+    if (normalized.startsWith("01") || raw.startsWith("+20") || raw.startsWith("0020") || raw.startsWith("20")) {
+      if (/^01[0125]\d{8}$/.test(normalized)) {
+        return { valid: true, normalized };
+      }
+      return {
+        valid: false,
+        message: "⚠️ رقم التليفون المصري يجب أن يتكون من 11 رقم صحيح باللغة الإنجليزية (يبدأ بـ 010 أو 011 أو 012 أو 015)!"
+      };
+    }
+
+    // 2. إذا كان رقم دولي خارج مصر (يبدأ بـ + أو 00)
+    if ((normalized.startsWith("+") || normalized.startsWith("00")) && normalized.replace(/\D/g, "").length >= 10) {
+      return { valid: true, normalized };
+    }
+
+    return {
+      valid: false,
+      message: "⚠️ يرجى إدخال رقم موبايل مصري صحيح مكون من 11 رقم (أو رقم دولي يبدأ بكود الدولة مثل +20)!"
+    };
+  }
+
+  function updatePhoneHelperUI(val) {
+    const hintEl = document.getElementById("phoneStatusHint");
+    const counterEl = document.getElementById("phoneCounterBadge");
+    if (!hintEl || !counterEl) return;
+
+    if (!val) {
+      hintEl.textContent = "يقبل 11 رقم مصري (أو كود الدولة +20)";
+      hintEl.style.color = "var(--text-muted)";
+      counterEl.textContent = "0 / 11";
+      counterEl.style.color = "var(--primary)";
+      return;
+    }
+
+    const normalized = normalizePhoneNumber(val);
+    const check = validatePhoneNumber(val);
+
+    if (check.valid) {
+      hintEl.textContent = `✅ رقم صحيح (${normalized})`;
+      hintEl.style.color = "var(--success)";
+      counterEl.textContent = normalized.length === 11 ? "11 / 11" : `${normalized.length}`;
+      counterEl.style.color = "var(--success)";
+    } else {
+      const digitsLen = normalized.replace(/\D/g, "").length;
+      hintEl.textContent = "⏳ أكمل الرقم (11 رقم مصري أو كود الدولة)";
+      hintEl.style.color = "var(--gold)";
+      counterEl.textContent = `${digitsLen} / 11`;
+      counterEl.style.color = "var(--gold)";
+    }
+  }
+
   function cleanFirebaseUrl(url) {
     if (!url) return DEFAULT_FIREBASE_URL;
     return url.trim().replace(/\/+$/, "");
@@ -1216,6 +1363,14 @@
     renderAllCanvases();
   }
 
+  function isPhoneDuplicateInExhibition(exhId, rawPhone) {
+    const target = normalizePhoneNumber(rawPhone);
+    if (!target) return false;
+    return appState.invitations.some(inv =>
+      inv && inv.exhibitionId === exhId && normalizePhoneNumber(inv.clientPhone) === target
+    );
+  }
+
   // عند كتابة اسم عميل جديد أو رقم تليفون، نلغي وضع البطاقة السابقة لمنع استغلال رقمها في اسكرين شوت
   function onClientInputChange() {
     const typedName = (document.getElementById("clientNameInput").value || "").trim();
@@ -1230,7 +1385,7 @@
 
     const dupBox = document.getElementById("duplicateWarningBox");
     if (typedPhone && exh) {
-      const isDup = appState.invitations.some(inv => inv && inv.exhibitionId === exh.id && inv.clientPhone === typedPhone);
+      const isDup = isPhoneDuplicateInExhibition(exh.id, typedPhone);
       dupBox.style.display = isDup ? "block" : "none";
     } else {
       dupBox.style.display = "none";
@@ -1319,9 +1474,7 @@
     const activeIssuedTicket = customTicket || (!typedName && !typedPhone ? lastIssuedTicket : null);
     const isUnissuedPreview = !isStudioCanvas && !activeIssuedTicket;
 
-    const isDuplicatePhone = isUnissuedPreview && typedPhone && appState.invitations.some(
-      inv => inv && inv.exhibitionId === exh.id && inv.clientPhone === typedPhone
-    );
+    const isDuplicatePhone = isUnissuedPreview && typedPhone && isPhoneDuplicateInExhibition(exh.id, typedPhone);
 
     const clientName = activeIssuedTicket
       ? activeIssuedTicket.clientName
@@ -1584,7 +1737,7 @@
     const clientNameInput = document.getElementById("clientNameInput");
     const clientPhoneInput = document.getElementById("clientPhoneInput");
     const clientName = (clientNameInput.value || "").trim();
-    const clientPhone = (clientPhoneInput.value || "").trim();
+    const rawPhone = (clientPhoneInput.value || "").trim();
     const salesCode = document.getElementById("salesSelect").value;
 
     if (!clientName) {
@@ -1592,11 +1745,22 @@
       clientNameInput.focus();
       return;
     }
-    if (!clientPhone) {
+    if (!rawPhone) {
       alert("⚠️ رقم تليفون العميل مطلوب إجبارياً!");
       clientPhoneInput.focus();
       return;
     }
+
+    // فحص صحة الرقم (11 رقم مصري بالإنجليزي أو كود الدولة)
+    const phoneCheck = validatePhoneNumber(rawPhone);
+    if (!phoneCheck.valid) {
+      alert(phoneCheck.message);
+      clientPhoneInput.focus();
+      return;
+    }
+
+    const clientPhone = phoneCheck.normalized;
+
     if (!salesCode) {
       alert("من فضلك اختر اسمك من قائمة السيلز!");
       return;
@@ -1611,10 +1775,8 @@
 
       const currentExh = getActiveExhibition();
 
-      // التحقق من تكرار رقم التليفون فقط (الأسماء تكرر عادي)
-      const isDuplicate = appState.invitations.some(inv => 
-        inv && inv.exhibitionId === currentExh.id && inv.clientPhone === clientPhone
-      );
+      // التحقق من تكرار رقم التليفون بعد توحيد صيغته
+      const isDuplicate = isPhoneDuplicateInExhibition(currentExh.id, clientPhone);
 
       if (isDuplicate) {
         document.getElementById("duplicateWarningBox").style.display = "block";
@@ -1648,6 +1810,7 @@
 
       clientNameInput.value = "";
       clientPhoneInput.value = "";
+      updatePhoneHelperUI("");
       document.getElementById("duplicateWarningBox").style.display = "none";
 
       drawSingleCanvas(document.getElementById("invitationCanvas"), newTicket, false);
@@ -1859,7 +2022,7 @@
     const exh = getActiveExhibition();
     if (!exh) return [];
 
-    const search = (document.getElementById("logSearchInput").value || "").trim().toLowerCase();
+    const search = toEnglishDigits((document.getElementById("logSearchInput").value || "").trim().toLowerCase());
     const salesFilter = document.getElementById("logSalesFilter").value || "ALL";
 
     return appState.invitations
@@ -1912,6 +2075,7 @@
     lastIssuedTicket = inv;
     document.getElementById("clientNameInput").value = "";
     document.getElementById("clientPhoneInput").value = "";
+    updatePhoneHelperUI("");
     drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
     shareCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
   }
@@ -1922,6 +2086,7 @@
     lastIssuedTicket = inv;
     document.getElementById("clientNameInput").value = "";
     document.getElementById("clientPhoneInput").value = "";
+    updatePhoneHelperUI("");
     drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
     downloadCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
   }
