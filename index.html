@@ -39,12 +39,16 @@
       min-height: 100vh;
       overflow-x: hidden;
       line-height: 1.5;
+      display: flex;
+      flex-direction: column;
     }
 
     .app-container {
       max-width: 1180px;
+      width: 100%;
       margin: 0 auto;
       padding: 12px;
+      flex: 1;
     }
 
     /* Header */
@@ -295,6 +299,8 @@
       justify-content: center;
       min-height: 260px;
       position: relative;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     #invitationCanvas,
@@ -306,6 +312,8 @@
       border-radius: 8px;
       display: block;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
     }
 
     #adminStudioCanvas {
@@ -339,6 +347,19 @@
       color: #34d399;
       font-size: 0.92rem;
       font-weight: 700;
+      text-align: center;
+      display: none;
+    }
+
+    .duplicate-warning-box {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      font-size: 0.86rem;
+      font-weight: 800;
       text-align: center;
       display: none;
     }
@@ -576,6 +597,30 @@
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
     }
 
+    /* Developer Signature Footer */
+    .dev-footer {
+      text-align: center;
+      padding: 18px 12px 24px;
+      margin-top: 28px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      direction: ltr;
+    }
+
+    .dev-footer span {
+      color: var(--gold);
+      font-weight: 900;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-left: 4px;
+      display: inline-block;
+    }
+
     @media (max-width: 860px) {
       .workspace-grid,
       .admin-two-col,
@@ -667,12 +712,16 @@
 
       <div class="form-group">
         <label class="form-label">2. اسم العميل الثلاثي أو الثنائي:</label>
-        <input type="text" id="clientNameInput" class="form-control" placeholder="مثال: أ / أحمد محمود عبد الرحمن" oninput="renderAllCanvases()" />
+        <input type="text" id="clientNameInput" class="form-control" placeholder="مثال: أ / أحمد محمود عبد الرحمن" oninput="onClientInputChange()" />
       </div>
 
       <div class="form-group">
         <label class="form-label">3. رقم تليفون العميل <span style="color:var(--danger)">* (إجباري لمنع التكرار)</span>:</label>
-        <input type="tel" id="clientPhoneInput" class="form-control" placeholder="مثال: 01012345678" dir="ltr" style="text-align: right;" />
+        <input type="tel" id="clientPhoneInput" class="form-control" placeholder="مثال: 01012345678" dir="ltr" style="text-align: right;" oninput="onClientInputChange()" />
+      </div>
+
+      <div id="duplicateWarningBox" class="duplicate-warning-box">
+        ❌ رقم التليفون مسجل مسبقاً في هذا المعرض! لا يمكن إصدار دعوة له.
       </div>
 
       <button id="issueBtn" class="btn btn-primary btn-block" onclick="issueAndDownloadInvitation()">
@@ -701,7 +750,7 @@
           <button class="btn btn-outline" style="padding:6px 10px; font-size:0.8rem;" onclick="downloadCurrentCanvas()">⬇️ تنزيل</button>
         </div>
       </div>
-      <div class="preview-container">
+      <div class="preview-container" oncontextmenu="return false;">
         <canvas id="invitationCanvas" width="1080" height="1350"></canvas>
       </div>
     </div>
@@ -878,6 +927,11 @@
     </div>
 
   </section>
+
+  <!-- Developer Signature Footer -->
+  <footer class="dev-footer">
+    Developed by <span>ENG/ M.Allam</span>
+  </footer>
 
 </div>
 
@@ -1162,6 +1216,29 @@
     renderAllCanvases();
   }
 
+  // عند كتابة اسم عميل جديد أو رقم تليفون، نلغي وضع البطاقة السابقة لمنع استغلال رقمها في اسكرين شوت
+  function onClientInputChange() {
+    const typedName = (document.getElementById("clientNameInput").value || "").trim();
+    const typedPhone = (document.getElementById("clientPhoneInput").value || "").trim();
+    const exh = getActiveExhibition();
+
+    if (typedName || typedPhone) {
+      lastIssuedTicket = null;
+      document.getElementById("ticketConfirmBox").style.display = "none";
+      document.getElementById("previewTopActions").style.display = "none";
+    }
+
+    const dupBox = document.getElementById("duplicateWarningBox");
+    if (typedPhone && exh) {
+      const isDup = appState.invitations.some(inv => inv && inv.exhibitionId === exh.id && inv.clientPhone === typedPhone);
+      dupBox.style.display = isDup ? "block" : "none";
+    } else {
+      dupBox.style.display = "none";
+    }
+
+    renderAllCanvases();
+  }
+
   function getCalculatedNextSeq(exhId) {
     const exh = appState.exhibitions[exhId];
     const baseNext = exh && exh.nextSeq ? Number(exh.nextSeq) : 131;
@@ -1206,6 +1283,8 @@
     const exh = getActiveExhibition();
     if (!exh) return;
 
+    const isStudioCanvas = (canvas.id === "adminStudioCanvas");
+
     if (loadedTemplateImg) {
       canvas.width = loadedTemplateImg.naturalWidth || 1080;
       canvas.height = loadedTemplateImg.naturalHeight || 1350;
@@ -1233,17 +1312,24 @@
       ctx.fillText("ارفع صورة القالب من تبويب (القالب والمعارض)", canvas.width / 2, 330);
     }
 
-    const clientName = customTicket
-      ? customTicket.clientName
-      : (document.getElementById("clientNameInput").value || "").trim() || (lastIssuedTicket ? lastIssuedTicket.clientName : "أ / أحمد محمود عبد الرحمن");
+    const typedName = (document.getElementById("clientNameInput")?.value || "").trim();
+    const typedPhone = (document.getElementById("clientPhoneInput")?.value || "").trim();
 
-    const salesCode = customTicket
-      ? customTicket.salesCode
+    // البطاقة تعتبر رسمية ومعتمدة فقط إذا تم إصدارها فعلياً ولم يبدأ السيلز في كتابة بيانات عميل جديد
+    const activeIssuedTicket = customTicket || (!typedName && !typedPhone ? lastIssuedTicket : null);
+    const isUnissuedPreview = !isStudioCanvas && !activeIssuedTicket;
+
+    const isDuplicatePhone = isUnissuedPreview && typedPhone && appState.invitations.some(
+      inv => inv && inv.exhibitionId === exh.id && inv.clientPhone === typedPhone
+    );
+
+    const clientName = activeIssuedTicket
+      ? activeIssuedTicket.clientName
+      : (typedName || "أ / أحمد محمود عبد الرحمن");
+
+    const salesCode = activeIssuedTicket
+      ? activeIssuedTicket.salesCode
       : (document.getElementById("salesSelect").value || "S11");
-
-    const seqNum = customTicket
-      ? customTicket.seqNumber
-      : (lastIssuedTicket ? lastIssuedTicket.seqNumber : getCalculatedNextSeq(exh.id));
 
     const nameX = ((exh.nameX ?? 50) / 100) * canvas.width;
     const nameY = ((exh.nameY ?? 59) / 100) * canvas.height;
@@ -1282,7 +1368,18 @@
     const codeX = ((exh.codeX ?? 50) / 100) * canvas.width;
     const codeY = ((exh.codeY ?? 90.5) / 100) * canvas.height;
     const codeFontSize = Math.max(16, Math.round(((exh.codeSize ?? 32) / 1080) * canvas.width));
-    const codeText = `#${seqNum}  |  ${salesCode}`;
+
+    // إخفاء الرقم التسلسلي تماماً في شاشة السيلز قبل الإصدار الفعلي لمنع أخذ اسكرين شوت برقم غير محجوز
+    let codeText = "";
+    if (isStudioCanvas) {
+      codeText = `#${getCalculatedNextSeq(exh.id)}  |  ${salesCode}`;
+    } else if (activeIssuedTicket) {
+      codeText = `#${activeIssuedTicket.seqNumber}  |  ${activeIssuedTicket.salesCode}`;
+    } else if (isDuplicatePhone) {
+      codeText = `❌ رقم التليفون مكرر - غير مصرح`;
+    } else {
+      codeText = `#----  |  ${salesCode} (بانتظار الإصدار)`;
+    }
 
     ctx.font = `800 ${codeFontSize}px 'Cairo', sans-serif`;
     const codeMetricsWidth = ctx.measureText(codeText).width + 40;
@@ -1300,11 +1397,38 @@
     }
 
     ctx.save();
-    ctx.fillStyle = exh.codeColor || "#f59e0b";
+    ctx.fillStyle = isDuplicatePhone ? "#ef4444" : (exh.codeColor || "#f59e0b");
     ctx.shadowColor = "rgba(0,0,0,0.65)";
     ctx.shadowBlur = 6;
     ctx.fillText(codeText, codeX, codeY);
     ctx.restore();
+
+    // ختم حماية على المعاينة قبل الإصدار يمنع السيلز من أخذ اسكرين شوت وإرسالها للعميل بدون تسجيل رسمي
+    if (isUnissuedPreview) {
+      ctx.save();
+      ctx.translate(canvas.width / 2, nameY);
+      ctx.rotate(-Math.PI / 10);
+
+      const bannerW = canvas.width * 0.88;
+      const bannerH = Math.round(canvas.width * 0.11);
+      ctx.fillStyle = isDuplicatePhone ? "rgba(220, 38, 38, 0.88)" : "rgba(15, 23, 42, 0.82)";
+      ctx.strokeStyle = isDuplicatePhone ? "#fca5a5" : "#f59e0b";
+      ctx.lineWidth = 4;
+
+      ctx.fillRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
+      ctx.strokeRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
+
+      const stampFontSize = Math.round(canvas.width * 0.038);
+      ctx.font = `900 ${stampFontSize}px 'Cairo', sans-serif`;
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const stampText = isDuplicatePhone
+        ? "❌ رقم تليفون مكرر - دعوة لاغية"
+        : "🔒 معاينة فقط - اضغط إصدار لتفعيل الرقم";
+      ctx.fillText(stampText, 0, 0);
+      ctx.restore();
+    }
   }
 
   function setupStudioCanvasDragging() {
@@ -1435,7 +1559,6 @@
         return false;
       }
     } catch (err) {
-      // إذا ألغى المستخدم قائمة المشاركة لا نقوم بتحميل مكرر، أما لو المتصفح لا يدعم المشاركة نحملها مباشرة
       if (err && err.name !== "AbortError") {
         downloadCurrentCanvas(fileName);
       }
@@ -1494,6 +1617,8 @@
       );
 
       if (isDuplicate) {
+        document.getElementById("duplicateWarningBox").style.display = "block";
+        renderAllCanvases();
         alert(`❌ تنبيه: رقم التليفون (${clientPhone}) مسجل مسبقاً في هذا المعرض! لا يمكن تكراره.`);
         btn.disabled = false;
         btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
@@ -1523,6 +1648,7 @@
 
       clientNameInput.value = "";
       clientPhoneInput.value = "";
+      document.getElementById("duplicateWarningBox").style.display = "none";
 
       drawSingleCanvas(document.getElementById("invitationCanvas"), newTicket, false);
 
@@ -1784,6 +1910,8 @@
     const inv = appState.invitations.find(i => i && i.id === invId);
     if (!inv) return;
     lastIssuedTicket = inv;
+    document.getElementById("clientNameInput").value = "";
+    document.getElementById("clientPhoneInput").value = "";
     drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
     shareCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
   }
@@ -1792,6 +1920,8 @@
     const inv = appState.invitations.find(i => i && i.id === invId);
     if (!inv) return;
     lastIssuedTicket = inv;
+    document.getElementById("clientNameInput").value = "";
+    document.getElementById("clientPhoneInput").value = "";
     drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
     downloadCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
   }
