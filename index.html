@@ -1,1938 +1,2651 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>B.almeter VIP | نظام الدعوات الموحد</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-main: #070d19;
-      --bg-card: #0f172a;
-      --bg-input: #090f1d;
-      --border: #1e293b;
-      --border-light: #334155;
-      --primary: #06b6d4;
-      --primary-hover: #0891b2;
-      --gold: #f59e0b;
-      --gold-hover: #d97706;
-      --success: #10b981;
-      --danger: #ef4444;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --radius: 14px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Cairo', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      min-height: 100vh;
-      overflow-x: hidden;
-      line-height: 1.5;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .app-container {
-      max-width: 1180px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 12px;
-      flex: 1;
-    }
-
-    /* Header */
-    .top-header {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-    }
-
-    .brand-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .brand-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
-
-    .sync-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(16, 185, 129, 0.12);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .sync-badge.offline {
-      background: rgba(245, 158, 11, 0.12);
-      color: #fbbf24;
-      border-color: rgba(245, 158, 11, 0.3);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 9px 14px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), #0284c7);
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: #000;
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
-    }
-
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      border-color: rgba(239, 68, 68, 0.3);
-    }
-
-    .btn-outline {
-      background: #1e293b;
-      color: var(--text-main);
-      border-color: var(--border-light);
-    }
-
-    .btn-block {
-      width: 100%;
-      padding: 13px;
-      font-size: 1rem;
-    }
-
-    /* Exhibition Selector Bar */
-    .exhibition-bar {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .exhibition-list-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-
-    .exhibition-label {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-left: 4px;
-    }
-
-    .exh-pills {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      flex: 1;
-    }
-
-    .exh-pill {
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      background: var(--bg-input);
-      color: var(--text-muted);
-      border: 1px solid var(--border-light);
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .exh-pill.active {
-      background: var(--primary);
-      color: #031525;
-      border-color: var(--primary);
-      box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
-    }
-
-    /* Main Sales Workspace Grid */
-    .workspace-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      align-items: start;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 12px;
-      margin-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .card-title {
-      font-size: 1.02rem;
-      font-weight: 800;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Form Controls */
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #cbd5e1;
-      margin-bottom: 5px;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 11px 14px;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text-main);
-      background: var(--bg-input);
-      border: 1px solid var(--border-light);
-      border-radius: 10px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .form-control:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
-    }
-
-    .phone-hint {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 5px;
-      font-weight: 700;
-    }
-
-    textarea.form-control {
-      min-height: 95px;
-      resize: vertical;
-    }
-
-    /* Canvas Preview Area */
-    .preview-container {
-      background: var(--bg-input);
-      border: 1px dashed var(--border-light);
-      border-radius: 12px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 260px;
-      position: relative;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    #invitationCanvas,
-    #adminStudioCanvas {
-      max-width: 100%;
-      max-height: 620px;
-      width: auto;
-      height: auto;
-      border-radius: 8px;
-      display: block;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-      -webkit-touch-callout: none;
-      -webkit-user-drag: none;
-    }
-
-    #adminStudioCanvas {
-      cursor: grab;
-      touch-action: none;
-    }
-
-    #adminStudioCanvas:active {
-      cursor: grabbing;
-    }
-
-    .drag-hint-badge {
-      background: rgba(245, 158, 11, 0.14);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      color: #fbbf24;
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      text-align: center;
-      width: 100%;
-    }
-
-    .ticket-status-box {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 12px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: #34d399;
-      font-size: 0.92rem;
-      font-weight: 700;
-      text-align: center;
-      display: none;
-    }
-
-    .duplicate-warning-box {
-      margin-bottom: 12px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #f87171;
-      font-size: 0.86rem;
-      font-weight: 800;
-      text-align: center;
-      display: none;
-    }
-
-    .share-actions-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* Admin Section */
-    #adminPanel {
-      display: none;
-      margin-top: 22px;
-      border-top: 2px dashed var(--gold);
-      padding-top: 20px;
-    }
-
-    .admin-banner {
-      background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(6, 182, 212, 0.1));
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      border-radius: var(--radius);
-      padding: 12px 16px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .admin-tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      margin-bottom: 16px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .admin-tab-btn {
-      padding: 10px 16px;
-      border-radius: 10px;
-      background: var(--bg-card);
-      color: var(--text-muted);
-      border: 1px solid var(--border-light);
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      white-space: nowrap;
-      flex: 1;
-      text-align: center;
-    }
-
-    .admin-tab-btn.active {
-      background: var(--gold);
-      color: #000;
-      border-color: var(--gold);
-    }
-
-    .admin-tab-content {
-      display: none;
-    }
-
-    .admin-tab-content.active {
-      display: block;
-    }
-
-    .studio-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 16px;
-      align-items: start;
-    }
-
-    .sticky-preview-card {
-      position: sticky;
-      top: 12px;
-    }
-
-    .control-section-box {
-      background: rgba(9, 15, 29, 0.6);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .control-section-title {
-      font-size: 0.88rem;
-      font-weight: 800;
-      color: var(--gold);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .kpi-card {
-      background: var(--bg-input);
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      padding: 14px;
-      text-align: center;
-    }
-
-    .kpi-card .label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-weight: 700;
-    }
-
-    .kpi-card .val {
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--primary);
-      margin-top: 4px;
-    }
-
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 580px;
-    }
-
-    th, td {
-      padding: 10px 12px;
-      text-align: right;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.88rem;
-    }
-
-    th {
-      background: #131c31;
-      color: var(--primary);
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .badge-code {
-      background: rgba(6, 182, 212, 0.15);
-      color: var(--primary);
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-weight: 800;
-      font-size: 0.8rem;
-    }
-
-    .badge-count {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-weight: 800;
-    }
-
-    .admin-two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .range-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .range-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .range-row label {
-      min-width: 78px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-weight: 700;
-    }
-
-    .range-row input[type="range"] {
-      flex: 1;
-      accent-color: var(--primary);
-      cursor: pointer;
-    }
-
-    .range-val {
-      min-width: 48px;
-      text-align: left;
-      font-weight: 800;
-      color: var(--gold);
-      font-size: 0.82rem;
-      direction: ltr;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 16px;
-    }
-
-    .modal-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      border-radius: 14px;
-      padding: 22px;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    }
-
-    /* Developer Signature Footer */
-    .dev-footer {
-      text-align: center;
-      padding: 18px 12px 24px;
-      margin-top: 28px;
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      direction: ltr;
-    }
-
-    .dev-footer span {
-      color: var(--gold);
-      font-weight: 900;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 4px 12px;
-      border-radius: 999px;
-      margin-left: 4px;
-      display: inline-block;
-    }
-
-    @media (max-width: 860px) {
-      .workspace-grid,
-      .admin-two-col,
-      .studio-grid {
-        grid-template-columns: 1fr;
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>B.almeter VIP | نظام الدعوات الموحد</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-main: #070d19;
+        --bg-card: #0f172a;
+        --bg-input: #090f1d;
+        --border: #1e293b;
+        --border-light: #334155;
+        --primary: #06b6d4;
+        --primary-hover: #0891b2;
+        --gold: #f59e0b;
+        --gold-hover: #d97706;
+        --success: #10b981;
+        --danger: #ef4444;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --radius: 14px;
       }
 
-      .sticky-preview-card {
-        position: static;
-        order: -1;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Cairo", sans-serif;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .top-header {
+      html,
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.5;
+        display: flex;
         flex-direction: column;
-        align-items: stretch;
-        text-align: center;
       }
 
-      .brand-box {
-        justify-content: center;
-      }
-
-      .header-actions {
-        justify-content: center;
-      }
-
-      .header-actions .btn {
+      .app-container {
+        max-width: 1180px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 12px;
         flex: 1;
       }
 
-      .exh-pills {
+      /* Header */
+      .top-header {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      }
+
+      .brand-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .brand-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+
+      .sync-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.12);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+
+      .sync-badge.offline {
+        background: rgba(245, 158, 11, 0.12);
+        color: #fbbf24;
+        border-color: rgba(245, 158, 11, 0.3);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 14px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #0284c7);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
+      }
+
+      .btn-gold {
+        background: var(--gold);
+        color: #000;
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+
+      .btn-outline {
+        background: #1e293b;
+        color: var(--text-main);
+        border-color: var(--border-light);
+      }
+
+      .btn-block {
+        width: 100%;
+        padding: 13px;
+        font-size: 1rem;
+      }
+
+      /* Exhibition Selector Bar */
+      .exhibition-bar {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .exhibition-list-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
         width: 100%;
       }
 
+      .exhibition-label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-left: 4px;
+      }
+
+      .exh-pills {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        flex: 1;
+      }
+
       .exh-pill {
-        flex: 1 1 calc(50% - 8px);
-        text-align: center;
-        padding: 10px 8px;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        background: var(--bg-input);
+        color: var(--text-muted);
+        border: 1px solid var(--border-light);
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .exh-pill.active {
+        background: var(--primary);
+        color: #031525;
+        border-color: var(--primary);
+        box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
+      }
+
+      /* Main Sales Workspace Grid */
+      .workspace-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        align-items: start;
       }
 
       .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .card-title {
+        font-size: 1.02rem;
+        font-weight: 800;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Form Controls */
+      .form-group {
+        margin-bottom: 12px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #cbd5e1;
+        margin-bottom: 5px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 11px 14px;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-main);
+        background: var(--bg-input);
+        border: 1px solid var(--border-light);
+        border-radius: 10px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
+      }
+
+      .phone-hint {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin-top: 5px;
+        font-weight: 700;
+      }
+
+      textarea.form-control {
+        min-height: 95px;
+        resize: vertical;
+      }
+
+      /* Canvas Preview Area */
+      .preview-container {
+        background: var(--bg-input);
+        border: 1px dashed var(--border-light);
+        border-radius: 12px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 260px;
+        position: relative;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      #invitationCanvas,
+      #adminStudioCanvas {
+        max-width: 100%;
+        max-height: 620px;
+        width: auto;
+        height: auto;
+        border-radius: 8px;
+        display: block;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+        -webkit-touch-callout: none;
+        -webkit-user-drag: none;
+      }
+
+      #adminStudioCanvas {
+        cursor: grab;
+        touch-action: none;
+      }
+
+      #adminStudioCanvas:active {
+        cursor: grabbing;
+      }
+
+      .drag-hint-badge {
+        background: rgba(245, 158, 11, 0.14);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        color: #fbbf24;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .ticket-status-box {
+        margin-top: 14px;
         padding: 14px;
+        border-radius: 12px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: #34d399;
+        font-size: 0.92rem;
+        font-weight: 700;
+        text-align: center;
+        display: none;
+      }
+
+      .duplicate-warning-box {
+        margin-bottom: 12px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #f87171;
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-align: center;
+        display: none;
+      }
+
+      .share-actions-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      /* Admin Section */
+      #adminPanel {
+        display: none;
+        margin-top: 22px;
+        border-top: 2px dashed var(--gold);
+        padding-top: 20px;
+      }
+
+      .admin-banner {
+        background: linear-gradient(
+          90deg,
+          rgba(245, 158, 11, 0.15),
+          rgba(6, 182, 212, 0.1)
+        );
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .admin-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        margin-bottom: 16px;
+        -webkit-overflow-scrolling: touch;
       }
 
       .admin-tab-btn {
-        font-size: 0.82rem;
-        padding: 9px 12px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        background: var(--bg-card);
+        color: var(--text-muted);
+        border: 1px solid var(--border-light);
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        white-space: nowrap;
+        flex: 1;
+        text-align: center;
       }
-    }
-  </style>
-</head>
-<body>
 
-<div class="app-container">
+      .admin-tab-btn.active {
+        background: var(--gold);
+        color: #000;
+        border-color: var(--gold);
+      }
 
-  <!-- Top Bar -->
-  <header class="top-header">
-    <div class="brand-box">
-      <div class="brand-title">B.almeter VIP | نظام الدعوات الموحد</div>
-      <div id="syncStatusBadge" class="sync-badge">🟢 متصل بالسحابة لايف</div>
-    </div>
-    <div class="header-actions">
-      <button class="btn btn-outline" onclick="syncFromCloud(true)">🔄 تحديث</button>
-      <button id="adminToggleBtn" class="btn btn-gold" onclick="handleAdminButtonClick()">🔒 وضع المدير</button>
-    </div>
-  </header>
+      .admin-tab-content {
+        display: none;
+      }
 
-  <!-- Exhibition Bar -->
-  <section class="exhibition-bar">
-    <div class="exhibition-list-wrap">
-      <span class="exhibition-label">📍 اختر المعرض:</span>
-      <div id="exhibitionPills" class="exh-pills"></div>
-    </div>
-  </section>
+      .admin-tab-content.active {
+        display: block;
+      }
 
-  <!-- Main Sales Interface -->
-  <main class="workspace-grid">
-    
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">🎫 إصدار دعوة عميل (<span id="activeExhTitle">معرض سوهاج</span>)</div>
-      </div>
+      .studio-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 16px;
+        align-items: start;
+      }
 
-      <div class="form-group">
-        <label class="form-label">1. ابحث عن اسمك أو كودك (للسيلز):</label>
-        <input type="text" id="salesSearchInput" class="form-control" placeholder="🔍 اكتب أول حرف من اسمك أو الكود..." oninput="filterSalesDropdown()" style="margin-bottom: 8px;" />
-        <select id="salesSelect" class="form-control" onchange="onSalesRepChange()"></select>
-      </div>
+      .sticky-preview-card {
+        position: sticky;
+        top: 12px;
+      }
 
-      <div class="form-group">
-        <label class="form-label">2. اسم العميل الثلاثي أو الثنائي:</label>
-        <input type="text" id="clientNameInput" class="form-control" placeholder="مثال: أ / أحمد محمود عبد الرحمن" oninput="onClientInputChange()" />
-      </div>
+      .control-section-box {
+        background: rgba(9, 15, 29, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
 
-      <div class="form-group">
-        <label class="form-label">3. رقم تليفون العميل <span style="color:var(--danger)">* (11 رقم إنجليزي أو بكود الدولة)</span>:</label>
-        <input
-          type="tel"
-          id="clientPhoneInput"
-          class="form-control"
-          placeholder="01012345678 أو +201012345678"
-          dir="ltr"
-          inputmode="tel"
-          autocomplete="off"
-          style="text-align: right; font-family: monospace, 'Cairo', sans-serif; font-size: 17px; letter-spacing: 1px;"
-          oninput="handlePhoneInput(this)"
-        />
-        <div class="phone-hint">
-          <span id="phoneStatusHint">يقبل 11 رقم مصري (أو كود الدولة +20)</span>
-          <span id="phoneCounterBadge" dir="ltr" style="color: var(--primary);">0 / 11</span>
+      .control-section-title {
+        font-size: 0.88rem;
+        font-weight: 800;
+        color: var(--gold);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .kpi-card {
+        background: var(--bg-input);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 14px;
+        text-align: center;
+      }
+
+      .kpi-card .label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+
+      .kpi-card .val {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--primary);
+        margin-top: 4px;
+      }
+
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 580px;
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: right;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.88rem;
+      }
+
+      th {
+        background: #131c31;
+        color: var(--primary);
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .badge-code {
+        background: rgba(6, 182, 212, 0.15);
+        color: var(--primary);
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.8rem;
+      }
+
+      .badge-count {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-weight: 800;
+      }
+
+      .admin-two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .range-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .range-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .range-row label {
+        min-width: 78px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+
+      .range-row input[type="range"] {
+        flex: 1;
+        accent-color: var(--primary);
+        cursor: pointer;
+      }
+
+      .range-val {
+        min-width: 48px;
+        text-align: left;
+        font-weight: 800;
+        color: var(--gold);
+        font-size: 0.82rem;
+        direction: ltr;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 16px;
+      }
+
+      .modal-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: 14px;
+        padding: 22px;
+        width: 100%;
+        max-width: 380px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      }
+
+      /* Developer Signature Footer */
+      .dev-footer {
+        text-align: center;
+        padding: 18px 12px 24px;
+        margin-top: 28px;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        direction: ltr;
+      }
+
+      .dev-footer a {
+        color: var(--gold);
+        font-weight: 900;
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        padding: 4px 13px;
+        border-radius: 999px;
+        margin-left: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 10px rgba(245, 158, 11, 0.1);
+      }
+
+      .dev-footer a:hover {
+        background: rgba(245, 158, 11, 0.22);
+        border-color: var(--gold);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.28);
+      }
+
+      .dev-footer a:active {
+        transform: translateY(0);
+      }
+
+      .dev-footer .link-arrow {
+        font-size: 0.78rem;
+        opacity: 0.85;
+        transition: transform 0.25s ease;
+      }
+
+      .dev-footer a:hover .link-arrow {
+        transform: translate(2px, -2px);
+        opacity: 1;
+      }
+
+      @media (max-width: 860px) {
+        .workspace-grid,
+        .admin-two-col,
+        .studio-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .sticky-preview-card {
+          position: static;
+          order: -1;
+        }
+
+        .top-header {
+          flex-direction: column;
+          align-items: stretch;
+          text-align: center;
+        }
+
+        .brand-box {
+          justify-content: center;
+        }
+
+        .header-actions {
+          justify-content: center;
+        }
+
+        .header-actions .btn {
+          flex: 1;
+        }
+
+        .exh-pills {
+          width: 100%;
+        }
+
+        .exh-pill {
+          flex: 1 1 calc(50% - 8px);
+          text-align: center;
+          padding: 10px 8px;
+        }
+
+        .card {
+          padding: 14px;
+        }
+
+        .admin-tab-btn {
+          font-size: 0.82rem;
+          padding: 9px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Top Bar -->
+      <header class="top-header">
+        <div class="brand-box">
+          <div class="brand-title">B.almeter VIP | نظام الدعوات الموحد</div>
+          <div id="syncStatusBadge" class="sync-badge">
+            🟢 متصل بالسحابة لايف
+          </div>
         </div>
-      </div>
-
-      <div id="duplicateWarningBox" class="duplicate-warning-box">
-        ❌ رقم التليفون مسجل مسبقاً في هذا المعرض! لا يمكن إصدار دعوة له.
-      </div>
-
-      <button id="issueBtn" class="btn btn-primary btn-block" onclick="issueAndDownloadInvitation()">
-        ✨ إصدار ومشاركة بطاقة الدعوة الآن
-      </button>
-
-      <!-- صندوق التأكيد وأزرار المشاركة الفورية للآيفون والأندرويد -->
-      <div id="ticketConfirmBox" class="ticket-status-box">
-        <div id="ticketConfirmText"></div>
-        <div class="share-actions-row">
-          <button class="btn btn-success" style="flex: 2; padding: 12px;" onclick="shareCurrentCanvas()">
-            📲 مشاركة سريعة (واتساب / حفظ للآيفون)
+        <div class="header-actions">
+          <button class="btn btn-outline" onclick="syncFromCloud(true)">
+            🔄 تحديث
           </button>
-          <button class="btn btn-outline" style="flex: 1; padding: 12px;" onclick="downloadCurrentCanvas()">
-            ⬇️ تنزيل
+          <button
+            id="adminToggleBtn"
+            class="btn btn-gold"
+            onclick="handleAdminButtonClick()"
+          >
+            🔒 وضع المدير
           </button>
         </div>
-      </div>
-    </div>
+      </header>
 
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">🖼️ معاينة الدعوة مباشرة</div>
-        <div id="previewTopActions" style="display:none; gap:6px;">
-          <button class="btn btn-success" style="padding:6px 12px; font-size:0.8rem;" onclick="shareCurrentCanvas()">📲 شير واتساب / آيفون</button>
-          <button class="btn btn-outline" style="padding:6px 10px; font-size:0.8rem;" onclick="downloadCurrentCanvas()">⬇️ تنزيل</button>
+      <!-- Exhibition Bar -->
+      <section class="exhibition-bar">
+        <div class="exhibition-list-wrap">
+          <span class="exhibition-label">📍 اختر المعرض:</span>
+          <div id="exhibitionPills" class="exh-pills"></div>
         </div>
-      </div>
-      <div class="preview-container" oncontextmenu="return false;">
-        <canvas id="invitationCanvas" width="1080" height="1350"></canvas>
-      </div>
-    </div>
+      </section>
 
-  </main>
-
-  <!-- ADMIN PANEL -->
-  <section id="adminPanel">
-    <div class="admin-banner">
-      <div>
-        <strong style="color: var(--gold); font-size: 1.05rem;">👑 لوحة تحكم المدير</strong>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">متابعة السيلز، التقارير الذكية، واستوديو القوالب.</p>
-      </div>
-      <button class="btn btn-danger" onclick="logoutAdmin()">إغلاق وضع المدير ✖</button>
-    </div>
-
-    <div class="admin-tabs">
-      <button class="admin-tab-btn active" onclick="switchAdminTab('tabSales', this)">👥 إدارة ومتابعة السيلز</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tabTemplate', this)">🎨 القالب والمعارض</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tabReports', this)">📋 سجل العملاء والتليفونات</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tabCloud', this)">⚙️ السحابة والأمان</button>
-    </div>
-
-    <div id="tabSales" class="admin-tab-content active">
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="label">إجمالي دعوات المعرض الحالي</div><div class="val" id="kpiCurrentExhTotal">0</div></div>
-        <div class="kpi-card"><div class="label">الرقم التسلسلي القادم</div><div class="val" id="kpiNextSeq">#131</div></div>
-        <div class="kpi-card"><div class="label">عدد السيلز المسجلين</div><div class="val" id="kpiSalesCount">0</div></div>
-        <div class="kpi-card"><div class="label">أعلى سيلز في المعرض</div><div class="val" id="kpiTopSales" style="font-size: 1.1rem; color: var(--gold);">-</div></div>
-      </div>
-
-      <div class="admin-two-col">
+      <!-- Main Sales Interface -->
+      <main class="workspace-grid">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">📊 متابعة إنجاز كل سيلز</div>
-            <!-- زرارين لاختيار طريقة الترتيب -->
-            <div style="display:flex; gap:6px;">
-              <button id="sortCodeBtn" class="btn btn-gold" style="padding:4px 10px; font-size:0.75rem;" onclick="setSalesSortMode('code')">ترتيب بالكود</button>
-              <button id="sortCountBtn" class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="setSalesSortMode('count')">ترتيب بالإنجاز</button>
+            <div class="card-title">
+              🎫 إصدار دعوة عميل (<span id="activeExhTitle">معرض سوهاج</span>)
             </div>
           </div>
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr><th>الكود</th><th>اسم السيلز</th><th>عملاء هذا المعرض</th><th>الإجمالي</th><th>إجراء</th></tr>
-              </thead>
-              <tbody id="salesPerformanceTbody"></tbody>
-            </table>
-          </div>
-        </div>
 
-        <div class="card">
-          <div class="card-header"><div class="card-title">➕ إضافة فريق السيلز</div></div>
           <div class="form-group">
-            <label class="form-label">إضافة سيلز فردي:</label>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <input type="text" id="newSalesName" class="form-control" placeholder="اسم السيلز" style="flex:2; min-width:150px;" />
-              <input type="text" id="newSalesCode" class="form-control" placeholder="الكود (اختياري)" style="flex:1; min-width:110px;" />
-              <button class="btn btn-primary" onclick="addSingleSalesRep()">+ إضافة</button>
+            <label class="form-label">1. ابحث عن اسمك أو كودك (للسيلز):</label>
+            <input
+              type="text"
+              id="salesSearchInput"
+              class="form-control"
+              placeholder="🔍 اكتب أول حرف من اسمك أو الكود..."
+              oninput="filterSalesDropdown()"
+              style="margin-bottom: 8px"
+            />
+            <select
+              id="salesSelect"
+              class="form-control"
+              onchange="onSalesRepChange()"
+            ></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">2. اسم العميل الثلاثي أو الثنائي:</label>
+            <input
+              type="text"
+              id="clientNameInput"
+              class="form-control"
+              placeholder="مثال: أ / أحمد محمود عبد الرحمن"
+              oninput="onClientInputChange()"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"
+              >3. رقم تليفون العميل
+              <span style="color: var(--danger)"
+                >* (11 رقم إنجليزي أو بكود الدولة)</span
+              >:</label
+            >
+            <input
+              type="tel"
+              id="clientPhoneInput"
+              class="form-control"
+              placeholder="01012345678 أو +201012345678"
+              dir="ltr"
+              inputmode="tel"
+              autocomplete="off"
+              style="
+                text-align: right;
+                font-family: monospace, &quot;Cairo&quot;, sans-serif;
+                font-size: 17px;
+                letter-spacing: 1px;
+              "
+              oninput="handlePhoneInput(this)"
+            />
+            <div class="phone-hint">
+              <span id="phoneStatusHint"
+                >يقبل 11 رقم مصري (أو كود الدولة +20)</span
+              >
+              <span
+                id="phoneCounterBadge"
+                dir="ltr"
+                style="color: var(--primary)"
+                >0 / 11</span
+              >
             </div>
           </div>
-          <hr style="border:0; border-top:1px solid var(--border); margin: 16px 0;" />
-          <div class="form-group">
-            <label class="form-label">إضافة دفعة واحدة (اسم في كل سطر):</label>
-            <textarea id="bulkSalesTextarea" class="form-control" placeholder="اكتب الأسماء هنا..."></textarea>
-          </div>
-          <button class="btn btn-gold btn-block" onclick="addBulkSalesReps()">⚡ إضافة القائمة دفعة واحدة</button>
-        </div>
-      </div>
-    </div>
 
-    <div id="tabTemplate" class="admin-tab-content">
-      <div class="card" style="margin-bottom: 16px; padding: 14px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-          <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:260px;">
-            <span style="font-weight:800; color:var(--gold); white-space:nowrap;">📍 إدارة المعارض:</span>
-            <input type="text" id="newExhNameInput" class="form-control" placeholder="اسم معرض جديد" style="max-width:260px; padding:8px 12px;" />
-            <button class="btn btn-gold" onclick="addNewExhibition()">+ إضافة معرض</button>
+          <div id="duplicateWarningBox" class="duplicate-warning-box">
+            ❌ رقم التليفون مسجل مسبقاً في هذا المعرض! لا يمكن إصدار دعوة له.
           </div>
-          <button class="btn btn-danger" onclick="deleteCurrentExhibition()">🗑️ حذف المعرض المحدد</button>
-        </div>
-      </div>
 
-      <div class="studio-grid">
+          <button
+            id="issueBtn"
+            class="btn btn-primary btn-block"
+            onclick="issueAndDownloadInvitation()"
+          >
+            ✨ إصدار ومشاركة بطاقة الدعوة الآن
+          </button>
+
+          <!-- صندوق التأكيد وأزرار المشاركة الفورية للآيفون والأندرويد -->
+          <div id="ticketConfirmBox" class="ticket-status-box">
+            <div id="ticketConfirmText"></div>
+            <div class="share-actions-row">
+              <button
+                class="btn btn-success"
+                style="flex: 2; padding: 12px"
+                onclick="shareCurrentCanvas()"
+              >
+                📲 مشاركة سريعة (واتساب / حفظ للآيفون)
+              </button>
+              <button
+                class="btn btn-outline"
+                style="flex: 1; padding: 12px"
+                onclick="downloadCurrentCanvas()"
+              >
+                ⬇️ تنزيل
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🛠️ إعدادات ومقاسات القالب (<span id="studioExhName"></span>)</div>
-            <button class="btn btn-gold" style="padding:6px 12px; font-size:0.82rem;" onclick="saveExhibitionSettings()">💾 حفظ بالسحابة</button>
-          </div>
-
-          <div class="control-section-box">
-            <div class="control-section-title"><span>1️⃣ صورة القالب الفارغ والترقيم</span></div>
-            <div class="form-group">
-              <label class="form-label">رفع صورة التصميم:</label>
-              <input type="file" id="templateUploadInput" accept="image/*" class="form-control" onchange="handleTemplateUpload(event)" />
+            <div class="card-title">🖼️ معاينة الدعوة مباشرة</div>
+            <div id="previewTopActions" style="display: none; gap: 6px">
+              <button
+                class="btn btn-success"
+                style="padding: 6px 12px; font-size: 0.8rem"
+                onclick="shareCurrentCanvas()"
+              >
+                📲 شير واتساب / آيفون
+              </button>
+              <button
+                class="btn btn-outline"
+                style="padding: 6px 10px; font-size: 0.8rem"
+                onclick="downloadCurrentCanvas()"
+              >
+                ⬇️ تنزيل
+              </button>
             </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label">الرقم التسلسلي القادم (يبدأ من 131):</label>
-              <div style="display:flex; gap:8px;">
-                <input type="number" id="adminNextSeqInput" class="form-control" min="1" />
-                <button class="btn btn-primary" onclick="saveExhibitionSettings()">تثبيت الرقم</button>
+          </div>
+          <div class="preview-container" oncontextmenu="return false;">
+            <canvas id="invitationCanvas" width="1080" height="1350"></canvas>
+          </div>
+        </div>
+      </main>
+
+      <!-- ADMIN PANEL -->
+      <section id="adminPanel">
+        <div class="admin-banner">
+          <div>
+            <strong style="color: var(--gold); font-size: 1.05rem"
+              >👑 لوحة تحكم المدير</strong
+            >
+            <p style="font-size: 0.82rem; color: var(--text-muted)">
+              متابعة السيلز، التقارير الذكية، واستوديو القوالب.
+            </p>
+          </div>
+          <button class="btn btn-danger" onclick="logoutAdmin()">
+            إغلاق وضع المدير ✖
+          </button>
+        </div>
+
+        <div class="admin-tabs">
+          <button
+            class="admin-tab-btn active"
+            onclick="switchAdminTab('tabSales', this)"
+          >
+            👥 إدارة ومتابعة السيلز
+          </button>
+          <button
+            class="admin-tab-btn"
+            onclick="switchAdminTab('tabTemplate', this)"
+          >
+            🎨 القالب والمعارض
+          </button>
+          <button
+            class="admin-tab-btn"
+            onclick="switchAdminTab('tabReports', this)"
+          >
+            📋 سجل العملاء والتليفونات
+          </button>
+          <button
+            class="admin-tab-btn"
+            onclick="switchAdminTab('tabCloud', this)"
+          >
+            ⚙️ السحابة والأمان
+          </button>
+        </div>
+
+        <div id="tabSales" class="admin-tab-content active">
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="label">إجمالي دعوات المعرض الحالي</div>
+              <div class="val" id="kpiCurrentExhTotal">0</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">الرقم التسلسلي القادم</div>
+              <div class="val" id="kpiNextSeq">131</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">عدد السيلز المسجلين</div>
+              <div class="val" id="kpiSalesCount">0</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">أعلى سيلز في المعرض</div>
+              <div
+                class="val"
+                id="kpiTopSales"
+                style="font-size: 1.1rem; color: var(--gold)"
+              >
+                -
               </div>
             </div>
           </div>
 
-          <div class="control-section-box">
-            <div class="control-section-title">
-              <span>2️⃣ مقاس ومكان ولون (اسم العميل)</span>
-              <input type="color" id="nameColorPicker" value="#ffffff" onchange="updateTemplatePlacement()" style="width:38px; height:30px; border:0; background:transparent; cursor:pointer;" />
+          <div class="admin-two-col">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📊 متابعة إنجاز كل سيلز</div>
+                <!-- زرارين لاختيار طريقة الترتيب -->
+                <div style="display: flex; gap: 6px">
+                  <button
+                    id="sortCodeBtn"
+                    class="btn btn-gold"
+                    style="padding: 4px 10px; font-size: 0.75rem"
+                    onclick="setSalesSortMode('code')"
+                  >
+                    ترتيب بالكود
+                  </button>
+                  <button
+                    id="sortCountBtn"
+                    class="btn btn-outline"
+                    style="padding: 4px 10px; font-size: 0.75rem"
+                    onclick="setSalesSortMode('count')"
+                  >
+                    ترتيب بالإنجاز
+                  </button>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>الكود</th>
+                      <th>اسم السيلز</th>
+                      <th>عملاء هذا المعرض</th>
+                      <th>الإجمالي</th>
+                      <th>إجراء</th>
+                    </tr>
+                  </thead>
+                  <tbody id="salesPerformanceTbody"></tbody>
+                </table>
+              </div>
             </div>
-            <div class="range-row"><label>حجم الخط:</label><input type="range" id="nameSizeRange" min="20" max="110" value="52" oninput="updateTemplatePlacement()" /><span id="nameSizeVal" class="range-val">52px</span></div>
-            <div class="range-row"><label>عرض المستطيل:</label><input type="range" id="nameBoxWidthRange" min="25" max="95" value="80" oninput="updateTemplatePlacement()" /><span id="nameBoxWidthVal" class="range-val">80%</span></div>
-            <div class="range-row"><label>المكان رأسي Y:</label><input type="range" id="nameYRange" min="5" max="95" value="59" oninput="updateTemplatePlacement()" /><span id="nameYVal" class="range-val">59%</span></div>
-            <div class="range-row"><label>المكان أفقي X:</label><input type="range" id="nameXRange" min="5" max="95" value="50" oninput="updateTemplatePlacement()" /><span id="nameXVal" class="range-val">50%</span></div>
-          </div>
 
-          <div class="control-section-box">
-            <div class="control-section-title">
-              <span>3️⃣ مقاس ومكان ولون (كود الدعوة #131 | S11)</span>
-              <input type="color" id="codeColorPicker" value="#f59e0b" onchange="updateTemplatePlacement()" style="width:38px; height:30px; border:0; background:transparent; cursor:pointer;" />
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">➕ إضافة فريق السيلز</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">إضافة سيلز فردي:</label>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                  <input
+                    type="text"
+                    id="newSalesName"
+                    class="form-control"
+                    placeholder="اسم السيلز"
+                    style="flex: 2; min-width: 150px"
+                  />
+                  <input
+                    type="text"
+                    id="newSalesCode"
+                    class="form-control"
+                    placeholder="الكود (مثال: S15)"
+                    style="flex: 1; min-width: 110px"
+                  />
+                  <button class="btn btn-primary" onclick="addSingleSalesRep()">
+                    + إضافة
+                  </button>
+                </div>
+              </div>
+              <hr
+                style="
+                  border: 0;
+                  border-top: 1px solid var(--border);
+                  margin: 16px 0;
+                "
+              />
+              <div class="form-group">
+                <label class="form-label"
+                  >إضافة دفعة واحدة (اسم في كل سطر):</label
+                >
+                <textarea
+                  id="bulkSalesTextarea"
+                  class="form-control"
+                  placeholder="اكتب الأسماء هنا..."
+                ></textarea>
+              </div>
+              <button
+                class="btn btn-gold btn-block"
+                onclick="addBulkSalesReps()"
+              >
+                ⚡ إضافة القائمة دفعة واحدة
+              </button>
             </div>
-            <div class="range-row"><label>حجم الكود:</label><input type="range" id="codeSizeRange" min="16" max="80" value="32" oninput="updateTemplatePlacement()" /><span id="codeSizeVal" class="range-val">32px</span></div>
-            <div class="range-row"><label>المكان رأسي Y:</label><input type="range" id="codeYRange" min="5" max="96" value="90.5" oninput="updateTemplatePlacement()" /><span id="codeYVal" class="range-val">90.5%</span></div>
-            <div class="range-row"><label>المكان أفقي X:</label><input type="range" id="codeXRange" min="5" max="95" value="50" oninput="updateTemplatePlacement()" /><span id="codeXVal" class="range-val">50%</span></div>
           </div>
-
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:6px 4px;">
-            <label style="font-size:0.85rem; font-weight:700; color:#cbd5e1; cursor:pointer; display:flex; align-items:center; gap:8px;">
-              <input type="checkbox" id="showGuidesCheckbox" checked onchange="renderAllCanvases()" style="width:18px; height:18px; accent-color:var(--gold);" /> إظهار الإطار التوضيحي أثناء التعديل
-            </label>
-          </div>
-
-          <button class="btn btn-gold btn-block" onclick="saveExhibitionSettings()">💾 حفظ التعديلات بالسحابة</button>
         </div>
 
-        <div class="card sticky-preview-card">
-          <div class="card-header"><div class="card-title">🖼️ القالب قدامك (اسحب بالماوس للتعديل)</div></div>
-          <div class="drag-hint-badge">💡 اضغط بالماوس واسحب <strong>اسم العميل</strong> أو <strong>الكود</strong> لأي مكان!</div>
-          <div class="preview-container">
-            <canvas id="adminStudioCanvas" width="1080" height="1350"></canvas>
+        <div id="tabTemplate" class="admin-tab-content">
+          <div class="card" style="margin-bottom: 16px; padding: 14px">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  flex: 1;
+                  min-width: 260px;
+                "
+              >
+                <span
+                  style="
+                    font-weight: 800;
+                    color: var(--gold);
+                    white-space: nowrap;
+                  "
+                  >📍 إدارة المعارض:</span
+                >
+                <input
+                  type="text"
+                  id="newExhNameInput"
+                  class="form-control"
+                  placeholder="اسم معرض جديد"
+                  style="max-width: 260px; padding: 8px 12px"
+                />
+                <button class="btn btn-gold" onclick="addNewExhibition()">
+                  + إضافة معرض
+                </button>
+              </div>
+              <button
+                class="btn btn-danger"
+                onclick="deleteCurrentExhibition()"
+              >
+                🗑️ حذف المعرض المحدد
+              </button>
+            </div>
           </div>
+
+          <div class="studio-grid">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  🛠️ إعدادات ومقاسات القالب (<span id="studioExhName"></span>)
+                </div>
+                <button
+                  class="btn btn-gold"
+                  style="padding: 6px 12px; font-size: 0.82rem"
+                  onclick="saveExhibitionSettings()"
+                >
+                  💾 حفظ بالسحابة
+                </button>
+              </div>
+
+              <div class="control-section-box">
+                <div class="control-section-title">
+                  <span>1️⃣ صورة القالب الفارغ والترقيم</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">رفع صورة التصميم:</label>
+                  <input
+                    type="file"
+                    id="templateUploadInput"
+                    accept="image/*"
+                    class="form-control"
+                    onchange="handleTemplateUpload(event)"
+                  />
+                </div>
+                <div class="form-group" style="margin-bottom: 0">
+                  <label class="form-label"
+                    >الرقم التسلسلي القادم (يبدأ من 131):</label
+                  >
+                  <div style="display: flex; gap: 8px">
+                    <input
+                      type="number"
+                      id="adminNextSeqInput"
+                      class="form-control"
+                      min="1"
+                    />
+                    <button
+                      class="btn btn-primary"
+                      onclick="saveExhibitionSettings()"
+                    >
+                      تثبيت الرقم
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="control-section-box">
+                <div class="control-section-title">
+                  <span>2️⃣ مقاس ومكان ولون (اسم العميل)</span>
+                  <input
+                    type="color"
+                    id="nameColorPicker"
+                    value="#ffffff"
+                    onchange="updateTemplatePlacement()"
+                    style="
+                      width: 38px;
+                      height: 30px;
+                      border: 0;
+                      background: transparent;
+                      cursor: pointer;
+                    "
+                  />
+                </div>
+                <div class="range-row">
+                  <label>حجم الخط:</label
+                  ><input
+                    type="range"
+                    id="nameSizeRange"
+                    min="20"
+                    max="110"
+                    value="52"
+                    oninput="updateTemplatePlacement()"
+                  /><span id="nameSizeVal" class="range-val">52px</span>
+                </div>
+                <div class="range-row">
+                  <label>عرض المستطيل:</label
+                  ><input
+                    type="range"
+                    id="nameBoxWidthRange"
+                    min="25"
+                    max="95"
+                    value="80"
+                    oninput="updateTemplatePlacement()"
+                  /><span id="nameBoxWidthVal" class="range-val">80%</span>
+                </div>
+                <div class="range-row">
+                  <label>المكان رأسي Y:</label
+                  ><input
+                    type="range"
+                    id="nameYRange"
+                    min="5"
+                    max="95"
+                    value="59"
+                    oninput="updateTemplatePlacement()"
+                  /><span id="nameYVal" class="range-val">59%</span>
+                </div>
+                <div class="range-row">
+                  <label>المكان أفقي X:</label
+                  ><input
+                    type="range"
+                    id="nameXRange"
+                    min="5"
+                    max="95"
+                    value="50"
+                    oninput="updateTemplatePlacement()"
+                  /><span id="nameXVal" class="range-val">50%</span>
+                </div>
+              </div>
+
+              <div class="control-section-box">
+                <div class="control-section-title">
+                  <span>3️⃣ مقاس ومكان ولون (كود الدعوة 131 | S11)</span>
+                  <input
+                    type="color"
+                    id="codeColorPicker"
+                    value="#f59e0b"
+                    onchange="updateTemplatePlacement()"
+                    style="
+                      width: 38px;
+                      height: 30px;
+                      border: 0;
+                      background: transparent;
+                      cursor: pointer;
+                    "
+                  />
+                </div>
+                <div class="range-row">
+                  <label>حجم الكود:</label
+                  ><input
+                    type="range"
+                    id="codeSizeRange"
+                    min="16"
+                    max="80"
+                    value="32"
+                    oninput="updateTemplatePlacement()"
+                  /><span id="codeSizeVal" class="range-val">32px</span>
+                </div>
+                <div class="range-row">
+                  <label>المكان رأسي Y:</label
+                  ><input
+                    type="range"
+                    id="codeYRange"
+                    min="5"
+                    max="96"
+                    value="90.5"
+                    oninput="updateTemplatePlacement()"
+                  /><span id="codeYVal" class="range-val">90.5%</span>
+                </div>
+                <div class="range-row">
+                  <label>المكان أفقي X:</label
+                  ><input
+                    type="range"
+                    id="codeXRange"
+                    min="5"
+                    max="95"
+                    value="50"
+                    oninput="updateTemplatePlacement()"
+                  /><span id="codeXVal" class="range-val">50%</span>
+                </div>
+              </div>
+
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 12px;
+                  padding: 6px 4px;
+                "
+              >
+                <label
+                  style="
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: #cbd5e1;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    id="showGuidesCheckbox"
+                    checked
+                    onchange="renderAllCanvases()"
+                    style="width: 18px; height: 18px; accent-color: var(--gold)"
+                  />
+                  إظهار الإطار التوضيحي أثناء التعديل
+                </label>
+              </div>
+
+              <button
+                class="btn btn-gold btn-block"
+                onclick="saveExhibitionSettings()"
+              >
+                💾 حفظ التعديلات بالسحابة
+              </button>
+            </div>
+
+            <div class="card sticky-preview-card">
+              <div class="card-header">
+                <div class="card-title">
+                  🖼️ القالب قدامك (اسحب بالماوس للتعديل)
+                </div>
+              </div>
+              <div class="drag-hint-badge">
+                💡 اضغط بالماوس واسحب <strong>اسم العميل</strong> أو
+                <strong>الكود</strong> لأي مكان!
+              </div>
+              <div class="preview-container">
+                <canvas
+                  id="adminStudioCanvas"
+                  width="1080"
+                  height="1350"
+                ></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tabReports" class="admin-tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                📋 سجل العملاء والتليفونات (<span id="reportExhName"></span>)
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button class="btn btn-success" onclick="copyWhatsAppReport()">
+                  🟢 نسخ تقرير الواتساب
+                </button>
+                <button class="btn btn-primary" onclick="exportExcelCSV()">
+                  📊 تحميل شيت إكسيل (CSV)
+                </button>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+                margin-bottom: 14px;
+              "
+            >
+              <input
+                type="text"
+                id="logSearchInput"
+                class="form-control"
+                placeholder="🔍 بحث بالعميل، التليفون أو الدعوة..."
+                oninput="renderClientLogsTable()"
+              />
+              <select
+                id="logSalesFilter"
+                class="form-control"
+                onchange="renderClientLogsTable()"
+              >
+                <option value="ALL">كل السيلز (عرض الجميع)</option>
+              </select>
+            </div>
+
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>رقم الدعوة</th>
+                    <th>اسم العميل</th>
+                    <th>رقم التليفون</th>
+                    <th>السيلز المسؤول</th>
+                    <th>التوقيت</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="clientLogsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="tabCloud" class="admin-tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">☁️ إعدادات السحابة والأمان</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">رابط قاعدة البيانات السحابية:</label
+              ><input
+                type="text"
+                id="firebaseUrlInput"
+                class="form-control"
+                dir="ltr"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">كلمة سر المدير (Admin PIN):</label
+              ><input
+                type="text"
+                id="adminPinInput"
+                class="form-control"
+                dir="ltr"
+              />
+            </div>
+            <button
+              class="btn btn-primary"
+              onclick="saveCloudAndSecuritySettings()"
+            >
+              💾 حفظ الإعدادات
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Developer Signature Footer -->
+      <footer class="dev-footer">
+        ⚡ Developed by
+        <a
+          href="https://mohhamedallam12345-ops.github.io/Ny-profile/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Visit ENG/ M.Allam Profile"
+        >
+          ENG/ M.Allam <span class="link-arrow">↗</span>
+        </a>
+      </footer>
+    </div>
+
+    <!-- Admin PIN Login Modal -->
+    <div id="pinModal" class="modal-overlay">
+      <div class="modal-box">
+        <h3 style="color: var(--gold); margin-bottom: 8px">
+          🔒 الدخول لوضع المدير
+        </h3>
+        <p
+          style="
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+          "
+        >
+          أدخل كلمة سر المدير:
+        </p>
+        <input
+          type="password"
+          id="pinModalInput"
+          class="form-control"
+          placeholder="اكتب كلمة السر..."
+          dir="ltr"
+          style="margin-bottom: 14px"
+          onkeydown="if (event.key === 'Enter') verifyAdminPin();"
+        />
+        <div style="display: flex; gap: 8px">
+          <button
+            class="btn btn-gold"
+            style="flex: 1"
+            onclick="verifyAdminPin()"
+          >
+            دخول
+          </button>
+          <button
+            class="btn btn-outline"
+            style="flex: 1"
+            onclick="closePinModal()"
+          >
+            إلغاء
+          </button>
         </div>
       </div>
     </div>
 
-    <div id="tabReports" class="admin-tab-content">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📋 سجل العملاء والتليفونات (<span id="reportExhName"></span>)</div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn btn-success" onclick="copyWhatsAppReport()">🟢 نسخ تقرير الواتساب</button>
-            <button class="btn btn-primary" onclick="exportExcelCSV()">📊 تحميل شيت إكسيل (CSV)</button>
-          </div>
-        </div>
+    <script>
+      const DEFAULT_FIREBASE_URL =
+        "https://balmeter-vip-default-rtdb.firebaseio.com";
+      const DEFAULT_ADMIN_PIN = "mo,2242006";
+      const BACKUP_ADMIN_PIN = "1234";
+      const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V7";
+      const LEGACY_KEYS = [
+        "BALMETER_VIP_UNIFIED_STATE_V6",
+        "BALMETER_VIP_UNIFIED_STATE_V5",
+      ];
 
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
-          <input type="text" id="logSearchInput" class="form-control" placeholder="🔍 بحث بالعميل، التليفون أو الدعوة..." oninput="renderClientLogsTable()" />
-          <select id="logSalesFilter" class="form-control" onchange="renderClientLogsTable()">
-            <option value="ALL">كل السيلز (عرض الجميع)</option>
-          </select>
-        </div>
+      const INITIAL_SALES_TEAM = [
+        { code: "S11", name: "محمد" },
+        { code: "S12", name: "أحمد" },
+        { code: "S13", name: "محمود" },
+        { code: "S14", name: "مصطفى" },
+        { code: "S15", name: "سارة" },
+        { code: "S16", name: "نور" },
+        { code: "S17", name: "هدى" },
+        { code: "S18", name: "كريم" },
+        { code: "S19", name: "ياسمين" },
+        { code: "S20", name: "عمر" },
+        { code: "S21", name: "خالد" },
+        { code: "S22", name: "ندى" },
+        { code: "S23", name: "إسلام" },
+        { code: "S24", name: "آية" },
+      ];
 
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr><th>رقم الدعوة</th><th>اسم العميل</th><th>رقم التليفون</th><th>السيلز المسؤول</th><th>التوقيت</th><th>إجراءات</th></tr>
-            </thead>
-            <tbody id="clientLogsTbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div id="tabCloud" class="admin-tab-content">
-      <div class="card">
-        <div class="card-header"><div class="card-title">☁️ إعدادات السحابة والأمان</div></div>
-        <div class="form-group"><label class="form-label">رابط قاعدة البيانات السحابية:</label><input type="text" id="firebaseUrlInput" class="form-control" dir="ltr" /></div>
-        <div class="form-group"><label class="form-label">كلمة سر المدير (Admin PIN):</label><input type="text" id="adminPinInput" class="form-control" dir="ltr" /></div>
-        <button class="btn btn-primary" onclick="saveCloudAndSecuritySettings()">💾 حفظ الإعدادات</button>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- Developer Signature Footer -->
-  <footer class="dev-footer">
-    Developed by <span>ENG/ M.Allam</span>
-  </footer>
-
-</div>
-
-<!-- Admin PIN Login Modal -->
-<div id="pinModal" class="modal-overlay">
-  <div class="modal-box">
-    <h3 style="color: var(--gold); margin-bottom: 8px;">🔒 الدخول لوضع المدير</h3>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">أدخل كلمة سر المدير:</p>
-    <input type="password" id="pinModalInput" class="form-control" placeholder="اكتب كلمة السر..." dir="ltr" style="margin-bottom: 14px;" onkeydown="if(event.key==='Enter') verifyAdminPin()" />
-    <div style="display:flex; gap:8px;">
-      <button class="btn btn-gold" style="flex:1;" onclick="verifyAdminPin()">دخول</button>
-      <button class="btn btn-outline" style="flex:1;" onclick="closePinModal()">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  const DEFAULT_FIREBASE_URL = "https://balmeter-vip-default-rtdb.firebaseio.com";
-  const DEFAULT_ADMIN_PIN = "mo,2242006";
-  const BACKUP_ADMIN_PIN = "1234";
-  const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V7";
-  const LEGACY_KEYS = ["BALMETER_VIP_UNIFIED_STATE_V6", "BALMETER_VIP_UNIFIED_STATE_V5"];
-
-  const INITIAL_SALES_TEAM = [
-    { code: "S11", name: "محمد" },
-    { code: "S12", name: "أحمد" },
-    { code: "S13", name: "محمود" },
-    { code: "S14", name: "مصطفى" },
-    { code: "S15", name: "سارة" },
-    { code: "S16", name: "نور" },
-    { code: "S17", name: "هدى" },
-    { code: "S18", name: "كريم" },
-    { code: "S19", name: "ياسمين" },
-    { code: "S20", name: "عمر" },
-    { code: "S21", name: "خالد" },
-    { code: "S22", name: "ندى" },
-    { code: "S23", name: "إسلام" },
-    { code: "S24", name: "آية" }
-  ];
-
-  let appState = {
-    firebaseUrl: DEFAULT_FIREBASE_URL,
-    adminPin: DEFAULT_ADMIN_PIN,
-    activeExhibitionId: "exh_sohag",
-    salesTeam: [...INITIAL_SALES_TEAM],
-    exhibitions: {
-      "exh_sohag": {
-        id: "exh_sohag", name: "معرض سوهاج", nextSeq: 131, templateDataUrl: "",
-        nameX: 50, nameY: 59, nameSize: 52, nameBoxWidth: 80, nameColor: "#ffffff",
-        codeX: 50, codeY: 90.5, codeSize: 32, codeColor: "#f59e0b"
-      },
-      "exh_mansoura": {
-        id: "exh_mansoura", name: "معرض المنصورة", nextSeq: 131, templateDataUrl: "",
-        nameX: 50, nameY: 59, nameSize: 52, nameBoxWidth: 80, nameColor: "#ffffff",
-        codeX: 50, codeY: 90.5, codeSize: 32, codeColor: "#f59e0b"
-      }
-    },
-    invitations: []
-  };
-
-  let isAdminMode = false;
-  let loadedTemplateImg = null;
-  let lastLoadedTemplateSrc = "";
-  let lastIssuedTicket = null;
-  let isSyncing = false;
-  let draggingTarget = null;
-  let salesSortMode = "code"; // "code" (الافتراضي) أو "count" (حسب عدد الدعوات)
-
-  window.addEventListener("DOMContentLoaded", async () => {
-    loadLocalState();
-    setupStudioCanvasDragging();
-    renderAllUI();
-    await syncFromCloud(false);
-
-    setInterval(() => {
-      if (!isSyncing && !draggingTarget) syncFromCloud(false);
-    }, 6000);
-  });
-
-  // دالة ذكية لاستخراج الرقم من الكود وترتيب السيلز تصاعدياً رقمياً (1, 2, 3 ... 11, 12)
-  function sortSalesTeamByCode(teamArray) {
-    return [...teamArray].sort((a, b) => {
-      const numA = parseInt(String(a.code).replace(/\D/g, ""), 10) || 0;
-      const numB = parseInt(String(b.code).replace(/\D/g, ""), 10) || 0;
-      if (numA !== numB) return numA - numB;
-      return String(a.code).localeCompare(String(b.code), 'ar');
-    });
-  }
-
-  // تحويل أي أرقام عربية أو هندية إلى أرقام إنجليزية (0-9)
-  function toEnglishDigits(str) {
-    if (!str) return "";
-    return String(str)
-      .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
-      .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-  }
-
-  // تنظيف وتحديد طول رقم التليفون أثناء الكتابة (11 رقم للمصري أو السماح بكود الدولة)
-  function handlePhoneInput(inputEl) {
-    let val = toEnglishDigits(inputEl.value);
-
-    const hasPlus = val.trim().startsWith("+");
-    let digits = val.replace(/\D/g, "");
-    val = (hasPlus ? "+" : "") + digits;
-
-    if (val.startsWith("+20")) {
-      if (val.startsWith("+200")) val = "+20" + val.slice(4);
-      val = val.slice(0, 13);
-    } else if (val.startsWith("0020")) {
-      if (val.startsWith("00200")) val = "0020" + val.slice(5);
-      val = val.slice(0, 14);
-    } else if (val.startsWith("201")) {
-      val = val.slice(0, 12);
-    } else if (val.startsWith("+")) {
-      val = val.slice(0, 15);
-    } else if (val.startsWith("00")) {
-      val = val.slice(0, 16);
-    } else {
-      if (/^1[0125]/.test(val)) {
-        val = "0" + val;
-      }
-      val = val.slice(0, 11);
-    }
-
-    inputEl.value = val;
-    updatePhoneHelperUI(val);
-    onClientInputChange();
-  }
-
-  function normalizePhoneNumber(raw) {
-    let v = toEnglishDigits(raw || "").trim();
-    const hasPlus = v.startsWith("+");
-    const digits = v.replace(/\D/g, "");
-    v = (hasPlus ? "+" : "") + digits;
-
-    if (/^\+200?1[0125]\d{8}$/.test(v)) {
-      return "0" + v.replace(/^\+200?/, "");
-    }
-    if (/^00200?1[0125]\d{8}$/.test(v)) {
-      return "0" + v.replace(/^00200?/, "");
-    }
-    if (/^200?1[0125]\d{8}$/.test(v)) {
-      return "0" + v.replace(/^200?/, "");
-    }
-    if (/^1[0125]\d{8}$/.test(v)) {
-      return "0" + v;
-    }
-    return v;
-  }
-
-  function validatePhoneNumber(raw) {
-    const normalized = normalizePhoneNumber(raw);
-
-    if (normalized.startsWith("01") || raw.startsWith("+20") || raw.startsWith("0020") || raw.startsWith("20")) {
-      if (/^01[0125]\d{8}$/.test(normalized)) {
-        return { valid: true, normalized };
-      }
-      return {
-        valid: false,
-        message: "⚠️ رقم التليفون المصري يجب أن يتكون من 11 رقم صحيح باللغة الإنجليزية (يبدأ بـ 010 أو 011 أو 012 أو 015)!"
+      let appState = {
+        firebaseUrl: DEFAULT_FIREBASE_URL,
+        adminPin: DEFAULT_ADMIN_PIN,
+        activeExhibitionId: "exh_sohag",
+        salesTeam: [...INITIAL_SALES_TEAM],
+        exhibitions: {
+          exh_sohag: {
+            id: "exh_sohag",
+            name: "معرض سوهاج",
+            nextSeq: 131,
+            templateDataUrl: "",
+            nameX: 50,
+            nameY: 59,
+            nameSize: 52,
+            nameBoxWidth: 80,
+            nameColor: "#ffffff",
+            codeX: 50,
+            codeY: 90.5,
+            codeSize: 32,
+            codeColor: "#f59e0b",
+          },
+          exh_mansoura: {
+            id: "exh_mansoura",
+            name: "معرض المنصورة",
+            nextSeq: 131,
+            templateDataUrl: "",
+            nameX: 50,
+            nameY: 59,
+            nameSize: 52,
+            nameBoxWidth: 80,
+            nameColor: "#ffffff",
+            codeX: 50,
+            codeY: 90.5,
+            codeSize: 32,
+            codeColor: "#f59e0b",
+          },
+        },
+        invitations: [],
       };
-    }
 
-    if ((normalized.startsWith("+") || normalized.startsWith("00")) && normalized.replace(/\D/g, "").length >= 10) {
-      return { valid: true, normalized };
-    }
+      let isAdminMode = false;
+      let loadedTemplateImg = null;
+      let lastLoadedTemplateSrc = "";
+      let lastIssuedTicket = null;
+      let isSyncing = false;
+      let draggingTarget = null;
+      let salesSortMode = "code"; // "code" (الافتراضي) أو "count" (حسب عدد الدعوات)
 
-    return {
-      valid: false,
-      message: "⚠️ يرجى إدخال رقم موبايل مصري صحيح مكون من 11 رقم (أو رقم دولي يبدأ بكود الدولة مثل +20)!"
-    };
-  }
+      window.addEventListener("DOMContentLoaded", async () => {
+        loadLocalState();
+        setupStudioCanvasDragging();
+        renderAllUI();
+        await syncFromCloud(false);
 
-  function updatePhoneHelperUI(val) {
-    const hintEl = document.getElementById("phoneStatusHint");
-    const counterEl = document.getElementById("phoneCounterBadge");
-    if (!hintEl || !counterEl) return;
+        setInterval(() => {
+          if (!isSyncing && !draggingTarget) syncFromCloud(false);
+        }, 6000);
+      });
 
-    if (!val) {
-      hintEl.textContent = "يقبل 11 رقم مصري (أو كود الدولة +20)";
-      hintEl.style.color = "var(--text-muted)";
-      counterEl.textContent = "0 / 11";
-      counterEl.style.color = "var(--primary)";
-      return;
-    }
+      // تحويل أي أرقام عربية أو هندية إلى أرقام إنجليزية (0-9)
+      function toEnglishDigits(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+          .replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+      }
 
-    const normalized = normalizePhoneNumber(val);
-    const check = validatePhoneNumber(val);
+      // ضمان وجود حرف S دائماً بجانب رقم السيلز
+      function formatSalesCode(code) {
+        if (!code) return "S11";
+        const clean = toEnglishDigits(String(code)).trim().toUpperCase();
+        if (!clean) return "S11";
+        return clean.startsWith("S") ? clean : "S" + clean;
+      }
 
-    if (check.valid) {
-      hintEl.textContent = `✅ رقم صحيح (${normalized})`;
-      hintEl.style.color = "var(--success)";
-      counterEl.textContent = normalized.length === 11 ? "11 / 11" : `${normalized.length}`;
-      counterEl.style.color = "var(--success)";
-    } else {
-      const digitsLen = normalized.replace(/\D/g, "").length;
-      hintEl.textContent = "⏳ أكمل الرقم (11 رقم مصري أو كود الدولة)";
-      hintEl.style.color = "var(--gold)";
-      counterEl.textContent = `${digitsLen} / 11`;
-      counterEl.style.color = "var(--gold)";
-    }
-  }
+      // دالة ذكية لاستخراج الرقم من الكود وترتيب السيلز تصاعدياً رقمياً (1, 2, 3 ... 11, 12)
+      function sortSalesTeamByCode(teamArray) {
+        return [...teamArray].sort((a, b) => {
+          const numA = parseInt(String(a.code).replace(/\D/g, ""), 10) || 0;
+          const numB = parseInt(String(b.code).replace(/\D/g, ""), 10) || 0;
+          if (numA !== numB) return numA - numB;
+          return String(a.code).localeCompare(String(b.code), "ar");
+        });
+      }
 
-  function cleanFirebaseUrl(url) {
-    if (!url) return DEFAULT_FIREBASE_URL;
-    return url.trim().replace(/\/+$/, "");
-  }
+      // تنظيف وتحديد طول رقم التليفون أثناء الكتابة (11 رقم للمصري أو السماح بكود الدولة)
+      function handlePhoneInput(inputEl) {
+        let val = toEnglishDigits(inputEl.value);
 
-  function loadLocalState() {
-    try {
-      let raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        for (const k of LEGACY_KEYS) {
-          if (localStorage.getItem(k)) {
-            raw = localStorage.getItem(k);
-            break;
+        const hasPlus = val.trim().startsWith("+");
+        let digits = val.replace(/\D/g, "");
+        val = (hasPlus ? "+" : "") + digits;
+
+        if (val.startsWith("+20")) {
+          if (val.startsWith("+200")) val = "+20" + val.slice(4);
+          val = val.slice(0, 13);
+        } else if (val.startsWith("0020")) {
+          if (val.startsWith("00200")) val = "0020" + val.slice(5);
+          val = val.slice(0, 14);
+        } else if (val.startsWith("201")) {
+          val = val.slice(0, 12);
+        } else if (val.startsWith("+")) {
+          val = val.slice(0, 15);
+        } else if (val.startsWith("00")) {
+          val = val.slice(0, 16);
+        } else {
+          if (/^1[0125]/.test(val)) {
+            val = "0" + val;
           }
+          val = val.slice(0, 11);
+        }
+
+        inputEl.value = val;
+        updatePhoneHelperUI(val);
+        onClientInputChange();
+      }
+
+      function normalizePhoneNumber(raw) {
+        let v = toEnglishDigits(raw || "").trim();
+        const hasPlus = v.startsWith("+");
+        const digits = v.replace(/\D/g, "");
+        v = (hasPlus ? "+" : "") + digits;
+
+        if (/^\+200?1[0125]\d{8}$/.test(v)) {
+          return "0" + v.replace(/^\+200?/, "");
+        }
+        if (/^00200?1[0125]\d{8}$/.test(v)) {
+          return "0" + v.replace(/^00200?/, "");
+        }
+        if (/^200?1[0125]\d{8}$/.test(v)) {
+          return "0" + v.replace(/^200?/, "");
+        }
+        if (/^1[0125]\d{8}$/.test(v)) {
+          return "0" + v;
+        }
+        return v;
+      }
+
+      function validatePhoneNumber(raw) {
+        const normalized = normalizePhoneNumber(raw);
+
+        if (
+          normalized.startsWith("01") ||
+          raw.startsWith("+20") ||
+          raw.startsWith("0020") ||
+          raw.startsWith("20")
+        ) {
+          if (/^01[0125]\d{8}$/.test(normalized)) {
+            return { valid: true, normalized };
+          }
+          return {
+            valid: false,
+            message:
+              "⚠️ رقم التليفون المصري يجب أن يتكون من 11 رقم صحيح باللغة الإنجليزية (يبدأ بـ 010 أو 011 أو 012 أو 015)!",
+          };
+        }
+
+        if (
+          (normalized.startsWith("+") || normalized.startsWith("00")) &&
+          normalized.replace(/\D/g, "").length >= 10
+        ) {
+          return { valid: true, normalized };
+        }
+
+        return {
+          valid: false,
+          message:
+            "⚠️ يرجى إدخال رقم موبايل مصري صحيح مكون من 11 رقم (أو رقم دولي يبدأ بكود الدولة مثل +20)!",
+        };
+      }
+
+      function updatePhoneHelperUI(val) {
+        const hintEl = document.getElementById("phoneStatusHint");
+        const counterEl = document.getElementById("phoneCounterBadge");
+        if (!hintEl || !counterEl) return;
+
+        if (!val) {
+          hintEl.textContent = "يقبل 11 رقم مصري (أو كود الدولة +20)";
+          hintEl.style.color = "var(--text-muted)";
+          counterEl.textContent = "0 / 11";
+          counterEl.style.color = "var(--primary)";
+          return;
+        }
+
+        const normalized = normalizePhoneNumber(val);
+        const check = validatePhoneNumber(val);
+
+        if (check.valid) {
+          hintEl.textContent = `✅ رقم صحيح (${normalized})`;
+          hintEl.style.color = "var(--success)";
+          counterEl.textContent =
+            normalized.length === 11 ? "11 / 11" : `${normalized.length}`;
+          counterEl.style.color = "var(--success)";
+        } else {
+          const digitsLen = normalized.replace(/\D/g, "").length;
+          hintEl.textContent = "⏳ أكمل الرقم (11 رقم مصري أو كود الدولة)";
+          hintEl.style.color = "var(--gold)";
+          counterEl.textContent = `${digitsLen} / 11`;
+          counterEl.style.color = "var(--gold)";
         }
       }
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        mergeState(parsed);
+
+      function cleanFirebaseUrl(url) {
+        if (!url) return DEFAULT_FIREBASE_URL;
+        return url.trim().replace(/\/+$/, "");
       }
-    } catch (e) {
-      console.warn("Local storage load warning:", e);
-    }
-    appState.firebaseUrl = cleanFirebaseUrl(appState.firebaseUrl || DEFAULT_FIREBASE_URL);
-  }
 
-  function saveLocalState() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-    } catch (e) {
-      console.warn("Local storage quota warning:", e);
-    }
-  }
+      function loadLocalState() {
+        try {
+          let raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            for (const k of LEGACY_KEYS) {
+              if (localStorage.getItem(k)) {
+                raw = localStorage.getItem(k);
+                break;
+              }
+            }
+          }
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            mergeState(parsed);
+          }
+        } catch (e) {
+          console.warn("Local storage load warning:", e);
+        }
+        appState.firebaseUrl = cleanFirebaseUrl(
+          appState.firebaseUrl || DEFAULT_FIREBASE_URL,
+        );
+      }
 
-  function mergeState(incoming) {
-    if (!incoming || typeof incoming !== "object") return;
-    if (incoming.adminPin) appState.adminPin = incoming.adminPin;
-    if (incoming.salesTeam && Array.isArray(incoming.salesTeam) && incoming.salesTeam.length > 0) {
-      appState.salesTeam = incoming.salesTeam;
-    }
-    if (incoming.exhibitions && typeof incoming.exhibitions === "object") {
-      Object.keys(incoming.exhibitions).forEach(k => {
-        const ex = incoming.exhibitions[k];
-        if (ex.nameX === undefined) ex.nameX = 50;
-        if (ex.nameY === undefined) ex.nameY = 59;
-        if (ex.nameSize === undefined) ex.nameSize = 52;
-        if (ex.nameBoxWidth === undefined) ex.nameBoxWidth = 80;
-        if (ex.nameColor === undefined) ex.nameColor = "#ffffff";
-        if (ex.codeX === undefined) ex.codeX = 50;
-        if (ex.codeY === undefined) ex.codeY = 90.5;
-        if (ex.codeSize === undefined) ex.codeSize = 32;
-        if (ex.codeColor === undefined) ex.codeColor = "#f59e0b";
-      });
-      appState.exhibitions = incoming.exhibitions;
-    }
-    if (incoming.invitations) {
-      const invArr = Array.isArray(incoming.invitations)
-        ? incoming.invitations.filter(Boolean)
-        : Object.values(incoming.invitations).filter(Boolean);
-      appState.invitations = invArr;
-    }
-    if (!appState.exhibitions[appState.activeExhibitionId]) {
-      const firstKey = Object.keys(appState.exhibitions)[0];
-      if (firstKey) appState.activeExhibitionId = firstKey;
-    }
-  }
+      function saveLocalState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        } catch (e) {
+          console.warn("Local storage quota warning:", e);
+        }
+      }
 
-  function updateSyncBadge(online, text) {
-    const badge = document.getElementById("syncStatusBadge");
-    if (!badge) return;
-    if (online) {
-      badge.className = "sync-badge";
-      badge.textContent = text || "🟢 متصل بالسحابة لايف";
-    } else {
-      badge.className = "sync-badge offline";
-      badge.textContent = text || "🟠 وضع محلي (جاري الاتصال...)";
-    }
-  }
+      function mergeState(incoming) {
+        if (!incoming || typeof incoming !== "object") return;
+        if (incoming.adminPin) appState.adminPin = incoming.adminPin;
+        if (
+          incoming.salesTeam &&
+          Array.isArray(incoming.salesTeam) &&
+          incoming.salesTeam.length > 0
+        ) {
+          appState.salesTeam = incoming.salesTeam.map((s) => ({
+            ...s,
+            code: formatSalesCode(s.code),
+          }));
+        }
+        if (incoming.exhibitions && typeof incoming.exhibitions === "object") {
+          Object.keys(incoming.exhibitions).forEach((k) => {
+            const ex = incoming.exhibitions[k];
+            if (ex.nameX === undefined) ex.nameX = 50;
+            if (ex.nameY === undefined) ex.nameY = 59;
+            if (ex.nameSize === undefined) ex.nameSize = 52;
+            if (ex.nameBoxWidth === undefined) ex.nameBoxWidth = 80;
+            if (ex.nameColor === undefined) ex.nameColor = "#ffffff";
+            if (ex.codeX === undefined) ex.codeX = 50;
+            if (ex.codeY === undefined) ex.codeY = 90.5;
+            if (ex.codeSize === undefined) ex.codeSize = 32;
+            if (ex.codeColor === undefined) ex.codeColor = "#f59e0b";
+          });
+          appState.exhibitions = incoming.exhibitions;
+        }
+        if (incoming.invitations) {
+          const invArr = Array.isArray(incoming.invitations)
+            ? incoming.invitations.filter(Boolean)
+            : Object.values(incoming.invitations).filter(Boolean);
+          appState.invitations = invArr.map((inv) => ({
+            ...inv,
+            salesCode: formatSalesCode(inv.salesCode),
+          }));
+        }
+        if (!appState.exhibitions[appState.activeExhibitionId]) {
+          const firstKey = Object.keys(appState.exhibitions)[0];
+          if (firstKey) appState.activeExhibitionId = firstKey;
+        }
+      }
 
-  async function syncFromCloud(showToast = false) {
-    const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
-    if (!baseUrl) return;
+      function updateSyncBadge(online, text) {
+        const badge = document.getElementById("syncStatusBadge");
+        if (!badge) return;
+        if (online) {
+          badge.className = "sync-badge";
+          badge.textContent = text || "🟢 متصل بالسحابة لايف";
+        } else {
+          badge.className = "sync-badge offline";
+          badge.textContent = text || "🟠 وضع محلي (جاري الاتصال...)";
+        }
+      }
 
-    isSyncing = true;
-    try {
-      const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, { cache: "no-store" });
-      if (!res.ok) throw new Error("Network response not ok");
-      const cloudData = await res.json();
+      async function syncFromCloud(showToast = false) {
+        const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+        if (!baseUrl) return;
 
-      if (cloudData) {
-        mergeState(cloudData);
+        isSyncing = true;
+        try {
+          const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
+            cache: "no-store",
+          });
+          if (!res.ok) throw new Error("Network response not ok");
+          const cloudData = await res.json();
+
+          if (cloudData) {
+            mergeState(cloudData);
+            saveLocalState();
+            renderAllUI();
+          } else {
+            await pushStateToCloud();
+          }
+          updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
+          if (showToast) alert("تم تحديث البيانات من السحابة بنجاح ✅");
+        } catch (err) {
+          console.warn("Cloud sync warning:", err);
+          updateSyncBadge(false, "🟠 اتصال ضعيف (محفوظ مؤقتاً)");
+        } finally {
+          isSyncing = false;
+        }
+      }
+
+      async function pushStateToCloud() {
+        const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
         saveLocalState();
-        renderAllUI();
-      } else {
-        await pushStateToCloud();
-      }
-      updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
-      if (showToast) alert("تم تحديث البيانات من السحابة بنجاح ✅");
-    } catch (err) {
-      console.warn("Cloud sync warning:", err);
-      updateSyncBadge(false, "🟠 اتصال ضعيف (محفوظ مؤقتاً)");
-    } finally {
-      isSyncing = false;
-    }
-  }
-
-  async function pushStateToCloud() {
-    const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
-    saveLocalState();
-    if (!baseUrl) return false;
-
-    try {
-      const payload = {
-        adminPin: appState.adminPin,
-        salesTeam: appState.salesTeam,
-        exhibitions: appState.exhibitions,
-        invitations: appState.invitations,
-        lastUpdated: Date.now()
-      };
-      const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
-        return true;
-      }
-    } catch (e) {
-      console.error("Push error:", e);
-      updateSyncBadge(false, "🟠 خطأ في الرفع للسحابة");
-    }
-    return false;
-  }
-
-  function renderAllUI() {
-    renderExhibitionPills();
-    renderSalesSelectDropdown();
-    loadActiveExhibitionTemplate();
-    if (isAdminMode) {
-      renderAdminDashboard();
-    }
-  }
-
-  function getActiveExhibition() {
-    return appState.exhibitions[appState.activeExhibitionId] || Object.values(appState.exhibitions)[0];
-  }
-
-  function renderExhibitionPills() {
-    const container = document.getElementById("exhibitionPills");
-    container.innerHTML = "";
-    const activeExh = getActiveExhibition();
-
-    Object.values(appState.exhibitions).forEach(exh => {
-      const btn = document.createElement("button");
-      btn.className = "exh-pill" + (exh.id === activeExh.id ? " active" : "");
-      btn.textContent = isAdminMode ? `${exh.name} (#${getCalculatedNextSeq(exh.id)})` : exh.name;
-      btn.onclick = () => {
-        appState.activeExhibitionId = exh.id;
-        lastIssuedTicket = null;
-        document.getElementById("ticketConfirmBox").style.display = "none";
-        document.getElementById("previewTopActions").style.display = "none";
-        saveLocalState();
-        renderAllUI();
-      };
-      container.appendChild(btn);
-    });
-
-    document.getElementById("activeExhTitle").textContent = activeExh ? activeExh.name : "";
-  }
-
-  // هنا يتم ترتيب السيلز تصاعدياً حسب الكود في القائمة المنسدلة
-  function renderSalesSelectDropdown() {
-    const select = document.getElementById("salesSelect");
-    const searchVal = (document.getElementById("salesSearchInput").value || "").trim().toLowerCase();
-    const savedSalesCode = localStorage.getItem("BALMETER_SAVED_SALES_CODE") || "";
-
-    const sortedTeam = sortSalesTeamByCode(appState.salesTeam);
-    const filtered = sortedTeam.filter(s =>
-      s.name.toLowerCase().includes(searchVal) || s.code.toLowerCase().includes(searchVal)
-    );
-
-    select.innerHTML = "";
-    filtered.forEach(s => {
-      const opt = document.createElement("option");
-      opt.value = s.code;
-      opt.textContent = `${s.name} (كود: ${s.code})`;
-      select.appendChild(opt);
-    });
-
-    if (savedSalesCode && filtered.some(s => s.code === savedSalesCode)) {
-      select.value = savedSalesCode;
-    }
-    renderAllCanvases();
-  }
-
-  function filterSalesDropdown() {
-    renderSalesSelectDropdown();
-  }
-
-  function onSalesRepChange() {
-    const code = document.getElementById("salesSelect").value;
-    if (code) {
-      localStorage.setItem("BALMETER_SAVED_SALES_CODE", code);
-    }
-    renderAllCanvases();
-  }
-
-  function isPhoneDuplicateInExhibition(exhId, rawPhone) {
-    const target = normalizePhoneNumber(rawPhone);
-    if (!target) return false;
-    return appState.invitations.some(inv =>
-      inv && inv.exhibitionId === exhId && normalizePhoneNumber(inv.clientPhone) === target
-    );
-  }
-
-  function onClientInputChange() {
-    const typedName = (document.getElementById("clientNameInput").value || "").trim();
-    const typedPhone = (document.getElementById("clientPhoneInput").value || "").trim();
-    const exh = getActiveExhibition();
-
-    if (typedName || typedPhone) {
-      lastIssuedTicket = null;
-      document.getElementById("ticketConfirmBox").style.display = "none";
-      document.getElementById("previewTopActions").style.display = "none";
-    }
-
-    const dupBox = document.getElementById("duplicateWarningBox");
-    if (typedPhone && exh) {
-      const isDup = isPhoneDuplicateInExhibition(exh.id, typedPhone);
-      dupBox.style.display = isDup ? "block" : "none";
-    } else {
-      dupBox.style.display = "none";
-    }
-
-    renderAllCanvases();
-  }
-
-  function getCalculatedNextSeq(exhId) {
-    const exh = appState.exhibitions[exhId];
-    const baseNext = exh && exh.nextSeq ? Number(exh.nextSeq) : 131;
-    const exhInvitations = appState.invitations.filter(inv => inv && inv.exhibitionId === exhId);
-    if (exhInvitations.length === 0) return baseNext;
-    const maxUsed = Math.max(...exhInvitations.map(i => Number(i.seqNumber) || 130));
-    return Math.max(baseNext, maxUsed + 1);
-  }
-
-  function loadActiveExhibitionTemplate() {
-    const exh = getActiveExhibition();
-    if (!exh) return;
-
-    if (exh.templateDataUrl && exh.templateDataUrl !== lastLoadedTemplateSrc) {
-      const img = new Image();
-      img.onload = () => {
-        loadedTemplateImg = img;
-        lastLoadedTemplateSrc = exh.templateDataUrl;
-        renderAllCanvases();
-      };
-      img.src = exh.templateDataUrl;
-    } else if (!exh.templateDataUrl) {
-      loadedTemplateImg = null;
-      lastLoadedTemplateSrc = "";
-      renderAllCanvases();
-    } else {
-      renderAllCanvases();
-    }
-  }
-
-  function renderAllCanvases(customTicket = null) {
-    drawSingleCanvas(document.getElementById("invitationCanvas"), customTicket, false);
-    if (isAdminMode) {
-      const showGuides = document.getElementById("showGuidesCheckbox")?.checked;
-      drawSingleCanvas(document.getElementById("adminStudioCanvas"), customTicket, showGuides);
-    }
-  }
-
-  function drawSingleCanvas(canvas, customTicket = null, drawGuides = false) {
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const exh = getActiveExhibition();
-    if (!exh) return;
-
-    const isStudioCanvas = (canvas.id === "adminStudioCanvas");
-
-    if (loadedTemplateImg) {
-      canvas.width = loadedTemplateImg.naturalWidth || 1080;
-      canvas.height = loadedTemplateImg.naturalHeight || 1350;
-      ctx.drawImage(loadedTemplateImg, 0, 0, canvas.width, canvas.height);
-    } else {
-      canvas.width = 1080;
-      canvas.height = 1350;
-      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, "#0b192c");
-      grad.addColorStop(1, "#050b14");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.strokeStyle = "#f59e0b";
-      ctx.lineWidth = 6;
-      ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
-
-      ctx.fillStyle = "#06b6d4";
-      ctx.textAlign = "center";
-      ctx.font = "800 54px 'Cairo', sans-serif";
-      ctx.fillText(exh.name, canvas.width / 2, 260);
-
-      ctx.fillStyle = "#94a3b8";
-      ctx.font = "600 30px 'Cairo', sans-serif";
-      ctx.fillText("ارفع صورة القالب من تبويب (القالب والمعارض)", canvas.width / 2, 330);
-    }
-
-    const typedName = (document.getElementById("clientNameInput")?.value || "").trim();
-    const typedPhone = (document.getElementById("clientPhoneInput")?.value || "").trim();
-
-    const activeIssuedTicket = customTicket || (!typedName && !typedPhone ? lastIssuedTicket : null);
-    const isUnissuedPreview = !isStudioCanvas && !activeIssuedTicket;
-
-    const isDuplicatePhone = isUnissuedPreview && typedPhone && isPhoneDuplicateInExhibition(exh.id, typedPhone);
-
-    const clientName = activeIssuedTicket
-      ? activeIssuedTicket.clientName
-      : (typedName || "أ / أحمد محمود عبد الرحمن");
-
-    const salesCode = activeIssuedTicket
-      ? activeIssuedTicket.salesCode
-      : (document.getElementById("salesSelect").value || "S11");
-
-    const nameX = ((exh.nameX ?? 50) / 100) * canvas.width;
-    const nameY = ((exh.nameY ?? 59) / 100) * canvas.height;
-    const boxWidthPct = exh.nameBoxWidth ?? 80;
-    const maxWidth = (boxWidthPct / 100) * canvas.width;
-    let fontSize = Math.round(((exh.nameSize ?? 52) / 1080) * canvas.width);
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    do {
-      ctx.font = `800 ${fontSize}px 'Cairo', sans-serif`;
-      if (ctx.measureText(clientName).width <= maxWidth || fontSize <= 18) break;
-      fontSize -= 2;
-    } while (fontSize > 18);
-
-    if (drawGuides) {
-      const boxH = fontSize * 1.45;
-      ctx.save();
-      ctx.strokeStyle = "rgba(6, 182, 212, 0.85)";
-      ctx.fillStyle = "rgba(6, 182, 212, 0.12)";
-      ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
-      ctx.setLineDash([10, 6]);
-      ctx.fillRect(nameX - maxWidth / 2, nameY - boxH / 2, maxWidth, boxH);
-      ctx.strokeRect(nameX - maxWidth / 2, nameY - boxH / 2, maxWidth, boxH);
-      ctx.restore();
-    }
-
-    ctx.save();
-    ctx.fillStyle = exh.nameColor || "#ffffff";
-    ctx.shadowColor = "rgba(0,0,0,0.65)";
-    ctx.shadowBlur = 8;
-    ctx.fillText(clientName, nameX, nameY);
-    ctx.restore();
-
-    const codeX = ((exh.codeX ?? 50) / 100) * canvas.width;
-    const codeY = ((exh.codeY ?? 90.5) / 100) * canvas.height;
-    const codeFontSize = Math.max(16, Math.round(((exh.codeSize ?? 32) / 1080) * canvas.width));
-
-    let codeText = "";
-    if (isStudioCanvas) {
-      codeText = `#${getCalculatedNextSeq(exh.id)}  |  ${salesCode}`;
-    } else if (activeIssuedTicket) {
-      codeText = `#${activeIssuedTicket.seqNumber}  |  ${activeIssuedTicket.salesCode}`;
-    } else if (isDuplicatePhone) {
-      codeText = `❌ رقم التليفون مكرر - غير مصرح`;
-    } else {
-      codeText = `#----  |  ${salesCode} (بانتظار الإصدار)`;
-    }
-
-    ctx.font = `800 ${codeFontSize}px 'Cairo', sans-serif`;
-    const codeMetricsWidth = ctx.measureText(codeText).width + 40;
-    const codeBoxH = codeFontSize * 1.45;
-
-    if (drawGuides) {
-      ctx.save();
-      ctx.strokeStyle = "rgba(245, 158, 11, 0.85)";
-      ctx.fillStyle = "rgba(245, 158, 11, 0.12)";
-      ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
-      ctx.setLineDash([8, 5]);
-      ctx.fillRect(codeX - codeMetricsWidth / 2, codeY - codeBoxH / 2, codeMetricsWidth, codeBoxH);
-      ctx.strokeRect(codeX - codeMetricsWidth / 2, codeY - codeBoxH / 2, codeMetricsWidth, codeBoxH);
-      ctx.restore();
-    }
-
-    ctx.save();
-    ctx.fillStyle = isDuplicatePhone ? "#ef4444" : (exh.codeColor || "#f59e0b");
-    ctx.shadowColor = "rgba(0,0,0,0.65)";
-    ctx.shadowBlur = 6;
-    ctx.fillText(codeText, codeX, codeY);
-    ctx.restore();
-
-    if (isUnissuedPreview) {
-      ctx.save();
-      ctx.translate(canvas.width / 2, nameY);
-      ctx.rotate(-Math.PI / 10);
-
-      const bannerW = canvas.width * 0.88;
-      const bannerH = Math.round(canvas.width * 0.11);
-      ctx.fillStyle = isDuplicatePhone ? "rgba(220, 38, 38, 0.88)" : "rgba(15, 23, 42, 0.82)";
-      ctx.strokeStyle = isDuplicatePhone ? "#fca5a5" : "#f59e0b";
-      ctx.lineWidth = 4;
-
-      ctx.fillRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
-      ctx.strokeRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
-
-      const stampFontSize = Math.round(canvas.width * 0.038);
-      ctx.font = `900 ${stampFontSize}px 'Cairo', sans-serif`;
-      ctx.fillStyle = "#ffffff";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      const stampText = isDuplicatePhone
-        ? "❌ رقم تليفون مكرر - دعوة لاغية"
-        : "🔒 معاينة فقط - اضغط إصدار لتفعيل الرقم";
-      ctx.fillText(stampText, 0, 0);
-      ctx.restore();
-    }
-  }
-
-  function setupStudioCanvasDragging() {
-    const canvas = document.getElementById("adminStudioCanvas");
-    if (!canvas) return;
-
-    function getPointerPct(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      const xPct = Math.min(95, Math.max(5, Math.round(((clientX - rect.left) / rect.width) * 100)));
-      const yPct = Math.min(96, Math.max(5, Math.round(((clientY - rect.top) / rect.height) * 100)));
-      return { xPct, yPct };
-    }
-
-    function onStart(e) {
-      const exh = getActiveExhibition();
-      if (!exh) return;
-      const { xPct, yPct } = getPointerPct(e);
-
-      const distToName = Math.hypot(xPct - (exh.nameX ?? 50), yPct - (exh.nameY ?? 59));
-      const distToCode = Math.hypot(xPct - (exh.codeX ?? 50), yPct - (exh.codeY ?? 90.5));
-
-      if (distToName <= distToCode && distToName < 28) {
-        draggingTarget = "name";
-      } else if (distToCode < 28) {
-        draggingTarget = "code";
-      } else {
-        draggingTarget = "name";
-      }
-      onMove(e);
-    }
-
-    function onMove(e) {
-      if (!draggingTarget) return;
-      if (e.cancelable) e.preventDefault();
-      const exh = getActiveExhibition();
-      if (!exh) return;
-
-      const { xPct, yPct } = getPointerPct(e);
-      if (draggingTarget === "name") {
-        exh.nameX = xPct;
-        exh.nameY = yPct;
-      } else if (draggingTarget === "code") {
-        exh.codeX = xPct;
-        exh.codeY = yPct;
-      }
-
-      syncSlidersFromExhibition(exh);
-      renderAllCanvases();
-    }
-
-    function onEnd() {
-      if (draggingTarget) {
-        draggingTarget = null;
-        saveLocalState();
-      }
-    }
-
-    canvas.addEventListener("mousedown", onStart);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onEnd);
-
-    canvas.addEventListener("touchstart", onStart, { passive: false });
-    window.addEventListener("touchmove", onMove, { passive: false });
-    window.addEventListener("touchend", onEnd);
-  }
-
-  function syncSlidersFromExhibition(exh) {
-    if (!exh) return;
-    document.getElementById("nameYRange").value = exh.nameY ?? 59;
-    document.getElementById("nameYVal").textContent = (exh.nameY ?? 59) + "%";
-    document.getElementById("nameXRange").value = exh.nameX ?? 50;
-    document.getElementById("nameXVal").textContent = (exh.nameX ?? 50) + "%";
-    document.getElementById("nameSizeRange").value = exh.nameSize ?? 52;
-    document.getElementById("nameSizeVal").textContent = (exh.nameSize ?? 52) + "px";
-    document.getElementById("nameBoxWidthRange").value = exh.nameBoxWidth ?? 80;
-    document.getElementById("nameBoxWidthVal").textContent = (exh.nameBoxWidth ?? 80) + "%";
-    document.getElementById("nameColorPicker").value = exh.nameColor || "#ffffff";
-
-    document.getElementById("codeYRange").value = exh.codeY ?? 90.5;
-    document.getElementById("codeYVal").textContent = (exh.codeY ?? 90.5) + "%";
-    document.getElementById("codeXRange").value = exh.codeX ?? 50;
-    document.getElementById("codeXVal").textContent = (exh.codeX ?? 50) + "%";
-    document.getElementById("codeSizeRange").value = exh.codeSize ?? 32;
-    document.getElementById("codeSizeVal").textContent = (exh.codeSize ?? 32) + "px";
-    document.getElementById("codeColorPicker").value = exh.codeColor || "#f59e0b";
-  }
-
-  function dataURLtoFile(dataurl, filename) {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
-  }
-
-  async function shareCurrentCanvas(customFilename) {
-    const canvas = document.getElementById("invitationCanvas");
-    const cleanClient = lastIssuedTicket ? lastIssuedTicket.clientName : "VIP";
-    const seq = lastIssuedTicket ? lastIssuedTicket.seqNumber : "131";
-    const fileName = customFilename || `VIP_${seq}_${cleanClient}.png`;
-
-    try {
-      const dataUrl = canvas.toDataURL("image/png");
-      const file = dataURLtoFile(dataUrl, fileName);
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: `دعوة VIP - ${cleanClient}`,
-          text: `دعوة حضور خاصة باسم: ${cleanClient}`
-        });
-        return true;
-      } else if (navigator.share) {
-        await navigator.share({
-          files: [file],
-          title: `دعوة VIP - ${cleanClient}`
-        });
-        return true;
-      } else {
-        downloadCurrentCanvas(fileName);
+        if (!baseUrl) return false;
+
+        try {
+          const payload = {
+            adminPin: appState.adminPin,
+            salesTeam: appState.salesTeam,
+            exhibitions: appState.exhibitions,
+            invitations: appState.invitations,
+            lastUpdated: Date.now(),
+          };
+          const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
+            return true;
+          }
+        } catch (e) {
+          console.error("Push error:", e);
+          updateSyncBadge(false, "🟠 خطأ في الرفع للسحابة");
+        }
         return false;
       }
-    } catch (err) {
-      if (err && err.name !== "AbortError") {
-        downloadCurrentCanvas(fileName);
+
+      function renderAllUI() {
+        renderExhibitionPills();
+        renderSalesSelectDropdown();
+        loadActiveExhibitionTemplate();
+        if (isAdminMode) {
+          renderAdminDashboard();
+        }
       }
-      return false;
-    }
-  }
 
-  function downloadCurrentCanvas(filename) {
-    const canvas = document.getElementById("invitationCanvas");
-    const defaultName = lastIssuedTicket
-      ? `VIP_${lastIssuedTicket.seqNumber}_${lastIssuedTicket.clientName}.png`
-      : `Balmeter_VIP_Invitation.png`;
+      function getActiveExhibition() {
+        return (
+          appState.exhibitions[appState.activeExhibitionId] ||
+          Object.values(appState.exhibitions)[0]
+        );
+      }
 
-    const link = document.createElement("a");
-    link.download = filename || defaultName;
-    link.href = canvas.toDataURL("image/png");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+      function renderExhibitionPills() {
+        const container = document.getElementById("exhibitionPills");
+        container.innerHTML = "";
+        const activeExh = getActiveExhibition();
 
-  async function issueAndDownloadInvitation() {
-    const clientNameInput = document.getElementById("clientNameInput");
-    const clientPhoneInput = document.getElementById("clientPhoneInput");
-    const clientName = (clientNameInput.value || "").trim();
-    const rawPhone = (clientPhoneInput.value || "").trim();
-    const salesCode = document.getElementById("salesSelect").value;
+        Object.values(appState.exhibitions).forEach((exh) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "exh-pill" + (exh.id === activeExh.id ? " active" : "");
+          btn.textContent = isAdminMode
+            ? `${exh.name} (${getCalculatedNextSeq(exh.id)})`
+            : exh.name;
+          btn.onclick = () => {
+            appState.activeExhibitionId = exh.id;
+            lastIssuedTicket = null;
+            document.getElementById("ticketConfirmBox").style.display = "none";
+            document.getElementById("previewTopActions").style.display = "none";
+            saveLocalState();
+            renderAllUI();
+          };
+          container.appendChild(btn);
+        });
 
-    if (!clientName) {
-      alert("من فضلك اكتب اسم العميل أولاً!");
-      clientNameInput.focus();
-      return;
-    }
-    if (!rawPhone) {
-      alert("⚠️ رقم تليفون العميل مطلوب إجبارياً!");
-      clientPhoneInput.focus();
-      return;
-    }
+        document.getElementById("activeExhTitle").textContent = activeExh
+          ? activeExh.name
+          : "";
+      }
 
-    const phoneCheck = validatePhoneNumber(rawPhone);
-    if (!phoneCheck.valid) {
-      alert(phoneCheck.message);
-      clientPhoneInput.focus();
-      return;
-    }
+      // هنا يتم ترتيب السيلز تصاعدياً حسب الكود في القائمة المنسدلة
+      function renderSalesSelectDropdown() {
+        const select = document.getElementById("salesSelect");
+        const searchVal = (
+          document.getElementById("salesSearchInput").value || ""
+        )
+          .trim()
+          .toLowerCase();
+        const savedSalesCode = formatSalesCode(
+          localStorage.getItem("BALMETER_SAVED_SALES_CODE") || "",
+        );
 
-    const clientPhone = phoneCheck.normalized;
+        const sortedTeam = sortSalesTeamByCode(appState.salesTeam);
+        const filtered = sortedTeam.filter(
+          (s) =>
+            s.name.toLowerCase().includes(searchVal) ||
+            formatSalesCode(s.code).toLowerCase().includes(searchVal),
+        );
 
-    if (!salesCode) {
-      alert("من فضلك اختر اسمك من قائمة السيلز!");
-      return;
-    }
+        select.innerHTML = "";
+        filtered.forEach((s) => {
+          const formattedCode = formatSalesCode(s.code);
+          const opt = document.createElement("option");
+          opt.value = formattedCode;
+          opt.textContent = `${s.name} (كود: ${formattedCode})`;
+          select.appendChild(opt);
+        });
 
-    const btn = document.getElementById("issueBtn");
-    btn.disabled = true;
-    btn.textContent = "⏳ جاري فحص البيانات والمزامنة مع السحابة...";
-
-    try {
-      await syncFromCloud(false);
-
-      const currentExh = getActiveExhibition();
-
-      const isDuplicate = isPhoneDuplicateInExhibition(currentExh.id, clientPhone);
-
-      if (isDuplicate) {
-        document.getElementById("duplicateWarningBox").style.display = "block";
+        if (
+          savedSalesCode &&
+          filtered.some((s) => formatSalesCode(s.code) === savedSalesCode)
+        ) {
+          select.value = savedSalesCode;
+        }
         renderAllCanvases();
-        alert(`❌ تنبيه: رقم التليفون (${clientPhone}) مسجل مسبقاً في هذا المعرض! لا يمكن تكراره.`);
-        btn.disabled = false;
-        btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
-        return;
       }
 
-      const assignedSeq = getCalculatedNextSeq(currentExh.id);
-      const salesObj = appState.salesTeam.find(s => s.code === salesCode) || { code: salesCode, name: salesCode };
-
-      const newTicket = {
-        id: "inv_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6),
-        exhibitionId: currentExh.id,
-        exhibitionName: currentExh.name,
-        seqNumber: assignedSeq,
-        clientName: clientName,
-        clientPhone: clientPhone,
-        salesCode: salesObj.code,
-        salesName: salesObj.name,
-        createdAt: new Date().toLocaleString("ar-EG")
-      };
-
-      appState.invitations.push(newTicket);
-      currentExh.nextSeq = assignedSeq + 1;
-      lastIssuedTicket = newTicket;
-
-      await pushStateToCloud();
-
-      clientNameInput.value = "";
-      clientPhoneInput.value = "";
-      updatePhoneHelperUI("");
-      document.getElementById("duplicateWarningBox").style.display = "none";
-
-      drawSingleCanvas(document.getElementById("invitationCanvas"), newTicket, false);
-
-      const confirmBox = document.getElementById("ticketConfirmBox");
-      const confirmText = document.getElementById("ticketConfirmText");
-      confirmBox.style.display = "block";
-      confirmText.innerHTML = `✅ تم إصدار الدعوة رقم <strong>#${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
-      document.getElementById("previewTopActions").style.display = "flex";
-
-      renderAllUI();
-
-      await shareCurrentCanvas(`${currentExh.name}_${clientName}_${assignedSeq}.png`);
-    } catch (e) {
-      alert("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
-      console.error(e);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
-    }
-  }
-
-  function handleAdminButtonClick() {
-    if (isAdminMode) {
-      logoutAdmin();
-    } else {
-      document.getElementById("pinModalInput").value = "";
-      document.getElementById("pinModal").style.display = "flex";
-      setTimeout(() => document.getElementById("pinModalInput").focus(), 100);
-    }
-  }
-
-  function closePinModal() {
-    document.getElementById("pinModal").style.display = "none";
-  }
-
-  function verifyAdminPin() {
-    const entered = (document.getElementById("pinModalInput").value || "").trim();
-    if (entered === appState.adminPin || entered === DEFAULT_ADMIN_PIN || entered === BACKUP_ADMIN_PIN) {
-      isAdminMode = true;
-      closePinModal();
-      document.getElementById("adminPanel").style.display = "block";
-      document.getElementById("adminToggleBtn").textContent = "🔓 إغلاق وضع المدير";
-      renderAllUI();
-      document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
-    } else {
-      alert("❌ كلمة سر المدير غير صحيحة!");
-    }
-  }
-
-  function logoutAdmin() {
-    isAdminMode = false;
-    document.getElementById("adminPanel").style.display = "none";
-    document.getElementById("adminToggleBtn").textContent = "🔒 وضع المدير";
-    renderAllUI();
-  }
-
-  function switchAdminTab(tabId, btnEl) {
-    document.querySelectorAll(".admin-tab-content").forEach(el => el.classList.remove("active"));
-    document.querySelectorAll(".admin-tab-btn").forEach(el => el.classList.remove("active"));
-    document.getElementById(tabId).classList.add("active");
-    if (btnEl) btnEl.classList.add("active");
-    renderAllCanvases();
-  }
-
-  function setSalesSortMode(mode) {
-    salesSortMode = mode;
-    const btnCode = document.getElementById("sortCodeBtn");
-    const btnCount = document.getElementById("sortCountBtn");
-    if (mode === 'code') {
-      btnCode.className = "btn btn-gold";
-      btnCount.className = "btn btn-outline";
-    } else {
-      btnCode.className = "btn btn-outline";
-      btnCount.className = "btn btn-gold";
-    }
-    renderAdminDashboard();
-  }
-
-  function renderAdminDashboard() {
-    const exh = getActiveExhibition();
-    if (!exh) return;
-
-    const exhInvs = appState.invitations.filter(i => i && i.exhibitionId === exh.id);
-
-    document.getElementById("kpiCurrentExhTotal").textContent = exhInvs.length;
-    document.getElementById("kpiNextSeq").textContent = "#" + getCalculatedNextSeq(exh.id);
-    document.getElementById("kpiSalesCount").textContent = appState.salesTeam.length;
-    document.getElementById("studioExhName").textContent = exh.name;
-
-    const perfTbody = document.getElementById("salesPerformanceTbody");
-    perfTbody.innerHTML = "";
-
-    let topSalesName = "-";
-    let topSalesCount = 0;
-
-    const salesStats = appState.salesTeam.map(s => {
-      const currentCount = exhInvs.filter(i => i.salesCode === s.code).length;
-      const allCount = appState.invitations.filter(i => i && i.salesCode === s.code).length;
-      if (currentCount > topSalesCount) {
-        topSalesCount = currentCount;
-        topSalesName = `${s.name} (${currentCount})`;
+      function filterSalesDropdown() {
+        renderSalesSelectDropdown();
       }
-      return { ...s, currentCount, allCount };
-    });
 
-    // ترتيب السيلز في لوحة المدير بناءً على الأوبشن المختار (حسب الكود أو حسب عدد الدعوات)
-    if (salesSortMode === 'count') {
-      salesStats.sort((a, b) => b.currentCount - a.currentCount || (parseInt(String(a.code).replace(/\D/g,""),10)||0) - (parseInt(String(b.code).replace(/\D/g,""),10)||0));
-    } else {
-      salesStats.sort((a, b) => (parseInt(String(a.code).replace(/\D/g,""),10)||0) - (parseInt(String(b.code).replace(/\D/g,""),10)||0));
-    }
+      function onSalesRepChange() {
+        const code = document.getElementById("salesSelect").value;
+        if (code) {
+          localStorage.setItem(
+            "BALMETER_SAVED_SALES_CODE",
+            formatSalesCode(code),
+          );
+        }
+        renderAllCanvases();
+      }
 
-    document.getElementById("kpiTopSales").textContent = topSalesName;
+      function isPhoneDuplicateInExhibition(exhId, rawPhone) {
+        const target = normalizePhoneNumber(rawPhone);
+        if (!target) return false;
+        return appState.invitations.some(
+          (inv) =>
+            inv &&
+            inv.exhibitionId === exhId &&
+            normalizePhoneNumber(inv.clientPhone) === target,
+        );
+      }
 
-    salesStats.forEach(s => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
+      function onClientInputChange() {
+        const typedName = (
+          document.getElementById("clientNameInput").value || ""
+        ).trim();
+        const typedPhone = (
+          document.getElementById("clientPhoneInput").value || ""
+        ).trim();
+        const exh = getActiveExhibition();
+
+        if (typedName || typedPhone) {
+          lastIssuedTicket = null;
+          document.getElementById("ticketConfirmBox").style.display = "none";
+          document.getElementById("previewTopActions").style.display = "none";
+        }
+
+        const dupBox = document.getElementById("duplicateWarningBox");
+        if (typedPhone && exh) {
+          const isDup = isPhoneDuplicateInExhibition(exh.id, typedPhone);
+          dupBox.style.display = isDup ? "block" : "none";
+        } else {
+          dupBox.style.display = "none";
+        }
+
+        renderAllCanvases();
+      }
+
+      function getCalculatedNextSeq(exhId) {
+        const exh = appState.exhibitions[exhId];
+        const baseNext = exh && exh.nextSeq ? Number(exh.nextSeq) : 131;
+        const exhInvitations = appState.invitations.filter(
+          (inv) => inv && inv.exhibitionId === exhId,
+        );
+        if (exhInvitations.length === 0) return baseNext;
+        const maxUsed = Math.max(
+          ...exhInvitations.map((i) => Number(i.seqNumber) || 130),
+        );
+        return Math.max(baseNext, maxUsed + 1);
+      }
+
+      function loadActiveExhibitionTemplate() {
+        const exh = getActiveExhibition();
+        if (!exh) return;
+
+        if (
+          exh.templateDataUrl &&
+          exh.templateDataUrl !== lastLoadedTemplateSrc
+        ) {
+          const img = new Image();
+          img.onload = () => {
+            loadedTemplateImg = img;
+            lastLoadedTemplateSrc = exh.templateDataUrl;
+            renderAllCanvases();
+          };
+          img.src = exh.templateDataUrl;
+        } else if (!exh.templateDataUrl) {
+          loadedTemplateImg = null;
+          lastLoadedTemplateSrc = "";
+          renderAllCanvases();
+        } else {
+          renderAllCanvases();
+        }
+      }
+
+      function renderAllCanvases(customTicket = null) {
+        drawSingleCanvas(
+          document.getElementById("invitationCanvas"),
+          customTicket,
+          false,
+        );
+        if (isAdminMode) {
+          const showGuides =
+            document.getElementById("showGuidesCheckbox")?.checked;
+          drawSingleCanvas(
+            document.getElementById("adminStudioCanvas"),
+            customTicket,
+            showGuides,
+          );
+        }
+      }
+
+      function drawSingleCanvas(
+        canvas,
+        customTicket = null,
+        drawGuides = false,
+      ) {
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        const exh = getActiveExhibition();
+        if (!exh) return;
+
+        const isStudioCanvas = canvas.id === "adminStudioCanvas";
+
+        if (loadedTemplateImg) {
+          canvas.width = loadedTemplateImg.naturalWidth || 1080;
+          canvas.height = loadedTemplateImg.naturalHeight || 1350;
+          ctx.drawImage(loadedTemplateImg, 0, 0, canvas.width, canvas.height);
+        } else {
+          canvas.width = 1080;
+          canvas.height = 1350;
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#0b192c");
+          grad.addColorStop(1, "#050b14");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.strokeStyle = "#f59e0b";
+          ctx.lineWidth = 6;
+          ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+          ctx.fillStyle = "#06b6d4";
+          ctx.textAlign = "center";
+          ctx.font = "800 54px 'Cairo', sans-serif";
+          ctx.fillText(exh.name, canvas.width / 2, 260);
+
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "600 30px 'Cairo', sans-serif";
+          ctx.fillText(
+            "ارفع صورة القالب من تبويب (القالب والمعارض)",
+            canvas.width / 2,
+            330,
+          );
+        }
+
+        const typedName = (
+          document.getElementById("clientNameInput")?.value || ""
+        ).trim();
+        const typedPhone = (
+          document.getElementById("clientPhoneInput")?.value || ""
+        ).trim();
+
+        const activeIssuedTicket =
+          customTicket || (!typedName && !typedPhone ? lastIssuedTicket : null);
+        const isUnissuedPreview = !isStudioCanvas && !activeIssuedTicket;
+
+        const isDuplicatePhone =
+          isUnissuedPreview &&
+          typedPhone &&
+          isPhoneDuplicateInExhibition(exh.id, typedPhone);
+
+        const clientName = activeIssuedTicket
+          ? activeIssuedTicket.clientName
+          : typedName || "أ / أحمد محمود عبد الرحمن";
+
+        const rawSalesCode = activeIssuedTicket
+          ? activeIssuedTicket.salesCode
+          : document.getElementById("salesSelect").value || "S11";
+        const salesCode = formatSalesCode(rawSalesCode);
+
+        const nameX = ((exh.nameX ?? 50) / 100) * canvas.width;
+        const nameY = ((exh.nameY ?? 59) / 100) * canvas.height;
+        const boxWidthPct = exh.nameBoxWidth ?? 80;
+        const maxWidth = (boxWidthPct / 100) * canvas.width;
+        let fontSize = Math.round(((exh.nameSize ?? 52) / 1080) * canvas.width);
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        do {
+          ctx.font = `800 ${fontSize}px 'Cairo', sans-serif`;
+          if (ctx.measureText(clientName).width <= maxWidth || fontSize <= 18)
+            break;
+          fontSize -= 2;
+        } while (fontSize > 18);
+
+        if (drawGuides) {
+          const boxH = fontSize * 1.45;
+          ctx.save();
+          ctx.strokeStyle = "rgba(6, 182, 212, 0.85)";
+          ctx.fillStyle = "rgba(6, 182, 212, 0.12)";
+          ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
+          ctx.setLineDash([10, 6]);
+          ctx.fillRect(nameX - maxWidth / 2, nameY - boxH / 2, maxWidth, boxH);
+          ctx.strokeRect(
+            nameX - maxWidth / 2,
+            nameY - boxH / 2,
+            maxWidth,
+            boxH,
+          );
+          ctx.restore();
+        }
+
+        ctx.save();
+        ctx.fillStyle = exh.nameColor || "#ffffff";
+        ctx.shadowColor = "rgba(0,0,0,0.65)";
+        ctx.shadowBlur = 8;
+        ctx.fillText(clientName, nameX, nameY);
+        ctx.restore();
+
+        const codeX = ((exh.codeX ?? 50) / 100) * canvas.width;
+        const codeY = ((exh.codeY ?? 90.5) / 100) * canvas.height;
+        const codeFontSize = Math.max(
+          16,
+          Math.round(((exh.codeSize ?? 32) / 1080) * canvas.width),
+        );
+
+        let codeText = "";
+        if (isStudioCanvas) {
+          codeText = `${getCalculatedNextSeq(exh.id)}  |  ${salesCode}`;
+        } else if (activeIssuedTicket) {
+          codeText = `${activeIssuedTicket.seqNumber}  |  ${formatSalesCode(activeIssuedTicket.salesCode)}`;
+        } else if (isDuplicatePhone) {
+          codeText = `❌ رقم التليفون مكرر - غير مصرح`;
+        } else {
+          codeText = `----  |  ${salesCode} (بانتظار الإصدار)`;
+        }
+
+        ctx.font = `800 ${codeFontSize}px 'Cairo', sans-serif`;
+        const codeMetricsWidth = ctx.measureText(codeText).width + 40;
+        const codeBoxH = codeFontSize * 1.45;
+
+        if (drawGuides) {
+          ctx.save();
+          ctx.strokeStyle = "rgba(245, 158, 11, 0.85)";
+          ctx.fillStyle = "rgba(245, 158, 11, 0.12)";
+          ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
+          ctx.setLineDash([8, 5]);
+          ctx.fillRect(
+            codeX - codeMetricsWidth / 2,
+            codeY - codeBoxH / 2,
+            codeMetricsWidth,
+            codeBoxH,
+          );
+          ctx.strokeRect(
+            codeX - codeMetricsWidth / 2,
+            codeY - codeBoxH / 2,
+            codeMetricsWidth,
+            codeBoxH,
+          );
+          ctx.restore();
+        }
+
+        ctx.save();
+        ctx.fillStyle = isDuplicatePhone
+          ? "#ef4444"
+          : exh.codeColor || "#f59e0b";
+        ctx.shadowColor = "rgba(0,0,0,0.65)";
+        ctx.shadowBlur = 6;
+        ctx.fillText(codeText, codeX, codeY);
+        ctx.restore();
+
+        if (isUnissuedPreview) {
+          ctx.save();
+          ctx.translate(canvas.width / 2, nameY);
+          ctx.rotate(-Math.PI / 10);
+
+          const bannerW = canvas.width * 0.88;
+          const bannerH = Math.round(canvas.width * 0.11);
+          ctx.fillStyle = isDuplicatePhone
+            ? "rgba(220, 38, 38, 0.88)"
+            : "rgba(15, 23, 42, 0.82)";
+          ctx.strokeStyle = isDuplicatePhone ? "#fca5a5" : "#f59e0b";
+          ctx.lineWidth = 4;
+
+          ctx.fillRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
+          ctx.strokeRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
+
+          const stampFontSize = Math.round(canvas.width * 0.038);
+          ctx.font = `900 ${stampFontSize}px 'Cairo', sans-serif`;
+          ctx.fillStyle = "#ffffff";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          const stampText = isDuplicatePhone
+            ? "❌ رقم تليفون مكرر - دعوة لاغية"
+            : "🔒 معاينة فقط - اضغط إصدار لتفعيل الرقم";
+          ctx.fillText(stampText, 0, 0);
+          ctx.restore();
+        }
+      }
+
+      function setupStudioCanvasDragging() {
+        const canvas = document.getElementById("adminStudioCanvas");
+        if (!canvas) return;
+
+        function getPointerPct(e) {
+          const rect = canvas.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          const xPct = Math.min(
+            95,
+            Math.max(5, Math.round(((clientX - rect.left) / rect.width) * 100)),
+          );
+          const yPct = Math.min(
+            96,
+            Math.max(5, Math.round(((clientY - rect.top) / rect.height) * 100)),
+          );
+          return { xPct, yPct };
+        }
+
+        function onStart(e) {
+          const exh = getActiveExhibition();
+          if (!exh) return;
+          const { xPct, yPct } = getPointerPct(e);
+
+          const distToName = Math.hypot(
+            xPct - (exh.nameX ?? 50),
+            yPct - (exh.nameY ?? 59),
+          );
+          const distToCode = Math.hypot(
+            xPct - (exh.codeX ?? 50),
+            yPct - (exh.codeY ?? 90.5),
+          );
+
+          if (distToName <= distToCode && distToName < 28) {
+            draggingTarget = "name";
+          } else if (distToCode < 28) {
+            draggingTarget = "code";
+          } else {
+            draggingTarget = "name";
+          }
+          onMove(e);
+        }
+
+        function onMove(e) {
+          if (!draggingTarget) return;
+          if (e.cancelable) e.preventDefault();
+          const exh = getActiveExhibition();
+          if (!exh) return;
+
+          const { xPct, yPct } = getPointerPct(e);
+          if (draggingTarget === "name") {
+            exh.nameX = xPct;
+            exh.nameY = yPct;
+          } else if (draggingTarget === "code") {
+            exh.codeX = xPct;
+            exh.codeY = yPct;
+          }
+
+          syncSlidersFromExhibition(exh);
+          renderAllCanvases();
+        }
+
+        function onEnd() {
+          if (draggingTarget) {
+            draggingTarget = null;
+            saveLocalState();
+          }
+        }
+
+        canvas.addEventListener("mousedown", onStart);
+        window.addEventListener("mousemove", onMove);
+        window.addEventListener("mouseup", onEnd);
+
+        canvas.addEventListener("touchstart", onStart, { passive: false });
+        window.addEventListener("touchmove", onMove, { passive: false });
+        window.addEventListener("touchend", onEnd);
+      }
+
+      function syncSlidersFromExhibition(exh) {
+        if (!exh) return;
+        document.getElementById("nameYRange").value = exh.nameY ?? 59;
+        document.getElementById("nameYVal").textContent =
+          (exh.nameY ?? 59) + "%";
+        document.getElementById("nameXRange").value = exh.nameX ?? 50;
+        document.getElementById("nameXVal").textContent =
+          (exh.nameX ?? 50) + "%";
+        document.getElementById("nameSizeRange").value = exh.nameSize ?? 52;
+        document.getElementById("nameSizeVal").textContent =
+          (exh.nameSize ?? 52) + "px";
+        document.getElementById("nameBoxWidthRange").value =
+          exh.nameBoxWidth ?? 80;
+        document.getElementById("nameBoxWidthVal").textContent =
+          (exh.nameBoxWidth ?? 80) + "%";
+        document.getElementById("nameColorPicker").value =
+          exh.nameColor || "#ffffff";
+
+        document.getElementById("codeYRange").value = exh.codeY ?? 90.5;
+        document.getElementById("codeYVal").textContent =
+          (exh.codeY ?? 90.5) + "%";
+        document.getElementById("codeXRange").value = exh.codeX ?? 50;
+        document.getElementById("codeXVal").textContent =
+          (exh.codeX ?? 50) + "%";
+        document.getElementById("codeSizeRange").value = exh.codeSize ?? 32;
+        document.getElementById("codeSizeVal").textContent =
+          (exh.codeSize ?? 32) + "px";
+        document.getElementById("codeColorPicker").value =
+          exh.codeColor || "#f59e0b";
+      }
+
+      function dataURLtoFile(dataurl, filename) {
+        const arr = dataurl.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+      }
+
+      async function shareCurrentCanvas(customFilename) {
+        const canvas = document.getElementById("invitationCanvas");
+        const cleanClient = lastIssuedTicket
+          ? lastIssuedTicket.clientName
+          : "VIP";
+        const seq = lastIssuedTicket ? lastIssuedTicket.seqNumber : "131";
+        const fileName = customFilename || `VIP_${seq}_${cleanClient}.png`;
+
+        try {
+          const dataUrl = canvas.toDataURL("image/png");
+          const file = dataURLtoFile(dataUrl, fileName);
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: `دعوة VIP - ${cleanClient}`,
+              text: `دعوة حضور خاصة باسم: ${cleanClient}`,
+            });
+            return true;
+          } else if (navigator.share) {
+            await navigator.share({
+              files: [file],
+              title: `دعوة VIP - ${cleanClient}`,
+            });
+            return true;
+          } else {
+            downloadCurrentCanvas(fileName);
+            return false;
+          }
+        } catch (err) {
+          if (err && err.name !== "AbortError") {
+            downloadCurrentCanvas(fileName);
+          }
+          return false;
+        }
+      }
+
+      function downloadCurrentCanvas(filename) {
+        const canvas = document.getElementById("invitationCanvas");
+        const defaultName = lastIssuedTicket
+          ? `VIP_${lastIssuedTicket.seqNumber}_${lastIssuedTicket.clientName}.png`
+          : `Balmeter_VIP_Invitation.png`;
+
+        const link = document.createElement("a");
+        link.download = filename || defaultName;
+        link.href = canvas.toDataURL("image/png");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      async function issueAndDownloadInvitation() {
+        const clientNameInput = document.getElementById("clientNameInput");
+        const clientPhoneInput = document.getElementById("clientPhoneInput");
+        const clientName = (clientNameInput.value || "").trim();
+        const rawPhone = (clientPhoneInput.value || "").trim();
+        const salesCode = formatSalesCode(
+          document.getElementById("salesSelect").value,
+        );
+
+        if (!clientName) {
+          alert("من فضلك اكتب اسم العميل أولاً!");
+          clientNameInput.focus();
+          return;
+        }
+        if (!rawPhone) {
+          alert("⚠️ رقم تليفون العميل مطلوب إجبارياً!");
+          clientPhoneInput.focus();
+          return;
+        }
+
+        const phoneCheck = validatePhoneNumber(rawPhone);
+        if (!phoneCheck.valid) {
+          alert(phoneCheck.message);
+          clientPhoneInput.focus();
+          return;
+        }
+
+        const clientPhone = phoneCheck.normalized;
+
+        if (!salesCode) {
+          alert("من فضلك اختر اسمك من قائمة السيلز!");
+          return;
+        }
+
+        const btn = document.getElementById("issueBtn");
+        btn.disabled = true;
+        btn.textContent = "⏳ جاري فحص البيانات والمزامنة مع السحابة...";
+
+        try {
+          await syncFromCloud(false);
+
+          const currentExh = getActiveExhibition();
+
+          const isDuplicate = isPhoneDuplicateInExhibition(
+            currentExh.id,
+            clientPhone,
+          );
+
+          if (isDuplicate) {
+            document.getElementById("duplicateWarningBox").style.display =
+              "block";
+            renderAllCanvases();
+            alert(
+              `❌ تنبيه: رقم التليفون (${clientPhone}) مسجل مسبقاً في هذا المعرض! لا يمكن تكراره.`,
+            );
+            btn.disabled = false;
+            btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
+            return;
+          }
+
+          const assignedSeq = getCalculatedNextSeq(currentExh.id);
+          const salesObj = appState.salesTeam.find(
+            (s) => formatSalesCode(s.code) === salesCode,
+          ) || { code: salesCode, name: salesCode };
+
+          const newTicket = {
+            id:
+              "inv_" +
+              Date.now() +
+              "_" +
+              Math.random().toString(36).substring(2, 6),
+            exhibitionId: currentExh.id,
+            exhibitionName: currentExh.name,
+            seqNumber: assignedSeq,
+            clientName: clientName,
+            clientPhone: clientPhone,
+            salesCode: formatSalesCode(salesObj.code),
+            salesName: salesObj.name,
+            createdAt: new Date().toLocaleString("ar-EG"),
+          };
+
+          appState.invitations.push(newTicket);
+          currentExh.nextSeq = assignedSeq + 1;
+          lastIssuedTicket = newTicket;
+
+          await pushStateToCloud();
+
+          clientNameInput.value = "";
+          clientPhoneInput.value = "";
+          updatePhoneHelperUI("");
+          document.getElementById("duplicateWarningBox").style.display = "none";
+
+          drawSingleCanvas(
+            document.getElementById("invitationCanvas"),
+            newTicket,
+            false,
+          );
+
+          const confirmBox = document.getElementById("ticketConfirmBox");
+          const confirmText = document.getElementById("ticketConfirmText");
+          confirmBox.style.display = "block";
+          confirmText.innerHTML = `✅ تم إصدار الدعوة رقم <strong>${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
+          document.getElementById("previewTopActions").style.display = "flex";
+
+          renderAllUI();
+
+          await shareCurrentCanvas(
+            `${currentExh.name}_${clientName}_${assignedSeq}.png`,
+          );
+        } catch (e) {
+          alert("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
+          console.error(e);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
+        }
+      }
+
+      function handleAdminButtonClick() {
+        if (isAdminMode) {
+          logoutAdmin();
+        } else {
+          document.getElementById("pinModalInput").value = "";
+          document.getElementById("pinModal").style.display = "flex";
+          setTimeout(
+            () => document.getElementById("pinModalInput").focus(),
+            100,
+          );
+        }
+      }
+
+      function closePinModal() {
+        document.getElementById("pinModal").style.display = "none";
+      }
+
+      function verifyAdminPin() {
+        const entered = (
+          document.getElementById("pinModalInput").value || ""
+        ).trim();
+        if (
+          entered === appState.adminPin ||
+          entered === DEFAULT_ADMIN_PIN ||
+          entered === BACKUP_ADMIN_PIN
+        ) {
+          isAdminMode = true;
+          closePinModal();
+          document.getElementById("adminPanel").style.display = "block";
+          document.getElementById("adminToggleBtn").textContent =
+            "🔓 إغلاق وضع المدير";
+          renderAllUI();
+          document
+            .getElementById("adminPanel")
+            .scrollIntoView({ behavior: "smooth" });
+        } else {
+          alert("❌ كلمة سر المدير غير صحيحة!");
+        }
+      }
+
+      function logoutAdmin() {
+        isAdminMode = false;
+        document.getElementById("adminPanel").style.display = "none";
+        document.getElementById("adminToggleBtn").textContent = "🔒 وضع المدير";
+        renderAllUI();
+      }
+
+      function switchAdminTab(tabId, btnEl) {
+        document
+          .querySelectorAll(".admin-tab-content")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".admin-tab-btn")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById(tabId).classList.add("active");
+        if (btnEl) btnEl.classList.add("active");
+        renderAllCanvases();
+      }
+
+      function setSalesSortMode(mode) {
+        salesSortMode = mode;
+        const btnCode = document.getElementById("sortCodeBtn");
+        const btnCount = document.getElementById("sortCountBtn");
+        if (mode === "code") {
+          btnCode.className = "btn btn-gold";
+          btnCount.className = "btn btn-outline";
+        } else {
+          btnCode.className = "btn btn-outline";
+          btnCount.className = "btn btn-gold";
+        }
+        renderAdminDashboard();
+      }
+
+      function renderAdminDashboard() {
+        const exh = getActiveExhibition();
+        if (!exh) return;
+
+        const exhInvs = appState.invitations.filter(
+          (i) => i && i.exhibitionId === exh.id,
+        );
+
+        document.getElementById("kpiCurrentExhTotal").textContent =
+          exhInvs.length;
+        document.getElementById("kpiNextSeq").textContent =
+          getCalculatedNextSeq(exh.id);
+        document.getElementById("kpiSalesCount").textContent =
+          appState.salesTeam.length;
+        document.getElementById("studioExhName").textContent = exh.name;
+
+        const perfTbody = document.getElementById("salesPerformanceTbody");
+        perfTbody.innerHTML = "";
+
+        let topSalesName = "-";
+        let topSalesCount = 0;
+
+        const salesStats = appState.salesTeam.map((s) => {
+          const formattedCode = formatSalesCode(s.code);
+          const currentCount = exhInvs.filter(
+            (i) => formatSalesCode(i.salesCode) === formattedCode,
+          ).length;
+          const allCount = appState.invitations.filter(
+            (i) => i && formatSalesCode(i.salesCode) === formattedCode,
+          ).length;
+          if (currentCount > topSalesCount) {
+            topSalesCount = currentCount;
+            topSalesName = `${s.name} (${currentCount})`;
+          }
+          return { ...s, code: formattedCode, currentCount, allCount };
+        });
+
+        // ترتيب السيلز في لوحة المدير بناءً على الأوبشن المختار (حسب الكود أو حسب عدد الدعوات)
+        if (salesSortMode === "count") {
+          salesStats.sort(
+            (a, b) =>
+              b.currentCount - a.currentCount ||
+              (parseInt(String(a.code).replace(/\D/g, ""), 10) || 0) -
+                (parseInt(String(b.code).replace(/\D/g, ""), 10) || 0),
+          );
+        } else {
+          salesStats.sort(
+            (a, b) =>
+              (parseInt(String(a.code).replace(/\D/g, ""), 10) || 0) -
+              (parseInt(String(b.code).replace(/\D/g, ""), 10) || 0),
+          );
+        }
+
+        document.getElementById("kpiTopSales").textContent = topSalesName;
+
+        salesStats.forEach((s) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
         <td><span class="badge-code">${s.code}</span></td>
         <td style="font-weight:700;">${s.name}</td>
         <td><span class="badge-count">${s.currentCount} عميل</span></td>
@@ -1944,145 +2657,171 @@
           </div>
         </td>
       `;
-      perfTbody.appendChild(tr);
-    });
+          perfTbody.appendChild(tr);
+        });
 
-    const logFilter = document.getElementById("logSalesFilter");
-    const currentFilterVal = logFilter.value || "ALL";
-    logFilter.innerHTML = `<option value="ALL">كل السيلز (${exhInvs.length} دعوة)</option>`;
-    
-    // ترتيب السيلز في قائمة الفلتر أيضاً تصاعدياً حسب الكود
-    const sortedForFilter = sortSalesTeamByCode(appState.salesTeam);
-    sortedForFilter.forEach(s => {
-      const opt = document.createElement("option");
-      opt.value = s.code;
-      opt.textContent = `${s.name} (${s.code})`;
-      logFilter.appendChild(opt);
-    });
-    logFilter.value = currentFilterVal;
+        const logFilter = document.getElementById("logSalesFilter");
+        const currentFilterVal = logFilter.value || "ALL";
+        logFilter.innerHTML = `<option value="ALL">كل السيلز (${exhInvs.length} دعوة)</option>`;
 
-    document.getElementById("reportExhName").textContent = exh.name;
-    renderClientLogsTable();
+        // ترتيب السيلز في قائمة الفلتر أيضاً تصاعدياً حسب الكود
+        const sortedForFilter = sortSalesTeamByCode(appState.salesTeam);
+        sortedForFilter.forEach((s) => {
+          const formattedCode = formatSalesCode(s.code);
+          const opt = document.createElement("option");
+          opt.value = formattedCode;
+          opt.textContent = `${s.name} (${formattedCode})`;
+          logFilter.appendChild(opt);
+        });
+        logFilter.value = currentFilterVal;
 
-    document.getElementById("adminNextSeqInput").value = getCalculatedNextSeq(exh.id);
-    syncSlidersFromExhibition(exh);
+        document.getElementById("reportExhName").textContent = exh.name;
+        renderClientLogsTable();
 
-    document.getElementById("firebaseUrlInput").value = appState.firebaseUrl;
-    document.getElementById("adminPinInput").value = appState.adminPin;
-    renderAllCanvases();
-  }
+        document.getElementById("adminNextSeqInput").value =
+          getCalculatedNextSeq(exh.id);
+        syncSlidersFromExhibition(exh);
 
-  function getNextAvailableSalesCode() {
-    let maxNum = 10;
-    appState.salesTeam.forEach(s => {
-      const match = String(s.code).match(/\d+/);
-      if (match) {
-        const num = parseInt(match[0], 10);
-        if (num > maxNum) maxNum = num;
+        document.getElementById("firebaseUrlInput").value =
+          appState.firebaseUrl;
+        document.getElementById("adminPinInput").value = appState.adminPin;
+        renderAllCanvases();
       }
-    });
-    return "S" + (maxNum + 1);
-  }
 
-  async function addSingleSalesRep() {
-    const nameInput = document.getElementById("newSalesName");
-    const codeInput = document.getElementById("newSalesCode");
-    const name = (nameInput.value || "").trim();
-    let code = (codeInput.value || "").trim().toUpperCase();
+      function getNextAvailableSalesCode() {
+        let maxNum = 10;
+        appState.salesTeam.forEach((s) => {
+          const match = String(s.code).match(/\d+/);
+          if (match) {
+            const num = parseInt(match[0], 10);
+            if (num > maxNum) maxNum = num;
+          }
+        });
+        return "S" + (maxNum + 1);
+      }
 
-    if (!name) {
-      alert("اكتب اسم السيلز أولاً!");
-      return;
-    }
-    if (!code) {
-      code = getNextAvailableSalesCode();
-    }
-    if (appState.salesTeam.some(s => s.code.toUpperCase() === code)) {
-      alert("هذا الكود موجود بالفعل لسيلز آخر!");
-      return;
-    }
+      async function addSingleSalesRep() {
+        const nameInput = document.getElementById("newSalesName");
+        const codeInput = document.getElementById("newSalesCode");
+        const name = (nameInput.value || "").trim();
+        let rawCode = (codeInput.value || "").trim();
 
-    appState.salesTeam.push({ code, name });
-    nameInput.value = "";
-    codeInput.value = "";
-    await pushStateToCloud();
-    renderAllUI();
-    alert(`✅ تم إضافة السيلز (${name} - كود ${code}) بنجاح!`);
-  }
+        if (!name) {
+          alert("اكتب اسم السيلز أولاً!");
+          return;
+        }
+        const code = rawCode
+          ? formatSalesCode(rawCode)
+          : getNextAvailableSalesCode();
 
-  async function addBulkSalesReps() {
-    const raw = document.getElementById("bulkSalesTextarea").value || "";
-    const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    if (lines.length === 0) {
-      alert("اكتب اسماً واحداً على الأقل في المربع!");
-      return;
-    }
+        if (
+          appState.salesTeam.some(
+            (s) => formatSalesCode(s.code).toUpperCase() === code,
+          )
+        ) {
+          alert("هذا الكود موجود بالفعل لسيلز آخر!");
+          return;
+        }
 
-    let addedCount = 0;
-    lines.forEach(line => {
-      const code = getNextAvailableSalesCode();
-      appState.salesTeam.push({ code, name: line });
-      addedCount++;
-    });
+        appState.salesTeam.push({ code, name });
+        nameInput.value = "";
+        codeInput.value = "";
+        await pushStateToCloud();
+        renderAllUI();
+        alert(`✅ تم إضافة السيلز (${name} - كود ${code}) بنجاح!`);
+      }
 
-    document.getElementById("bulkSalesTextarea").value = "";
-    await pushStateToCloud();
-    renderAllUI();
-    alert(`✅ تم إضافة ${addedCount} سيلز جديد وحفظهم بالسحابة بنجاح!`);
-  }
+      async function addBulkSalesReps() {
+        const raw = document.getElementById("bulkSalesTextarea").value || "";
+        const lines = raw
+          .split(/\r?\n/)
+          .map((l) => l.trim())
+          .filter(Boolean);
+        if (lines.length === 0) {
+          alert("اكتب اسماً واحداً على الأقل في المربع!");
+          return;
+        }
 
-  async function deleteSalesRep(code) {
-    if (!confirm(`هل أنت متأكد من حذف السيلز كود (${code})؟`)) return;
-    appState.salesTeam = appState.salesTeam.filter(s => s.code !== code);
-    await pushStateToCloud();
-    renderAllUI();
-  }
+        let addedCount = 0;
+        lines.forEach((line) => {
+          const code = getNextAvailableSalesCode();
+          appState.salesTeam.push({ code, name: line });
+          addedCount++;
+        });
 
-  function filterLogsBySales(code) {
-    const tabBtn = document.querySelectorAll(".admin-tab-btn")[2];
-    switchAdminTab("tabReports", tabBtn);
-    document.getElementById("logSalesFilter").value = code;
-    renderClientLogsTable();
-  }
+        document.getElementById("bulkSalesTextarea").value = "";
+        await pushStateToCloud();
+        renderAllUI();
+        alert(`✅ تم إضافة ${addedCount} سيلز جديد وحفظهم بالسحابة بنجاح!`);
+      }
 
-  function getFilteredReportList() {
-    const exh = getActiveExhibition();
-    if (!exh) return [];
+      async function deleteSalesRep(code) {
+        const targetCode = formatSalesCode(code);
+        if (!confirm(`هل أنت متأكد من حذف السيلز كود (${targetCode})؟`)) return;
+        appState.salesTeam = appState.salesTeam.filter(
+          (s) => formatSalesCode(s.code) !== targetCode,
+        );
+        await pushStateToCloud();
+        renderAllUI();
+      }
 
-    const search = toEnglishDigits((document.getElementById("logSearchInput").value || "").trim().toLowerCase());
-    const salesFilter = document.getElementById("logSalesFilter").value || "ALL";
+      function filterLogsBySales(code) {
+        const tabBtn = document.querySelectorAll(".admin-tab-btn")[2];
+        switchAdminTab("tabReports", tabBtn);
+        document.getElementById("logSalesFilter").value = formatSalesCode(code);
+        renderClientLogsTable();
+      }
 
-    return appState.invitations
-      .filter(i => i && i.exhibitionId === exh.id)
-      .filter(i => salesFilter === "ALL" || i.salesCode === salesFilter)
-      .filter(i =>
-        i.clientName.toLowerCase().includes(search) ||
-        (i.clientPhone && i.clientPhone.toLowerCase().includes(search)) ||
-        String(i.seqNumber).includes(search) ||
-        i.salesName.toLowerCase().includes(search)
-      )
-      .slice()
-      .reverse();
-  }
+      function getFilteredReportList() {
+        const exh = getActiveExhibition();
+        if (!exh) return [];
 
-  function renderClientLogsTable() {
-    const tbody = document.getElementById("clientLogsTbody");
-    tbody.innerHTML = "";
+        const search = toEnglishDigits(
+          (document.getElementById("logSearchInput").value || "")
+            .trim()
+            .toLowerCase(),
+        );
+        const salesFilter =
+          document.getElementById("logSalesFilter").value || "ALL";
 
-    const list = getFilteredReportList();
+        return appState.invitations
+          .filter((i) => i && i.exhibitionId === exh.id)
+          .filter(
+            (i) =>
+              salesFilter === "ALL" ||
+              formatSalesCode(i.salesCode) === formatSalesCode(salesFilter),
+          )
+          .filter(
+            (i) =>
+              i.clientName.toLowerCase().includes(search) ||
+              (i.clientPhone && i.clientPhone.toLowerCase().includes(search)) ||
+              String(i.seqNumber).includes(search) ||
+              i.salesName.toLowerCase().includes(search) ||
+              formatSalesCode(i.salesCode).toLowerCase().includes(search),
+          )
+          .slice()
+          .reverse();
+      }
 
-    if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث.</td></tr>`;
-      return;
-    }
+      function renderClientLogsTable() {
+        const tbody = document.getElementById("clientLogsTbody");
+        tbody.innerHTML = "";
 
-    list.forEach(inv => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><strong style="color:var(--gold);">#${inv.seqNumber}</strong></td>
+        const list = getFilteredReportList();
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث.</td></tr>`;
+          return;
+        }
+
+        list.forEach((inv) => {
+          const tr = document.createElement("tr");
+          const sCode = formatSalesCode(inv.salesCode);
+          tr.innerHTML = `
+        <td><strong style="color:var(--gold);">${inv.seqNumber}</strong></td>
         <td style="font-weight:700;">${inv.clientName}</td>
         <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${inv.clientPhone || "-"}</td>
-        <td><span class="badge-code">${inv.salesName} (${inv.salesCode})</span></td>
+        <td><span class="badge-code">${inv.salesName} (${sCode})</span></td>
         <td style="font-size:0.8rem; color:var(--text-muted);">${inv.createdAt || "-"}</td>
         <td>
           <div style="display:flex; gap:6px;">
@@ -2092,211 +2831,250 @@
           </div>
         </td>
       `;
-      tbody.appendChild(tr);
-    });
-  }
+          tbody.appendChild(tr);
+        });
+      }
 
-  function shareOldInvitation(invId) {
-    const inv = appState.invitations.find(i => i && i.id === invId);
-    if (!inv) return;
-    lastIssuedTicket = inv;
-    document.getElementById("clientNameInput").value = "";
-    document.getElementById("clientPhoneInput").value = "";
-    updatePhoneHelperUI("");
-    drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
-    shareCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
-  }
+      function shareOldInvitation(invId) {
+        const inv = appState.invitations.find((i) => i && i.id === invId);
+        if (!inv) return;
+        lastIssuedTicket = inv;
+        document.getElementById("clientNameInput").value = "";
+        document.getElementById("clientPhoneInput").value = "";
+        updatePhoneHelperUI("");
+        drawSingleCanvas(
+          document.getElementById("invitationCanvas"),
+          inv,
+          false,
+        );
+        shareCurrentCanvas(
+          `${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`,
+        );
+      }
 
-  function redownloadOldInvitation(invId) {
-    const inv = appState.invitations.find(i => i && i.id === invId);
-    if (!inv) return;
-    lastIssuedTicket = inv;
-    document.getElementById("clientNameInput").value = "";
-    document.getElementById("clientPhoneInput").value = "";
-    updatePhoneHelperUI("");
-    drawSingleCanvas(document.getElementById("invitationCanvas"), inv, false);
-    downloadCurrentCanvas(`${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`);
-  }
+      function redownloadOldInvitation(invId) {
+        const inv = appState.invitations.find((i) => i && i.id === invId);
+        if (!inv) return;
+        lastIssuedTicket = inv;
+        document.getElementById("clientNameInput").value = "";
+        document.getElementById("clientPhoneInput").value = "";
+        updatePhoneHelperUI("");
+        drawSingleCanvas(
+          document.getElementById("invitationCanvas"),
+          inv,
+          false,
+        );
+        downloadCurrentCanvas(
+          `${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`,
+        );
+      }
 
-  async function deleteInvitationRecord(invId) {
-    if (!confirm("هل تريد حذف هذه الدعوة من السجل؟")) return;
-    appState.invitations = appState.invitations.filter(i => i && i.id !== invId);
-    await pushStateToCloud();
-    renderAllUI();
-  }
+      async function deleteInvitationRecord(invId) {
+        if (!confirm("هل تريد حذف هذه الدعوة من السجل؟")) return;
+        appState.invitations = appState.invitations.filter(
+          (i) => i && i.id !== invId,
+        );
+        await pushStateToCloud();
+        renderAllUI();
+      }
 
-  function copyWhatsAppReport() {
-    const exh = getActiveExhibition();
-    const list = getFilteredReportList();
-    const salesFilter = document.getElementById("logSalesFilter").value;
-    const salesObj = appState.salesTeam.find(s => s.code === salesFilter);
-    const titleName = salesObj ? `للسيلز: ${salesObj.name} (${salesObj.code})` : "لكل السيلز (المعرض كامل)";
-
-    if (list.length === 0) {
-      alert("لا توجد بيانات لنسخها!");
-      return;
-    }
-
-    let text = `📊 *تقرير دعوات ${exh.name} - ${titleName}*\n`;
-    text += `إجمالي الدعوات: *${list.length}* عميل\n`;
-    text += `--------------------------\n`;
-    text += `🎫 *قائمة العملاء وأرقامهم:*\n`;
-    list.forEach(i => {
-      text += `#${i.seqNumber} | ${i.clientName} (${i.clientPhone}) - ${i.salesName} (${i.salesCode})\n`;
-    });
-
-    navigator.clipboard.writeText(text).then(() => {
-      alert("✅ تم نسخ التقرير المخصص بنجاح!");
-    });
-  }
-
-  function exportExcelCSV() {
-    const exh = getActiveExhibition();
-    const list = getFilteredReportList();
-    const salesFilter = document.getElementById("logSalesFilter").value;
-    const salesObj = appState.salesTeam.find(s => s.code === salesFilter);
-    const fileSuffix = salesObj ? `_السيلز_${salesObj.name}` : "_كل_السيلز";
-
-    if (list.length === 0) {
-      alert("لا توجد بيانات لتصديرها.");
-      return;
-    }
-
-    let csv = "\uFEFFرقم الدعوة,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,المعرض,التاريخ والوقت\n";
-    list.forEach(i => {
-      csv += `"${i.seqNumber}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${i.salesCode}","${i.exhibitionName}","${i.createdAt || ""}"\n`;
-    });
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `تقرير_${exh.name}${fileSuffix}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
-  function handleTemplateUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = new Image();
-      img.onload = async function() {
-        const offCanvas = document.createElement("canvas");
-        const maxDim = 1280;
-        let w = img.naturalWidth;
-        let h = img.naturalHeight;
-        if (w > maxDim || h > maxDim) {
-          if (w > h) {
-            h = Math.round((h * maxDim) / w);
-            w = maxDim;
-          } else {
-            w = Math.round((w * maxDim) / h);
-            h = maxDim;
-          }
-        }
-        offCanvas.width = w;
-        offCanvas.height = h;
-        const offCtx = offCanvas.getContext("2d");
-        offCtx.drawImage(img, 0, 0, w, h);
-
-        const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.86);
+      function copyWhatsAppReport() {
         const exh = getActiveExhibition();
-        exh.templateDataUrl = compressedDataUrl;
+        const list = getFilteredReportList();
+        const salesFilter = document.getElementById("logSalesFilter").value;
+        const salesObj = appState.salesTeam.find(
+          (s) => formatSalesCode(s.code) === formatSalesCode(salesFilter),
+        );
+        const titleName = salesObj
+          ? `للسيلز: ${salesObj.name} (${formatSalesCode(salesObj.code)})`
+          : "لكل السيلز (المعرض كامل)";
+
+        if (list.length === 0) {
+          alert("لا توجد بيانات لنسخها!");
+          return;
+        }
+
+        let text = `📊 *تقرير دعوات ${exh.name} - ${titleName}*\n`;
+        text += `إجمالي الدعوات: *${list.length}* عميل\n`;
+        text += `--------------------------\n`;
+        text += `🎫 *قائمة العملاء وأرقامهم:*\n`;
+        list.forEach((i) => {
+          text += `${i.seqNumber} | ${i.clientName} (${i.clientPhone}) - ${i.salesName} (${formatSalesCode(i.salesCode)})\n`;
+        });
+
+        navigator.clipboard.writeText(text).then(() => {
+          alert("✅ تم نسخ التقرير المخصص بنجاح!");
+        });
+      }
+
+      function exportExcelCSV() {
+        const exh = getActiveExhibition();
+        const list = getFilteredReportList();
+        const salesFilter = document.getElementById("logSalesFilter").value;
+        const salesObj = appState.salesTeam.find(
+          (s) => formatSalesCode(s.code) === formatSalesCode(salesFilter),
+        );
+        const fileSuffix = salesObj ? `_السيلز_${salesObj.name}` : "_كل_السيلز";
+
+        if (list.length === 0) {
+          alert("لا توجد بيانات لتصديرها.");
+          return;
+        }
+
+        let csv =
+          "\uFEFFرقم الدعوة,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,المعرض,التاريخ والوقت\n";
+        list.forEach((i) => {
+          csv += `"${i.seqNumber}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${formatSalesCode(i.salesCode)}","${i.exhibitionName}","${i.createdAt || ""}"\n`;
+        });
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `تقرير_${exh.name}${fileSuffix}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      function handleTemplateUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = new Image();
+          img.onload = async function () {
+            const offCanvas = document.createElement("canvas");
+            const maxDim = 1280;
+            let w = img.naturalWidth;
+            let h = img.naturalHeight;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            offCanvas.width = w;
+            offCanvas.height = h;
+            const offCtx = offCanvas.getContext("2d");
+            offCtx.drawImage(img, 0, 0, w, h);
+
+            const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.86);
+            const exh = getActiveExhibition();
+            exh.templateDataUrl = compressedDataUrl;
+
+            await pushStateToCloud();
+            loadActiveExhibitionTemplate();
+            alert("✅ تم رفع القالب بنجاح!");
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function updateTemplatePlacement() {
+        const exh = getActiveExhibition();
+        if (!exh) return;
+
+        exh.nameY = Number(document.getElementById("nameYRange").value);
+        exh.nameX = Number(document.getElementById("nameXRange").value);
+        exh.nameSize = Number(document.getElementById("nameSizeRange").value);
+        exh.nameBoxWidth = Number(
+          document.getElementById("nameBoxWidthRange").value,
+        );
+        exh.nameColor = document.getElementById("nameColorPicker").value;
+
+        exh.codeY = Number(document.getElementById("codeYRange").value);
+        exh.codeX = Number(document.getElementById("codeXRange").value);
+        exh.codeSize = Number(document.getElementById("codeSizeRange").value);
+        exh.codeColor = document.getElementById("codeColorPicker").value;
+
+        syncSlidersFromExhibition(exh);
+        renderAllCanvases();
+      }
+
+      async function saveExhibitionSettings() {
+        const exh = getActiveExhibition();
+        if (!exh) return;
+
+        const newSeq = parseInt(
+          document.getElementById("adminNextSeqInput").value,
+          10,
+        );
+        if (!isNaN(newSeq) && newSeq > 0) {
+          exh.nextSeq = newSeq;
+        }
 
         await pushStateToCloud();
-        loadActiveExhibitionTemplate();
-        alert("✅ تم رفع القالب بنجاح!");
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
+        renderAllUI();
+        alert("✅ تم حفظ المقاسات في السحابة!");
+      }
 
-  function updateTemplatePlacement() {
-    const exh = getActiveExhibition();
-    if (!exh) return;
+      async function addNewExhibition() {
+        const input = document.getElementById("newExhNameInput");
+        const name = (input.value || "").trim();
+        if (!name) {
+          alert("اكتب اسم المعرض أولاً!");
+          return;
+        }
 
-    exh.nameY = Number(document.getElementById("nameYRange").value);
-    exh.nameX = Number(document.getElementById("nameXRange").value);
-    exh.nameSize = Number(document.getElementById("nameSizeRange").value);
-    exh.nameBoxWidth = Number(document.getElementById("nameBoxWidthRange").value);
-    exh.nameColor = document.getElementById("nameColorPicker").value;
+        const id = "exh_" + Date.now();
+        appState.exhibitions[id] = {
+          id,
+          name,
+          nextSeq: 131,
+          templateDataUrl: "",
+          nameX: 50,
+          nameY: 59,
+          nameSize: 52,
+          nameBoxWidth: 80,
+          nameColor: "#ffffff",
+          codeX: 50,
+          codeY: 90.5,
+          codeSize: 32,
+          codeColor: "#f59e0b",
+        };
+        appState.activeExhibitionId = id;
+        input.value = "";
 
-    exh.codeY = Number(document.getElementById("codeYRange").value);
-    exh.codeX = Number(document.getElementById("codeXRange").value);
-    exh.codeSize = Number(document.getElementById("codeSizeRange").value);
-    exh.codeColor = document.getElementById("codeColorPicker").value;
+        await pushStateToCloud();
+        renderAllUI();
+        alert(`✅ تم إضافة (${name}) بنجاح!`);
+      }
 
-    syncSlidersFromExhibition(exh);
-    renderAllCanvases();
-  }
+      async function deleteCurrentExhibition() {
+        const keys = Object.keys(appState.exhibitions);
+        if (keys.length <= 1) {
+          alert("لا يمكن حذف المعرض الوحيد!");
+          return;
+        }
+        const exh = getActiveExhibition();
+        if (!confirm(`هل أنت متأكد من حذف (${exh.name})؟`)) return;
 
-  async function saveExhibitionSettings() {
-    const exh = getActiveExhibition();
-    if (!exh) return;
+        delete appState.exhibitions[exh.id];
+        appState.activeExhibitionId = Object.keys(appState.exhibitions)[0];
+        await pushStateToCloud();
+        renderAllUI();
+      }
 
-    const newSeq = parseInt(document.getElementById("adminNextSeqInput").value, 10);
-    if (!isNaN(newSeq) && newSeq > 0) {
-      exh.nextSeq = newSeq;
-    }
+      async function saveCloudAndSecuritySettings() {
+        const newUrl = cleanFirebaseUrl(
+          document.getElementById("firebaseUrlInput").value,
+        );
+        const newPin = (
+          document.getElementById("adminPinInput").value || ""
+        ).trim();
 
-    await pushStateToCloud();
-    renderAllUI();
-    alert("✅ تم حفظ المقاسات في السحابة!");
-  }
+        if (newUrl) appState.firebaseUrl = newUrl;
+        if (newPin) appState.adminPin = newPin;
 
-  async function addNewExhibition() {
-    const input = document.getElementById("newExhNameInput");
-    const name = (input.value || "").trim();
-    if (!name) {
-      alert("اكتب اسم المعرض أولاً!");
-      return;
-    }
-
-    const id = "exh_" + Date.now();
-    appState.exhibitions[id] = {
-      id, name, nextSeq: 131, templateDataUrl: "",
-      nameX: 50, nameY: 59, nameSize: 52, nameBoxWidth: 80, nameColor: "#ffffff",
-      codeX: 50, codeY: 90.5, codeSize: 32, codeColor: "#f59e0b"
-    };
-    appState.activeExhibitionId = id;
-    input.value = "";
-
-    await pushStateToCloud();
-    renderAllUI();
-    alert(`✅ تم إضافة (${name}) بنجاح!`);
-  }
-
-  async function deleteCurrentExhibition() {
-    const keys = Object.keys(appState.exhibitions);
-    if (keys.length <= 1) {
-      alert("لا يمكن حذف المعرض الوحيد!");
-      return;
-    }
-    const exh = getActiveExhibition();
-    if (!confirm(`هل أنت متأكد من حذف (${exh.name})؟`)) return;
-
-    delete appState.exhibitions[exh.id];
-    appState.activeExhibitionId = Object.keys(appState.exhibitions)[0];
-    await pushStateToCloud();
-    renderAllUI();
-  }
-
-  async function saveCloudAndSecuritySettings() {
-    const newUrl = cleanFirebaseUrl(document.getElementById("firebaseUrlInput").value);
-    const newPin = (document.getElementById("adminPinInput").value || "").trim();
-
-    if (newUrl) appState.firebaseUrl = newUrl;
-    if (newPin) appState.adminPin = newPin;
-
-    await pushStateToCloud();
-    alert("✅ تم حفظ إعدادات السحابة بنجاح!");
-  }
-</script>
-
-</body>
+        await pushStateToCloud();
+        alert("✅ تم حفظ إعدادات السحابة بنجاح!");
+      }
+    </script>
+  </body>
 </html>
