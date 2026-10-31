@@ -370,14 +370,15 @@
 
       .duplicate-warning-box {
         margin-bottom: 12px;
-        padding: 10px 14px;
+        padding: 12px 14px;
         border-radius: 10px;
-        background: rgba(239, 68, 68, 0.15);
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        color: #f87171;
-        font-size: 0.86rem;
+        background: rgba(239, 68, 68, 0.18);
+        border: 1.5px solid rgba(239, 68, 68, 0.55);
+        color: #fca5a5;
+        font-size: 0.88rem;
         font-weight: 800;
         text-align: center;
+        line-height: 1.6;
         display: none;
       }
 
@@ -827,9 +828,7 @@
             </div>
           </div>
 
-          <div id="duplicateWarningBox" class="duplicate-warning-box">
-            ❌ رقم التليفون مسجل مسبقاً في هذا المعرض! لا يمكن إصدار دعوة له.
-          </div>
+          <div id="duplicateWarningBox" class="duplicate-warning-box"></div>
 
           <button
             id="issueBtn"
@@ -960,7 +959,6 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title">📊 متابعة إنجاز كل سيلز</div>
-                <!-- زرارين لاختيار طريقة الترتيب -->
                 <div style="display: flex; gap: 6px">
                   <button
                     id="sortCodeBtn"
@@ -1853,6 +1851,7 @@
         renderExhibitionPills();
         renderSalesSelectDropdown();
         loadActiveExhibitionTemplate();
+        onClientInputChange();
         if (isAdminMode) {
           renderAdminDashboard();
         }
@@ -1893,7 +1892,6 @@
           : "";
       }
 
-      // هنا يتم ترتيب السيلز تصاعدياً حسب الكود في القائمة المنسدلة
       function renderSalesSelectDropdown() {
         const select = document.getElementById("salesSelect");
         const searchVal = (
@@ -1945,15 +1943,22 @@
         renderAllCanvases();
       }
 
-      function isPhoneDuplicateInExhibition(exhId, rawPhone) {
+      // البحث عن الدعوة المسجلة مسبقاً بنفس رقم التليفون لإظهار بيانات السيلز الذي أصدرها
+      function findDuplicateInvitation(exhId, rawPhone) {
         const target = normalizePhoneNumber(rawPhone);
-        if (!target) return false;
-        return appState.invitations.some(
-          (inv) =>
-            inv &&
-            inv.exhibitionId === exhId &&
-            normalizePhoneNumber(inv.clientPhone) === target,
+        if (!target) return null;
+        return (
+          appState.invitations.find(
+            (inv) =>
+              inv &&
+              inv.exhibitionId === exhId &&
+              normalizePhoneNumber(inv.clientPhone) === target,
+          ) || null
         );
+      }
+
+      function isPhoneDuplicateInExhibition(exhId, rawPhone) {
+        return Boolean(findDuplicateInvitation(exhId, rawPhone));
       }
 
       function onClientInputChange() {
@@ -1972,11 +1977,34 @@
         }
 
         const dupBox = document.getElementById("duplicateWarningBox");
+        const issueBtn = document.getElementById("issueBtn");
+
         if (typedPhone && exh) {
-          const isDup = isPhoneDuplicateInExhibition(exh.id, typedPhone);
-          dupBox.style.display = isDup ? "block" : "none";
+          const dupInv = findDuplicateInvitation(exh.id, typedPhone);
+          if (dupInv) {
+            const sCode = formatSalesCode(dupInv.salesCode);
+            dupBox.innerHTML = `❌ رقم التليفون مسجل مسبقاً في هذا المعرض!<br>تم عمل دعوة بواسطة: <strong style="color:#fff;">${dupInv.salesName} (كود: ${sCode})</strong> — رقم الدعوة: <strong style="color:var(--gold);">#${dupInv.seqNumber}</strong>`;
+            dupBox.style.display = "block";
+            if (issueBtn) {
+              issueBtn.disabled = true;
+              issueBtn.style.opacity = "0.5";
+              issueBtn.style.cursor = "not-allowed";
+            }
+          } else {
+            dupBox.style.display = "none";
+            if (issueBtn) {
+              issueBtn.disabled = false;
+              issueBtn.style.opacity = "1";
+              issueBtn.style.cursor = "pointer";
+            }
+          }
         } else {
           dupBox.style.display = "none";
+          if (issueBtn) {
+            issueBtn.disabled = false;
+            issueBtn.style.opacity = "1";
+            issueBtn.style.cursor = "pointer";
+          }
         }
 
         renderAllCanvases();
@@ -2090,14 +2118,18 @@
           customTicket || (!typedName && !typedPhone ? lastIssuedTicket : null);
         const isUnissuedPreview = !isStudioCanvas && !activeIssuedTicket;
 
-        const isDuplicatePhone =
-          isUnissuedPreview &&
-          typedPhone &&
-          isPhoneDuplicateInExhibition(exh.id, typedPhone);
+        const dupInv =
+          isUnissuedPreview && typedPhone
+            ? findDuplicateInvitation(exh.id, typedPhone)
+            : null;
+        const isDuplicatePhone = Boolean(dupInv);
 
+        // إخفاء اسم العميل الجديد تماماً إذا كان الرقم مسجلاً مسبقاً حتى يستحيل تصوير الدعوة
         const clientName = activeIssuedTicket
           ? activeIssuedTicket.clientName
-          : typedName || "أ / أحمد محمود عبد الرحمن";
+          : isDuplicatePhone
+            ? `مسجل مسبقاً مع: ${dupInv.salesName}`
+            : typedName || "أ / أحمد محمود عبد الرحمن";
 
         const rawSalesCode = activeIssuedTicket
           ? activeIssuedTicket.salesCode
@@ -2138,7 +2170,9 @@
         }
 
         ctx.save();
-        ctx.fillStyle = exh.nameColor || "#ffffff";
+        ctx.fillStyle = isDuplicatePhone
+          ? "#f87171"
+          : exh.nameColor || "#ffffff";
         ctx.shadowColor = "rgba(0,0,0,0.65)";
         ctx.shadowBlur = 8;
         ctx.fillText(clientName, nameX, nameY);
@@ -2157,7 +2191,8 @@
         } else if (activeIssuedTicket) {
           codeText = `${activeIssuedTicket.seqNumber}  |  ${formatSalesCode(activeIssuedTicket.salesCode)}`;
         } else if (isDuplicatePhone) {
-          codeText = `❌ رقم التليفون مكرر - غير مصرح`;
+          const dupCode = formatSalesCode(dupInv.salesCode);
+          codeText = `❌ تم عمل دعوة من: ${dupInv.salesName} (${dupCode}) #${dupInv.seqNumber}`;
         } else {
           codeText = `----  |  ${salesCode} (بانتظار الإصدار)`;
         }
@@ -2196,15 +2231,18 @@
         ctx.fillText(codeText, codeX, codeY);
         ctx.restore();
 
+        // الشريط العريض المائل في منتصف الدعوة
         if (isUnissuedPreview) {
           ctx.save();
           ctx.translate(canvas.width / 2, nameY);
           ctx.rotate(-Math.PI / 10);
 
-          const bannerW = canvas.width * 0.88;
-          const bannerH = Math.round(canvas.width * 0.11);
+          const bannerW = canvas.width * 0.92;
+          const bannerH = isDuplicatePhone
+            ? Math.round(canvas.width * 0.15)
+            : Math.round(canvas.width * 0.11);
           ctx.fillStyle = isDuplicatePhone
-            ? "rgba(220, 38, 38, 0.88)"
+            ? "rgba(220, 38, 38, 0.94)"
             : "rgba(15, 23, 42, 0.82)";
           ctx.strokeStyle = isDuplicatePhone ? "#fca5a5" : "#f59e0b";
           ctx.lineWidth = 4;
@@ -2212,15 +2250,35 @@
           ctx.fillRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
           ctx.strokeRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
 
-          const stampFontSize = Math.round(canvas.width * 0.038);
-          ctx.font = `900 ${stampFontSize}px 'Cairo', sans-serif`;
           ctx.fillStyle = "#ffffff";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          const stampText = isDuplicatePhone
-            ? "❌ رقم تليفون مكرر - دعوة لاغية"
-            : "🔒 معاينة فقط - اضغط إصدار لتفعيل الرقم";
-          ctx.fillText(stampText, 0, 0);
+
+          if (isDuplicatePhone) {
+            const dupCode = formatSalesCode(dupInv.salesCode);
+            const line1Size = Math.round(canvas.width * 0.035);
+            const line2Size = Math.round(canvas.width * 0.032);
+
+            ctx.font = `900 ${line1Size}px 'Cairo', sans-serif`;
+            ctx.fillText(
+              "❌ رقم تليفون مكرر - دعوة لاغية",
+              0,
+              -bannerH * 0.22,
+            );
+
+            ctx.fillStyle = "#fde68a";
+            ctx.font = `800 ${line2Size}px 'Cairo', sans-serif`;
+            ctx.fillText(
+              `تم عمل دعوة من: ${dupInv.salesName} (${dupCode}) - #${dupInv.seqNumber}`,
+              0,
+              bannerH * 0.24,
+            );
+          } else {
+            const stampFontSize = Math.round(canvas.width * 0.038);
+            ctx.font = `900 ${stampFontSize}px 'Cairo', sans-serif`;
+            ctx.fillText("🔒 معاينة فقط - اضغط إصدار لتفعيل الرقم", 0, 0);
+          }
+
           ctx.restore();
         }
       }
@@ -2440,19 +2498,20 @@
 
           const currentExh = getActiveExhibition();
 
-          const isDuplicate = isPhoneDuplicateInExhibition(
-            currentExh.id,
-            clientPhone,
-          );
+          const dupInv = findDuplicateInvitation(currentExh.id, clientPhone);
 
-          if (isDuplicate) {
-            document.getElementById("duplicateWarningBox").style.display =
-              "block";
+          if (dupInv) {
+            const sCode = formatSalesCode(dupInv.salesCode);
+            const dupBox = document.getElementById("duplicateWarningBox");
+            dupBox.innerHTML = `❌ رقم التليفون مسجل مسبقاً في هذا المعرض!<br>تم عمل دعوة بواسطة: <strong style="color:#fff;">${dupInv.salesName} (كود: ${sCode})</strong> — رقم الدعوة: <strong style="color:var(--gold);">#${dupInv.seqNumber}</strong>`;
+            dupBox.style.display = "block";
             renderAllCanvases();
             alert(
-              `❌ تنبيه: رقم التليفون (${clientPhone}) مسجل مسبقاً في هذا المعرض! لا يمكن تكراره.`,
+              `❌ تنبيه: رقم التليفون (${clientPhone}) مسجل مسبقاً في هذا المعرض!\nتم عمل دعوة له بواسطة السيلز: ${dupInv.salesName} (كود: ${sCode}) برقم دعوة #${dupInv.seqNumber}.`,
             );
-            btn.disabled = false;
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
             btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
             return;
           }
@@ -2510,7 +2569,15 @@
           alert("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
           console.error(e);
         } finally {
-          btn.disabled = false;
+          const currentPhone = (clientPhoneInput.value || "").trim();
+          const currentExh = getActiveExhibition();
+          const stillDup =
+            currentPhone &&
+            currentExh &&
+            isPhoneDuplicateInExhibition(currentExh.id, currentPhone);
+          btn.disabled = Boolean(stillDup);
+          btn.style.opacity = stillDup ? "0.5" : "1";
+          btn.style.cursor = stillDup ? "not-allowed" : "pointer";
           btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
         }
       }
@@ -2625,7 +2692,6 @@
           return { ...s, code: formattedCode, currentCount, allCount };
         });
 
-        // ترتيب السيلز في لوحة المدير بناءً على الأوبشن المختار (حسب الكود أو حسب عدد الدعوات)
         if (salesSortMode === "count") {
           salesStats.sort(
             (a, b) =>
@@ -2664,7 +2730,6 @@
         const currentFilterVal = logFilter.value || "ALL";
         logFilter.innerHTML = `<option value="ALL">كل السيلز (${exhInvs.length} دعوة)</option>`;
 
-        // ترتيب السيلز في قائمة الفلتر أيضاً تصاعدياً حسب الكود
         const sortedForFilter = sortSalesTeamByCode(appState.salesTeam);
         sortedForFilter.forEach((s) => {
           const formattedCode = formatSalesCode(s.code);
