@@ -44,6 +44,7 @@
         background-color: var(--bg-main);
         color: var(--text-main);
         min-height: 100vh;
+        width: 100%;
         overflow-x: hidden;
         line-height: 1.5;
         display: flex;
@@ -81,7 +82,7 @@
       }
 
       .brand-title {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
         font-weight: 800;
         color: var(--primary);
       }
@@ -90,7 +91,7 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 700;
         padding: 4px 10px;
         border-radius: 999px;
@@ -119,7 +120,7 @@
         gap: 6px;
         padding: 9px 14px;
         border-radius: 10px;
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 700;
         border: 1px solid transparent;
         cursor: pointer;
@@ -146,7 +147,7 @@
       .btn-success {
         background: linear-gradient(135deg, #10b981, #059669);
         color: #fff;
-        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
       }
 
       .btn-danger {
@@ -164,7 +165,7 @@
       .btn-block {
         width: 100%;
         padding: 13px;
-        font-size: 1rem;
+        font-size: 0.98rem;
       }
 
       /* Exhibition Selector Bar */
@@ -173,12 +174,7 @@
         border: 1px solid var(--border);
         border-radius: var(--radius);
         padding: 12px;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
+        margin-bottom: 14px;
       }
 
       .exhibition-list-wrap {
@@ -190,10 +186,9 @@
       }
 
       .exhibition-label {
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         font-weight: 700;
         color: var(--text-muted);
-        margin-left: 4px;
       }
 
       .exh-pills {
@@ -204,9 +199,9 @@
       }
 
       .exh-pill {
-        padding: 8px 16px;
+        padding: 8px 14px;
         border-radius: 10px;
-        font-size: 0.9rem;
+        font-size: 0.86rem;
         font-weight: 700;
         background: var(--bg-input);
         color: var(--text-muted);
@@ -222,10 +217,10 @@
         box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
       }
 
-      /* Main Sales Workspace Grid */
+      /* Grids & Cards (With min-width: 0 to prevent mobile overflow) */
       .workspace-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 16px;
         align-items: start;
       }
@@ -234,8 +229,10 @@
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 18px;
+        padding: 16px;
         box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+        min-width: 0;
+        max-width: 100%;
       }
 
       .card-header {
@@ -246,16 +243,16 @@
         margin-bottom: 14px;
         border-bottom: 1px solid var(--border);
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 10px;
       }
 
       .card-title {
-        font-size: 1.02rem;
+        font-size: 1rem;
         font-weight: 800;
         color: var(--primary);
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
       }
 
       /* Form Controls */
@@ -265,7 +262,7 @@
 
       .form-label {
         display: block;
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         font-weight: 700;
         color: #cbd5e1;
         margin-bottom: 5px;
@@ -273,8 +270,9 @@
 
       .form-control {
         width: 100%;
-        padding: 11px 14px;
-        font-size: 16px;
+        max-width: 100%;
+        padding: 10px 13px;
+        font-size: 15px;
         font-weight: 600;
         color: var(--text-main);
         background: var(--bg-input);
@@ -298,14 +296,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         color: var(--text-muted);
         margin-top: 5px;
         font-weight: 700;
       }
 
       textarea.form-control {
-        min-height: 95px;
+        min-height: 100px;
         resize: vertical;
       }
 
@@ -319,16 +317,17 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 260px;
+        min-height: 250px;
         position: relative;
         user-select: none;
         -webkit-user-select: none;
+        overflow: hidden;
       }
 
       #invitationCanvas,
       #adminStudioCanvas {
         max-width: 100%;
-        max-height: 620px;
+        max-height: 580px;
         width: auto;
         height: auto;
         border-radius: 8px;
@@ -353,7 +352,7 @@
         color: #fbbf24;
         font-size: 0.8rem;
         font-weight: 700;
-        padding: 6px 12px;
+        padding: 7px 12px;
         border-radius: 8px;
         margin-bottom: 10px;
         text-align: center;
@@ -367,7 +366,7 @@
         background: rgba(16, 185, 129, 0.1);
         border: 1px solid rgba(16, 185, 129, 0.35);
         color: #34d399;
-        font-size: 0.92rem;
+        font-size: 0.9rem;
         font-weight: 700;
         text-align: center;
         display: none;
@@ -380,7 +379,7 @@
         background: rgba(239, 68, 68, 0.18);
         border: 1.5px solid rgba(239, 68, 68, 0.55);
         color: #fca5a5;
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 800;
         text-align: center;
         line-height: 1.6;
@@ -394,24 +393,22 @@
         flex-wrap: wrap;
       }
 
-      /* Admin Section */
+      /* ================= ADMIN PANEL & MULTI-PAGE NAVIGATION ================= */
       #adminPanel {
         display: none;
-        margin-top: 22px;
-        border-top: 2px dashed var(--gold);
-        padding-top: 20px;
+        width: 100%;
       }
 
       .admin-banner {
         background: linear-gradient(
           90deg,
-          rgba(245, 158, 11, 0.15),
+          rgba(245, 158, 11, 0.16),
           rgba(6, 182, 212, 0.1)
         );
-        border: 1px solid rgba(245, 158, 11, 0.4);
+        border: 1px solid rgba(245, 158, 11, 0.45);
         border-radius: var(--radius);
         padding: 12px 16px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -419,53 +416,98 @@
         gap: 10px;
       }
 
-      /* Unified All-Exhibitions Summary Section */
-      .unified-report-card {
-        background: linear-gradient(
-          145deg,
-          rgba(15, 23, 42, 0.98),
-          rgba(9, 15, 29, 0.98)
-        );
-        border: 1.5px solid rgba(6, 182, 212, 0.4);
-        border-radius: var(--radius);
-        padding: 18px;
-        margin-bottom: 18px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      /* 6-Page Navigation Grid */
+      .admin-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 16px;
       }
 
+      .admin-nav-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 11px 8px;
+        border-radius: 12px;
+        background: var(--bg-card);
+        color: var(--text-muted);
+        border: 1px solid var(--border-light);
+        font-weight: 800;
+        font-size: 0.84rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        line-height: 1.3;
+      }
+
+      .admin-nav-btn .nav-icon {
+        font-size: 1.2rem;
+      }
+
+      .admin-nav-btn.active {
+        background: linear-gradient(135deg, var(--gold), #d97706);
+        color: #000;
+        border-color: var(--gold);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      }
+
+      .admin-page {
+        display: none;
+        min-width: 0;
+        width: 100%;
+        animation: fadeIn 0.2s ease;
+      }
+
+      .admin-page.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Filter Toolbar inside Global Report */
       .filter-toolbar {
-        background: rgba(7, 13, 25, 0.75);
+        background: rgba(7, 13, 25, 0.8);
         border: 1px solid var(--border-light);
         border-radius: 12px;
         padding: 12px;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
+        margin-bottom: 14px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 12px;
+        align-items: center;
       }
 
       .mode-switch-group {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 8px;
-        flex-wrap: wrap;
       }
 
       .date-picker-group {
         display: flex;
         align-items: center;
         gap: 8px;
-        flex-wrap: wrap;
-        flex: 1;
         justify-content: flex-end;
+        flex-wrap: wrap;
       }
 
       .exh-summary-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 12px;
-        margin-bottom: 14px;
+        margin-bottom: 16px;
       }
 
       .exh-summary-box {
@@ -473,31 +515,31 @@
         border: 1px solid var(--border-light);
         border-radius: 12px;
         padding: 14px;
-        position: relative;
-        transition: all 0.2s ease;
+        min-width: 0;
       }
 
       .exh-summary-box.total-highlight {
         background: linear-gradient(
           135deg,
-          rgba(245, 158, 11, 0.14),
+          rgba(245, 158, 11, 0.15),
           rgba(6, 182, 212, 0.12)
         );
         border-color: var(--gold);
       }
 
       .exh-summary-box .exh-title {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         font-weight: 800;
         color: var(--text-main);
         margin-bottom: 6px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 6px;
       }
 
       .exh-summary-box .main-num {
-        font-size: 1.75rem;
+        font-size: 1.7rem;
         font-weight: 900;
         color: var(--primary);
         line-height: 1.2;
@@ -511,53 +553,19 @@
         margin-top: 8px;
         padding-top: 8px;
         border-top: 1px dashed var(--border-light);
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         color: var(--text-muted);
         display: flex;
         justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 4px;
         font-weight: 700;
       }
 
-      .admin-tabs {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        padding-bottom: 6px;
-        margin-bottom: 16px;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .admin-tab-btn {
-        padding: 10px 16px;
-        border-radius: 10px;
-        background: var(--bg-card);
-        color: var(--text-muted);
-        border: 1px solid var(--border-light);
-        font-weight: 700;
-        font-size: 0.9rem;
-        cursor: pointer;
-        white-space: nowrap;
-        flex: 1;
-        text-align: center;
-      }
-
-      .admin-tab-btn.active {
-        background: var(--gold);
-        color: #000;
-        border-color: var(--gold);
-      }
-
-      .admin-tab-content {
-        display: none;
-      }
-
-      .admin-tab-content.active {
-        display: block;
-      }
-
+      /* Studio & Two-Col Grids */
       .studio-grid {
         display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
         gap: 16px;
         align-items: start;
       }
@@ -565,6 +573,13 @@
       .sticky-preview-card {
         position: sticky;
         top: 12px;
+      }
+
+      .admin-two-col {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
       }
 
       .control-section-box {
@@ -576,7 +591,7 @@
       }
 
       .control-section-title {
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 800;
         color: var(--gold);
         margin-bottom: 10px;
@@ -587,8 +602,8 @@
 
       .kpi-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
         margin-bottom: 16px;
       }
 
@@ -596,35 +611,42 @@
         background: var(--bg-input);
         border: 1px solid var(--border-light);
         border-radius: 12px;
-        padding: 14px;
+        padding: 12px 10px;
         text-align: center;
+        min-width: 0;
       }
 
       .kpi-card .label {
-        font-size: 0.8rem;
+        font-size: 0.76rem;
         color: var(--text-muted);
         font-weight: 700;
       }
 
       .kpi-card .val {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
         font-weight: 900;
         color: var(--primary);
         margin-top: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
+      /* Tables */
       .table-responsive {
         width: 100%;
+        max-width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         border: 1px solid var(--border);
         border-radius: 10px;
+        background: var(--bg-input);
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 580px;
+        min-width: 520px;
       }
 
       th,
@@ -632,7 +654,7 @@
         padding: 10px 12px;
         text-align: right;
         border-bottom: 1px solid var(--border);
-        font-size: 0.88rem;
+        font-size: 0.85rem;
       }
 
       th {
@@ -652,7 +674,8 @@
         padding: 2px 8px;
         border-radius: 6px;
         font-weight: 800;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
+        white-space: nowrap;
       }
 
       .badge-count {
@@ -661,18 +684,25 @@
         padding: 3px 10px;
         border-radius: 999px;
         font-weight: 800;
+        white-space: nowrap;
       }
 
-      .admin-two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
+      /* Pagination Bar */
+      .pagination-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
       }
 
       .range-row {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         margin-bottom: 8px;
       }
 
@@ -681,27 +711,29 @@
       }
 
       .range-row label {
-        min-width: 78px;
-        font-size: 0.8rem;
+        min-width: 75px;
+        font-size: 0.78rem;
         color: var(--text-muted);
         font-weight: 700;
       }
 
       .range-row input[type="range"] {
         flex: 1;
+        min-width: 0;
         accent-color: var(--primary);
         cursor: pointer;
       }
 
       .range-val {
-        min-width: 48px;
+        min-width: 45px;
         text-align: left;
         font-weight: 800;
         color: var(--gold);
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         direction: ltr;
       }
 
+      /* Modals */
       .modal-overlay {
         position: fixed;
         inset: 0;
@@ -731,7 +763,7 @@
         margin-top: 28px;
         border-top: 1px solid var(--border);
         color: var(--text-muted);
-        font-size: 0.88rem;
+        font-size: 0.85rem;
         font-weight: 700;
         letter-spacing: 0.5px;
         direction: ltr;
@@ -750,7 +782,6 @@
         gap: 5px;
         text-decoration: none;
         transition: all 0.25s ease;
-        box-shadow: 0 2px 10px rgba(245, 158, 11, 0.1);
       }
 
       .dev-footer a:hover {
@@ -758,29 +789,19 @@
         border-color: var(--gold);
         color: #fff;
         transform: translateY(-2px);
-        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.28);
       }
 
-      .dev-footer a:active {
-        transform: translateY(0);
-      }
+      /* ================= MOBILE RESPONSIVE FIXES ================= */
+      @media (max-width: 900px) {
+        .app-container {
+          padding: 8px;
+        }
 
-      .dev-footer .link-arrow {
-        font-size: 0.78rem;
-        opacity: 0.85;
-        transition: transform 0.25s ease;
-      }
-
-      .dev-footer a:hover .link-arrow {
-        transform: translate(2px, -2px);
-        opacity: 1;
-      }
-
-      @media (max-width: 860px) {
         .workspace-grid,
         .admin-two-col,
-        .studio-grid {
-          grid-template-columns: 1fr;
+        .studio-grid,
+        .filter-toolbar {
+          grid-template-columns: minmax(0, 1fr);
         }
 
         .sticky-preview-card {
@@ -792,6 +813,7 @@
           flex-direction: column;
           align-items: stretch;
           text-align: center;
+          padding: 12px;
         }
 
         .brand-box {
@@ -799,11 +821,14 @@
         }
 
         .header-actions {
+          width: 100%;
           justify-content: center;
         }
 
         .header-actions .btn {
           flex: 1;
+          padding: 10px 8px;
+          font-size: 0.82rem;
         }
 
         .exh-pills {
@@ -813,22 +838,95 @@
         .exh-pill {
           flex: 1 1 calc(50% - 8px);
           text-align: center;
+          padding: 9px 8px;
+          font-size: 0.82rem;
+        }
+
+        /* 3x2 Clean Grid for Admin Navigation on Mobile */
+        .admin-nav-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 6px;
+        }
+
+        .admin-nav-btn {
+          padding: 9px 4px;
+          font-size: 0.76rem;
+          border-radius: 10px;
+        }
+
+        .admin-nav-btn .nav-icon {
+          font-size: 1.05rem;
+        }
+
+        /* 2x2 KPIs on Mobile */
+        .kpi-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .kpi-card {
           padding: 10px 8px;
         }
 
-        .card,
-        .unified-report-card {
-          padding: 14px;
+        .kpi-card .val {
+          font-size: 1.2rem;
         }
 
-        .admin-tab-btn {
-          font-size: 0.82rem;
-          padding: 9px 12px;
+        .card {
+          padding: 12px;
+        }
+
+        .card-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .card-header .action-group {
+          display: flex;
+          width: 100%;
+          gap: 6px;
+        }
+
+        .card-header .action-group .btn {
+          flex: 1;
+          font-size: 0.78rem;
+          padding: 9px 6px;
+        }
+
+        .mode-switch-group {
+          grid-template-columns: 1fr;
         }
 
         .date-picker-group {
-          justify-content: flex-start;
+          justify-content: space-between;
           width: 100%;
+        }
+
+        .date-picker-group input[type="date"] {
+          flex: 1;
+          min-width: 130px;
+        }
+
+        .admin-banner {
+          flex-direction: column;
+          align-items: stretch;
+          text-align: center;
+        }
+
+        .admin-banner .banner-btns {
+          display: flex;
+          gap: 8px;
+          width: 100%;
+        }
+
+        .admin-banner .banner-btns .btn {
+          flex: 1;
+        }
+
+        th,
+        td {
+          padding: 8px 9px;
+          font-size: 0.8rem;
         }
       }
     </style>
@@ -845,7 +943,7 @@
         </div>
         <div class="header-actions">
           <button class="btn btn-outline" onclick="syncFromCloud(true)">
-            🔄 تحديث
+            🔄 تحديث البيانات
           </button>
           <button
             id="adminToggleBtn"
@@ -857,16 +955,16 @@
         </div>
       </header>
 
-      <!-- Exhibition Bar -->
+      <!-- Exhibition Selector Bar (Always visible to switch active exhibition easily) -->
       <section class="exhibition-bar">
         <div class="exhibition-list-wrap">
-          <span class="exhibition-label">📍 اختر المعرض:</span>
+          <span class="exhibition-label">📍 المعرض النشط:</span>
           <div id="exhibitionPills" class="exh-pills"></div>
         </div>
       </section>
 
-      <!-- Main Sales Interface -->
-      <main class="workspace-grid">
+      <!-- ==================== 1. SALES WORKSPACE VIEW ==================== -->
+      <main id="salesWorkspaceView" class="workspace-grid">
         <div class="card">
           <div class="card-header">
             <div class="card-title">
@@ -920,7 +1018,7 @@
               style="
                 text-align: right;
                 font-family: monospace, &quot;Cairo&quot;, sans-serif;
-                font-size: 17px;
+                font-size: 16px;
                 letter-spacing: 1px;
               "
               oninput="handlePhoneInput(this)"
@@ -948,7 +1046,7 @@
             ✨ إصدار ومشاركة بطاقة الدعوة الآن
           </button>
 
-          <!-- صندوق التأكيد وأزرار المشاركة الفورية للآيفون والأندرويد -->
+          <!-- صندوق التأكيد وأزرار المشاركة الفورية -->
           <div id="ticketConfirmBox" class="ticket-status-box">
             <div id="ticketConfirmText"></div>
             <div class="share-actions-row">
@@ -957,7 +1055,7 @@
                 style="flex: 2; padding: 12px"
                 onclick="shareCurrentCanvas()"
               >
-                📲 مشاركة سريعة (واتساب / حفظ للآيفون)
+                📲 مشاركة سريعة (واتساب / آيفون)
               </button>
               <button
                 class="btn btn-outline"
@@ -973,7 +1071,11 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">🖼️ معاينة الدعوة مباشرة</div>
-            <div id="previewTopActions" style="display: none; gap: 6px">
+            <div
+              id="previewTopActions"
+              class="action-group"
+              style="display: none; gap: 6px"
+            >
               <button
                 class="btn btn-success"
                 style="padding: 6px 12px; font-size: 0.8rem"
@@ -996,223 +1098,408 @@
         </div>
       </main>
 
-      <!-- ADMIN PANEL -->
+      <!-- ==================== 2. DEDICATED ADMIN PANEL VIEW (6 PAGES) ==================== -->
       <section id="adminPanel">
         <div class="admin-banner">
           <div>
-            <strong style="color: var(--gold); font-size: 1.05rem"
+            <strong style="color: var(--gold); font-size: 1.02rem"
               >👑 لوحة تحكم المدير</strong
             >
-            <p style="font-size: 0.82rem; color: var(--text-muted)">
-              متابعة كل المعارض، تقارير اليوم والتوتال، السيلز، واستوديو القوالب.
+            <p style="font-size: 0.78rem; color: var(--text-muted)">
+              اختر الصفحة المطلوبة من القائمة بالأسفل للتنقل السريع
             </p>
           </div>
-          <button class="btn btn-danger" onclick="logoutAdmin()">
-            إغلاق وضع المدير ✖
-          </button>
-        </div>
-
-        <!-- UNIFIED ALL-EXHIBITIONS SUMMARY REPORT (نفس الصفحة لكل المعارض + الكاليندر + التوتال) -->
-        <div class="unified-report-card">
-          <div class="card-header" style="margin-bottom: 12px">
-            <div class="card-title" style="color: var(--gold); font-size: 1.05rem">
-              📊 التقرير المجمع لكل المعارض (في نفس الصفحة)
-            </div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap">
-              <button
-                class="btn btn-success"
-                style="padding: 8px 14px; font-size: 0.84rem"
-                onclick="copyGlobalWhatsAppReport()"
-              >
-                🟢 نسخ تقرير كل المعارض (واتساب)
-              </button>
-              <button
-                class="btn btn-primary"
-                style="padding: 8px 14px; font-size: 0.84rem"
-                onclick="exportGlobalExcelCSV()"
-              >
-                📥 تحميل إكسيل مجمع لكل المعارض
-              </button>
-            </div>
-          </div>
-
-          <!-- شريط اختيار نوع التقرير: من أول المعرض (التوتال) أو تحديد يوم بالكاليندر -->
-          <div class="filter-toolbar">
-            <div class="mode-switch-group">
-              <button
-                id="modeAllTimeBtn"
-                class="btn btn-gold"
-                onclick="setGlobalReportMode('ALL_TIME')"
-              >
-                🌐 التوتال من أول المعرض (الإجمالي الكلي)
-              </button>
-              <button
-                id="modeSingleDateBtn"
-                class="btn btn-outline"
-                onclick="setGlobalReportMode('DATE')"
-              >
-                📅 تقرير يوم محدد بالكاليندر
-              </button>
-            </div>
-
-            <div class="date-picker-group">
-              <span
-                style="
-                  font-size: 0.84rem;
-                  font-weight: 700;
-                  color: var(--text-muted);
-                "
-                >اختر اليوم:</span
-              >
-              <input
-                type="date"
-                id="globalReportDateInput"
-                class="form-control"
-                style="width: auto; min-width: 165px; padding: 7px 12px"
-                onchange="onGlobalDateChange(this.value)"
-              />
-              <button
-                class="btn btn-outline"
-                style="padding: 7px 10px; font-size: 0.8rem"
-                onclick="setQuickGlobalDate(0)"
-              >
-                اليوم
-              </button>
-              <button
-                class="btn btn-outline"
-                style="padding: 7px 10px; font-size: 0.8rem"
-                onclick="setQuickGlobalDate(-1)"
-              >
-                أمس
-              </button>
-            </div>
-          </div>
-
-          <div
-            id="globalFilterStatusBanner"
-            style="
-              margin-bottom: 12px;
-              font-size: 0.88rem;
-              font-weight: 800;
-              color: var(--primary);
-            "
-          ></div>
-
-          <!-- كروت ملخص كل المعارض جنب بعض في نفس الصفحة -->
-          <div id="allExhibitionsSummaryGrid" class="exh-summary-grid"></div>
-
-          <!-- جدول تفصيلي لكل المعارض معاً -->
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>اسم المعرض</th>
-                  <th id="globalTableDynamicColHeader">
-                    إجمالي الدعوات (من أول المعرض)
-                  </th>
-                  <th>التوتال التراكمي (من أول المعرض)</th>
-                  <th>الرقم التسلسلي الحالي</th>
-                  <th>أعلى سيلز في المعرض</th>
-                  <th>إجراء سريع</th>
-                </tr>
-              </thead>
-              <tbody id="allExhibitionsSummaryTbody"></tbody>
-            </table>
+          <div class="banner-btns" style="display: flex; gap: 8px">
+            <button class="btn btn-primary" onclick="logoutAdmin()">
+              🎫 شاشة إصدار الدعوات
+            </button>
+            <button class="btn btn-danger" onclick="logoutAdmin()">
+              خروج ✖
+            </button>
           </div>
         </div>
 
-        <div class="admin-tabs">
+        <!-- شريط تنقل الصفحات الـ 6 (مضبوط 3×2 على الموبايل و 6×1 على الكمبيوتر) -->
+        <nav class="admin-nav-grid">
           <button
-            class="admin-tab-btn active"
-            onclick="switchAdminTab('tabSales', this)"
+            class="admin-nav-btn active"
+            onclick="switchAdminPage('pageGlobalReports', this)"
           >
-            👥 إدارة ومتابعة السيلز
+            <span class="nav-icon">📊</span>
+            <span>تقارير المعارض</span>
           </button>
           <button
-            class="admin-tab-btn"
-            onclick="switchAdminTab('tabTemplate', this)"
+            class="admin-nav-btn"
+            onclick="switchAdminPage('pageSalesPerf', this)"
           >
-            🎨 القالب والمعارض
+            <span class="nav-icon">🏆</span>
+            <span>إنجاز السيلز</span>
           </button>
           <button
-            class="admin-tab-btn"
-            onclick="switchAdminTab('tabReports', this)"
+            class="admin-nav-btn"
+            onclick="switchAdminPage('pageClientLogs', this)"
           >
-            📋 سجل العملاء والتليفونات
+            <span class="nav-icon">📋</span>
+            <span>سجل العملاء</span>
           </button>
           <button
-            class="admin-tab-btn"
-            onclick="switchAdminTab('tabCloud', this)"
+            class="admin-nav-btn"
+            onclick="switchAdminPage('pageTeamManage', this)"
           >
-            ⚙️ السحابة والأمان
+            <span class="nav-icon">👥</span>
+            <span>السيلز والمعارض</span>
           </button>
+          <button
+            class="admin-nav-btn"
+            onclick="switchAdminPage('pageStudio', this)"
+          >
+            <span class="nav-icon">🎨</span>
+            <span>استوديو القالب</span>
+          </button>
+          <button
+            class="admin-nav-btn"
+            onclick="switchAdminPage('pageSettings', this)"
+          >
+            <span class="nav-icon">⚙️</span>
+            <span>الإعدادات</span>
+          </button>
+        </nav>
+
+        <!-- صفحة 1: التقرير المجمع لكل المعارض + الكاليندر + التوتال -->
+        <div id="pageGlobalReports" class="admin-page active">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" style="color: var(--gold)">
+                📊 التقرير المجمع لكل المعارض (اليومي والتراكمي)
+              </div>
+              <div class="action-group" style="display: flex; gap: 8px">
+                <button
+                  class="btn btn-success"
+                  onclick="copyGlobalWhatsAppReport()"
+                >
+                  🟢 نسخ التقرير واتساب
+                </button>
+                <button
+                  class="btn btn-primary"
+                  onclick="exportGlobalExcelCSV()"
+                >
+                  📥 تحميل إكسيل شامل
+                </button>
+              </div>
+            </div>
+
+            <!-- شريط الكاليندر والتوتال -->
+            <div class="filter-toolbar">
+              <div class="mode-switch-group">
+                <button
+                  id="modeAllTimeBtn"
+                  class="btn btn-gold"
+                  onclick="setGlobalReportMode('ALL_TIME')"
+                >
+                  🌐 التوتال من أول المعرض
+                </button>
+                <button
+                  id="modeSingleDateBtn"
+                  class="btn btn-outline"
+                  onclick="setGlobalReportMode('DATE')"
+                >
+                  📅 تقرير يوم بالكاليندر
+                </button>
+              </div>
+
+              <div class="date-picker-group">
+                <input
+                  type="date"
+                  id="globalReportDateInput"
+                  class="form-control"
+                  style="width: auto; flex: 1; padding: 8px 10px"
+                  onchange="onGlobalDateChange(this.value)"
+                />
+                <button
+                  class="btn btn-outline"
+                  style="padding: 8px 12px"
+                  onclick="setQuickGlobalDate(0)"
+                >
+                  اليوم
+                </button>
+                <button
+                  class="btn btn-outline"
+                  style="padding: 8px 12px"
+                  onclick="setQuickGlobalDate(-1)"
+                >
+                  أمس
+                </button>
+              </div>
+            </div>
+
+            <div
+              id="globalFilterStatusBanner"
+              style="
+                margin-bottom: 12px;
+                font-size: 0.85rem;
+                font-weight: 800;
+                color: var(--primary);
+                background: rgba(6, 182, 212, 0.08);
+                padding: 8px 12px;
+                border-radius: 8px;
+                border: 1px solid rgba(6, 182, 212, 0.2);
+              "
+            ></div>
+
+            <!-- كروت ملخص كل المعارض -->
+            <div id="allExhibitionsSummaryGrid" class="exh-summary-grid"></div>
+
+            <!-- جدول مقارنة المعارض -->
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>اسم المعرض</th>
+                    <th id="globalTableDynamicColHeader">
+                      إجمالي الدعوات (من أول المعرض)
+                    </th>
+                    <th>التوتال من أول المعرض</th>
+                    <th>الرقم التسلسلي القادم</th>
+                    <th>أعلى سيلز</th>
+                    <th>السجل</th>
+                  </tr>
+                </thead>
+                <tbody id="allExhibitionsSummaryTbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        <div id="tabSales" class="admin-tab-content active">
+        <!-- صفحة 2: إنجاز ومتابعة السيلز -->
+        <div id="pageSalesPerf" class="admin-page">
           <div class="kpi-grid">
             <div class="kpi-card">
-              <div class="label">إجمالي دعوات المعرض المحدد</div>
+              <div class="label">دعوات المعرض النشط</div>
               <div class="val" id="kpiCurrentExhTotal">0</div>
             </div>
             <div class="kpi-card">
-              <div class="label">الرقم التسلسلي القادم</div>
+              <div class="label">السيريال القادم</div>
               <div class="val" id="kpiNextSeq">131</div>
             </div>
             <div class="kpi-card">
-              <div class="label">عدد السيلز المسجلين</div>
+              <div class="label">عدد السيلز</div>
               <div class="val" id="kpiSalesCount">0</div>
             </div>
             <div class="kpi-card">
-              <div class="label">أعلى سيلز في المعرض</div>
+              <div class="label">أعلى سيلز بالمعرض</div>
               <div
                 class="val"
                 id="kpiTopSales"
-                style="font-size: 1.1rem; color: var(--gold)"
+                style="font-size: 1rem; color: var(--gold)"
               >
                 -
               </div>
             </div>
           </div>
 
-          <div class="admin-two-col">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">📊 متابعة إنجاز كل سيلز</div>
-                <div style="display: flex; gap: 6px">
-                  <button
-                    id="sortCodeBtn"
-                    class="btn btn-gold"
-                    style="padding: 4px 10px; font-size: 0.75rem"
-                    onclick="setSalesSortMode('code')"
-                  >
-                    ترتيب بالكود
-                  </button>
-                  <button
-                    id="sortCountBtn"
-                    class="btn btn-outline"
-                    style="padding: 4px 10px; font-size: 0.75rem"
-                    onclick="setSalesSortMode('count')"
-                  >
-                    ترتيب بالإنجاز
-                  </button>
-                </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                🏆 ترتيب وإنجاز السيلز (<span id="salesPerfExhTitle"></span>)
               </div>
-              <div class="table-responsive">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>الكود</th>
-                      <th>اسم السيلز</th>
-                      <th>عملاء هذا المعرض</th>
-                      <th>الإجمالي الكلي</th>
-                      <th>إجراء</th>
-                    </tr>
-                  </thead>
-                  <tbody id="salesPerformanceTbody"></tbody>
-                </table>
+              <div class="action-group" style="display: flex; gap: 6px">
+                <button
+                  id="sortCodeBtn"
+                  class="btn btn-gold"
+                  onclick="setSalesSortMode('code')"
+                >
+                  🔢 ترتيب بالكود
+                </button>
+                <button
+                  id="sortCountBtn"
+                  class="btn btn-outline"
+                  onclick="setSalesSortMode('count')"
+                >
+                  🔥 ترتيب بالأعلى إنجازاً
+                </button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الكود</th>
+                    <th>اسم السيلز</th>
+                    <th>عملاء المعرض النشط</th>
+                    <th>التوتال في كل المعارض</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="salesPerformanceTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- صفحة 3: سجل العملاء والتليفونات (مع فلترة وتقسيم صفحات) -->
+        <div id="pageClientLogs" class="admin-page">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                📋 سجل العملاء (<span id="reportExhName"></span>)
+              </div>
+              <div class="action-group" style="display: flex; gap: 8px">
+                <button class="btn btn-success" onclick="copyWhatsAppReport()">
+                  🟢 نسخ واتساب
+                </button>
+                <button class="btn btn-primary" onclick="exportExcelCSV()">
+                  📊 تحميل CSV إكسيل
+                </button>
               </div>
             </div>
 
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 8px;
+                margin-bottom: 12px;
+              "
+            >
+              <input
+                type="text"
+                id="logSearchInput"
+                class="form-control"
+                placeholder="🔍 بحث بالاسم، الرقم، الكود..."
+                oninput="resetLogsPageAndRender()"
+              />
+              <select
+                id="logExhFilter"
+                class="form-control"
+                onchange="resetLogsPageAndRender()"
+              >
+                <option value="ACTIVE">المعرض النشط حالياً</option>
+                <option value="ALL">🌐 كل المعارض معاً</option>
+              </select>
+              <select
+                id="logSalesFilter"
+                class="form-control"
+                onchange="resetLogsPageAndRender()"
+              >
+                <option value="ALL">كل السيلز (الجميع)</option>
+              </select>
+              <div style="display: flex; gap: 6px; align-items: center">
+                <input
+                  type="date"
+                  id="logDateFilter"
+                  class="form-control"
+                  style="flex: 1"
+                  onchange="resetLogsPageAndRender()"
+                />
+                <button
+                  class="btn btn-outline"
+                  style="padding: 10px 12px"
+                  onclick="clearLogDateFilter()"
+                >
+                  الكل
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>المعرض</th>
+                    <th>اسم العميل</th>
+                    <th>رقم التليفون</th>
+                    <th>السيلز</th>
+                    <th>التوقيت</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="clientLogsTbody"></tbody>
+              </table>
+            </div>
+
+            <!-- شريط التنقل بين صفحات السجل لمنع ثقل الصفحة على الموبايل -->
+            <div class="pagination-bar">
+              <div
+                id="logsPaginationInfo"
+                style="
+                  font-size: 0.82rem;
+                  font-weight: 700;
+                  color: var(--text-muted);
+                "
+              ></div>
+              <div style="display: flex; gap: 6px">
+                <button
+                  id="prevLogsPageBtn"
+                  class="btn btn-outline"
+                  style="padding: 6px 12px; font-size: 0.8rem"
+                  onclick="changeLogsPage(-1)"
+                >
+                  ➡️ السابق
+                </button>
+                <button
+                  id="nextLogsPageBtn"
+                  class="btn btn-outline"
+                  style="padding: 6px 12px; font-size: 0.8rem"
+                  onclick="changeLogsPage(1)"
+                >
+                  التالي ⬅️
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- صفحة 4: إدارة فريق السيلز وإدارة المعارض -->
+        <div id="pageTeamManage" class="admin-page">
+          <div class="admin-two-col">
+            <!-- كارت إدارة المعارض -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title" style="color: var(--gold)">
+                  📍 إضافة أو حذف معرض
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">إضافة معرض جديد للنظام:</label>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                  <input
+                    type="text"
+                    id="newExhNameInput"
+                    class="form-control"
+                    placeholder="مثال: معرض أسيوط"
+                    style="flex: 1; min-width: 160px"
+                  />
+                  <button class="btn btn-gold" onclick="addNewExhibition()">
+                    + إضافة معرض
+                  </button>
+                </div>
+              </div>
+              <hr
+                style="
+                  border: 0;
+                  border-top: 1px solid var(--border);
+                  margin: 16px 0;
+                "
+              />
+              <div class="form-group" style="margin-bottom: 0">
+                <label class="form-label"
+                  >حذف المعرض النشط حالياً (<span
+                    id="manageActiveExhName"
+                    style="color: var(--primary)"
+                  ></span
+                  >):</label
+                >
+                <button
+                  class="btn btn-danger btn-block"
+                  onclick="deleteCurrentExhibition()"
+                >
+                  🗑️ حذف المعرض النشط حالياً
+                </button>
+              </div>
+            </div>
+
+            <!-- كارت إضافة السيلز -->
             <div class="card">
               <div class="card-header">
                 <div class="card-title">➕ إضافة فريق السيلز</div>
@@ -1225,14 +1512,14 @@
                     id="newSalesName"
                     class="form-control"
                     placeholder="اسم السيلز"
-                    style="flex: 2; min-width: 150px"
+                    style="flex: 2; min-width: 140px"
                   />
                   <input
                     type="text"
                     id="newSalesCode"
                     class="form-control"
-                    placeholder="الكود (مثال: S15)"
-                    style="flex: 1; min-width: 110px"
+                    placeholder="الكود (S15)"
+                    style="flex: 1; min-width: 95px"
                   />
                   <button class="btn btn-primary" onclick="addSingleSalesRep()">
                     + إضافة
@@ -1266,63 +1553,17 @@
           </div>
         </div>
 
-        <div id="tabTemplate" class="admin-tab-content">
-          <div class="card" style="margin-bottom: 16px; padding: 14px">
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 10px;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 8px;
-                  flex: 1;
-                  min-width: 260px;
-                "
-              >
-                <span
-                  style="
-                    font-weight: 800;
-                    color: var(--gold);
-                    white-space: nowrap;
-                  "
-                  >📍 إدارة المعارض:</span
-                >
-                <input
-                  type="text"
-                  id="newExhNameInput"
-                  class="form-control"
-                  placeholder="اسم معرض جديد"
-                  style="max-width: 260px; padding: 8px 12px"
-                />
-                <button class="btn btn-gold" onclick="addNewExhibition()">
-                  + إضافة معرض
-                </button>
-              </div>
-              <button
-                class="btn btn-danger"
-                onclick="deleteCurrentExhibition()"
-              >
-                🗑️ حذف المعرض المحدد
-              </button>
-            </div>
-          </div>
-
+        <!-- صفحة 5: استوديو القالب والمقاسات -->
+        <div id="pageStudio" class="admin-page">
           <div class="studio-grid">
             <div class="card">
               <div class="card-header">
                 <div class="card-title">
-                  🛠️ إعدادات ومقاسات القالب (<span id="studioExhName"></span>)
+                  🛠️ إعدادات قالب (<span id="studioExhName"></span>)
                 </div>
                 <button
                   class="btn btn-gold"
-                  style="padding: 6px 12px; font-size: 0.82rem"
+                  style="padding: 7px 14px; font-size: 0.82rem"
                   onclick="saveExhibitionSettings()"
                 >
                   💾 حفظ بالسحابة
@@ -1344,9 +1585,7 @@
                   />
                 </div>
                 <div class="form-group" style="margin-bottom: 0">
-                  <label class="form-label"
-                    >الرقم التسلسلي القادم (يبدأ من 131):</label
-                  >
+                  <label class="form-label">الرقم التسلسلي القادم:</label>
                   <div style="display: flex; gap: 8px">
                     <input
                       type="number"
@@ -1366,15 +1605,15 @@
 
               <div class="control-section-box">
                 <div class="control-section-title">
-                  <span>2️⃣ مقاس ومكان ولون (اسم العميل)</span>
+                  <span>2️⃣ مكان ولون (اسم العميل)</span>
                   <input
                     type="color"
                     id="nameColorPicker"
                     value="#ffffff"
                     onchange="updateTemplatePlacement()"
                     style="
-                      width: 38px;
-                      height: 30px;
+                      width: 36px;
+                      height: 28px;
                       border: 0;
                       background: transparent;
                       cursor: pointer;
@@ -1382,62 +1621,66 @@
                   />
                 </div>
                 <div class="range-row">
-                  <label>حجم الخط:</label
-                  ><input
+                  <label>حجم الخط:</label>
+                  <input
                     type="range"
                     id="nameSizeRange"
                     min="20"
                     max="110"
                     value="52"
                     oninput="updateTemplatePlacement()"
-                  /><span id="nameSizeVal" class="range-val">52px</span>
+                  />
+                  <span id="nameSizeVal" class="range-val">52px</span>
                 </div>
                 <div class="range-row">
-                  <label>عرض المستطيل:</label
-                  ><input
+                  <label>عرض المستطيل:</label>
+                  <input
                     type="range"
                     id="nameBoxWidthRange"
                     min="25"
                     max="95"
                     value="80"
                     oninput="updateTemplatePlacement()"
-                  /><span id="nameBoxWidthVal" class="range-val">80%</span>
+                  />
+                  <span id="nameBoxWidthVal" class="range-val">80%</span>
                 </div>
                 <div class="range-row">
-                  <label>المكان رأسي Y:</label
-                  ><input
+                  <label>المكان رأسي Y:</label>
+                  <input
                     type="range"
                     id="nameYRange"
                     min="5"
                     max="95"
                     value="59"
                     oninput="updateTemplatePlacement()"
-                  /><span id="nameYVal" class="range-val">59%</span>
+                  />
+                  <span id="nameYVal" class="range-val">59%</span>
                 </div>
                 <div class="range-row">
-                  <label>المكان أفقي X:</label
-                  ><input
+                  <label>المكان أفقي X:</label>
+                  <input
                     type="range"
                     id="nameXRange"
                     min="5"
                     max="95"
                     value="50"
                     oninput="updateTemplatePlacement()"
-                  /><span id="nameXVal" class="range-val">50%</span>
+                  />
+                  <span id="nameXVal" class="range-val">50%</span>
                 </div>
               </div>
 
               <div class="control-section-box">
                 <div class="control-section-title">
-                  <span>3️⃣ مقاس ومكان ولون (كود الدعوة 131 | S11)</span>
+                  <span>3️⃣ مكان ولون (كود الدعوة 131 | S11)</span>
                   <input
                     type="color"
                     id="codeColorPicker"
                     value="#f59e0b"
                     onchange="updateTemplatePlacement()"
                     style="
-                      width: 38px;
-                      height: 30px;
+                      width: 36px;
+                      height: 28px;
                       border: 0;
                       background: transparent;
                       cursor: pointer;
@@ -1445,37 +1688,40 @@
                   />
                 </div>
                 <div class="range-row">
-                  <label>حجم الكود:</label
-                  ><input
+                  <label>حجم الكود:</label>
+                  <input
                     type="range"
                     id="codeSizeRange"
                     min="16"
                     max="80"
                     value="32"
                     oninput="updateTemplatePlacement()"
-                  /><span id="codeSizeVal" class="range-val">32px</span>
+                  />
+                  <span id="codeSizeVal" class="range-val">32px</span>
                 </div>
                 <div class="range-row">
-                  <label>المكان رأسي Y:</label
-                  ><input
+                  <label>المكان رأسي Y:</label>
+                  <input
                     type="range"
                     id="codeYRange"
                     min="5"
                     max="96"
                     value="90.5"
                     oninput="updateTemplatePlacement()"
-                  /><span id="codeYVal" class="range-val">90.5%</span>
+                  />
+                  <span id="codeYVal" class="range-val">90.5%</span>
                 </div>
                 <div class="range-row">
-                  <label>المكان أفقي X:</label
-                  ><input
+                  <label>المكان أفقي X:</label>
+                  <input
                     type="range"
                     id="codeXRange"
                     min="5"
                     max="95"
                     value="50"
                     oninput="updateTemplatePlacement()"
-                  /><span id="codeXVal" class="range-val">50%</span>
+                  />
+                  <span id="codeXVal" class="range-val">50%</span>
                 </div>
               </div>
 
@@ -1485,12 +1731,12 @@
                   align-items: center;
                   justify-content: space-between;
                   margin-bottom: 12px;
-                  padding: 6px 4px;
+                  padding: 4px;
                 "
               >
                 <label
                   style="
-                    font-size: 0.85rem;
+                    font-size: 0.84rem;
                     font-weight: 700;
                     color: #cbd5e1;
                     cursor: pointer;
@@ -1521,12 +1767,12 @@
             <div class="card sticky-preview-card">
               <div class="card-header">
                 <div class="card-title">
-                  🖼️ القالب قدامك (اسحب بالماوس للتعديل)
+                  🖼️ معاينة القالب (اسحب بيدك أو بالماوس)
                 </div>
               </div>
               <div class="drag-hint-badge">
-                💡 اضغط بالماوس واسحب <strong>اسم العميل</strong> أو
-                <strong>الكود</strong> لأي مكان!
+                💡 المس واسحب <strong>اسم العميل</strong> أو
+                <strong>الكود</strong> مباشرة على الصورة!
               </div>
               <div class="preview-container">
                 <canvas
@@ -1539,98 +1785,17 @@
           </div>
         </div>
 
-        <div id="tabReports" class="admin-tab-content">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">
-                📋 سجل العملاء والتليفونات (<span id="reportExhName"></span>)
-              </div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                <button class="btn btn-success" onclick="copyWhatsAppReport()">
-                  🟢 نسخ تقرير السجل المعروض (واتساب)
-                </button>
-                <button class="btn btn-primary" onclick="exportExcelCSV()">
-                  📊 تحميل شيت إكسيل (CSV)
-                </button>
-              </div>
-            </div>
-
-            <div
-              style="
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-                gap: 10px;
-                margin-bottom: 14px;
-              "
-            >
-              <input
-                type="text"
-                id="logSearchInput"
-                class="form-control"
-                placeholder="🔍 بحث بالعميل، التليفون أو الدعوة..."
-                oninput="renderClientLogsTable()"
-              />
-              <select
-                id="logExhFilter"
-                class="form-control"
-                onchange="renderClientLogsTable()"
-              >
-                <option value="ACTIVE">المعرض المحدد حالياً</option>
-                <option value="ALL">كل المعارض معاً</option>
-              </select>
-              <select
-                id="logSalesFilter"
-                class="form-control"
-                onchange="renderClientLogsTable()"
-              >
-                <option value="ALL">كل السيلز (عرض الجميع)</option>
-              </select>
-              <div style="display: flex; gap: 6px; align-items: center">
-                <input
-                  type="date"
-                  id="logDateFilter"
-                  class="form-control"
-                  title="فلترة بيوم محدد (اتركه فارغاً لعرض التوتال من أول المعرض)"
-                  onchange="renderClientLogsTable()"
-                />
-                <button
-                  class="btn btn-outline"
-                  style="padding: 10px"
-                  title="عرض كل الأيام (من أول المعرض)"
-                  onclick="clearLogDateFilter()"
-                >
-                  الكل
-                </button>
-              </div>
-            </div>
-
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>رقم الدعوة</th>
-                    <th>المعرض</th>
-                    <th>اسم العميل</th>
-                    <th>رقم التليفون</th>
-                    <th>السيلز المسؤول</th>
-                    <th>التوقيت</th>
-                    <th>إجراءات</th>
-                  </tr>
-                </thead>
-                <tbody id="clientLogsTbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div id="tabCloud" class="admin-tab-content">
-          <div class="card">
+        <!-- صفحة 6: إعدادات السحابة والأمان -->
+        <div id="pageSettings" class="admin-page">
+          <div class="card" style="max-width: 640px; margin: 0 auto">
             <div class="card-header">
               <div class="card-title">☁️ إعدادات السحابة والأمان</div>
             </div>
             <div class="form-group">
-              <label class="form-label">رابط قاعدة البيانات السحابية:</label
-              ><input
+              <label class="form-label"
+                >رابط قاعدة البيانات السحابية (Firebase URL):</label
+              >
+              <input
                 type="text"
                 id="firebaseUrlInput"
                 class="form-control"
@@ -1638,8 +1803,8 @@
               />
             </div>
             <div class="form-group">
-              <label class="form-label">كلمة سر المدير (Admin PIN):</label
-              ><input
+              <label class="form-label">كلمة سر المدير (Admin PIN):</label>
+              <input
                 type="text"
                 id="adminPinInput"
                 class="form-control"
@@ -1647,10 +1812,10 @@
               />
             </div>
             <button
-              class="btn btn-primary"
+              class="btn btn-primary btn-block"
               onclick="saveCloudAndSecuritySettings()"
             >
-              💾 حفظ الإعدادات
+              💾 حفظ الإعدادات بالسحابة
             </button>
           </div>
         </div>
@@ -1665,7 +1830,7 @@
           rel="noopener noreferrer"
           title="Visit ENG/ M.Allam Profile"
         >
-          ENG/ M.Allam <span class="link-arrow">↗</span>
+          ENG/ M.Allam <span>↗</span>
         </a>
       </footer>
     </div>
@@ -1683,7 +1848,7 @@
             margin-bottom: 14px;
           "
         >
-          أدخل كلمة سر المدير:
+          أدخل كلمة سر المدير لفتح لوحة التحكم والتقارير:
         </p>
         <input
           type="password"
@@ -1790,9 +1955,11 @@
       let draggingTarget = null;
       let salesSortMode = "code";
 
-      // إعدادات التقرير الموحد لكل المعارض (ALL_TIME = من أول المعرض | DATE = يوم محدد بالكاليندر)
+      // إعدادات التقرير المجمع وتقسيم صفحات السجل
       let globalReportMode = "ALL_TIME";
       let globalReportDate = "";
+      let currentLogsPage = 1;
+      const LOGS_PER_PAGE = 25;
 
       function getLocalYYYYMMDD(dateObj = new Date()) {
         const y = dateObj.getFullYear();
@@ -1801,7 +1968,6 @@
         return `${y}-${m}-${d}`;
       }
 
-      // استخراج تاريخ الدعوة بصيغة YYYY-MM-DD بدقة عالية حتى للدعوات القديمة
       function getInvitationDateYYYYMMDD(inv) {
         if (!inv) return "";
         if (inv.dateISO && /^\d{4}-\d{2}-\d{2}$/.test(inv.dateISO)) {
@@ -1818,14 +1984,18 @@
         }
         if (inv.createdAt) {
           const cleanStr = toEnglishDigits(inv.createdAt);
-          const dmyMatch = cleanStr.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+          const dmyMatch = cleanStr.match(
+            /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/,
+          );
           if (dmyMatch) {
             const day = dmyMatch[1].padStart(2, "0");
             const month = dmyMatch[2].padStart(2, "0");
             const year = dmyMatch[3];
             return `${year}-${month}-${day}`;
           }
-          const ymdMatch = cleanStr.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+          const ymdMatch = cleanStr.match(
+            /(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/,
+          );
           if (ymdMatch) {
             const year = ymdMatch[1];
             const month = ymdMatch[2].padStart(2, "0");
@@ -2168,11 +2338,12 @@
           btn.className =
             "exh-pill" + (exh.id === activeExh.id ? " active" : "");
           btn.textContent = isAdminMode
-            ? `${exh.name} (${getCalculatedNextSeq(exh.id)})`
+            ? `${exh.name} (#${getCalculatedNextSeq(exh.id)})`
             : exh.name;
           btn.onclick = () => {
             appState.activeExhibitionId = exh.id;
             lastIssuedTicket = null;
+            currentLogsPage = 1;
             document.getElementById("ticketConfirmBox").style.display = "none";
             document.getElementById("previewTopActions").style.display = "none";
             saveLocalState();
@@ -2248,10 +2419,6 @@
               normalizePhoneNumber(inv.clientPhone) === target,
           ) || null
         );
-      }
-
-      function isPhoneDuplicateInExhibition(exhId, rawPhone) {
-        return Boolean(findDuplicateInvitation(exhId, rawPhone));
       }
 
       function updateDuplicateAlertUI() {
@@ -2396,7 +2563,7 @@
           ctx.fillStyle = "#94a3b8";
           ctx.font = "600 30px 'Cairo', sans-serif";
           ctx.fillText(
-            "ارفع صورة القالب من تبويب (القالب والمعارض)",
+            "ارفع صورة القالب من صفحة (استوديو القالب)",
             canvas.width / 2,
             330,
           );
@@ -2870,6 +3037,7 @@
         }
       }
 
+      // ================= الدخول والخروج والتنقل بين صفحات المدير =================
       function handleAdminButtonClick() {
         if (isAdminMode) {
           logoutAdmin();
@@ -2898,13 +3066,13 @@
         ) {
           isAdminMode = true;
           closePinModal();
+          // إخفاء شاشة السيلز وإظهار شاشة المدير المنفصلة لتنظيم الموبايل
+          document.getElementById("salesWorkspaceView").style.display = "none";
           document.getElementById("adminPanel").style.display = "block";
           document.getElementById("adminToggleBtn").textContent =
-            "🔓 إغلاق وضع المدير";
+            "🎫 العودة لشاشة الدعوات";
           renderAllUI();
-          document
-            .getElementById("adminPanel")
-            .scrollIntoView({ behavior: "smooth" });
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
           alert("❌ كلمة سر المدير غير صحيحة!");
         }
@@ -2913,19 +3081,31 @@
       function logoutAdmin() {
         isAdminMode = false;
         document.getElementById("adminPanel").style.display = "none";
+        document.getElementById("salesWorkspaceView").style.display = "grid";
         document.getElementById("adminToggleBtn").textContent = "🔒 وضع المدير";
         renderAllUI();
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      function switchAdminTab(tabId, btnEl) {
+      function switchAdminPage(pageId, btnEl) {
         document
-          .querySelectorAll(".admin-tab-content")
+          .querySelectorAll(".admin-page")
           .forEach((el) => el.classList.remove("active"));
         document
-          .querySelectorAll(".admin-tab-btn")
+          .querySelectorAll(".admin-nav-btn")
           .forEach((el) => el.classList.remove("active"));
-        document.getElementById(tabId).classList.add("active");
-        if (btnEl) btnEl.classList.add("active");
+
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) targetPage.classList.add("active");
+
+        if (btnEl) {
+          btnEl.classList.add("active");
+        } else {
+          const matchingBtn = document.querySelector(
+            `.admin-nav-btn[onclick*="${pageId}"]`,
+          );
+          if (matchingBtn) matchingBtn.classList.add("active");
+        }
         renderAllCanvases();
       }
 
@@ -2943,7 +3123,7 @@
         renderAdminDashboard();
       }
 
-      // ================= دوال التقرير الموحد لكل المعارض (باليوم أو التوتال) =================
+      // ================= دوال التقرير المجمع لكل المعارض (باليوم أو التوتال) =================
       function setGlobalReportMode(mode) {
         globalReportMode = mode;
         const allTimeBtn = document.getElementById("modeAllTimeBtn");
@@ -3001,7 +3181,6 @@
           grandSelectedTotal += selectedInvs.length;
           grandAllTimeTotal += allExhInvs.length;
 
-          // حساب أعلى سيلز في هذا المعرض حسب الوضع المختار
           let topSales = "-";
           let maxCount = 0;
           const countsBySales = {};
@@ -3042,7 +3221,7 @@
           getExhibitionsGlobalStats();
 
         if (globalReportMode === "DATE") {
-          statusBanner.innerHTML = `📅 عرض تقرير يوم محدد: <span style="color:var(--gold);" dir="ltr">${globalReportDate}</span> (مع عرض التوتال التراكمي من أول كل معرض)`;
+          statusBanner.innerHTML = `📅 عرض تقرير يوم محدد: <span style="color:var(--gold);" dir="ltr">${globalReportDate}</span> (مع التوتال التراكمي من أول كل معرض)`;
           colHeader.textContent = `دعوات يوم (${globalReportDate})`;
         } else {
           statusBanner.innerHTML = `🌐 عرض التقرير الشامل: <span style="color:var(--gold);">التوتال من أول المعرض (جميع الأيام)</span>`;
@@ -3052,7 +3231,6 @@
         gridEl.innerHTML = "";
         tbodyEl.innerHTML = "";
 
-        // 1. كارت الإجمالي العام لكل المعارض
         const totalBox = document.createElement("div");
         totalBox.className = "exh-summary-box total-highlight";
         totalBox.innerHTML = `
@@ -3060,27 +3238,26 @@
             <span>🔥 إجمالي كل المعارض</span>
             <span class="badge-code" style="background:rgba(245,158,11,0.2); color:var(--gold);">${stats.length} معارض</span>
           </div>
-          <div class="main-num">${grandSelectedTotal} <span style="font-size:0.9rem; font-weight:700;">دعوة</span></div>
+          <div class="main-num">${grandSelectedTotal} <span style="font-size:0.88rem; font-weight:700;">دعوة</span></div>
           <div class="sub-meta">
-            <span>${globalReportMode === "DATE" ? `في يوم ${globalReportDate}` : "منذ بداية المعارض"}</span>
+            <span>${globalReportMode === "DATE" ? `يوم ${globalReportDate}` : "منذ بداية المعارض"}</span>
             <span style="color:var(--text-main);">التوتال الكلي: ${grandAllTimeTotal}</span>
           </div>
         `;
         gridEl.appendChild(totalBox);
 
-        // 2. كروت وصفوف كل معرض على حدة في نفس الصفحة
         stats.forEach((item) => {
           const card = document.createElement("div");
           card.className = "exh-summary-box";
           card.innerHTML = `
             <div class="exh-title">
               <span>📍 ${item.exh.name}</span>
-              <span class="badge-code">القادم #${item.nextSeq}</span>
+              <span class="badge-code">#${item.nextSeq}</span>
             </div>
-            <div class="main-num">${item.selectedCount} <span style="font-size:0.9rem; font-weight:700; color:var(--text-muted);">دعوة</span></div>
+            <div class="main-num">${item.selectedCount} <span style="font-size:0.88rem; font-weight:700; color:var(--text-muted);">دعوة</span></div>
             <div class="sub-meta">
               <span>التوتال من أول المعرض: <strong style="color:var(--gold);">${item.allTimeCount}</strong></span>
-              <span>أعلى سيلز: ${item.topSales}</span>
+              <span>الأعلى: ${item.topSales}</span>
             </div>
           `;
           gridEl.appendChild(card);
@@ -3088,41 +3265,40 @@
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td style="font-weight:800; color:var(--text-main);">📍 ${item.exh.name}</td>
-            <td><span class="badge-count" style="font-size:0.92rem;">${item.selectedCount} دعوة</span></td>
-            <td><strong style="color:var(--gold); font-size:0.95rem;">${item.allTimeCount} دعوة</strong></td>
+            <td><span class="badge-count">${item.selectedCount} دعوة</span></td>
+            <td><strong style="color:var(--gold);">${item.allTimeCount} دعوة</strong></td>
             <td><span class="badge-code">#${item.nextSeq}</span></td>
             <td style="font-weight:700; color:var(--primary);">${item.topSales}</td>
             <td>
-              <button class="btn btn-outline" style="padding:4px 10px; font-size:0.76rem;" onclick="openExhibitionLogs('${item.exh.id}')">
-                🔍 عرض سجل المعرض
+              <button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="openExhibitionLogs('${item.exh.id}')">
+                🔍 السجل
               </button>
             </td>
           `;
           tbodyEl.appendChild(tr);
         });
 
-        // صف المجموع الكلي في أسفل الجدول
         const totalTr = document.createElement("tr");
         totalTr.style.background = "rgba(245, 158, 11, 0.08)";
         totalTr.innerHTML = `
-          <td style="font-weight:900; color:var(--gold);">🔥 الإجمالي الكلي لكل المعارض</td>
-          <td><strong style="color:var(--success); font-size:1rem;">${grandSelectedTotal} دعوة</strong></td>
-          <td><strong style="color:var(--gold); font-size:1rem;">${grandAllTimeTotal} دعوة</strong></td>
-          <td colspan="3" style="color:var(--text-muted); font-weight:700;">مجموع كل المعارض المسجلة بالنظام</td>
+          <td style="font-weight:900; color:var(--gold);">🔥 الإجمالي الكلي</td>
+          <td><strong style="color:var(--success);">${grandSelectedTotal} دعوة</strong></td>
+          <td><strong style="color:var(--gold);">${grandAllTimeTotal} دعوة</strong></td>
+          <td colspan="3" style="color:var(--text-muted); font-weight:700;">مجموع كل المعارض بالنظام</td>
         `;
         tbodyEl.appendChild(totalTr);
       }
 
       function openExhibitionLogs(exhId) {
         appState.activeExhibitionId = exhId;
-        const tabBtn = document.querySelectorAll(".admin-tab-btn")[2];
-        switchAdminTab("tabReports", tabBtn);
+        switchAdminPage("pageClientLogs");
         document.getElementById("logExhFilter").value = "ACTIVE";
         if (globalReportMode === "DATE") {
           document.getElementById("logDateFilter").value = globalReportDate;
         } else {
           document.getElementById("logDateFilter").value = "";
         }
+        currentLogsPage = 1;
         renderAllUI();
       }
 
@@ -3174,7 +3350,6 @@
         });
         csv += `"الإجمالي الكلي لكل المعارض","${grandSelectedTotal}","${grandAllTimeTotal}","",""\n\n`;
 
-        // إضافة تفاصيل الدعوات المصدرة في الأسفل
         const relevantInvs = appState.invitations
           .filter(Boolean)
           .filter(
@@ -3201,7 +3376,6 @@
         a.click();
         document.body.removeChild(a);
       }
-      // ================================================================================
 
       function renderAdminDashboard() {
         const exh = getActiveExhibition();
@@ -3220,6 +3394,8 @@
         document.getElementById("kpiSalesCount").textContent =
           appState.salesTeam.length;
         document.getElementById("studioExhName").textContent = exh.name;
+        document.getElementById("salesPerfExhTitle").textContent = exh.name;
+        document.getElementById("manageActiveExhName").textContent = exh.name;
 
         const perfTbody = document.getElementById("salesPerformanceTbody");
         perfTbody.innerHTML = "";
@@ -3262,23 +3438,23 @@
         salesStats.forEach((s) => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-        <td><span class="badge-code">${s.code}</span></td>
-        <td style="font-weight:700;">${s.name}</td>
-        <td><span class="badge-count">${s.currentCount} عميل</span></td>
-        <td style="color:var(--text-muted); font-weight:700;">${s.allCount}</td>
-        <td>
-          <div style="display:flex; gap:6px;">
-            <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="filterLogsBySales('${s.code}')">عرض عملائه</button>
-            <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteSalesRep('${s.code}')">حذف</button>
-          </div>
-        </td>
-      `;
+            <td><span class="badge-code">${s.code}</span></td>
+            <td style="font-weight:700;">${s.name}</td>
+            <td><span class="badge-count">${s.currentCount} عميل</span></td>
+            <td style="color:var(--text-muted); font-weight:700;">${s.allCount}</td>
+            <td>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="filterLogsBySales('${s.code}')">عملائه</button>
+                <button class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteSalesRep('${s.code}')">حذف</button>
+              </div>
+            </td>
+          `;
           perfTbody.appendChild(tr);
         });
 
         const logFilter = document.getElementById("logSalesFilter");
         const currentFilterVal = logFilter.value || "ALL";
-        logFilter.innerHTML = `<option value="ALL">كل السيلز</option>`;
+        logFilter.innerHTML = `<option value="ALL">كل السيلز (الجميع)</option>`;
 
         const sortedForFilter = sortSalesTeamByCode(appState.salesTeam);
         sortedForFilter.forEach((s) => {
@@ -3293,7 +3469,7 @@
         const logExhFilter = document.getElementById("logExhFilter");
         const currentExhFilterVal = logExhFilter.value || "ACTIVE";
         logExhFilter.innerHTML = `
-          <option value="ACTIVE">المعرض المحدد (${exh.name})</option>
+          <option value="ACTIVE">المعرض النشط (${exh.name})</option>
           <option value="ALL">🌐 كل المعارض معاً</option>
         `;
         Object.values(appState.exhibitions).forEach((exItem) => {
@@ -3318,9 +3494,20 @@
         renderAllCanvases();
       }
 
+      function resetLogsPageAndRender() {
+        currentLogsPage = 1;
+        renderClientLogsTable();
+      }
+
+      function changeLogsPage(delta) {
+        currentLogsPage += delta;
+        renderClientLogsTable();
+      }
+
       function clearLogDateFilter() {
         const el = document.getElementById("logDateFilter");
         if (el) el.value = "";
+        currentLogsPage = 1;
         renderClientLogsTable();
       }
 
@@ -3402,9 +3589,9 @@
       }
 
       function filterLogsBySales(code) {
-        const tabBtn = document.querySelectorAll(".admin-tab-btn")[2];
-        switchAdminTab("tabReports", tabBtn);
+        switchAdminPage("pageClientLogs");
         document.getElementById("logSalesFilter").value = formatSalesCode(code);
+        currentLogsPage = 1;
         renderClientLogsTable();
       }
 
@@ -3475,36 +3662,53 @@
               ? exh.name
               : appState.exhibitions[exhFilter]?.name || exh.name;
         if (dateFilter) {
-          headerLabel += ` - يوم ${dateFilter}`;
+          headerLabel += ` - يوم ${dateFilter} (${list.length})`;
         } else {
           headerLabel += ` - التوتال (${list.length})`;
         }
         const reportExhNameEl = document.getElementById("reportExhName");
         if (reportExhNameEl) reportExhNameEl.textContent = headerLabel;
 
-        if (list.length === 0) {
+        const totalPages = Math.max(1, Math.ceil(list.length / LOGS_PER_PAGE));
+        if (currentLogsPage > totalPages) currentLogsPage = totalPages;
+        if (currentLogsPage < 1) currentLogsPage = 1;
+
+        const startIdx = (currentLogsPage - 1) * LOGS_PER_PAGE;
+        const pageItems = list.slice(startIdx, startIdx + LOGS_PER_PAGE);
+
+        const pageInfoEl = document.getElementById("logsPaginationInfo");
+        const prevBtn = document.getElementById("prevLogsPageBtn");
+        const nextBtn = document.getElementById("nextLogsPageBtn");
+
+        if (pageInfoEl) {
+          pageInfoEl.textContent = `صفحة ${currentLogsPage} من ${totalPages} (إجمالي النتائج: ${list.length})`;
+        }
+        if (prevBtn) prevBtn.disabled = currentLogsPage <= 1;
+        if (nextBtn) nextBtn.disabled = currentLogsPage >= totalPages;
+
+        if (pageItems.length === 0) {
           tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث.</td></tr>`;
           return;
         }
 
-        list.forEach((inv) => {
+        pageItems.forEach((inv) => {
           const tr = document.createElement("tr");
           const sCode = formatSalesCode(inv.salesCode);
           tr.innerHTML = `
-        <td><strong style="color:var(--gold);">${inv.seqNumber}</strong></td>
-        <td style="font-weight:700; color:var(--gold);">${inv.exhibitionName || "-"}</td>
-        <td style="font-weight:700;">${inv.clientName}</td>
-        <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${inv.clientPhone || "-"}</td>
-        <td><span class="badge-code">${inv.salesName} (${sCode})</span></td>
-        <td style="font-size:0.8rem; color:var(--text-muted);">${inv.createdAt || "-"}</td>
-        <td>
-          <div style="display:flex; gap:6px;">
-            <button class="btn btn-success" style="padding:4px 8px; font-size:0.75rem;" onclick="shareOldInvitation('${inv.id}')">📲 مشاركة</button>
-            <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="redownloadOldInvitation('${inv.id}')">⬇️ تنزيل</button>
-            <button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteInvitationRecord('${inv.id}')">حذف</button>
-          </div>
-        </td>
-      `;
+            <td><strong style="color:var(--gold);">${inv.seqNumber}</strong></td>
+            <td style="font-weight:700; color:var(--gold); white-space:nowrap;">${inv.exhibitionName || "-"}</td>
+            <td style="font-weight:700;">${inv.clientName}</td>
+            <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${inv.clientPhone || "-"}</td>
+            <td><span class="badge-code">${inv.salesName} (${sCode})</span></td>
+            <td style="font-size:0.78rem; color:var(--text-muted); white-space:nowrap;">${inv.createdAt || "-"}</td>
+            <td>
+              <div style="display:flex; gap:5px;">
+                <button class="btn btn-success" style="padding:4px 8px; font-size:0.74rem;" onclick="shareOldInvitation('${inv.id}')">📲</button>
+                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="redownloadOldInvitation('${inv.id}')">⬇️</button>
+                <button class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteInvitationRecord('${inv.id}')">🗑️</button>
+              </div>
+            </td>
+          `;
           tbody.appendChild(tr);
         });
       }
