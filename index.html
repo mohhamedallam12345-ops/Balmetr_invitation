@@ -14,21 +14,22 @@
       rel="stylesheet"
     />
     <style>
+      /* ألوان هادئة ومريحة للعين (Muted Dark Theme) */
       :root {
-        --bg-main: #070d19;
-        --bg-card: #0f172a;
-        --bg-input: #090f1d;
-        --border: #1e293b;
-        --border-light: #334155;
-        --primary: #06b6d4;
-        --primary-hover: #0891b2;
-        --gold: #f59e0b;
-        --gold-hover: #d97706;
+        --bg-main: #0b111e;
+        --bg-card: #131c2e;
+        --bg-input: #0e1626;
+        --border: #22304a;
+        --border-light: #2e3f5e;
+        --primary: #38bdf8;
+        --primary-soft: rgba(56, 189, 248, 0.12);
+        --gold: #d99b26;
+        --gold-soft: rgba(217, 155, 38, 0.14);
         --success: #10b981;
-        --danger: #ef4444;
-        --text-main: #f8fafc;
+        --danger: #e11d48;
+        --text-main: #e2e8f0;
         --text-muted: #94a3b8;
-        --radius: 14px;
+        --radius: 12px;
       }
 
       * {
@@ -70,8 +71,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 10px;
-        margin-bottom: 14px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        margin-bottom: 12px;
       }
 
       .brand-box {
@@ -82,28 +82,28 @@
       }
 
       .brand-title {
-        font-size: 1.1rem;
+        font-size: 1.08rem;
         font-weight: 800;
-        color: var(--primary);
+        color: var(--text-main);
       }
 
       .sync-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        font-size: 0.76rem;
+        font-size: 0.75rem;
         font-weight: 700;
-        padding: 4px 10px;
+        padding: 3px 10px;
         border-radius: 999px;
-        background: rgba(16, 185, 129, 0.12);
+        background: rgba(16, 185, 129, 0.1);
         color: #34d399;
-        border: 1px solid rgba(16, 185, 129, 0.3);
+        border: 1px solid rgba(16, 185, 129, 0.25);
       }
 
       .sync-badge.offline {
-        background: rgba(245, 158, 11, 0.12);
+        background: rgba(217, 155, 38, 0.12);
         color: #fbbf24;
-        border-color: rgba(245, 158, 11, 0.3);
+        border-color: rgba(217, 155, 38, 0.3);
       }
 
       .header-actions {
@@ -112,19 +112,19 @@
         gap: 8px;
       }
 
-      /* Buttons */
+      /* Buttons (Calm & Clean) */
       .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: 9px 14px;
-        border-radius: 10px;
-        font-size: 0.86rem;
+        padding: 8px 14px;
+        border-radius: 9px;
+        font-size: 0.85rem;
         font-weight: 700;
         border: 1px solid transparent;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.15s ease;
         text-decoration: none;
         white-space: nowrap;
       }
@@ -134,38 +134,43 @@
       }
 
       .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #0284c7);
-        color: #fff;
-        box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
+        background: #0284c7;
+        color: #f8fafc;
+        border-color: #0369a1;
+      }
+
+      .btn-primary:hover {
+        background: #0369a1;
       }
 
       .btn-gold {
         background: var(--gold);
-        color: #000;
+        color: #090d16;
+        border-color: #b47d17;
       }
 
       .btn-success {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: #fff;
-        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+        background: #059669;
+        color: #f8fafc;
+        border-color: #047857;
       }
 
       .btn-danger {
-        background: rgba(239, 68, 68, 0.15);
-        color: #f87171;
-        border-color: rgba(239, 68, 68, 0.3);
+        background: rgba(225, 29, 72, 0.14);
+        color: #fda4af;
+        border-color: rgba(225, 29, 72, 0.3);
       }
 
       .btn-outline {
-        background: #1e293b;
+        background: #1a263d;
         color: var(--text-main);
         border-color: var(--border-light);
       }
 
       .btn-block {
         width: 100%;
-        padding: 13px;
-        font-size: 0.98rem;
+        padding: 12px;
+        font-size: 0.96rem;
       }
 
       /* Exhibition Selector Bar */
@@ -173,7 +178,7 @@
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 12px;
+        padding: 10px 12px;
         margin-bottom: 14px;
       }
 
@@ -186,42 +191,41 @@
       }
 
       .exhibition-label {
-        font-size: 0.88rem;
+        font-size: 0.85rem;
         font-weight: 700;
         color: var(--text-muted);
       }
 
       .exh-pills {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         flex-wrap: wrap;
         flex: 1;
       }
 
       .exh-pill {
-        padding: 8px 14px;
-        border-radius: 10px;
-        font-size: 0.86rem;
+        padding: 7px 13px;
+        border-radius: 8px;
+        font-size: 0.84rem;
         font-weight: 700;
         background: var(--bg-input);
         color: var(--text-muted);
-        border: 1px solid var(--border-light);
+        border: 1px solid var(--border);
         cursor: pointer;
-        transition: 0.2s;
+        transition: 0.15s;
       }
 
       .exh-pill.active {
-        background: var(--primary);
-        color: #031525;
-        border-color: var(--primary);
-        box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
+        background: rgba(56, 189, 248, 0.16);
+        color: var(--primary);
+        border-color: rgba(56, 189, 248, 0.5);
       }
 
-      /* Grids & Cards (With min-width: 0 to prevent mobile overflow) */
+      /* Grids & Cards */
       .workspace-grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 16px;
+        gap: 14px;
         align-items: start;
       }
 
@@ -230,7 +234,6 @@
         border: 1px solid var(--border);
         border-radius: var(--radius);
         padding: 16px;
-        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
         min-width: 0;
         max-width: 100%;
       }
@@ -247,7 +250,7 @@
       }
 
       .card-title {
-        font-size: 1rem;
+        font-size: 0.98rem;
         font-weight: 800;
         color: var(--primary);
         display: flex;
@@ -262,7 +265,7 @@
 
       .form-label {
         display: block;
-        font-size: 0.84rem;
+        font-size: 0.83rem;
         font-weight: 700;
         color: #cbd5e1;
         margin-bottom: 5px;
@@ -271,20 +274,19 @@
       .form-control {
         width: 100%;
         max-width: 100%;
-        padding: 10px 13px;
+        padding: 9px 12px;
         font-size: 15px;
         font-weight: 600;
         color: var(--text-main);
         background: var(--bg-input);
         border: 1px solid var(--border-light);
-        border-radius: 10px;
+        border-radius: 9px;
         outline: none;
         transition: border-color 0.2s;
       }
 
       .form-control:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
       }
 
       input[type="date"].form-control {
@@ -296,14 +298,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.76rem;
+        font-size: 0.75rem;
         color: var(--text-muted);
         margin-top: 5px;
         font-weight: 700;
       }
 
       textarea.form-control {
-        min-height: 100px;
+        min-height: 90px;
         resize: vertical;
       }
 
@@ -311,7 +313,7 @@
       .preview-container {
         background: var(--bg-input);
         border: 1px dashed var(--border-light);
-        border-radius: 12px;
+        border-radius: 10px;
         padding: 10px;
         display: flex;
         flex-direction: column;
@@ -327,12 +329,11 @@
       #invitationCanvas,
       #adminStudioCanvas {
         max-width: 100%;
-        max-height: 580px;
+        max-height: 560px;
         width: auto;
         height: auto;
         border-radius: 8px;
         display: block;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
         -webkit-touch-callout: none;
         -webkit-user-drag: none;
       }
@@ -347,12 +348,12 @@
       }
 
       .drag-hint-badge {
-        background: rgba(245, 158, 11, 0.14);
-        border: 1px solid rgba(245, 158, 11, 0.4);
+        background: var(--gold-soft);
+        border: 1px solid rgba(217, 155, 38, 0.35);
         color: #fbbf24;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         font-weight: 700;
-        padding: 7px 12px;
+        padding: 6px 12px;
         border-radius: 8px;
         margin-bottom: 10px;
         text-align: center;
@@ -361,12 +362,12 @@
 
       .ticket-status-box {
         margin-top: 14px;
-        padding: 14px;
-        border-radius: 12px;
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.35);
+        padding: 12px;
+        border-radius: 10px;
+        background: rgba(16, 185, 129, 0.08);
+        border: 1px solid rgba(16, 185, 129, 0.3);
         color: #34d399;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         font-weight: 700;
         text-align: center;
         display: none;
@@ -374,12 +375,12 @@
 
       .duplicate-warning-box {
         margin-bottom: 12px;
-        padding: 12px 14px;
-        border-radius: 10px;
-        background: rgba(239, 68, 68, 0.18);
-        border: 1.5px solid rgba(239, 68, 68, 0.55);
-        color: #fca5a5;
-        font-size: 0.86rem;
+        padding: 12px;
+        border-radius: 9px;
+        background: rgba(225, 29, 72, 0.14);
+        border: 1px solid rgba(225, 29, 72, 0.45);
+        color: #fda4af;
+        font-size: 0.85rem;
         font-weight: 800;
         text-align: center;
         line-height: 1.6;
@@ -389,7 +390,7 @@
       .share-actions-row {
         display: flex;
         gap: 8px;
-        margin-top: 12px;
+        margin-top: 10px;
         flex-wrap: wrap;
       }
 
@@ -399,29 +400,12 @@
         width: 100%;
       }
 
-      .admin-banner {
-        background: linear-gradient(
-          90deg,
-          rgba(245, 158, 11, 0.16),
-          rgba(6, 182, 212, 0.1)
-        );
-        border: 1px solid rgba(245, 158, 11, 0.45);
-        border-radius: var(--radius);
-        padding: 12px 16px;
-        margin-bottom: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
       /* 6-Page Navigation Grid */
       .admin-nav-grid {
         display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 8px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
       }
 
       .admin-nav-btn {
@@ -430,62 +414,49 @@
         align-items: center;
         justify-content: center;
         gap: 4px;
-        padding: 11px 8px;
-        border-radius: 12px;
+        padding: 10px 6px;
+        border-radius: 10px;
         background: var(--bg-card);
         color: var(--text-muted);
-        border: 1px solid var(--border-light);
+        border: 1px solid var(--border);
         font-weight: 800;
-        font-size: 0.84rem;
+        font-size: 0.82rem;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.15s ease;
         text-align: center;
-        line-height: 1.3;
+        line-height: 1.25;
       }
 
       .admin-nav-btn .nav-icon {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
       }
 
       .admin-nav-btn.active {
-        background: linear-gradient(135deg, var(--gold), #d97706);
-        color: #000;
+        background: rgba(217, 155, 38, 0.18);
+        color: #fbbf24;
         border-color: var(--gold);
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
       }
 
       .admin-page {
         display: none;
         min-width: 0;
         width: 100%;
-        animation: fadeIn 0.2s ease;
       }
 
       .admin-page.active {
         display: block;
       }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(4px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
       /* Filter Toolbar inside Global Report */
       .filter-toolbar {
-        background: rgba(7, 13, 25, 0.8);
-        border: 1px solid var(--border-light);
-        border-radius: 12px;
-        padding: 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px;
         margin-bottom: 14px;
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 12px;
+        gap: 10px;
         align-items: center;
       }
 
@@ -498,40 +469,36 @@
       .date-picker-group {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         justify-content: flex-end;
         flex-wrap: wrap;
       }
 
       .exh-summary-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 12px;
-        margin-bottom: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
       }
 
       .exh-summary-box {
         background: var(--bg-input);
-        border: 1px solid var(--border-light);
-        border-radius: 12px;
-        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
         min-width: 0;
       }
 
       .exh-summary-box.total-highlight {
-        background: linear-gradient(
-          135deg,
-          rgba(245, 158, 11, 0.15),
-          rgba(6, 182, 212, 0.12)
-        );
-        border-color: var(--gold);
+        background: rgba(217, 155, 38, 0.08);
+        border-color: rgba(217, 155, 38, 0.45);
       }
 
       .exh-summary-box .exh-title {
-        font-size: 0.92rem;
+        font-size: 0.88rem;
         font-weight: 800;
         color: var(--text-main);
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -539,21 +506,21 @@
       }
 
       .exh-summary-box .main-num {
-        font-size: 1.7rem;
+        font-size: 1.55rem;
         font-weight: 900;
         color: var(--primary);
         line-height: 1.2;
       }
 
       .exh-summary-box.total-highlight .main-num {
-        color: var(--gold);
+        color: #fbbf24;
       }
 
       .exh-summary-box .sub-meta {
         margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px dashed var(--border-light);
-        font-size: 0.78rem;
+        padding-top: 6px;
+        border-top: 1px dashed var(--border);
+        font-size: 0.76rem;
         color: var(--text-muted);
         display: flex;
         justify-content: space-between;
@@ -562,11 +529,55 @@
         font-weight: 700;
       }
 
+      /* Teams Blocks & Dividers in Sales Performance */
+      .team-block {
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 6px;
+      }
+
+      .team-block-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .team-block-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #fbbf24;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .team-divider {
+        border: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border-light),
+          var(--gold),
+          var(--border-light),
+          transparent
+        );
+        margin: 18px 0;
+        opacity: 0.65;
+      }
+
       /* Studio & Two-Col Grids */
       .studio-grid {
         display: grid;
         grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-        gap: 16px;
+        gap: 14px;
         align-items: start;
       }
 
@@ -578,12 +589,12 @@
       .admin-two-col {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 16px;
+        gap: 14px;
         align-items: start;
       }
 
       .control-section-box {
-        background: rgba(9, 15, 29, 0.6);
+        background: var(--bg-input);
         border: 1px solid var(--border);
         border-radius: 10px;
         padding: 12px;
@@ -591,9 +602,9 @@
       }
 
       .control-section-title {
-        font-size: 0.86rem;
+        font-size: 0.85rem;
         font-weight: 800;
-        color: var(--gold);
+        color: #fbbf24;
         margin-bottom: 10px;
         display: flex;
         align-items: center;
@@ -604,29 +615,29 @@
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
       }
 
       .kpi-card {
-        background: var(--bg-input);
-        border: 1px solid var(--border-light);
-        border-radius: 12px;
-        padding: 12px 10px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 11px 8px;
         text-align: center;
         min-width: 0;
       }
 
       .kpi-card .label {
-        font-size: 0.76rem;
+        font-size: 0.75rem;
         color: var(--text-muted);
         font-weight: 700;
       }
 
       .kpi-card .val {
-        font-size: 1.35rem;
+        font-size: 1.3rem;
         font-weight: 900;
         color: var(--primary);
-        margin-top: 4px;
+        margin-top: 3px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -639,49 +650,59 @@
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 9px;
         background: var(--bg-input);
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 520px;
+        min-width: 480px;
       }
 
       th,
       td {
-        padding: 10px 12px;
+        padding: 9px 11px;
         text-align: right;
         border-bottom: 1px solid var(--border);
-        font-size: 0.85rem;
+        font-size: 0.84rem;
       }
 
       th {
-        background: #131c31;
-        color: var(--primary);
+        background: #162238;
+        color: #cbd5e1;
         font-weight: 800;
         white-space: nowrap;
       }
 
       tr:hover td {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(255, 255, 255, 0.015);
       }
 
       .badge-code {
-        background: rgba(6, 182, 212, 0.15);
+        background: var(--primary-soft);
         color: var(--primary);
         padding: 2px 8px;
         border-radius: 6px;
         font-weight: 800;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
+        white-space: nowrap;
+      }
+
+      .badge-team {
+        background: var(--gold-soft);
+        color: #fbbf24;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.75rem;
         white-space: nowrap;
       }
 
       .badge-count {
-        background: rgba(16, 185, 129, 0.15);
+        background: rgba(16, 185, 129, 0.12);
         color: #34d399;
-        padding: 3px 10px;
+        padding: 2px 9px;
         border-radius: 999px;
         font-weight: 800;
         white-space: nowrap;
@@ -695,7 +716,7 @@
         flex-wrap: wrap;
         gap: 10px;
         margin-top: 12px;
-        padding-top: 12px;
+        padding-top: 10px;
         border-top: 1px solid var(--border);
       }
 
@@ -728,8 +749,8 @@
         min-width: 45px;
         text-align: left;
         font-weight: 800;
-        color: var(--gold);
-        font-size: 0.8rem;
+        color: #fbbf24;
+        font-size: 0.78rem;
         direction: ltr;
       }
 
@@ -738,7 +759,7 @@
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(3px);
         display: none;
         align-items: center;
         justify-content: center;
@@ -749,46 +770,36 @@
       .modal-box {
         background: var(--bg-card);
         border: 1px solid var(--border-light);
-        border-radius: 14px;
-        padding: 22px;
+        border-radius: 12px;
+        padding: 20px;
         width: 100%;
-        max-width: 380px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        max-width: 360px;
       }
 
       /* Developer Signature Footer */
       .dev-footer {
         text-align: center;
-        padding: 18px 12px 24px;
-        margin-top: 28px;
+        padding: 16px 12px 22px;
+        margin-top: 24px;
         border-top: 1px solid var(--border);
         color: var(--text-muted);
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         font-weight: 700;
-        letter-spacing: 0.5px;
         direction: ltr;
       }
 
       .dev-footer a {
-        color: var(--gold);
-        font-weight: 900;
-        background: rgba(245, 158, 11, 0.12);
-        border: 1px solid rgba(245, 158, 11, 0.35);
-        padding: 4px 13px;
+        color: #fbbf24;
+        font-weight: 800;
+        background: var(--gold-soft);
+        border: 1px solid rgba(217, 155, 38, 0.3);
+        padding: 3px 12px;
         border-radius: 999px;
         margin-left: 6px;
         display: inline-flex;
         align-items: center;
         gap: 5px;
         text-decoration: none;
-        transition: all 0.25s ease;
-      }
-
-      .dev-footer a:hover {
-        background: rgba(245, 158, 11, 0.22);
-        border-color: var(--gold);
-        color: #fff;
-        transform: translateY(-2px);
       }
 
       /* ================= MOBILE RESPONSIVE FIXES ================= */
@@ -813,7 +824,7 @@
           flex-direction: column;
           align-items: stretch;
           text-align: center;
-          padding: 12px;
+          padding: 10px;
         }
 
         .brand-box {
@@ -827,8 +838,8 @@
 
         .header-actions .btn {
           flex: 1;
-          padding: 10px 8px;
-          font-size: 0.82rem;
+          padding: 9px 8px;
+          font-size: 0.8rem;
         }
 
         .exh-pills {
@@ -836,10 +847,10 @@
         }
 
         .exh-pill {
-          flex: 1 1 calc(50% - 8px);
+          flex: 1 1 calc(50% - 6px);
           text-align: center;
-          padding: 9px 8px;
-          font-size: 0.82rem;
+          padding: 8px 6px;
+          font-size: 0.8rem;
         }
 
         /* 3x2 Clean Grid for Admin Navigation on Mobile */
@@ -849,27 +860,18 @@
         }
 
         .admin-nav-btn {
-          padding: 9px 4px;
-          font-size: 0.76rem;
-          border-radius: 10px;
+          padding: 8px 4px;
+          font-size: 0.75rem;
         }
 
         .admin-nav-btn .nav-icon {
-          font-size: 1.05rem;
+          font-size: 1rem;
         }
 
         /* 2x2 KPIs on Mobile */
         .kpi-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 8px;
-        }
-
-        .kpi-card {
-          padding: 10px 8px;
-        }
-
-        .kpi-card .val {
-          font-size: 1.2rem;
         }
 
         .card {
@@ -885,16 +887,17 @@
           display: flex;
           width: 100%;
           gap: 6px;
+          flex-wrap: wrap;
         }
 
         .card-header .action-group .btn {
           flex: 1;
-          font-size: 0.78rem;
-          padding: 9px 6px;
+          font-size: 0.76rem;
+          padding: 8px 6px;
         }
 
         .mode-switch-group {
-          grid-template-columns: 1fr;
+          grid-template-columns: 1fr 1fr;
         }
 
         .date-picker-group {
@@ -904,36 +907,20 @@
 
         .date-picker-group input[type="date"] {
           flex: 1;
-          min-width: 130px;
-        }
-
-        .admin-banner {
-          flex-direction: column;
-          align-items: stretch;
-          text-align: center;
-        }
-
-        .admin-banner .banner-btns {
-          display: flex;
-          gap: 8px;
-          width: 100%;
-        }
-
-        .admin-banner .banner-btns .btn {
-          flex: 1;
+          min-width: 125px;
         }
 
         th,
         td {
-          padding: 8px 9px;
-          font-size: 0.8rem;
+          padding: 8px;
+          font-size: 0.78rem;
         }
       }
     </style>
   </head>
   <body>
     <div class="app-container">
-      <!-- Top Bar -->
+      <!-- Top Bar (يحتوي على زر واحد فقط للتحويل بين المدير والدعوات لمنع الزحمة) -->
       <header class="top-header">
         <div class="brand-box">
           <div class="brand-title">B.almeter VIP | نظام الدعوات الموحد</div>
@@ -955,7 +942,7 @@
         </div>
       </header>
 
-      <!-- Exhibition Selector Bar (Always visible to switch active exhibition easily) -->
+      <!-- Exhibition Selector Bar -->
       <section class="exhibition-bar">
         <div class="exhibition-list-wrap">
           <span class="exhibition-label">📍 المعرض النشط:</span>
@@ -1003,7 +990,7 @@
           <div class="form-group">
             <label class="form-label"
               >3. رقم تليفون العميل
-              <span style="color: var(--danger)"
+              <span style="color: #fda4af"
                 >* (11 رقم إنجليزي أو بكود الدولة)</span
               >:</label
             >
@@ -1052,14 +1039,14 @@
             <div class="share-actions-row">
               <button
                 class="btn btn-success"
-                style="flex: 2; padding: 12px"
+                style="flex: 2; padding: 11px"
                 onclick="shareCurrentCanvas()"
               >
                 📲 مشاركة سريعة (واتساب / آيفون)
               </button>
               <button
                 class="btn btn-outline"
-                style="flex: 1; padding: 12px"
+                style="flex: 1; padding: 11px"
                 onclick="downloadCurrentCanvas()"
               >
                 ⬇️ تنزيل
@@ -1100,26 +1087,7 @@
 
       <!-- ==================== 2. DEDICATED ADMIN PANEL VIEW (6 PAGES) ==================== -->
       <section id="adminPanel">
-        <div class="admin-banner">
-          <div>
-            <strong style="color: var(--gold); font-size: 1.02rem"
-              >👑 لوحة تحكم المدير</strong
-            >
-            <p style="font-size: 0.78rem; color: var(--text-muted)">
-              اختر الصفحة المطلوبة من القائمة بالأسفل للتنقل السريع
-            </p>
-          </div>
-          <div class="banner-btns" style="display: flex; gap: 8px">
-            <button class="btn btn-primary" onclick="logoutAdmin()">
-              🎫 شاشة إصدار الدعوات
-            </button>
-            <button class="btn btn-danger" onclick="logoutAdmin()">
-              خروج ✖
-            </button>
-          </div>
-        </div>
-
-        <!-- شريط تنقل الصفحات الـ 6 (مضبوط 3×2 على الموبايل و 6×1 على الكمبيوتر) -->
+        <!-- شريط تنقل الصفحات الـ 6 (بدون أي أزرار خروج مكررة) -->
         <nav class="admin-nav-grid">
           <button
             class="admin-nav-btn active"
@@ -1169,7 +1137,7 @@
         <div id="pageGlobalReports" class="admin-page active">
           <div class="card">
             <div class="card-header">
-              <div class="card-title" style="color: var(--gold)">
+              <div class="card-title" style="color: #fbbf24">
                 📊 التقرير المجمع لكل المعارض (اليومي والتراكمي)
               </div>
               <div class="action-group" style="display: flex; gap: 8px">
@@ -1212,19 +1180,19 @@
                   type="date"
                   id="globalReportDateInput"
                   class="form-control"
-                  style="width: auto; flex: 1; padding: 8px 10px"
+                  style="width: auto; flex: 1; padding: 7px 10px"
                   onchange="onGlobalDateChange(this.value)"
                 />
                 <button
                   class="btn btn-outline"
-                  style="padding: 8px 12px"
+                  style="padding: 7px 12px"
                   onclick="setQuickGlobalDate(0)"
                 >
                   اليوم
                 </button>
                 <button
                   class="btn btn-outline"
-                  style="padding: 8px 12px"
+                  style="padding: 7px 12px"
                   onclick="setQuickGlobalDate(-1)"
                 >
                   أمس
@@ -1236,13 +1204,12 @@
               id="globalFilterStatusBanner"
               style="
                 margin-bottom: 12px;
-                font-size: 0.85rem;
+                font-size: 0.84rem;
                 font-weight: 800;
                 color: var(--primary);
-                background: rgba(6, 182, 212, 0.08);
+                background: var(--primary-soft);
                 padding: 8px 12px;
                 border-radius: 8px;
-                border: 1px solid rgba(6, 182, 212, 0.2);
               "
             ></div>
 
@@ -1270,7 +1237,7 @@
           </div>
         </div>
 
-        <!-- صفحة 2: إنجاز ومتابعة السيلز -->
+        <!-- صفحة 2: إنجاز ومتابعة السيلز (مع خيار عرض بالتيمات أو عرض الكل) -->
         <div id="pageSalesPerf" class="admin-page">
           <div class="kpi-grid">
             <div class="kpi-card">
@@ -1290,7 +1257,7 @@
               <div
                 class="val"
                 id="kpiTopSales"
-                style="font-size: 1rem; color: var(--gold)"
+                style="font-size: 0.98rem; color: #fbbf24"
               >
                 -
               </div>
@@ -1300,12 +1267,31 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">
-                🏆 ترتيب وإنجاز السيلز (<span id="salesPerfExhTitle"></span>)
+                🏆 إنجاز السيلز (<span id="salesPerfExhTitle"></span>)
               </div>
-              <div class="action-group" style="display: flex; gap: 6px">
+              <div
+                class="action-group"
+                style="display: flex; gap: 6px; flex-wrap: wrap"
+              >
+                <!-- أزرار اختيار طريقة العرض: تيمات أو الكل -->
+                <button
+                  id="viewTeamsBtn"
+                  class="btn btn-gold"
+                  onclick="setSalesViewMode('teams')"
+                >
+                  📂 عرض بالتيمات
+                </button>
+                <button
+                  id="viewAllBtn"
+                  class="btn btn-outline"
+                  onclick="setSalesViewMode('all')"
+                >
+                  📋 عرض الكل
+                </button>
+                <!-- أزرار الترتيب -->
                 <button
                   id="sortCodeBtn"
-                  class="btn btn-gold"
+                  class="btn btn-primary"
                   onclick="setSalesSortMode('code')"
                 >
                   🔢 ترتيب بالكود
@@ -1315,28 +1301,17 @@
                   class="btn btn-outline"
                   onclick="setSalesSortMode('count')"
                 >
-                  🔥 ترتيب بالأعلى إنجازاً
+                  🔥 بالأعلى إنجازاً
                 </button>
               </div>
             </div>
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>الكود</th>
-                    <th>اسم السيلز</th>
-                    <th>عملاء المعرض النشط</th>
-                    <th>التوتال في كل المعارض</th>
-                    <th>إجراءات</th>
-                  </tr>
-                </thead>
-                <tbody id="salesPerformanceTbody"></tbody>
-              </table>
-            </div>
+
+            <!-- حاوية عرض الإنجاز (سواء مقسم تيمات بخطوط فاصلة أو جدول مجمع) -->
+            <div id="salesPerformanceContainer"></div>
           </div>
         </div>
 
-        <!-- صفحة 3: سجل العملاء والتليفونات (مع فلترة وتقسيم صفحات) -->
+        <!-- صفحة 3: سجل العملاء والتليفونات (مسح وبحث فوري لحظي) -->
         <div id="pageClientLogs" class="admin-page">
           <div class="card">
             <div class="card-header">
@@ -1365,7 +1340,7 @@
                 type="text"
                 id="logSearchInput"
                 class="form-control"
-                placeholder="🔍 بحث بالاسم، الرقم، الكود..."
+                placeholder="🔍 بحث فوري بالاسم أو التليفون أو الكود..."
                 oninput="resetLogsPageAndRender()"
               />
               <select
@@ -1393,7 +1368,7 @@
                 />
                 <button
                   class="btn btn-outline"
-                  style="padding: 10px 12px"
+                  style="padding: 9px 12px"
                   onclick="clearLogDateFilter()"
                 >
                   الكل
@@ -1418,12 +1393,12 @@
               </table>
             </div>
 
-            <!-- شريط التنقل بين صفحات السجل لمنع ثقل الصفحة على الموبايل -->
+            <!-- شريط التنقل بين صفحات السجل -->
             <div class="pagination-bar">
               <div
                 id="logsPaginationInfo"
                 style="
-                  font-size: 0.82rem;
+                  font-size: 0.8rem;
                   font-weight: 700;
                   color: var(--text-muted);
                 "
@@ -1432,7 +1407,7 @@
                 <button
                   id="prevLogsPageBtn"
                   class="btn btn-outline"
-                  style="padding: 6px 12px; font-size: 0.8rem"
+                  style="padding: 6px 12px; font-size: 0.78rem"
                   onclick="changeLogsPage(-1)"
                 >
                   ➡️ السابق
@@ -1440,7 +1415,7 @@
                 <button
                   id="nextLogsPageBtn"
                   class="btn btn-outline"
-                  style="padding: 6px 12px; font-size: 0.8rem"
+                  style="padding: 6px 12px; font-size: 0.78rem"
                   onclick="changeLogsPage(1)"
                 >
                   التالي ⬅️
@@ -1450,13 +1425,89 @@
           </div>
         </div>
 
-        <!-- صفحة 4: إدارة فريق السيلز وإدارة المعارض -->
+        <!-- صفحة 4: إدارة فريق السيلز ونقلهم بين التيمات + إدارة المعارض -->
         <div id="pageTeamManage" class="admin-page">
-          <div class="admin-two-col">
+          <div class="admin-two-col" style="margin-bottom: 14px">
+            <!-- كارت إضافة السيلز وتحديد التيم -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">➕ إضافة سيلز جديد للتيمات</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">إضافة سيلز فردي:</label>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    gap: 8px;
+                    margin-bottom: 8px;
+                  "
+                >
+                  <input
+                    type="text"
+                    id="newSalesName"
+                    class="form-control"
+                    placeholder="اسم السيلز"
+                  />
+                  <input
+                    type="text"
+                    id="newSalesCode"
+                    class="form-control"
+                    placeholder="الكود (اختياري)"
+                  />
+                  <select id="newSalesTeamSelect" class="form-control">
+                    <option value="المعرض">تيم المعرض</option>
+                    <option value="الجمعية">تيم الجمعية</option>
+                    <option value="الوديعة">تيم الوديعة</option>
+                    <option value="القاهرة">تيم القاهرة</option>
+                  </select>
+                </div>
+                <button
+                  class="btn btn-primary btn-block"
+                  onclick="addSingleSalesRep()"
+                >
+                  + إضافة السيلز
+                </button>
+              </div>
+              <hr
+                style="
+                  border: 0;
+                  border-top: 1px solid var(--border);
+                  margin: 14px 0;
+                "
+              />
+              <div class="form-group">
+                <label class="form-label"
+                  >إضافة دفعة واحدة (اسم في كل سطر):</label
+                >
+                <select
+                  id="bulkSalesTeamSelect"
+                  class="form-control"
+                  style="margin-bottom: 8px"
+                >
+                  <option value="المعرض">إضافة إلى: تيم المعرض</option>
+                  <option value="الجمعية">إضافة إلى: تيم الجمعية</option>
+                  <option value="الوديعة">إضافة إلى: تيم الوديعة</option>
+                  <option value="القاهرة">إضافة إلى: تيم القاهرة</option>
+                </select>
+                <textarea
+                  id="bulkSalesTextarea"
+                  class="form-control"
+                  placeholder="اكتب الأسماء هنا (اسم في كل سطر)..."
+                ></textarea>
+              </div>
+              <button
+                class="btn btn-gold btn-block"
+                onclick="addBulkSalesReps()"
+              >
+                ⚡ إضافة القائمة دفعة واحدة
+              </button>
+            </div>
+
             <!-- كارت إدارة المعارض -->
             <div class="card">
               <div class="card-header">
-                <div class="card-title" style="color: var(--gold)">
+                <div class="card-title" style="color: #fbbf24">
                   📍 إضافة أو حذف معرض
                 </div>
               </div>
@@ -1468,7 +1519,7 @@
                     id="newExhNameInput"
                     class="form-control"
                     placeholder="مثال: معرض أسيوط"
-                    style="flex: 1; min-width: 160px"
+                    style="flex: 1; min-width: 150px"
                   />
                   <button class="btn btn-gold" onclick="addNewExhibition()">
                     + إضافة معرض
@@ -1498,57 +1549,35 @@
                 </button>
               </div>
             </div>
+          </div>
 
-            <!-- كارت إضافة السيلز -->
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">➕ إضافة فريق السيلز</div>
+          <!-- كارت نقل السيلز بين التيمات بسهولة -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" style="color: #fbbf24">
+                🔄 نقل السيلز بين التيمات (المعرض / الجمعية / الوديعة / القاهرة)
               </div>
-              <div class="form-group">
-                <label class="form-label">إضافة سيلز فردي:</label>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                  <input
-                    type="text"
-                    id="newSalesName"
-                    class="form-control"
-                    placeholder="اسم السيلز"
-                    style="flex: 2; min-width: 140px"
-                  />
-                  <input
-                    type="text"
-                    id="newSalesCode"
-                    class="form-control"
-                    placeholder="الكود (S15)"
-                    style="flex: 1; min-width: 95px"
-                  />
-                  <button class="btn btn-primary" onclick="addSingleSalesRep()">
-                    + إضافة
-                  </button>
-                </div>
-              </div>
-              <hr
-                style="
-                  border: 0;
-                  border-top: 1px solid var(--border);
-                  margin: 16px 0;
-                "
+              <input
+                type="text"
+                id="teamManageSearchInput"
+                class="form-control"
+                placeholder="🔍 ابحث عن سيلز لنقله أو حذفه..."
+                style="max-width: 280px"
+                oninput="renderTeamManagementTable()"
               />
-              <div class="form-group">
-                <label class="form-label"
-                  >إضافة دفعة واحدة (اسم في كل سطر):</label
-                >
-                <textarea
-                  id="bulkSalesTextarea"
-                  class="form-control"
-                  placeholder="اكتب الأسماء هنا..."
-                ></textarea>
-              </div>
-              <button
-                class="btn btn-gold btn-block"
-                onclick="addBulkSalesReps()"
-              >
-                ⚡ إضافة القائمة دفعة واحدة
-              </button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الكود</th>
+                    <th>اسم السيلز</th>
+                    <th>التيم الحالي (اختر للنقل الفوري)</th>
+                    <th>حذف</th>
+                  </tr>
+                </thead>
+                <tbody id="teamManageTbody"></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1838,12 +1867,12 @@
     <!-- Admin PIN Login Modal -->
     <div id="pinModal" class="modal-overlay">
       <div class="modal-box">
-        <h3 style="color: var(--gold); margin-bottom: 8px">
+        <h3 style="color: #fbbf24; margin-bottom: 8px">
           🔒 الدخول لوضع المدير
         </h3>
         <p
           style="
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             color: var(--text-muted);
             margin-bottom: 14px;
           "
@@ -1889,21 +1918,24 @@
         "BALMETER_VIP_UNIFIED_STATE_V5",
       ];
 
+      // التيمات الأربعة المعتمدة بالترتيب المطلوب
+      const SALES_TEAMS = ["المعرض", "الجمعية", "الوديعة", "القاهرة"];
+
       const INITIAL_SALES_TEAM = [
-        { code: "S11", name: "محمد" },
-        { code: "S12", name: "أحمد" },
-        { code: "S13", name: "محمود" },
-        { code: "S14", name: "مصطفى" },
-        { code: "S15", name: "سارة" },
-        { code: "S16", name: "نور" },
-        { code: "S17", name: "هدى" },
-        { code: "S18", name: "كريم" },
-        { code: "S19", name: "ياسمين" },
-        { code: "S20", name: "عمر" },
-        { code: "S21", name: "خالد" },
-        { code: "S22", name: "ندى" },
-        { code: "S23", name: "إسلام" },
-        { code: "S24", name: "آية" },
+        { code: "S11", name: "محمد", team: "المعرض" },
+        { code: "S12", name: "أحمد", team: "المعرض" },
+        { code: "S13", name: "محمود", team: "المعرض" },
+        { code: "S14", name: "مصطفى", team: "المعرض" },
+        { code: "S15", name: "سارة", team: "الجمعية" },
+        { code: "S16", name: "نور", team: "الجمعية" },
+        { code: "S17", name: "هدى", team: "الجمعية" },
+        { code: "S18", name: "كريم", team: "الوديعة" },
+        { code: "S19", name: "ياسمين", team: "الوديعة" },
+        { code: "S20", name: "عمر", team: "الوديعة" },
+        { code: "S21", name: "خالد", team: "القاهرة" },
+        { code: "S22", name: "ندى", team: "القاهرة" },
+        { code: "S23", name: "إسلام", team: "القاهرة" },
+        { code: "S24", name: "آية", team: "القاهرة" },
       ];
 
       let appState = {
@@ -1953,13 +1985,23 @@
       let isSyncing = false;
       let isIssuing = false;
       let draggingTarget = null;
-      let salesSortMode = "code";
+
+      // إعدادات عرض وترتيب السيلز في صفحة الإنجاز
+      let salesViewMode = "teams"; // 'teams' أو 'all'
+      let salesSortMode = "code"; // 'code' أو 'count'
 
       // إعدادات التقرير المجمع وتقسيم صفحات السجل
       let globalReportMode = "ALL_TIME";
       let globalReportDate = "";
       let currentLogsPage = 1;
       const LOGS_PER_PAGE = 25;
+
+      function normalizeTeamName(team) {
+        if (team && SALES_TEAMS.includes(team.trim())) {
+          return team.trim();
+        }
+        return "المعرض";
+      }
 
       function getLocalYYYYMMDD(dateObj = new Date()) {
         const y = dateObj.getFullYear();
@@ -2156,9 +2198,9 @@
         } else {
           const digitsLen = normalized.replace(/\D/g, "").length;
           hintEl.textContent = "⏳ أكمل الرقم (11 رقم مصري أو كود الدولة)";
-          hintEl.style.color = "var(--gold)";
+          hintEl.style.color = "#fbbf24";
           counterEl.textContent = `${digitsLen} / 11`;
-          counterEl.style.color = "var(--gold)";
+          counterEl.style.color = "#fbbf24";
         }
       }
 
@@ -2209,6 +2251,7 @@
           appState.salesTeam = incoming.salesTeam.map((s) => ({
             ...s,
             code: formatSalesCode(s.code),
+            team: normalizeTeamName(s.team),
           }));
         }
         if (incoming.exhibitions && typeof incoming.exhibitions === "object") {
@@ -2434,7 +2477,7 @@
           const dupInv = findDuplicateInvitation(exh.id, typedPhone);
           if (dupInv) {
             const sCode = formatSalesCode(dupInv.salesCode);
-            dupBox.innerHTML = `❌ رقم التليفون مسجل مسبقاً في هذا المعرض!<br>تم عمل دعوة بواسطة: <strong style="color:#fff;">${dupInv.salesName} (كود: ${sCode})</strong> — رقم الدعوة: <strong style="color:var(--gold);">#${dupInv.seqNumber}</strong>`;
+            dupBox.innerHTML = `❌ رقم التليفون مسجل مسبقاً في هذا المعرض!<br>تم عمل دعوة بواسطة: <strong style="color:#fff;">${dupInv.salesName} (كود: ${sCode})</strong> — رقم الدعوة: <strong style="color:#fbbf24;">#${dupInv.seqNumber}</strong>`;
             dupBox.style.display = "block";
             issueBtn.disabled = true;
             issueBtn.style.opacity = "0.5";
@@ -2551,11 +2594,11 @@
           ctx.fillStyle = grad;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          ctx.strokeStyle = "#f59e0b";
+          ctx.strokeStyle = "#d99b26";
           ctx.lineWidth = 6;
           ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
 
-          ctx.fillStyle = "#06b6d4";
+          ctx.fillStyle = "#38bdf8";
           ctx.textAlign = "center";
           ctx.font = "800 54px 'Cairo', sans-serif";
           ctx.fillText(exh.name, canvas.width / 2, 260);
@@ -2615,8 +2658,8 @@
         if (drawGuides) {
           const boxH = fontSize * 1.45;
           ctx.save();
-          ctx.strokeStyle = "rgba(6, 182, 212, 0.85)";
-          ctx.fillStyle = "rgba(6, 182, 212, 0.12)";
+          ctx.strokeStyle = "rgba(56, 189, 248, 0.85)";
+          ctx.fillStyle = "rgba(56, 189, 248, 0.12)";
           ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
           ctx.setLineDash([10, 6]);
           ctx.fillRect(nameX - maxWidth / 2, nameY - boxH / 2, maxWidth, boxH);
@@ -2663,8 +2706,8 @@
 
         if (drawGuides) {
           ctx.save();
-          ctx.strokeStyle = "rgba(245, 158, 11, 0.85)";
-          ctx.fillStyle = "rgba(245, 158, 11, 0.12)";
+          ctx.strokeStyle = "rgba(217, 155, 38, 0.85)";
+          ctx.fillStyle = "rgba(217, 155, 38, 0.12)";
           ctx.lineWidth = Math.max(2, Math.round(canvas.width / 350));
           ctx.setLineDash([8, 5]);
           ctx.fillRect(
@@ -3066,7 +3109,6 @@
         ) {
           isAdminMode = true;
           closePinModal();
-          // إخفاء شاشة السيلز وإظهار شاشة المدير المنفصلة لتنظيم الموبايل
           document.getElementById("salesWorkspaceView").style.display = "none";
           document.getElementById("adminPanel").style.display = "block";
           document.getElementById("adminToggleBtn").textContent =
@@ -3109,16 +3151,30 @@
         renderAllCanvases();
       }
 
+      function setSalesViewMode(mode) {
+        salesViewMode = mode;
+        const btnTeams = document.getElementById("viewTeamsBtn");
+        const btnAll = document.getElementById("viewAllBtn");
+        if (mode === "teams") {
+          btnTeams.className = "btn btn-gold";
+          btnAll.className = "btn btn-outline";
+        } else {
+          btnTeams.className = "btn btn-outline";
+          btnAll.className = "btn btn-gold";
+        }
+        renderAdminDashboard();
+      }
+
       function setSalesSortMode(mode) {
         salesSortMode = mode;
         const btnCode = document.getElementById("sortCodeBtn");
         const btnCount = document.getElementById("sortCountBtn");
         if (mode === "code") {
-          btnCode.className = "btn btn-gold";
+          btnCode.className = "btn btn-primary";
           btnCount.className = "btn btn-outline";
         } else {
           btnCode.className = "btn btn-outline";
-          btnCount.className = "btn btn-gold";
+          btnCount.className = "btn btn-primary";
         }
         renderAdminDashboard();
       }
@@ -3221,10 +3277,10 @@
           getExhibitionsGlobalStats();
 
         if (globalReportMode === "DATE") {
-          statusBanner.innerHTML = `📅 عرض تقرير يوم محدد: <span style="color:var(--gold);" dir="ltr">${globalReportDate}</span> (مع التوتال التراكمي من أول كل معرض)`;
+          statusBanner.innerHTML = `📅 عرض تقرير يوم محدد: <span style="color:#fbbf24;" dir="ltr">${globalReportDate}</span> (مع التوتال التراكمي من أول كل معرض)`;
           colHeader.textContent = `دعوات يوم (${globalReportDate})`;
         } else {
-          statusBanner.innerHTML = `🌐 عرض التقرير الشامل: <span style="color:var(--gold);">التوتال من أول المعرض (جميع الأيام)</span>`;
+          statusBanner.innerHTML = `🌐 عرض التقرير الشامل: <span style="color:#fbbf24;">التوتال من أول المعرض (جميع الأيام)</span>`;
           colHeader.textContent = `إجمالي الدعوات (من أول المعرض)`;
         }
 
@@ -3236,9 +3292,9 @@
         totalBox.innerHTML = `
           <div class="exh-title">
             <span>🔥 إجمالي كل المعارض</span>
-            <span class="badge-code" style="background:rgba(245,158,11,0.2); color:var(--gold);">${stats.length} معارض</span>
+            <span class="badge-team">${stats.length} معارض</span>
           </div>
-          <div class="main-num">${grandSelectedTotal} <span style="font-size:0.88rem; font-weight:700;">دعوة</span></div>
+          <div class="main-num">${grandSelectedTotal} <span style="font-size:0.86rem; font-weight:700;">دعوة</span></div>
           <div class="sub-meta">
             <span>${globalReportMode === "DATE" ? `يوم ${globalReportDate}` : "منذ بداية المعارض"}</span>
             <span style="color:var(--text-main);">التوتال الكلي: ${grandAllTimeTotal}</span>
@@ -3254,9 +3310,9 @@
               <span>📍 ${item.exh.name}</span>
               <span class="badge-code">#${item.nextSeq}</span>
             </div>
-            <div class="main-num">${item.selectedCount} <span style="font-size:0.88rem; font-weight:700; color:var(--text-muted);">دعوة</span></div>
+            <div class="main-num">${item.selectedCount} <span style="font-size:0.86rem; font-weight:700; color:var(--text-muted);">دعوة</span></div>
             <div class="sub-meta">
-              <span>التوتال من أول المعرض: <strong style="color:var(--gold);">${item.allTimeCount}</strong></span>
+              <span>التوتال من أول المعرض: <strong style="color:#fbbf24;">${item.allTimeCount}</strong></span>
               <span>الأعلى: ${item.topSales}</span>
             </div>
           `;
@@ -3266,7 +3322,7 @@
           tr.innerHTML = `
             <td style="font-weight:800; color:var(--text-main);">📍 ${item.exh.name}</td>
             <td><span class="badge-count">${item.selectedCount} دعوة</span></td>
-            <td><strong style="color:var(--gold);">${item.allTimeCount} دعوة</strong></td>
+            <td><strong style="color:#fbbf24;">${item.allTimeCount} دعوة</strong></td>
             <td><span class="badge-code">#${item.nextSeq}</span></td>
             <td style="font-weight:700; color:var(--primary);">${item.topSales}</td>
             <td>
@@ -3279,11 +3335,11 @@
         });
 
         const totalTr = document.createElement("tr");
-        totalTr.style.background = "rgba(245, 158, 11, 0.08)";
+        totalTr.style.background = "rgba(217, 155, 38, 0.06)";
         totalTr.innerHTML = `
-          <td style="font-weight:900; color:var(--gold);">🔥 الإجمالي الكلي</td>
+          <td style="font-weight:900; color:#fbbf24;">🔥 الإجمالي الكلي</td>
           <td><strong style="color:var(--success);">${grandSelectedTotal} دعوة</strong></td>
-          <td><strong style="color:var(--gold);">${grandAllTimeTotal} دعوة</strong></td>
+          <td><strong style="color:#fbbf24;">${grandAllTimeTotal} دعوة</strong></td>
           <td colspan="3" style="color:var(--text-muted); font-weight:700;">مجموع كل المعارض بالنظام</td>
         `;
         tbodyEl.appendChild(totalTr);
@@ -3377,6 +3433,201 @@
         document.body.removeChild(a);
       }
 
+      // ================= عرض إنجاز السيلز (إما مقسم تيمات بخط فاصل أو الكل) =================
+      function sortSalesStatsArray(arr) {
+        if (salesSortMode === "count") {
+          return [...arr].sort(
+            (a, b) =>
+              b.currentCount - a.currentCount ||
+              (parseInt(String(a.code).replace(/\D/g, ""), 10) || 0) -
+                (parseInt(String(b.code).replace(/\D/g, ""), 10) || 0),
+          );
+        }
+        return [...arr].sort(
+          (a, b) =>
+            (parseInt(String(a.code).replace(/\D/g, ""), 10) || 0) -
+            (parseInt(String(b.code).replace(/\D/g, ""), 10) || 0),
+        );
+      }
+
+      function buildSalesRowsHTML(list, showTeamColumn = false) {
+        if (list.length === 0) {
+          return `<tr><td colspan="${showTeamColumn ? 6 : 5}" style="text-align:center; color:var(--text-muted); padding:14px;">لا يوجد سيلز مسجلين في هذا القسم.</td></tr>`;
+        }
+        return list
+          .map(
+            (s) => `
+          <tr>
+            <td><span class="badge-code">${s.code}</span></td>
+            <td style="font-weight:700;">${s.name}</td>
+            ${showTeamColumn ? `<td><span class="badge-team">${s.team}</span></td>` : ""}
+            <td><span class="badge-count">${s.currentCount} عميل</span></td>
+            <td style="color:var(--text-muted); font-weight:700;">${s.allCount}</td>
+            <td>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="filterLogsBySales('${s.code}')">عملائه</button>
+                <button class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteSalesRep('${s.code}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `,
+          )
+          .join("");
+      }
+
+      function renderSalesPerformanceView(salesStats) {
+        const container = document.getElementById("salesPerformanceContainer");
+        if (!container) return;
+
+        if (salesViewMode === "all") {
+          const sortedAll = sortSalesStatsArray(salesStats);
+          container.innerHTML = `
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الكود</th>
+                    <th>اسم السيلز</th>
+                    <th>التيم</th>
+                    <th>عملاء المعرض النشط</th>
+                    <th>التوتال في كل المعارض</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${buildSalesRowsHTML(sortedAll, true)}
+                </tbody>
+              </table>
+            </div>
+          `;
+          return;
+        }
+
+        // الوضع المقسم بالتيمات: المعرض وتحته السيلز وخط، الجمعية وتحتها السيلز وخط، الوديعة وتحتها السيلز وخط، القاهرة وتحتها السيلز
+        let html = "";
+        SALES_TEAMS.forEach((teamName, idx) => {
+          const teamMembers = sortSalesStatsArray(
+            salesStats.filter((s) => normalizeTeamName(s.team) === teamName),
+          );
+          const teamActiveTotal = teamMembers.reduce(
+            (sum, item) => sum + item.currentCount,
+            0,
+          );
+          const teamAllTimeTotal = teamMembers.reduce(
+            (sum, item) => sum + item.allCount,
+            0,
+          );
+
+          html += `
+            <div class="team-block">
+              <div class="team-block-header">
+                <div class="team-block-title">
+                  <span>🏢 تيم ${teamName}</span>
+                  <span class="badge-code">${teamMembers.length} سيلز</span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                  <span class="badge-count">إنجاز المعرض: ${teamActiveTotal} دعوة</span>
+                  <span class="badge-team">توتال التيم: ${teamAllTimeTotal}</span>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>الكود</th>
+                      <th>اسم السيلز</th>
+                      <th>عملاء المعرض النشط</th>
+                      <th>التوتال في كل المعارض</th>
+                      <th>إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${buildSalesRowsHTML(teamMembers, false)}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+
+          if (idx < SALES_TEAMS.length - 1) {
+            html += `<hr class="team-divider" />`;
+          }
+        });
+
+        container.innerHTML = html;
+      }
+
+      // ================= جدول نقل السيلز بين التيمات =================
+      function renderTeamManagementTable() {
+        const tbody = document.getElementById("teamManageTbody");
+        if (!tbody) return;
+
+        const q = (
+          document.getElementById("teamManageSearchInput")?.value || ""
+        )
+          .trim()
+          .toLowerCase();
+
+        const sorted = sortSalesTeamByCode(appState.salesTeam).filter(
+          (s) =>
+            !q ||
+            s.name.toLowerCase().includes(q) ||
+            formatSalesCode(s.code).toLowerCase().includes(q) ||
+            normalizeTeamName(s.team).toLowerCase().includes(q),
+        );
+
+        if (sorted.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">لا يوجد سيلز مطابق للبحث.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = sorted
+          .map((s) => {
+            const code = formatSalesCode(s.code);
+            const currentTeam = normalizeTeamName(s.team);
+            const optionsHtml = SALES_TEAMS.map(
+              (t) =>
+                `<option value="${t}" ${t === currentTeam ? "selected" : ""}>تيم ${t}</option>`,
+            ).join("");
+
+            return `
+              <tr>
+                <td><span class="badge-code">${code}</span></td>
+                <td style="font-weight:700;">${s.name}</td>
+                <td>
+                  <select
+                    class="form-control"
+                    style="padding:5px 10px; font-size:0.82rem; max-width:190px;"
+                    onchange="changeSalesRepTeam('${code}', this.value)"
+                  >
+                    ${optionsHtml}
+                  </select>
+                </td>
+                <td>
+                  <button class="btn btn-danger" style="padding:4px 10px; font-size:0.75rem;" onclick="deleteSalesRep('${code}')">
+                    حذف
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      function changeSalesRepTeam(code, newTeam) {
+        const targetCode = formatSalesCode(code);
+        const rep = appState.salesTeam.find(
+          (s) => formatSalesCode(s.code) === targetCode,
+        );
+        if (!rep) return;
+
+        rep.team = normalizeTeamName(newTeam);
+        // تحديث فوري على الشاشة ورفع في الخلفية بدون تعطيل
+        saveLocalState();
+        renderAllUI();
+        pushStateToCloud();
+      }
+
       function renderAdminDashboard() {
         const exh = getActiveExhibition();
         if (!exh) return;
@@ -3397,60 +3648,43 @@
         document.getElementById("salesPerfExhTitle").textContent = exh.name;
         document.getElementById("manageActiveExhName").textContent = exh.name;
 
-        const perfTbody = document.getElementById("salesPerformanceTbody");
-        perfTbody.innerHTML = "";
-
         let topSalesName = "-";
         let topSalesCount = 0;
 
+        // حساب الإحصائيات بمرور واحد سريع (O(N)) لتسريع الأداء
+        const activeCountsMap = {};
+        const allCountsMap = {};
+
+        appState.invitations.forEach((inv) => {
+          if (!inv) return;
+          const c = formatSalesCode(inv.salesCode);
+          allCountsMap[c] = (allCountsMap[c] || 0) + 1;
+          if (inv.exhibitionId === exh.id) {
+            activeCountsMap[c] = (activeCountsMap[c] || 0) + 1;
+          }
+        });
+
         const salesStats = appState.salesTeam.map((s) => {
           const formattedCode = formatSalesCode(s.code);
-          const currentCount = exhInvs.filter(
-            (i) => formatSalesCode(i.salesCode) === formattedCode,
-          ).length;
-          const allCount = appState.invitations.filter(
-            (i) => i && formatSalesCode(i.salesCode) === formattedCode,
-          ).length;
+          const currentCount = activeCountsMap[formattedCode] || 0;
+          const allCount = allCountsMap[formattedCode] || 0;
           if (currentCount > topSalesCount) {
             topSalesCount = currentCount;
             topSalesName = `${s.name} (${currentCount})`;
           }
-          return { ...s, code: formattedCode, currentCount, allCount };
+          return {
+            ...s,
+            code: formattedCode,
+            team: normalizeTeamName(s.team),
+            currentCount,
+            allCount,
+          };
         });
-
-        if (salesSortMode === "count") {
-          salesStats.sort(
-            (a, b) =>
-              b.currentCount - a.currentCount ||
-              (parseInt(String(a.code).replace(/\D/g, ""), 10) || 0) -
-                (parseInt(String(b.code).replace(/\D/g, ""), 10) || 0),
-          );
-        } else {
-          salesStats.sort(
-            (a, b) =>
-              (parseInt(String(a.code).replace(/\D/g, ""), 10) || 0) -
-              (parseInt(String(b.code).replace(/\D/g, ""), 10) || 0),
-          );
-        }
 
         document.getElementById("kpiTopSales").textContent = topSalesName;
 
-        salesStats.forEach((s) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td><span class="badge-code">${s.code}</span></td>
-            <td style="font-weight:700;">${s.name}</td>
-            <td><span class="badge-count">${s.currentCount} عميل</span></td>
-            <td style="color:var(--text-muted); font-weight:700;">${s.allCount}</td>
-            <td>
-              <div style="display:flex; gap:6px;">
-                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="filterLogsBySales('${s.code}')">عملائه</button>
-                <button class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteSalesRep('${s.code}')">حذف</button>
-              </div>
-            </td>
-          `;
-          perfTbody.appendChild(tr);
-        });
+        renderSalesPerformanceView(salesStats);
+        renderTeamManagementTable();
 
         const logFilter = document.getElementById("logSalesFilter");
         const currentFilterVal = logFilter.value || "ALL";
@@ -3461,7 +3695,7 @@
           const formattedCode = formatSalesCode(s.code);
           const opt = document.createElement("option");
           opt.value = formattedCode;
-          opt.textContent = `${s.name} (${formattedCode})`;
+          opt.textContent = `${s.name} (${formattedCode}) - ${normalizeTeamName(s.team)}`;
           logFilter.appendChild(opt);
         });
         logFilter.value = currentFilterVal;
@@ -3523,11 +3757,13 @@
         return "S" + (maxNum + 1);
       }
 
-      async function addSingleSalesRep() {
+      function addSingleSalesRep() {
         const nameInput = document.getElementById("newSalesName");
         const codeInput = document.getElementById("newSalesCode");
+        const teamSelect = document.getElementById("newSalesTeamSelect");
         const name = (nameInput.value || "").trim();
         let rawCode = (codeInput.value || "").trim();
+        const team = normalizeTeamName(teamSelect?.value);
 
         if (!name) {
           alert("اكتب اسم السيلز أولاً!");
@@ -3546,16 +3782,20 @@
           return;
         }
 
-        appState.salesTeam.push({ code, name });
+        appState.salesTeam.push({ code, name, team });
         nameInput.value = "";
         codeInput.value = "";
-        await pushStateToCloud();
+        saveLocalState();
         renderAllUI();
-        alert(`✅ تم إضافة السيلز (${name} - كود ${code}) بنجاح!`);
+        pushStateToCloud();
+        alert(`✅ تم إضافة (${name} - كود ${code}) في تيم (${team}) بنجاح!`);
       }
 
-      async function addBulkSalesReps() {
+      function addBulkSalesReps() {
         const raw = document.getElementById("bulkSalesTextarea").value || "";
+        const team = normalizeTeamName(
+          document.getElementById("bulkSalesTeamSelect")?.value,
+        );
         const lines = raw
           .split(/\r?\n/)
           .map((l) => l.trim())
@@ -3568,24 +3808,27 @@
         let addedCount = 0;
         lines.forEach((line) => {
           const code = getNextAvailableSalesCode();
-          appState.salesTeam.push({ code, name: line });
+          appState.salesTeam.push({ code, name: line, team });
           addedCount++;
         });
 
         document.getElementById("bulkSalesTextarea").value = "";
-        await pushStateToCloud();
+        saveLocalState();
         renderAllUI();
-        alert(`✅ تم إضافة ${addedCount} سيلز جديد وحفظهم بالسحابة بنجاح!`);
+        pushStateToCloud();
+        alert(`✅ تم إضافة ${addedCount} سيلز في تيم (${team}) بنجاح!`);
       }
 
-      async function deleteSalesRep(code) {
+      function deleteSalesRep(code) {
         const targetCode = formatSalesCode(code);
         if (!confirm(`هل أنت متأكد من حذف السيلز كود (${targetCode})؟`)) return;
         appState.salesTeam = appState.salesTeam.filter(
           (s) => formatSalesCode(s.code) !== targetCode,
         );
-        await pushStateToCloud();
+        // حذف لحظي فوري من الواجهة ومزامنة في الخلفية
+        saveLocalState();
         renderAllUI();
+        pushStateToCloud();
       }
 
       function filterLogsBySales(code) {
@@ -3612,33 +3855,55 @@
           document.getElementById("logDateFilter")?.value || ""
         ).trim();
 
-        return appState.invitations
-          .filter((i) => {
-            if (!i) return false;
-            if (exhFilter === "ALL") return true;
-            if (exhFilter === "ACTIVE") return i.exhibitionId === exh.id;
-            return i.exhibitionId === exhFilter;
-          })
-          .filter(
-            (i) =>
-              salesFilter === "ALL" ||
-              formatSalesCode(i.salesCode) === formatSalesCode(salesFilter),
+        const res = [];
+        const invs = appState.invitations;
+        for (let idx = invs.length - 1; idx >= 0; idx--) {
+          const i = invs[idx];
+          if (!i) continue;
+
+          if (exhFilter === "ACTIVE" && i.exhibitionId !== exh.id) continue;
+          if (
+            exhFilter !== "ALL" &&
+            exhFilter !== "ACTIVE" &&
+            i.exhibitionId !== exhFilter
           )
-          .filter(
-            (i) => !dateFilter || getInvitationDateYYYYMMDD(i) === dateFilter,
+            continue;
+
+          if (
+            salesFilter !== "ALL" &&
+            formatSalesCode(i.salesCode) !== formatSalesCode(salesFilter)
           )
-          .filter(
-            (i) =>
-              i.clientName.toLowerCase().includes(search) ||
-              (i.clientPhone && i.clientPhone.toLowerCase().includes(search)) ||
-              String(i.seqNumber).includes(search) ||
-              i.salesName.toLowerCase().includes(search) ||
-              formatSalesCode(i.salesCode).toLowerCase().includes(search) ||
-              (i.exhibitionName &&
-                i.exhibitionName.toLowerCase().includes(search)),
-          )
-          .slice()
-          .reverse();
+            continue;
+
+          if (dateFilter && getInvitationDateYYYYMMDD(i) !== dateFilter)
+            continue;
+
+          if (search) {
+            const matchName =
+              i.clientName && i.clientName.toLowerCase().includes(search);
+            const matchPhone =
+              i.clientPhone && i.clientPhone.toLowerCase().includes(search);
+            const matchSeq = String(i.seqNumber).includes(search);
+            const matchSales =
+              (i.salesName && i.salesName.toLowerCase().includes(search)) ||
+              formatSalesCode(i.salesCode).toLowerCase().includes(search);
+            const matchExh =
+              i.exhibitionName &&
+              i.exhibitionName.toLowerCase().includes(search);
+
+            if (
+              !matchName &&
+              !matchPhone &&
+              !matchSeq &&
+              !matchSales &&
+              !matchExh
+            )
+              continue;
+          }
+
+          res.push(i);
+        }
+        return res;
       }
 
       function renderClientLogsTable() {
@@ -3681,7 +3946,7 @@
         const nextBtn = document.getElementById("nextLogsPageBtn");
 
         if (pageInfoEl) {
-          pageInfoEl.textContent = `صفحة ${currentLogsPage} من ${totalPages} (إجمالي النتائج: ${list.length})`;
+          pageInfoEl.textContent = `صفحة ${currentLogsPage} من ${totalPages} (الإجمالي: ${list.length})`;
         }
         if (prevBtn) prevBtn.disabled = currentLogsPage <= 1;
         if (nextBtn) nextBtn.disabled = currentLogsPage >= totalPages;
@@ -3691,26 +3956,28 @@
           return;
         }
 
-        pageItems.forEach((inv) => {
-          const tr = document.createElement("tr");
-          const sCode = formatSalesCode(inv.salesCode);
-          tr.innerHTML = `
-            <td><strong style="color:var(--gold);">${inv.seqNumber}</strong></td>
-            <td style="font-weight:700; color:var(--gold); white-space:nowrap;">${inv.exhibitionName || "-"}</td>
-            <td style="font-weight:700;">${inv.clientName}</td>
-            <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${inv.clientPhone || "-"}</td>
-            <td><span class="badge-code">${inv.salesName} (${sCode})</span></td>
-            <td style="font-size:0.78rem; color:var(--text-muted); white-space:nowrap;">${inv.createdAt || "-"}</td>
-            <td>
-              <div style="display:flex; gap:5px;">
-                <button class="btn btn-success" style="padding:4px 8px; font-size:0.74rem;" onclick="shareOldInvitation('${inv.id}')">📲</button>
-                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="redownloadOldInvitation('${inv.id}')">⬇️</button>
-                <button class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteInvitationRecord('${inv.id}')">🗑️</button>
-              </div>
-            </td>
+        tbody.innerHTML = pageItems
+          .map((inv) => {
+            const sCode = formatSalesCode(inv.salesCode);
+            return `
+            <tr>
+              <td><strong style="color:#fbbf24;">${inv.seqNumber}</strong></td>
+              <td style="font-weight:700; color:#fbbf24; white-space:nowrap;">${inv.exhibitionName || "-"}</td>
+              <td style="font-weight:700;">${inv.clientName}</td>
+              <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${inv.clientPhone || "-"}</td>
+              <td><span class="badge-code">${inv.salesName} (${sCode})</span></td>
+              <td style="font-size:0.76rem; color:var(--text-muted); white-space:nowrap;">${inv.createdAt || "-"}</td>
+              <td>
+                <div style="display:flex; gap:5px;">
+                  <button class="btn btn-success" style="padding:4px 8px; font-size:0.74rem;" title="مشاركة" onclick="shareOldInvitation('${inv.id}')">📲</button>
+                  <button class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" title="تنزيل" onclick="redownloadOldInvitation('${inv.id}')">⬇️</button>
+                  <button class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" title="حذف فوري" onclick="deleteInvitationRecord('${inv.id}')">🗑️</button>
+                </div>
+              </td>
+            </tr>
           `;
-          tbody.appendChild(tr);
-        });
+          })
+          .join("");
       }
 
       function shareOldInvitation(invId) {
@@ -3741,13 +4008,15 @@
         );
       }
 
-      async function deleteInvitationRecord(invId) {
-        if (!confirm("هل تريد حذف هذه الدعوة من السجل؟")) return;
+      // حذف فوري للعميل في 0 ثانية من الجدول ومزامنة السحابة في الخلفية
+      function deleteInvitationRecord(invId) {
+        if (!confirm("هل تريد حذف هذه الدعوة فوراً من السجل؟")) return;
         appState.invitations = appState.invitations.filter(
           (i) => i && i.id !== invId,
         );
-        await pushStateToCloud();
+        saveLocalState();
         renderAllUI();
+        pushStateToCloud();
       }
 
       function copyWhatsAppReport() {
@@ -3916,7 +4185,7 @@
         alert("✅ تم حفظ المقاسات في السحابة!");
       }
 
-      async function addNewExhibition() {
+      function addNewExhibition() {
         const input = document.getElementById("newExhNameInput");
         const name = (input.value || "").trim();
         if (!name) {
@@ -3943,12 +4212,13 @@
         appState.activeExhibitionId = id;
         input.value = "";
 
-        await pushStateToCloud();
+        saveLocalState();
         renderAllUI();
+        pushStateToCloud();
         alert(`✅ تم إضافة (${name}) بنجاح!`);
       }
 
-      async function deleteCurrentExhibition() {
+      function deleteCurrentExhibition() {
         const keys = Object.keys(appState.exhibitions);
         if (keys.length <= 1) {
           alert("لا يمكن حذف المعرض الوحيد!");
@@ -3959,8 +4229,9 @@
 
         delete appState.exhibitions[exh.id];
         appState.activeExhibitionId = Object.keys(appState.exhibitions)[0];
-        await pushStateToCloud();
+        saveLocalState();
         renderAllUI();
+        pushStateToCloud();
       }
 
       async function saveCloudAndSecuritySettings() {
