@@ -289,6 +289,11 @@
         box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
       }
 
+      input[type="date"].form-control {
+        color-scheme: dark;
+        cursor: pointer;
+      }
+
       .phone-hint {
         display: flex;
         justify-content: space-between;
@@ -412,6 +417,105 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 10px;
+      }
+
+      /* Unified All-Exhibitions Summary Section */
+      .unified-report-card {
+        background: linear-gradient(
+          145deg,
+          rgba(15, 23, 42, 0.98),
+          rgba(9, 15, 29, 0.98)
+        );
+        border: 1.5px solid rgba(6, 182, 212, 0.4);
+        border-radius: var(--radius);
+        padding: 18px;
+        margin-bottom: 18px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .filter-toolbar {
+        background: rgba(7, 13, 25, 0.75);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .mode-switch-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .date-picker-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      .exh-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .exh-summary-box {
+        background: var(--bg-input);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 14px;
+        position: relative;
+        transition: all 0.2s ease;
+      }
+
+      .exh-summary-box.total-highlight {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.14),
+          rgba(6, 182, 212, 0.12)
+        );
+        border-color: var(--gold);
+      }
+
+      .exh-summary-box .exh-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .exh-summary-box .main-num {
+        font-size: 1.75rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1.2;
+      }
+
+      .exh-summary-box.total-highlight .main-num {
+        color: var(--gold);
+      }
+
+      .exh-summary-box .sub-meta {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border-light);
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
       }
 
       .admin-tabs {
@@ -712,13 +816,19 @@
           padding: 10px 8px;
         }
 
-        .card {
+        .card,
+        .unified-report-card {
           padding: 14px;
         }
 
         .admin-tab-btn {
           font-size: 0.82rem;
           padding: 9px 12px;
+        }
+
+        .date-picker-group {
+          justify-content: flex-start;
+          width: 100%;
         }
       }
     </style>
@@ -894,12 +1004,121 @@
               >👑 لوحة تحكم المدير</strong
             >
             <p style="font-size: 0.82rem; color: var(--text-muted)">
-              متابعة السيلز، التقارير الذكية، واستوديو القوالب.
+              متابعة كل المعارض، تقارير اليوم والتوتال، السيلز، واستوديو القوالب.
             </p>
           </div>
           <button class="btn btn-danger" onclick="logoutAdmin()">
             إغلاق وضع المدير ✖
           </button>
+        </div>
+
+        <!-- UNIFIED ALL-EXHIBITIONS SUMMARY REPORT (نفس الصفحة لكل المعارض + الكاليندر + التوتال) -->
+        <div class="unified-report-card">
+          <div class="card-header" style="margin-bottom: 12px">
+            <div class="card-title" style="color: var(--gold); font-size: 1.05rem">
+              📊 التقرير المجمع لكل المعارض (في نفس الصفحة)
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap">
+              <button
+                class="btn btn-success"
+                style="padding: 8px 14px; font-size: 0.84rem"
+                onclick="copyGlobalWhatsAppReport()"
+              >
+                🟢 نسخ تقرير كل المعارض (واتساب)
+              </button>
+              <button
+                class="btn btn-primary"
+                style="padding: 8px 14px; font-size: 0.84rem"
+                onclick="exportGlobalExcelCSV()"
+              >
+                📥 تحميل إكسيل مجمع لكل المعارض
+              </button>
+            </div>
+          </div>
+
+          <!-- شريط اختيار نوع التقرير: من أول المعرض (التوتال) أو تحديد يوم بالكاليندر -->
+          <div class="filter-toolbar">
+            <div class="mode-switch-group">
+              <button
+                id="modeAllTimeBtn"
+                class="btn btn-gold"
+                onclick="setGlobalReportMode('ALL_TIME')"
+              >
+                🌐 التوتال من أول المعرض (الإجمالي الكلي)
+              </button>
+              <button
+                id="modeSingleDateBtn"
+                class="btn btn-outline"
+                onclick="setGlobalReportMode('DATE')"
+              >
+                📅 تقرير يوم محدد بالكاليندر
+              </button>
+            </div>
+
+            <div class="date-picker-group">
+              <span
+                style="
+                  font-size: 0.84rem;
+                  font-weight: 700;
+                  color: var(--text-muted);
+                "
+                >اختر اليوم:</span
+              >
+              <input
+                type="date"
+                id="globalReportDateInput"
+                class="form-control"
+                style="width: auto; min-width: 165px; padding: 7px 12px"
+                onchange="onGlobalDateChange(this.value)"
+              />
+              <button
+                class="btn btn-outline"
+                style="padding: 7px 10px; font-size: 0.8rem"
+                onclick="setQuickGlobalDate(0)"
+              >
+                اليوم
+              </button>
+              <button
+                class="btn btn-outline"
+                style="padding: 7px 10px; font-size: 0.8rem"
+                onclick="setQuickGlobalDate(-1)"
+              >
+                أمس
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="globalFilterStatusBanner"
+            style="
+              margin-bottom: 12px;
+              font-size: 0.88rem;
+              font-weight: 800;
+              color: var(--primary);
+            "
+          ></div>
+
+          <!-- كروت ملخص كل المعارض جنب بعض في نفس الصفحة -->
+          <div id="allExhibitionsSummaryGrid" class="exh-summary-grid"></div>
+
+          <!-- جدول تفصيلي لكل المعارض معاً -->
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>اسم المعرض</th>
+                  <th id="globalTableDynamicColHeader">
+                    إجمالي الدعوات (من أول المعرض)
+                  </th>
+                  <th>التوتال التراكمي (من أول المعرض)</th>
+                  <th>الرقم التسلسلي الحالي</th>
+                  <th>أعلى سيلز في المعرض</th>
+                  <th>إجراء سريع</th>
+                </tr>
+              </thead>
+              <tbody id="allExhibitionsSummaryTbody"></tbody>
+            </table>
+          </div>
         </div>
 
         <div class="admin-tabs">
@@ -932,7 +1151,7 @@
         <div id="tabSales" class="admin-tab-content active">
           <div class="kpi-grid">
             <div class="kpi-card">
-              <div class="label">إجمالي دعوات المعرض الحالي</div>
+              <div class="label">إجمالي دعوات المعرض المحدد</div>
               <div class="val" id="kpiCurrentExhTotal">0</div>
             </div>
             <div class="kpi-card">
@@ -985,7 +1204,7 @@
                       <th>الكود</th>
                       <th>اسم السيلز</th>
                       <th>عملاء هذا المعرض</th>
-                      <th>الإجمالي</th>
+                      <th>الإجمالي الكلي</th>
                       <th>إجراء</th>
                     </tr>
                   </thead>
@@ -1328,7 +1547,7 @@
               </div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap">
                 <button class="btn btn-success" onclick="copyWhatsAppReport()">
-                  🟢 نسخ تقرير الواتساب
+                  🟢 نسخ تقرير السجل المعروض (واتساب)
                 </button>
                 <button class="btn btn-primary" onclick="exportExcelCSV()">
                   📊 تحميل شيت إكسيل (CSV)
@@ -1339,7 +1558,7 @@
             <div
               style="
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
                 gap: 10px;
                 margin-bottom: 14px;
               "
@@ -1352,12 +1571,37 @@
                 oninput="renderClientLogsTable()"
               />
               <select
+                id="logExhFilter"
+                class="form-control"
+                onchange="renderClientLogsTable()"
+              >
+                <option value="ACTIVE">المعرض المحدد حالياً</option>
+                <option value="ALL">كل المعارض معاً</option>
+              </select>
+              <select
                 id="logSalesFilter"
                 class="form-control"
                 onchange="renderClientLogsTable()"
               >
                 <option value="ALL">كل السيلز (عرض الجميع)</option>
               </select>
+              <div style="display: flex; gap: 6px; align-items: center">
+                <input
+                  type="date"
+                  id="logDateFilter"
+                  class="form-control"
+                  title="فلترة بيوم محدد (اتركه فارغاً لعرض التوتال من أول المعرض)"
+                  onchange="renderClientLogsTable()"
+                />
+                <button
+                  class="btn btn-outline"
+                  style="padding: 10px"
+                  title="عرض كل الأيام (من أول المعرض)"
+                  onclick="clearLogDateFilter()"
+                >
+                  الكل
+                </button>
+              </div>
             </div>
 
             <div class="table-responsive">
@@ -1365,6 +1609,7 @@
                 <thead>
                   <tr>
                     <th>رقم الدعوة</th>
+                    <th>المعرض</th>
                     <th>اسم العميل</th>
                     <th>رقم التليفون</th>
                     <th>السيلز المسؤول</th>
@@ -1545,7 +1790,57 @@
       let draggingTarget = null;
       let salesSortMode = "code";
 
+      // إعدادات التقرير الموحد لكل المعارض (ALL_TIME = من أول المعرض | DATE = يوم محدد بالكاليندر)
+      let globalReportMode = "ALL_TIME";
+      let globalReportDate = "";
+
+      function getLocalYYYYMMDD(dateObj = new Date()) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const d = String(dateObj.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      }
+
+      // استخراج تاريخ الدعوة بصيغة YYYY-MM-DD بدقة عالية حتى للدعوات القديمة
+      function getInvitationDateYYYYMMDD(inv) {
+        if (!inv) return "";
+        if (inv.dateISO && /^\d{4}-\d{2}-\d{2}$/.test(inv.dateISO)) {
+          return inv.dateISO;
+        }
+        if (inv.timestamp && !isNaN(Number(inv.timestamp))) {
+          return getLocalYYYYMMDD(new Date(Number(inv.timestamp)));
+        }
+        if (inv.id) {
+          const idMatch = String(inv.id).match(/^inv_(\d{10,15})/);
+          if (idMatch) {
+            return getLocalYYYYMMDD(new Date(Number(idMatch[1])));
+          }
+        }
+        if (inv.createdAt) {
+          const cleanStr = toEnglishDigits(inv.createdAt);
+          const dmyMatch = cleanStr.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+          if (dmyMatch) {
+            const day = dmyMatch[1].padStart(2, "0");
+            const month = dmyMatch[2].padStart(2, "0");
+            const year = dmyMatch[3];
+            return `${year}-${month}-${day}`;
+          }
+          const ymdMatch = cleanStr.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+          if (ymdMatch) {
+            const year = ymdMatch[1];
+            const month = ymdMatch[2].padStart(2, "0");
+            const day = ymdMatch[3].padStart(2, "0");
+            return `${year}-${month}-${day}`;
+          }
+        }
+        return "";
+      }
+
       window.addEventListener("DOMContentLoaded", async () => {
+        globalReportDate = getLocalYYYYMMDD(new Date());
+        const dateInput = document.getElementById("globalReportDateInput");
+        if (dateInput) dateInput.value = globalReportDate;
+
         loadLocalState();
         setupStudioCanvasDragging();
         renderAllUI();
@@ -2229,7 +2524,6 @@
         ctx.fillText(codeText, codeX, codeY);
         ctx.restore();
 
-        // الشريط الأحمر العريض يظهر فقط إذا كان رقم التليفون مكرراً
         if (isDuplicatePhone && !forceClean) {
           ctx.save();
           ctx.translate(canvas.width / 2, nameY);
@@ -2396,7 +2690,6 @@
         }
 
         const canvas = document.getElementById("invitationCanvas");
-        // إعادة رسم التذكرة بشكل نظيف 100% قبل التصدير لضمان عدم وجود أي علامات عليها
         drawSingleCanvas(canvas, targetTicket, false, true);
 
         const cleanClient = targetTicket.clientName || "VIP";
@@ -2440,7 +2733,6 @@
         }
 
         const canvas = document.getElementById("invitationCanvas");
-        // ضمان رسم التذكرة نظيفة تماماً قبل التنزيل
         drawSingleCanvas(canvas, targetTicket, false, true);
 
         const defaultName = `VIP_${targetTicket.seqNumber}_${targetTicket.clientName}.png`;
@@ -2513,12 +2805,15 @@
             (s) => formatSalesCode(s.code) === salesCode,
           ) || { code: salesCode, name: salesCode };
 
+          const now = new Date();
           const newTicket = {
             id:
               "inv_" +
-              Date.now() +
+              now.getTime() +
               "_" +
               Math.random().toString(36).substring(2, 6),
+            timestamp: now.getTime(),
+            dateISO: getLocalYYYYMMDD(now),
             exhibitionId: currentExh.id,
             exhibitionName: currentExh.name,
             seqNumber: assignedSeq,
@@ -2526,20 +2821,18 @@
             clientPhone: clientPhone,
             salesCode: formatSalesCode(salesObj.code),
             salesName: salesObj.name,
-            createdAt: new Date().toLocaleString("ar-EG"),
+            createdAt: now.toLocaleString("ar-EG"),
           };
 
           appState.invitations.push(newTicket);
           currentExh.nextSeq = assignedSeq + 1;
           lastIssuedTicket = newTicket;
 
-          // تفريغ الخانات فوراً قبل الرفع السحابي لمنع أي تداخل مع التذكرة المصدرة
           clientNameInput.value = "";
           clientPhoneInput.value = "";
           updatePhoneHelperUI("");
           document.getElementById("duplicateWarningBox").style.display = "none";
 
-          // رسم البطاقة النهائية نظيفة تماماً على الشاشة
           drawSingleCanvas(
             document.getElementById("invitationCanvas"),
             newTicket,
@@ -2650,9 +2943,271 @@
         renderAdminDashboard();
       }
 
+      // ================= دوال التقرير الموحد لكل المعارض (باليوم أو التوتال) =================
+      function setGlobalReportMode(mode) {
+        globalReportMode = mode;
+        const allTimeBtn = document.getElementById("modeAllTimeBtn");
+        const singleDateBtn = document.getElementById("modeSingleDateBtn");
+        const dateInput = document.getElementById("globalReportDateInput");
+
+        if (mode === "ALL_TIME") {
+          allTimeBtn.className = "btn btn-gold";
+          singleDateBtn.className = "btn btn-outline";
+        } else {
+          allTimeBtn.className = "btn btn-outline";
+          singleDateBtn.className = "btn btn-gold";
+          if (!globalReportDate) {
+            globalReportDate = getLocalYYYYMMDD(new Date());
+          }
+          if (dateInput) dateInput.value = globalReportDate;
+        }
+        renderGlobalExhibitionsReport();
+      }
+
+      function onGlobalDateChange(val) {
+        if (!val) {
+          setGlobalReportMode("ALL_TIME");
+          return;
+        }
+        globalReportDate = val;
+        setGlobalReportMode("DATE");
+      }
+
+      function setQuickGlobalDate(offsetDays) {
+        const d = new Date();
+        d.setDate(d.getDate() + offsetDays);
+        globalReportDate = getLocalYYYYMMDD(d);
+        const dateInput = document.getElementById("globalReportDateInput");
+        if (dateInput) dateInput.value = globalReportDate;
+        setGlobalReportMode("DATE");
+      }
+
+      function getExhibitionsGlobalStats() {
+        const exhibitionsList = Object.values(appState.exhibitions);
+        let grandSelectedTotal = 0;
+        let grandAllTimeTotal = 0;
+
+        const stats = exhibitionsList.map((exh) => {
+          const allExhInvs = appState.invitations.filter(
+            (i) => i && i.exhibitionId === exh.id,
+          );
+          const dayExhInvs = allExhInvs.filter(
+            (i) => getInvitationDateYYYYMMDD(i) === globalReportDate,
+          );
+
+          const selectedInvs =
+            globalReportMode === "DATE" ? dayExhInvs : allExhInvs;
+
+          grandSelectedTotal += selectedInvs.length;
+          grandAllTimeTotal += allExhInvs.length;
+
+          // حساب أعلى سيلز في هذا المعرض حسب الوضع المختار
+          let topSales = "-";
+          let maxCount = 0;
+          const countsBySales = {};
+          selectedInvs.forEach((inv) => {
+            const code = formatSalesCode(inv.salesCode);
+            countsBySales[code] = (countsBySales[code] || 0) + 1;
+            if (countsBySales[code] > maxCount) {
+              maxCount = countsBySales[code];
+              topSales = `${inv.salesName} (${maxCount})`;
+            }
+          });
+
+          return {
+            exh,
+            selectedCount: selectedInvs.length,
+            allTimeCount: allExhInvs.length,
+            dayCount: dayExhInvs.length,
+            nextSeq: getCalculatedNextSeq(exh.id),
+            topSales,
+          };
+        });
+
+        return { stats, grandSelectedTotal, grandAllTimeTotal };
+      }
+
+      function renderGlobalExhibitionsReport() {
+        const gridEl = document.getElementById("allExhibitionsSummaryGrid");
+        const tbodyEl = document.getElementById("allExhibitionsSummaryTbody");
+        const statusBanner = document.getElementById(
+          "globalFilterStatusBanner",
+        );
+        const colHeader = document.getElementById(
+          "globalTableDynamicColHeader",
+        );
+        if (!gridEl || !tbodyEl) return;
+
+        const { stats, grandSelectedTotal, grandAllTimeTotal } =
+          getExhibitionsGlobalStats();
+
+        if (globalReportMode === "DATE") {
+          statusBanner.innerHTML = `📅 عرض تقرير يوم محدد: <span style="color:var(--gold);" dir="ltr">${globalReportDate}</span> (مع عرض التوتال التراكمي من أول كل معرض)`;
+          colHeader.textContent = `دعوات يوم (${globalReportDate})`;
+        } else {
+          statusBanner.innerHTML = `🌐 عرض التقرير الشامل: <span style="color:var(--gold);">التوتال من أول المعرض (جميع الأيام)</span>`;
+          colHeader.textContent = `إجمالي الدعوات (من أول المعرض)`;
+        }
+
+        gridEl.innerHTML = "";
+        tbodyEl.innerHTML = "";
+
+        // 1. كارت الإجمالي العام لكل المعارض
+        const totalBox = document.createElement("div");
+        totalBox.className = "exh-summary-box total-highlight";
+        totalBox.innerHTML = `
+          <div class="exh-title">
+            <span>🔥 إجمالي كل المعارض</span>
+            <span class="badge-code" style="background:rgba(245,158,11,0.2); color:var(--gold);">${stats.length} معارض</span>
+          </div>
+          <div class="main-num">${grandSelectedTotal} <span style="font-size:0.9rem; font-weight:700;">دعوة</span></div>
+          <div class="sub-meta">
+            <span>${globalReportMode === "DATE" ? `في يوم ${globalReportDate}` : "منذ بداية المعارض"}</span>
+            <span style="color:var(--text-main);">التوتال الكلي: ${grandAllTimeTotal}</span>
+          </div>
+        `;
+        gridEl.appendChild(totalBox);
+
+        // 2. كروت وصفوف كل معرض على حدة في نفس الصفحة
+        stats.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "exh-summary-box";
+          card.innerHTML = `
+            <div class="exh-title">
+              <span>📍 ${item.exh.name}</span>
+              <span class="badge-code">القادم #${item.nextSeq}</span>
+            </div>
+            <div class="main-num">${item.selectedCount} <span style="font-size:0.9rem; font-weight:700; color:var(--text-muted);">دعوة</span></div>
+            <div class="sub-meta">
+              <span>التوتال من أول المعرض: <strong style="color:var(--gold);">${item.allTimeCount}</strong></span>
+              <span>أعلى سيلز: ${item.topSales}</span>
+            </div>
+          `;
+          gridEl.appendChild(card);
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td style="font-weight:800; color:var(--text-main);">📍 ${item.exh.name}</td>
+            <td><span class="badge-count" style="font-size:0.92rem;">${item.selectedCount} دعوة</span></td>
+            <td><strong style="color:var(--gold); font-size:0.95rem;">${item.allTimeCount} دعوة</strong></td>
+            <td><span class="badge-code">#${item.nextSeq}</span></td>
+            <td style="font-weight:700; color:var(--primary);">${item.topSales}</td>
+            <td>
+              <button class="btn btn-outline" style="padding:4px 10px; font-size:0.76rem;" onclick="openExhibitionLogs('${item.exh.id}')">
+                🔍 عرض سجل المعرض
+              </button>
+            </td>
+          `;
+          tbodyEl.appendChild(tr);
+        });
+
+        // صف المجموع الكلي في أسفل الجدول
+        const totalTr = document.createElement("tr");
+        totalTr.style.background = "rgba(245, 158, 11, 0.08)";
+        totalTr.innerHTML = `
+          <td style="font-weight:900; color:var(--gold);">🔥 الإجمالي الكلي لكل المعارض</td>
+          <td><strong style="color:var(--success); font-size:1rem;">${grandSelectedTotal} دعوة</strong></td>
+          <td><strong style="color:var(--gold); font-size:1rem;">${grandAllTimeTotal} دعوة</strong></td>
+          <td colspan="3" style="color:var(--text-muted); font-weight:700;">مجموع كل المعارض المسجلة بالنظام</td>
+        `;
+        tbodyEl.appendChild(totalTr);
+      }
+
+      function openExhibitionLogs(exhId) {
+        appState.activeExhibitionId = exhId;
+        const tabBtn = document.querySelectorAll(".admin-tab-btn")[2];
+        switchAdminTab("tabReports", tabBtn);
+        document.getElementById("logExhFilter").value = "ACTIVE";
+        if (globalReportMode === "DATE") {
+          document.getElementById("logDateFilter").value = globalReportDate;
+        } else {
+          document.getElementById("logDateFilter").value = "";
+        }
+        renderAllUI();
+      }
+
+      function copyGlobalWhatsAppReport() {
+        const { stats, grandSelectedTotal, grandAllTimeTotal } =
+          getExhibitionsGlobalStats();
+
+        let text = "";
+        if (globalReportMode === "DATE") {
+          text += `📊 *التقرير الموحد لكل المعارض (يومي + تراكمي)*\n`;
+          text += `📅 *التاريخ المحدد:* ${globalReportDate}\n`;
+          text += `==========================\n`;
+          stats.forEach((item) => {
+            text += `📍 *${item.exh.name}:*\n`;
+            text += `   • دعوات يوم (${globalReportDate}): *${item.selectedCount}* دعوة\n`;
+            text += `   • التوتال من أول المعرض: *${item.allTimeCount}* دعوة\n`;
+            text += `--------------------------\n`;
+          });
+          text += `✅ *إجمالي دعوات اليوم (كل المعارض):* ${grandSelectedTotal} دعوة\n`;
+          text += `🔥 *التوتال الكلي من أول المعارض:* ${grandAllTimeTotal} دعوة`;
+        } else {
+          text += `📊 *التقرير الشامل لكل المعارض (من أول المعرض)*\n`;
+          text += `🗓️ *تاريخ التقرير:* ${getLocalYYYYMMDD(new Date())}\n`;
+          text += `==========================\n`;
+          stats.forEach((item) => {
+            text += `📍 *${item.exh.name}:* *${item.allTimeCount}* دعوة\n`;
+          });
+          text += `==========================\n`;
+          text += `🔥 *الإجمالي الكلي لكل المعارض:* *${grandAllTimeTotal}* دعوة`;
+        }
+
+        navigator.clipboard.writeText(text).then(() => {
+          alert("✅ تم نسخ تقرير كل المعارض الموحد للواتساب بنجاح!");
+        });
+      }
+
+      function exportGlobalExcelCSV() {
+        const { stats, grandSelectedTotal, grandAllTimeTotal } =
+          getExhibitionsGlobalStats();
+
+        let csv = "\uFEFF";
+        csv += "ملخص كل المعارض\n";
+        csv += `نوع التقرير,${globalReportMode === "DATE" ? "تقرير يوم " + globalReportDate : "التوتال من أول المعرض"}\n`;
+        csv +=
+          "اسم المعرض,العدد في الفترة المحددة,التوتال من أول المعرض,الرقم التسلسلي القادم,أعلى سيلز\n";
+
+        stats.forEach((item) => {
+          csv += `"${item.exh.name}","${item.selectedCount}","${item.allTimeCount}","${item.nextSeq}","${item.topSales}"\n`;
+        });
+        csv += `"الإجمالي الكلي لكل المعارض","${grandSelectedTotal}","${grandAllTimeTotal}","",""\n\n`;
+
+        // إضافة تفاصيل الدعوات المصدرة في الأسفل
+        const relevantInvs = appState.invitations
+          .filter(Boolean)
+          .filter(
+            (i) =>
+              globalReportMode === "ALL_TIME" ||
+              getInvitationDateYYYYMMDD(i) === globalReportDate,
+          );
+
+        csv += "تفاصيل الدعوات المسجلة\n";
+        csv +=
+          "رقم الدعوة,المعرض,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,تاريخ اليوم,التوقيت الكامل\n";
+        relevantInvs.forEach((i) => {
+          csv += `"${i.seqNumber}","${i.exhibitionName || ""}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${formatSalesCode(i.salesCode)}","${getInvitationDateYYYYMMDD(i)}","${i.createdAt || ""}"\n`;
+        });
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        const suffix =
+          globalReportMode === "DATE" ? `_${globalReportDate}` : "_توتال_شامل";
+        a.download = `تقرير_كل_المعارض${suffix}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      // ================================================================================
+
       function renderAdminDashboard() {
         const exh = getActiveExhibition();
         if (!exh) return;
+
+        renderGlobalExhibitionsReport();
 
         const exhInvs = appState.invitations.filter(
           (i) => i && i.exhibitionId === exh.id,
@@ -2723,7 +3278,7 @@
 
         const logFilter = document.getElementById("logSalesFilter");
         const currentFilterVal = logFilter.value || "ALL";
-        logFilter.innerHTML = `<option value="ALL">كل السيلز (${exhInvs.length} دعوة)</option>`;
+        logFilter.innerHTML = `<option value="ALL">كل السيلز</option>`;
 
         const sortedForFilter = sortSalesTeamByCode(appState.salesTeam);
         sortedForFilter.forEach((s) => {
@@ -2735,7 +3290,22 @@
         });
         logFilter.value = currentFilterVal;
 
-        document.getElementById("reportExhName").textContent = exh.name;
+        const logExhFilter = document.getElementById("logExhFilter");
+        const currentExhFilterVal = logExhFilter.value || "ACTIVE";
+        logExhFilter.innerHTML = `
+          <option value="ACTIVE">المعرض المحدد (${exh.name})</option>
+          <option value="ALL">🌐 كل المعارض معاً</option>
+        `;
+        Object.values(appState.exhibitions).forEach((exItem) => {
+          if (exItem.id !== exh.id) {
+            const opt = document.createElement("option");
+            opt.value = exItem.id;
+            opt.textContent = exItem.name;
+            logExhFilter.appendChild(opt);
+          }
+        });
+        logExhFilter.value = currentExhFilterVal;
+
         renderClientLogsTable();
 
         document.getElementById("adminNextSeqInput").value =
@@ -2746,6 +3316,12 @@
           appState.firebaseUrl;
         document.getElementById("adminPinInput").value = appState.adminPin;
         renderAllCanvases();
+      }
+
+      function clearLogDateFilter() {
+        const el = document.getElementById("logDateFilter");
+        if (el) el.value = "";
+        renderClientLogsTable();
       }
 
       function getNextAvailableSalesCode() {
@@ -2837,19 +3413,32 @@
         if (!exh) return [];
 
         const search = toEnglishDigits(
-          (document.getElementById("logSearchInput").value || "")
+          (document.getElementById("logSearchInput")?.value || "")
             .trim()
             .toLowerCase(),
         );
+        const exhFilter =
+          document.getElementById("logExhFilter")?.value || "ACTIVE";
         const salesFilter =
-          document.getElementById("logSalesFilter").value || "ALL";
+          document.getElementById("logSalesFilter")?.value || "ALL";
+        const dateFilter = (
+          document.getElementById("logDateFilter")?.value || ""
+        ).trim();
 
         return appState.invitations
-          .filter((i) => i && i.exhibitionId === exh.id)
+          .filter((i) => {
+            if (!i) return false;
+            if (exhFilter === "ALL") return true;
+            if (exhFilter === "ACTIVE") return i.exhibitionId === exh.id;
+            return i.exhibitionId === exhFilter;
+          })
           .filter(
             (i) =>
               salesFilter === "ALL" ||
               formatSalesCode(i.salesCode) === formatSalesCode(salesFilter),
+          )
+          .filter(
+            (i) => !dateFilter || getInvitationDateYYYYMMDD(i) === dateFilter,
           )
           .filter(
             (i) =>
@@ -2857,7 +3446,9 @@
               (i.clientPhone && i.clientPhone.toLowerCase().includes(search)) ||
               String(i.seqNumber).includes(search) ||
               i.salesName.toLowerCase().includes(search) ||
-              formatSalesCode(i.salesCode).toLowerCase().includes(search),
+              formatSalesCode(i.salesCode).toLowerCase().includes(search) ||
+              (i.exhibitionName &&
+                i.exhibitionName.toLowerCase().includes(search)),
           )
           .slice()
           .reverse();
@@ -2865,12 +3456,34 @@
 
       function renderClientLogsTable() {
         const tbody = document.getElementById("clientLogsTbody");
+        if (!tbody) return;
         tbody.innerHTML = "";
+
+        const exh = getActiveExhibition();
+        const exhFilter =
+          document.getElementById("logExhFilter")?.value || "ACTIVE";
+        const dateFilter = (
+          document.getElementById("logDateFilter")?.value || ""
+        ).trim();
 
         const list = getFilteredReportList();
 
+        let headerLabel =
+          exhFilter === "ALL"
+            ? "كل المعارض"
+            : exhFilter === "ACTIVE"
+              ? exh.name
+              : appState.exhibitions[exhFilter]?.name || exh.name;
+        if (dateFilter) {
+          headerLabel += ` - يوم ${dateFilter}`;
+        } else {
+          headerLabel += ` - التوتال (${list.length})`;
+        }
+        const reportExhNameEl = document.getElementById("reportExhName");
+        if (reportExhNameEl) reportExhNameEl.textContent = headerLabel;
+
         if (list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مسجلة مطابقة للبحث.</td></tr>`;
           return;
         }
 
@@ -2879,6 +3492,7 @@
           const sCode = formatSalesCode(inv.salesCode);
           tr.innerHTML = `
         <td><strong style="color:var(--gold);">${inv.seqNumber}</strong></td>
+        <td style="font-weight:700; color:var(--gold);">${inv.exhibitionName || "-"}</td>
         <td style="font-weight:700;">${inv.clientName}</td>
         <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${inv.clientPhone || "-"}</td>
         <td><span class="badge-code">${inv.salesName} (${sCode})</span></td>
@@ -2935,25 +3549,42 @@
       function copyWhatsAppReport() {
         const exh = getActiveExhibition();
         const list = getFilteredReportList();
+        const exhFilter =
+          document.getElementById("logExhFilter")?.value || "ACTIVE";
+        const dateFilter = (
+          document.getElementById("logDateFilter")?.value || ""
+        ).trim();
         const salesFilter = document.getElementById("logSalesFilter").value;
         const salesObj = appState.salesTeam.find(
           (s) => formatSalesCode(s.code) === formatSalesCode(salesFilter),
         );
+
+        const exhTitle =
+          exhFilter === "ALL"
+            ? "كل المعارض"
+            : exhFilter === "ACTIVE"
+              ? exh.name
+              : appState.exhibitions[exhFilter]?.name || exh.name;
         const titleName = salesObj
           ? `للسيلز: ${salesObj.name} (${formatSalesCode(salesObj.code)})`
-          : "لكل السيلز (المعرض كامل)";
+          : "لكل السيلز";
+        const dateTitle = dateFilter
+          ? `ليوم: ${dateFilter}`
+          : "من أول المعرض (التوتال)";
 
         if (list.length === 0) {
           alert("لا توجد بيانات لنسخها!");
           return;
         }
 
-        let text = `📊 *تقرير دعوات ${exh.name} - ${titleName}*\n`;
+        let text = `📊 *تقرير دعوات (${exhTitle}) - ${titleName}*\n`;
+        text += `🗓️ *الفترة:* ${dateTitle}\n`;
         text += `إجمالي الدعوات: *${list.length}* عميل\n`;
         text += `--------------------------\n`;
         text += `🎫 *قائمة العملاء وأرقامهم:*\n`;
         list.forEach((i) => {
-          text += `${i.seqNumber} | ${i.clientName} (${i.clientPhone}) - ${i.salesName} (${formatSalesCode(i.salesCode)})\n`;
+          const exhTag = exhFilter === "ALL" ? `[${i.exhibitionName}] ` : "";
+          text += `${i.seqNumber} | ${exhTag}${i.clientName} (${i.clientPhone}) - ${i.salesName} (${formatSalesCode(i.salesCode)})\n`;
         });
 
         navigator.clipboard.writeText(text).then(() => {
@@ -2964,11 +3595,24 @@
       function exportExcelCSV() {
         const exh = getActiveExhibition();
         const list = getFilteredReportList();
+        const exhFilter =
+          document.getElementById("logExhFilter")?.value || "ACTIVE";
+        const dateFilter = (
+          document.getElementById("logDateFilter")?.value || ""
+        ).trim();
         const salesFilter = document.getElementById("logSalesFilter").value;
         const salesObj = appState.salesTeam.find(
           (s) => formatSalesCode(s.code) === formatSalesCode(salesFilter),
         );
+
+        const exhTitle =
+          exhFilter === "ALL"
+            ? "كل_المعارض"
+            : exhFilter === "ACTIVE"
+              ? exh.name
+              : appState.exhibitions[exhFilter]?.name || exh.name;
         const fileSuffix = salesObj ? `_السيلز_${salesObj.name}` : "_كل_السيلز";
+        const dateSuffix = dateFilter ? `_${dateFilter}` : "_التوتال";
 
         if (list.length === 0) {
           alert("لا توجد بيانات لتصديرها.");
@@ -2976,16 +3620,16 @@
         }
 
         let csv =
-          "\uFEFFرقم الدعوة,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,المعرض,التاريخ والوقت\n";
+          "\uFEFFرقم الدعوة,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,المعرض,تاريخ اليوم,التاريخ والوقت\n";
         list.forEach((i) => {
-          csv += `"${i.seqNumber}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${formatSalesCode(i.salesCode)}","${i.exhibitionName}","${i.createdAt || ""}"\n`;
+          csv += `"${i.seqNumber}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${formatSalesCode(i.salesCode)}","${i.exhibitionName}","${getInvitationDateYYYYMMDD(i)}","${i.createdAt || ""}"\n`;
         });
 
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `تقرير_${exh.name}${fileSuffix}.csv`;
+        a.download = `تقرير_${exhTitle}${fileSuffix}${dateSuffix}.csv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
