@@ -101,9 +101,9 @@
       }
 
       .sync-badge.offline {
-        background: rgba(217, 155, 38, 0.12);
-        color: #fbbf24;
-        border-color: rgba(217, 155, 38, 0.3);
+        background: rgba(225, 29, 72, 0.14);
+        color: #fda4af;
+        border-color: rgba(225, 29, 72, 0.35);
       }
 
       .header-actions {
@@ -112,7 +112,7 @@
         gap: 8px;
       }
 
-      /* Buttons (Calm & Clean) */
+      /* Buttons */
       .btn {
         display: inline-flex;
         align-items: center;
@@ -920,7 +920,7 @@
   </head>
   <body>
     <div class="app-container">
-      <!-- Top Bar (يحتوي على زر واحد فقط للتحويل بين المدير والدعوات لمنع الزحمة) -->
+      <!-- Top Bar (زر واحد فقط للتحويل بين المدير والدعوات لمنع الزحمة) -->
       <header class="top-header">
         <div class="brand-box">
           <div class="brand-title">B.almeter VIP | نظام الدعوات الموحد</div>
@@ -929,7 +929,7 @@
           </div>
         </div>
         <div class="header-actions">
-          <button class="btn btn-outline" onclick="syncFromCloud(true)">
+          <button class="btn btn-outline" onclick="syncFromCloud(true, true)">
             🔄 تحديث البيانات
           </button>
           <button
@@ -1087,7 +1087,7 @@
 
       <!-- ==================== 2. DEDICATED ADMIN PANEL VIEW (6 PAGES) ==================== -->
       <section id="adminPanel">
-        <!-- شريط تنقل الصفحات الـ 6 (بدون أي أزرار خروج مكررة) -->
+        <!-- شريط تنقل الصفحات الـ 6 -->
         <nav class="admin-nav-grid">
           <button
             class="admin-nav-btn active"
@@ -1237,7 +1237,7 @@
           </div>
         </div>
 
-        <!-- صفحة 2: إنجاز ومتابعة السيلز (مع خيار عرض بالتيمات أو عرض الكل) -->
+        <!-- صفحة 2: إنجاز ومتابعة السيلز (عرض بالتيمات بخطوط فاصلة أو عرض الكل) -->
         <div id="pageSalesPerf" class="admin-page">
           <div class="kpi-grid">
             <div class="kpi-card">
@@ -1273,7 +1273,6 @@
                 class="action-group"
                 style="display: flex; gap: 6px; flex-wrap: wrap"
               >
-                <!-- أزرار اختيار طريقة العرض: تيمات أو الكل -->
                 <button
                   id="viewTeamsBtn"
                   class="btn btn-gold"
@@ -1288,7 +1287,6 @@
                 >
                   📋 عرض الكل
                 </button>
-                <!-- أزرار الترتيب -->
                 <button
                   id="sortCodeBtn"
                   class="btn btn-primary"
@@ -1306,12 +1304,11 @@
               </div>
             </div>
 
-            <!-- حاوية عرض الإنجاز (سواء مقسم تيمات بخطوط فاصلة أو جدول مجمع) -->
             <div id="salesPerformanceContainer"></div>
           </div>
         </div>
 
-        <!-- صفحة 3: سجل العملاء والتليفونات (مسح وبحث فوري لحظي) -->
+        <!-- صفحة 3: سجل العملاء والتليفونات -->
         <div id="pageClientLogs" class="admin-page">
           <div class="card">
             <div class="card-header">
@@ -1393,7 +1390,6 @@
               </table>
             </div>
 
-            <!-- شريط التنقل بين صفحات السجل -->
             <div class="pagination-bar">
               <div
                 id="logsPaginationInfo"
@@ -1428,7 +1424,6 @@
         <!-- صفحة 4: إدارة فريق السيلز ونقلهم بين التيمات + إدارة المعارض -->
         <div id="pageTeamManage" class="admin-page">
           <div class="admin-two-col" style="margin-bottom: 14px">
-            <!-- كارت إضافة السيلز وتحديد التيم -->
             <div class="card">
               <div class="card-header">
                 <div class="card-title">➕ إضافة سيلز جديد للتيمات</div>
@@ -1504,7 +1499,6 @@
               </button>
             </div>
 
-            <!-- كارت إدارة المعارض -->
             <div class="card">
               <div class="card-header">
                 <div class="card-title" style="color: #fbbf24">
@@ -1551,7 +1545,6 @@
             </div>
           </div>
 
-          <!-- كارت نقل السيلز بين التيمات بسهولة -->
           <div class="card">
             <div class="card-header">
               <div class="card-title" style="color: #fbbf24">
@@ -1814,38 +1807,76 @@
           </div>
         </div>
 
-        <!-- صفحة 6: إعدادات السحابة والأمان -->
+        <!-- صفحة 6: إعدادات السحابة والأمان والنسخ الاحتياطي -->
         <div id="pageSettings" class="admin-page">
-          <div class="card" style="max-width: 640px; margin: 0 auto">
-            <div class="card-header">
-              <div class="card-title">☁️ إعدادات السحابة والأمان</div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"
-                >رابط قاعدة البيانات السحابية (Firebase URL):</label
+          <div class="admin-two-col">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">☁️ إعدادات السحابة والأمان</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label"
+                  >رابط قاعدة البيانات السحابية (Firebase URL):</label
+                >
+                <input
+                  type="text"
+                  id="firebaseUrlInput"
+                  class="form-control"
+                  dir="ltr"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">كلمة سر المدير (Admin PIN):</label>
+                <input
+                  type="text"
+                  id="adminPinInput"
+                  class="form-control"
+                  dir="ltr"
+                />
+              </div>
+              <button
+                class="btn btn-primary btn-block"
+                onclick="saveCloudAndSecuritySettings()"
               >
-              <input
-                type="text"
-                id="firebaseUrlInput"
-                class="form-control"
-                dir="ltr"
-              />
+                💾 حفظ الإعدادات بالسحابة
+              </button>
             </div>
-            <div class="form-group">
-              <label class="form-label">كلمة سر المدير (Admin PIN):</label>
-              <input
-                type="text"
-                id="adminPinInput"
-                class="form-control"
-                dir="ltr"
-              />
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title" style="color: #fbbf24">
+                  🛡️ النسخ الاحتياطي الكامل (Backup & Restore)
+                </div>
+              </div>
+              <p
+                style="
+                  font-size: 0.82rem;
+                  color: var(--text-muted);
+                  margin-bottom: 12px;
+                "
+              >
+                يمكنك تنزيل نسخة احتياطية كاملة لكل المعارض والعملاء والسيلز على
+                جهازك، أو رفعها على أي قاعدة بيانات جديدة بضغطة زر.
+              </p>
+              <button
+                class="btn btn-success btn-block"
+                style="margin-bottom: 12px"
+                onclick="downloadFullBackupJSON()"
+              >
+                📥 تحميل نسخة احتياطية كاملة (Backup JSON)
+              </button>
+              <div class="form-group" style="margin-bottom: 0">
+                <label class="form-label"
+                  >📤 استعادة نسخة احتياطية من ملف (Restore JSON):</label
+                >
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  class="form-control"
+                  onchange="restoreFullBackupJSON(event)"
+                />
+              </div>
             </div>
-            <button
-              class="btn btn-primary btn-block"
-              onclick="saveCloudAndSecuritySettings()"
-            >
-              💾 حفظ الإعدادات بالسحابة
-            </button>
           </div>
         </div>
       </section>
@@ -1912,8 +1943,10 @@
         "https://balmeter-vip-default-rtdb.firebaseio.com";
       const DEFAULT_ADMIN_PIN = "mo,2242006";
       const BACKUP_ADMIN_PIN = "1234";
-      const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V7";
+      const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V8";
+      const TEMPLATES_CACHE_KEY = "BALMETER_VIP_TEMPLATES_CACHE_V8";
       const LEGACY_KEYS = [
+        "BALMETER_VIP_UNIFIED_STATE_V7",
         "BALMETER_VIP_UNIFIED_STATE_V6",
         "BALMETER_VIP_UNIFIED_STATE_V5",
       ];
@@ -1942,6 +1975,8 @@
         firebaseUrl: DEFAULT_FIREBASE_URL,
         adminPin: DEFAULT_ADMIN_PIN,
         activeExhibitionId: "exh_sohag",
+        lastUpdated: 0,
+        configUpdated: 0,
         salesTeam: [...INITIAL_SALES_TEAM],
         exhibitions: {
           exh_sohag: {
@@ -1986,19 +2021,17 @@
       let isIssuing = false;
       let draggingTarget = null;
 
-      // إعدادات عرض وترتيب السيلز في صفحة الإنجاز
-      let salesViewMode = "teams"; // 'teams' أو 'all'
-      let salesSortMode = "code"; // 'code' أو 'count'
+      let salesViewMode = "teams";
+      let salesSortMode = "code";
 
-      // إعدادات التقرير المجمع وتقسيم صفحات السجل
       let globalReportMode = "ALL_TIME";
       let globalReportDate = "";
       let currentLogsPage = 1;
       const LOGS_PER_PAGE = 25;
 
       function normalizeTeamName(team) {
-        if (team && SALES_TEAMS.includes(team.trim())) {
-          return team.trim();
+        if (team && SALES_TEAMS.includes(String(team).trim())) {
+          return String(team).trim();
         }
         return "المعرض";
       }
@@ -2056,13 +2089,19 @@
         loadLocalState();
         setupStudioCanvasDragging();
         renderAllUI();
-        await syncFromCloud(false);
 
+        // مزامنة ذكية عند الفتح: إذا كانت القوالب محفوظة محلياً يسحب العملاء فقط لتوفير الجيجابايتات
+        const hasCachedTemplates = Object.values(appState.exhibitions).some(
+          (ex) => ex && ex.templateDataUrl && ex.templateDataUrl.length > 100,
+        );
+        await syncFromCloud(false, !hasCachedTemplates);
+
+        // فحص خفيف جداً (15 بايت فقط) كل 60 ثانية بدلاً من سحب الداتا بيز كلها كل 25 ثانية
         setInterval(() => {
           if (!isSyncing && !isIssuing && !draggingTarget && !document.hidden) {
-            syncFromCloud(false);
+            checkCloudHeartbeat();
           }
-        }, 25000);
+        }, 60000);
       });
 
       function toEnglishDigits(str) {
@@ -2224,6 +2263,21 @@
             const parsed = JSON.parse(raw);
             mergeState(parsed);
           }
+
+          // استرجاع صور القوالب من الكاش المحلي المنفصل
+          const cachedTemplatesRaw = localStorage.getItem(TEMPLATES_CACHE_KEY);
+          if (cachedTemplatesRaw) {
+            const templatesMap = JSON.parse(cachedTemplatesRaw);
+            Object.keys(templatesMap).forEach((exhId) => {
+              if (
+                appState.exhibitions[exhId] &&
+                !appState.exhibitions[exhId].templateDataUrl
+              ) {
+                appState.exhibitions[exhId].templateDataUrl =
+                  templatesMap[exhId];
+              }
+            });
+          }
         } catch (e) {
           console.warn("Local storage load warning:", e);
         }
@@ -2234,7 +2288,32 @@
 
       function saveLocalState() {
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+          // حفظ صور القوالب في مفتاح منفصل وحفظ بيانات العملاء والنظام في المفتاح الأساسي لضمان عدم امتلاء الذاكرة
+          const templatesMap = {};
+          const lightExhibitions = {};
+
+          Object.keys(appState.exhibitions).forEach((k) => {
+            const ex = appState.exhibitions[k];
+            if (ex.templateDataUrl) {
+              templatesMap[k] = ex.templateDataUrl;
+            }
+            lightExhibitions[k] = { ...ex, templateDataUrl: "" };
+          });
+
+          const lightState = {
+            ...appState,
+            exhibitions: lightExhibitions,
+          };
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(lightState));
+          try {
+            localStorage.setItem(
+              TEMPLATES_CACHE_KEY,
+              JSON.stringify(templatesMap),
+            );
+          } catch (tplErr) {
+            console.warn("Template cache storage full, keeping in memory.");
+          }
         } catch (e) {
           console.warn("Local storage quota warning:", e);
         }
@@ -2243,6 +2322,10 @@
       function mergeState(incoming) {
         if (!incoming || typeof incoming !== "object") return;
         if (incoming.adminPin) appState.adminPin = incoming.adminPin;
+        if (incoming.lastUpdated) appState.lastUpdated = incoming.lastUpdated;
+        if (incoming.configUpdated)
+          appState.configUpdated = incoming.configUpdated;
+
         if (
           incoming.salesTeam &&
           Array.isArray(incoming.salesTeam) &&
@@ -2257,6 +2340,11 @@
         if (incoming.exhibitions && typeof incoming.exhibitions === "object") {
           Object.keys(incoming.exhibitions).forEach((k) => {
             const ex = incoming.exhibitions[k];
+            const existingTpl =
+              appState.exhibitions[k]?.templateDataUrl || "";
+            if (!ex.templateDataUrl && existingTpl) {
+              ex.templateDataUrl = existingTpl;
+            }
             if (ex.nameX === undefined) ex.nameX = 50;
             if (ex.nameY === undefined) ex.nameY = 59;
             if (ex.nameSize === undefined) ex.nameSize = 52;
@@ -2269,10 +2357,12 @@
           });
           appState.exhibitions = incoming.exhibitions;
         }
-        if (incoming.invitations) {
+        if (incoming.invitations !== undefined) {
           const invArr = Array.isArray(incoming.invitations)
             ? incoming.invitations.filter(Boolean)
-            : Object.values(incoming.invitations).filter(Boolean);
+            : incoming.invitations && typeof incoming.invitations === "object"
+              ? Object.values(incoming.invitations).filter(Boolean)
+              : [];
           appState.invitations = invArr.map((inv) => ({
             ...inv,
             salesCode: formatSalesCode(inv.salesCode),
@@ -2292,41 +2382,163 @@
           badge.textContent = text || "🟢 متصل بالسحابة لايف";
         } else {
           badge.className = "sync-badge offline";
-          badge.textContent = text || "🟠 وضع محلي (جاري الاتصال...)";
+          badge.textContent = text || "🔴 السحابة غير متصلة (تحقق من الإنترنت)";
         }
       }
 
-      async function syncFromCloud(showToast = false) {
+      // ================= نظام المزامنة الذكي الموفر للـ Bandwidth (حماية الـ 10GB) =================
+
+      // 1. نبضة فحص خفيفة جداً (15 بايت فقط) لمعرفة هل حدث أي تغيير على السحابة
+      async function checkCloudHeartbeat() {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
-        if (!baseUrl) return;
+        if (!baseUrl || isSyncing || isIssuing) return;
+
+        try {
+          const res = await fetch(
+            `${baseUrl}/balmeter_vip_system/lastUpdated.json`,
+            { cache: "no-store" },
+          );
+          if (!res.ok) throw new Error("Status " + res.status);
+          const cloudLastUpdated = await res.json();
+
+          updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
+
+          // إذا لم يتغير رقم التحديث على السحابة، لا تسحب أي بيانات (استهلاك 0 بايت!)
+          if (
+            cloudLastUpdated &&
+            Number(cloudLastUpdated) !== Number(appState.lastUpdated)
+          ) {
+            await syncFromCloud(false, false);
+          }
+        } catch (err) {
+          updateSyncBadge(false, "🔴 السحابة غير متصلة");
+        }
+      }
+
+      // 2. سحب البيانات (الوضع الخفيف يسحب العملاء والسيلز فقط بدون صور القوالب الضخمة)
+      async function syncFromCloud(showToast = false, includeTemplates = false) {
+        const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+        if (!baseUrl) return false;
 
         isSyncing = true;
         try {
-          const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
-            cache: "no-store",
-          });
-          if (!res.ok) throw new Error("Network response not ok");
-          const cloudData = await res.json();
+          if (includeTemplates) {
+            // سحب كامل (يُستخدم فقط أول مرة أو عند الضغط على زر تحديث البيانات يدوياً)
+            const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
+              cache: "no-store",
+            });
+            if (!res.ok) throw new Error("Network response not ok");
+            const cloudData = await res.json();
 
-          if (cloudData) {
-            mergeState(cloudData);
+            if (cloudData) {
+              mergeState(cloudData);
+              saveLocalState();
+              renderAllUI();
+            }
+          } else {
+            // سحب خفيف جداً (العملاء + السيلز + إشارة القوالب) بدون سحب الـ 3.11MB الخاصة بالصور
+            const [invRes, teamRes, cfgRes] = await Promise.all([
+              fetch(`${baseUrl}/balmeter_vip_system/invitations.json`, {
+                cache: "no-store",
+              }),
+              fetch(`${baseUrl}/balmeter_vip_system/salesTeam.json`, {
+                cache: "no-store",
+              }),
+              fetch(`${baseUrl}/balmeter_vip_system/configUpdated.json`, {
+                cache: "no-store",
+              }),
+            ]);
+
+            if (!invRes.ok) throw new Error("Invitations fetch failed");
+
+            const [invData, teamData, cloudCfgUpdated] = await Promise.all([
+              invRes.json(),
+              teamRes.ok ? teamRes.json() : null,
+              cfgRes.ok ? cfgRes.json() : null,
+            ]);
+
+            mergeState({
+              invitations: invData || [],
+              ...(teamData ? { salesTeam: teamData } : {}),
+            });
+
+            // إذا قام المدير بتعديل قالب أو إضافة معرض جديد فقط، نسحب المعارض
+            if (
+              cloudCfgUpdated &&
+              Number(cloudCfgUpdated) > Number(appState.configUpdated || 0)
+            ) {
+              const exhRes = await fetch(
+                `${baseUrl}/balmeter_vip_system/exhibitions.json`,
+                { cache: "no-store" },
+              );
+              if (exhRes.ok) {
+                const exhData = await exhRes.json();
+                if (exhData) {
+                  mergeState({
+                    exhibitions: exhData,
+                    configUpdated: cloudCfgUpdated,
+                  });
+                }
+              }
+            }
+
             saveLocalState();
             renderAllUI();
-          } else {
-            await pushStateToCloud();
           }
+
           updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
           if (showToast) alert("تم تحديث البيانات من السحابة بنجاح ✅");
+          return true;
         } catch (err) {
           console.warn("Cloud sync warning:", err);
-          updateSyncBadge(false, "🟠 اتصال ضعيف (محفوظ مؤقتاً)");
+          updateSyncBadge(false, "🔴 تعذر الاتصال بالسحابة");
+          if (showToast) {
+            alert(
+              "❌ تعذر الاتصال بقاعدة البيانات السحابية! تأكد من الإنترنت أو من صلاحيات Firebase.",
+            );
+          }
+          return false;
         } finally {
           isSyncing = false;
         }
       }
 
-      async function pushStateToCloud() {
+      // 3. رفع التعديلات الجزئي الذكي (PATCH) بدلاً من إعادة رفع الـ 3.11MB في كل مرة
+      async function patchCloudData(partialPayload) {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+        saveLocalState();
+        if (!baseUrl) return false;
+
+        try {
+          const nowTs = Date.now();
+          appState.lastUpdated = nowTs;
+          const payload = {
+            ...partialPayload,
+            lastUpdated: nowTs,
+          };
+
+          const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
+          return true;
+        } catch (e) {
+          console.error("Patch error:", e);
+          updateSyncBadge(false, "🔴 خطأ في الحفظ بالسحابة");
+          return false;
+        }
+      }
+
+      // رفع كامل (يُستخدم فقط عند تعديل القوالب أو المعارض أو استعادة نسخة احتياطية)
+      async function pushFullStateToCloud() {
+        const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+        const nowTs = Date.now();
+        appState.lastUpdated = nowTs;
+        appState.configUpdated = nowTs;
         saveLocalState();
         if (!baseUrl) return false;
 
@@ -2336,10 +2548,11 @@
             salesTeam: appState.salesTeam,
             exhibitions: appState.exhibitions,
             invitations: appState.invitations,
-            lastUpdated: Date.now(),
+            lastUpdated: nowTs,
+            configUpdated: nowTs,
           };
           const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
-            method: "PUT",
+            method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
@@ -2349,7 +2562,7 @@
           }
         } catch (e) {
           console.error("Push error:", e);
-          updateSyncBadge(false, "🟠 خطأ في الرفع للسحابة");
+          updateSyncBadge(false, "🔴 خطأ في الرفع للسحابة");
         }
         return false;
       }
@@ -2606,7 +2819,7 @@
           ctx.fillStyle = "#94a3b8";
           ctx.font = "600 30px 'Cairo', sans-serif";
           ctx.fillText(
-            "ارفع صورة القالب من صفحة (استوديو القالب)",
+            "اضغط (تحديث البيانات) لتحميل القالب أو ارفعه من الاستوديو",
             canvas.width / 2,
             330,
           );
@@ -2955,6 +3168,7 @@
         document.body.removeChild(link);
       }
 
+      // ================= إصدار الدعوة المحمي 100% (لا يصدر البطاقة إلا بعد تأكيد الحفظ في السحابة) =================
       async function issueAndDownloadInvitation() {
         const clientNameInput = document.getElementById("clientNameInput");
         const clientPhoneInput = document.getElementById("clientPhoneInput");
@@ -2992,10 +3206,17 @@
         const btn = document.getElementById("issueBtn");
         isIssuing = true;
         btn.disabled = true;
-        btn.textContent = "⏳ جاري فحص البيانات والمزامنة مع السحابة...";
+        btn.textContent = "⏳ جاري الاتصال بالسحابة وتأكيد التسجيل...";
 
         try {
-          await syncFromCloud(false);
+          // خطوة 1: سحب أحدث قائمة عملاء من السحابة إجبارياً (خفيفة جداً بدون صور) للتأكد من الاتصال ومنع التكرار
+          const syncedOk = await syncFromCloud(false, false);
+          if (!syncedOk) {
+            alert(
+              "❌ توقف آمن: لا يمكن إصدار الدعوة حالياً لأن السحابة غير متصلة!\n\nتم منع إصدار البطاقة حتى لا يذهب العميل لرسبشن المعرض ويكون غير مسجل في السيستم. تأكد من الإنترنت أو حالة حساب Firebase.",
+            );
+            return;
+          }
 
           const currentExh = getActiveExhibition();
           const dupInv = findDuplicateInvitation(currentExh.id, clientPhone);
@@ -3034,9 +3255,25 @@
             createdAt: now.toLocaleString("ar-EG"),
           };
 
-          appState.invitations.push(newTicket);
+          const updatedInvitations = [...appState.invitations, newTicket];
+
+          // خطوة 2: حفظ العميل الجديد في السحابة أولاً والتحقق من نجاح الحفظ 100% قبل إظهار الدعوة
+          const savedToCloudOk = await patchCloudData({
+            invitations: updatedInvitations,
+          });
+
+          if (!savedToCloudOk) {
+            alert(
+              "❌ فشل حفظ العميل في قاعدة البيانات السحابية!\nلم يتم إصدار البطاقة لضمان عدم وجود دعوة وهمية غير مسجلة في الرسبشن. حاول مرة أخرى.",
+            );
+            return;
+          }
+
+          // خطوة 3: بعد تأكيد الحفظ في السحابة بنجاح، نعتمد التذكرة ونرسمها ونفتح المشاركة
+          appState.invitations = updatedInvitations;
           currentExh.nextSeq = assignedSeq + 1;
           lastIssuedTicket = newTicket;
+          saveLocalState();
 
           clientNameInput.value = "";
           clientPhoneInput.value = "";
@@ -3050,12 +3287,10 @@
             true,
           );
 
-          await pushStateToCloud();
-
           const confirmBox = document.getElementById("ticketConfirmBox");
           const confirmText = document.getElementById("ticketConfirmText");
           confirmBox.style.display = "block";
-          confirmText.innerHTML = `✅ تم إصدار الدعوة رقم <strong>${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
+          confirmText.innerHTML = `✅ تم تسجيل العميل بالسحابة وإصدار الدعوة رقم <strong>${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
           document.getElementById("previewTopActions").style.display = "flex";
 
           renderAllUI();
@@ -3071,7 +3306,7 @@
             newTicket,
           );
         } catch (e) {
-          alert("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
+          alert("حدث خطأ غير متوقع أثناء الاتصال بالسحابة، يرجى المحاولة مرة أخرى.");
           console.error(e);
         } finally {
           isIssuing = false;
@@ -3433,7 +3668,7 @@
         document.body.removeChild(a);
       }
 
-      // ================= عرض إنجاز السيلز (إما مقسم تيمات بخط فاصل أو الكل) =================
+      // ================= عرض إنجاز السيلز (مقسم تيمات بخط فاصل أو الكل) =================
       function sortSalesStatsArray(arr) {
         if (salesSortMode === "count") {
           return [...arr].sort(
@@ -3503,7 +3738,6 @@
           return;
         }
 
-        // الوضع المقسم بالتيمات: المعرض وتحته السيلز وخط، الجمعية وتحتها السيلز وخط، الوديعة وتحتها السيلز وخط، القاهرة وتحتها السيلز
         let html = "";
         SALES_TEAMS.forEach((teamName, idx) => {
           const teamMembers = sortSalesStatsArray(
@@ -3622,10 +3856,9 @@
         if (!rep) return;
 
         rep.team = normalizeTeamName(newTeam);
-        // تحديث فوري على الشاشة ورفع في الخلفية بدون تعطيل
         saveLocalState();
         renderAllUI();
-        pushStateToCloud();
+        patchCloudData({ salesTeam: appState.salesTeam });
       }
 
       function renderAdminDashboard() {
@@ -3651,7 +3884,6 @@
         let topSalesName = "-";
         let topSalesCount = 0;
 
-        // حساب الإحصائيات بمرور واحد سريع (O(N)) لتسريع الأداء
         const activeCountsMap = {};
         const allCountsMap = {};
 
@@ -3787,7 +4019,7 @@
         codeInput.value = "";
         saveLocalState();
         renderAllUI();
-        pushStateToCloud();
+        patchCloudData({ salesTeam: appState.salesTeam });
         alert(`✅ تم إضافة (${name} - كود ${code}) في تيم (${team}) بنجاح!`);
       }
 
@@ -3815,7 +4047,7 @@
         document.getElementById("bulkSalesTextarea").value = "";
         saveLocalState();
         renderAllUI();
-        pushStateToCloud();
+        patchCloudData({ salesTeam: appState.salesTeam });
         alert(`✅ تم إضافة ${addedCount} سيلز في تيم (${team}) بنجاح!`);
       }
 
@@ -3825,10 +4057,9 @@
         appState.salesTeam = appState.salesTeam.filter(
           (s) => formatSalesCode(s.code) !== targetCode,
         );
-        // حذف لحظي فوري من الواجهة ومزامنة في الخلفية
         saveLocalState();
         renderAllUI();
-        pushStateToCloud();
+        patchCloudData({ salesTeam: appState.salesTeam });
       }
 
       function filterLogsBySales(code) {
@@ -4008,7 +4239,7 @@
         );
       }
 
-      // حذف فوري للعميل في 0 ثانية من الجدول ومزامنة السحابة في الخلفية
+      // حذف فوري للعميل من الجدول وتحديث قائمة العملاء فقط على السحابة بدون رفع القوالب
       function deleteInvitationRecord(invId) {
         if (!confirm("هل تريد حذف هذه الدعوة فوراً من السجل؟")) return;
         appState.invitations = appState.invitations.filter(
@@ -4016,7 +4247,7 @@
         );
         saveLocalState();
         renderAllUI();
-        pushStateToCloud();
+        patchCloudData({ invitations: appState.invitations });
       }
 
       function copyWhatsAppReport() {
@@ -4117,7 +4348,8 @@
           const img = new Image();
           img.onload = async function () {
             const offCanvas = document.createElement("canvas");
-            const maxDim = 1280;
+            // ضغط ذكي للصورة لتقليل حجمها بدون فقدان الجودة
+            const maxDim = 1080;
             let w = img.naturalWidth;
             let h = img.naturalHeight;
             if (w > maxDim || h > maxDim) {
@@ -4134,13 +4366,13 @@
             const offCtx = offCanvas.getContext("2d");
             offCtx.drawImage(img, 0, 0, w, h);
 
-            const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.86);
+            const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.78);
             const exh = getActiveExhibition();
             exh.templateDataUrl = compressedDataUrl;
 
-            await pushStateToCloud();
+            await pushFullStateToCloud();
             loadActiveExhibitionTemplate();
-            alert("✅ تم رفع القالب بنجاح!");
+            alert("✅ تم رفع القالب وحفظه بالسحابة بنجاح!");
           };
           img.src = e.target.result;
         };
@@ -4180,7 +4412,7 @@
           exh.nextSeq = newSeq;
         }
 
-        await pushStateToCloud();
+        await pushFullStateToCloud();
         renderAllUI();
         alert("✅ تم حفظ المقاسات في السحابة!");
       }
@@ -4214,7 +4446,7 @@
 
         saveLocalState();
         renderAllUI();
-        pushStateToCloud();
+        pushFullStateToCloud();
         alert(`✅ تم إضافة (${name}) بنجاح!`);
       }
 
@@ -4231,7 +4463,7 @@
         appState.activeExhibitionId = Object.keys(appState.exhibitions)[0];
         saveLocalState();
         renderAllUI();
-        pushStateToCloud();
+        pushFullStateToCloud();
       }
 
       async function saveCloudAndSecuritySettings() {
@@ -4245,8 +4477,68 @@
         if (newUrl) appState.firebaseUrl = newUrl;
         if (newPin) appState.adminPin = newPin;
 
-        await pushStateToCloud();
+        await pushFullStateToCloud();
         alert("✅ تم حفظ إعدادات السحابة بنجاح!");
+      }
+
+      // ================= النسخ الاحتياطي الكامل واستعادته =================
+      function downloadFullBackupJSON() {
+        const backupObj = {
+          adminPin: appState.adminPin,
+          salesTeam: appState.salesTeam,
+          exhibitions: appState.exhibitions,
+          invitations: appState.invitations,
+          lastUpdated: Date.now(),
+          configUpdated: Date.now(),
+        };
+        const jsonStr = JSON.stringify(backupObj, null, 2);
+        const blob = new Blob([jsonStr], {
+          type: "application/json;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Balmeter_VIP_Backup_${getLocalYYYYMMDD(new Date())}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      function restoreFullBackupJSON(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            const dataToMerge = parsed.balmeter_vip_system || parsed;
+            if (!dataToMerge || typeof dataToMerge !== "object") {
+              throw new Error("Invalid backup file");
+            }
+            if (
+              !confirm(
+                "هل تريد استعادة هذه النسخة الاحتياطية ورفعها إلى السحابة الحالية؟",
+              )
+            ) {
+              return;
+            }
+            mergeState(dataToMerge);
+            saveLocalState();
+            renderAllUI();
+            const ok = await pushFullStateToCloud();
+            if (ok) {
+              alert("✅ تم استعادة النسخة الاحتياطية ورفعها للسحابة بنجاح!");
+            } else {
+              alert(
+                "⚠️ تم استعادة النسخة على الجهاز، ولكن تعذر رفعها للسحابة حالياً.",
+              );
+            }
+          } catch (err) {
+            alert("❌ ملف النسخة الاحتياطية غير صالح!");
+          }
+        };
+        reader.readAsText(file);
       }
     </script>
   </body>
