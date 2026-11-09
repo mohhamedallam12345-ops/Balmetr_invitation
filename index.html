@@ -6,6 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>B.almeter VIP | نظام الدعوات الموحد</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -657,7 +663,7 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 480px;
+        min-width: 520px;
       }
 
       th,
@@ -1421,7 +1427,7 @@
           </div>
         </div>
 
-        <!-- صفحة 4: إدارة فريق السيلز ونقلهم بين التيمات + إدارة المعارض -->
+        <!-- صفحة 4: إدارة فريق السيلز ونقلهم بين التيمات + التحكم في ظهورهم بقعدة المعرض + إدارة المعارض -->
         <div id="pageTeamManage" class="admin-page">
           <div class="admin-two-col" style="margin-bottom: 14px">
             <div class="card">
@@ -1548,17 +1554,49 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title" style="color: #fbbf24">
-                🔄 نقل السيلز بين التيمات (المعرض / الجمعية / الوديعة / القاهرة)
+                🔄 إدارة السيلز (التيمات + الظهور في شاشة سيلز القعدة بالمعرض)
               </div>
-              <input
-                type="text"
-                id="teamManageSearchInput"
-                class="form-control"
-                placeholder="🔍 ابحث عن سيلز لنقله أو حذفه..."
-                style="max-width: 280px"
-                oninput="renderTeamManagementTable()"
-              />
+              <div
+                class="action-group"
+                style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center"
+              >
+                <button
+                  class="btn btn-danger"
+                  style="padding: 7px 12px; font-size: 0.78rem"
+                  onclick="setAllSalesSittingVisibility(true)"
+                >
+                  🚫 إخفاء الكل من القعدة
+                </button>
+                <button
+                  class="btn btn-success"
+                  style="padding: 7px 12px; font-size: 0.78rem"
+                  onclick="setAllSalesSittingVisibility(false)"
+                >
+                  👁️ إظهار الكل في القعدة
+                </button>
+                <input
+                  type="text"
+                  id="teamManageSearchInput"
+                  class="form-control"
+                  placeholder="🔍 ابحث عن سيلز..."
+                  style="max-width: 220px; padding: 7px 10px"
+                  oninput="renderTeamManagementTable()"
+                />
+              </div>
             </div>
+            <p
+              style="
+                font-size: 0.79rem;
+                color: var(--text-muted);
+                margin-bottom: 10px;
+                font-weight: 700;
+              "
+            >
+              💡 ملاحظة: السيلز <strong>(المخفي من القعدة)</strong> يختفي فقط من
+              اختيارات <strong>"سيلز القعدة"</strong> في سيستم المعرض لمنع
+              الزحمة، لكنه يظل ظاهراً طبيعياً في إصدار الدعوات وفي الريسبشن (لو
+              العميل فاكر اسمه) وفي التقارير والإكسيل.
+            </p>
             <div class="table-responsive">
               <table>
                 <thead>
@@ -1566,6 +1604,7 @@
                     <th>الكود</th>
                     <th>اسم السيلز</th>
                     <th>التيم الحالي (اختر للنقل الفوري)</th>
+                    <th>الظهور في شاشة سيلز القعدة بالمعرض</th>
                     <th>حذف</th>
                   </tr>
                 </thead>
@@ -1939,12 +1978,15 @@
     </div>
 
     <script>
-const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
+      const DEFAULT_FIREBASE_URL =
+        "https://balmetr-vip-default-rtdb.firebaseio.com";
       const DEFAULT_ADMIN_PIN = "mo,2242006";
       const BACKUP_ADMIN_PIN = "1234";
-      const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V8";
-      const TEMPLATES_CACHE_KEY = "BALMETER_VIP_TEMPLATES_CACHE_V8";
+      const APP_BUILD_VERSION = 9;
+      const STORAGE_KEY = "BALMETER_VIP_UNIFIED_STATE_V9";
+      const TEMPLATES_CACHE_KEY = "BALMETER_VIP_TEMPLATES_CACHE_V9";
       const LEGACY_KEYS = [
+        "BALMETER_VIP_UNIFIED_STATE_V8",
         "BALMETER_VIP_UNIFIED_STATE_V7",
         "BALMETER_VIP_UNIFIED_STATE_V6",
         "BALMETER_VIP_UNIFIED_STATE_V5",
@@ -1954,20 +1996,20 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
       const SALES_TEAMS = ["المعرض", "الجمعية", "الوديعة", "القاهرة"];
 
       const INITIAL_SALES_TEAM = [
-        { code: "S11", name: "محمد", team: "المعرض" },
-        { code: "S12", name: "أحمد", team: "المعرض" },
-        { code: "S13", name: "محمود", team: "المعرض" },
-        { code: "S14", name: "مصطفى", team: "المعرض" },
-        { code: "S15", name: "سارة", team: "الجمعية" },
-        { code: "S16", name: "نور", team: "الجمعية" },
-        { code: "S17", name: "هدى", team: "الجمعية" },
-        { code: "S18", name: "كريم", team: "الوديعة" },
-        { code: "S19", name: "ياسمين", team: "الوديعة" },
-        { code: "S20", name: "عمر", team: "الوديعة" },
-        { code: "S21", name: "خالد", team: "القاهرة" },
-        { code: "S22", name: "ندى", team: "القاهرة" },
-        { code: "S23", name: "إسلام", team: "القاهرة" },
-        { code: "S24", name: "آية", team: "القاهرة" },
+        { code: "S11", name: "محمد", team: "المعرض", hideInSitting: false },
+        { code: "S12", name: "أحمد", team: "المعرض", hideInSitting: false },
+        { code: "S13", name: "محمود", team: "المعرض", hideInSitting: false },
+        { code: "S14", name: "مصطفى", team: "المعرض", hideInSitting: false },
+        { code: "S15", name: "سارة", team: "الجمعية", hideInSitting: false },
+        { code: "S16", name: "نور", team: "الجمعية", hideInSitting: false },
+        { code: "S17", name: "هدى", team: "الجمعية", hideInSitting: false },
+        { code: "S18", name: "كريم", team: "الوديعة", hideInSitting: false },
+        { code: "S19", name: "ياسمين", team: "الوديعة", hideInSitting: false },
+        { code: "S20", name: "عمر", team: "الوديعة", hideInSitting: false },
+        { code: "S21", name: "خالد", team: "القاهرة", hideInSitting: false },
+        { code: "S22", name: "ندى", team: "القاهرة", hideInSitting: false },
+        { code: "S23", name: "إسلام", team: "القاهرة", hideInSitting: false },
+        { code: "S24", name: "آية", team: "القاهرة", hideInSitting: false },
       ];
 
       let appState = {
@@ -1976,6 +2018,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         activeExhibitionId: "exh_sohag",
         lastUpdated: 0,
         configUpdated: 0,
+        minRequiredVersion: APP_BUILD_VERSION,
         salesTeam: [...INITIAL_SALES_TEAM],
         exhibitions: {
           exh_sohag: {
@@ -2027,6 +2070,9 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
       let globalReportDate = "";
       let currentLogsPage = 1;
       const LOGS_PER_PAGE = 25;
+
+      // متغيرات نظام الريلود التلقائي لشاشة الدعوات
+      let lastVisibilityHiddenAt = 0;
 
       function normalizeTeamName(team) {
         if (team && SALES_TEAMS.includes(String(team).trim())) {
@@ -2080,6 +2126,64 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         return "";
       }
 
+      // ================= نظام الريلود التلقائي لشاشة الدعوات فقط (لمنع الكاش القديم) =================
+      function forceHardReloadSalesScreen() {
+        if (isAdminMode || isIssuing || draggingTarget) return;
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set("v", Date.now());
+          window.location.replace(url.toString());
+        } catch (e) {
+          window.location.reload();
+        }
+      }
+
+      function setupSalesScreenAutoReload() {
+        // 1. عند عودة السيلز لفتح المتصفح بعد تركه في الخلفية
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            lastVisibilityHiddenAt = Date.now();
+          } else {
+            if (isAdminMode || isIssuing || draggingTarget) return;
+            const awayDurationMs = lastVisibilityHiddenAt
+              ? Date.now() - lastVisibilityHiddenAt
+              : 0;
+            const typedName = (
+              document.getElementById("clientNameInput")?.value || ""
+            ).trim();
+            const typedPhone = (
+              document.getElementById("clientPhoneInput")?.value || ""
+            ).trim();
+
+            // إذا ترك السيلز الصفحة في الخلفية أكثر من 4 دقائق والخانات فارغة (أو أكثر من 15 دقيقة مطلقاً) يعمل ريلود كامل لكسر الكاش
+            if (
+              (awayDurationMs > 4 * 60 * 1000 && !typedName && !typedPhone) ||
+              awayDurationMs > 15 * 60 * 1000
+            ) {
+              forceHardReloadSalesScreen();
+            } else if (awayDurationMs > 3000) {
+              // إذا ذهب ثواني فقط لنسخ رقم من واتساب ورجع، يسحب أحدث داتا من السحابة فوراً بدون مسح ما كتبه
+              syncFromCloud(false, false);
+            }
+          }
+        });
+
+        // 2. ريلود دوري كل 12 دقيقة لشاشة الدعوات فقط في حال تركها مفتوحة بدون استخدام
+        setInterval(() => {
+          if (isAdminMode || isIssuing || draggingTarget || document.hidden)
+            return;
+          const typedName = (
+            document.getElementById("clientNameInput")?.value || ""
+          ).trim();
+          const typedPhone = (
+            document.getElementById("clientPhoneInput")?.value || ""
+          ).trim();
+          if (!typedName && !typedPhone) {
+            forceHardReloadSalesScreen();
+          }
+        }, 12 * 60 * 1000);
+      }
+
       window.addEventListener("DOMContentLoaded", async () => {
         globalReportDate = getLocalYYYYMMDD(new Date());
         const dateInput = document.getElementById("globalReportDateInput");
@@ -2087,6 +2191,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
 
         loadLocalState();
         setupStudioCanvasDragging();
+        setupSalesScreenAutoReload();
         renderAllUI();
 
         // مزامنة ذكية عند الفتح: إذا كانت القوالب محفوظة محلياً يسحب العملاء فقط لتوفير الجيجابايتات
@@ -2095,12 +2200,12 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         );
         await syncFromCloud(false, !hasCachedTemplates);
 
-        // فحص خفيف جداً (15 بايت فقط) كل 60 ثانية بدلاً من سحب الداتا بيز كلها كل 25 ثانية
+        // فحص خفيف جداً كل 45 ثانية
         setInterval(() => {
           if (!isSyncing && !isIssuing && !draggingTarget && !document.hidden) {
             checkCloudHeartbeat();
           }
-        }, 60000);
+        }, 45000);
       });
 
       function toEnglishDigits(str) {
@@ -2264,7 +2369,9 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
           }
 
           // استرجاع صور القوالب من الكاش المحلي المنفصل
-          const cachedTemplatesRaw = localStorage.getItem(TEMPLATES_CACHE_KEY);
+          const cachedTemplatesRaw =
+            localStorage.getItem(TEMPLATES_CACHE_KEY) ||
+            localStorage.getItem("BALMETER_VIP_TEMPLATES_CACHE_V8");
           if (cachedTemplatesRaw) {
             const templatesMap = JSON.parse(cachedTemplatesRaw);
             Object.keys(templatesMap).forEach((exhId) => {
@@ -2324,6 +2431,8 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         if (incoming.lastUpdated) appState.lastUpdated = incoming.lastUpdated;
         if (incoming.configUpdated)
           appState.configUpdated = incoming.configUpdated;
+        if (incoming.minRequiredVersion)
+          appState.minRequiredVersion = Number(incoming.minRequiredVersion);
 
         if (
           incoming.salesTeam &&
@@ -2334,6 +2443,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
             ...s,
             code: formatSalesCode(s.code),
             team: normalizeTeamName(s.team),
+            hideInSitting: Boolean(s.hideInSitting),
           }));
         }
         if (incoming.exhibitions && typeof incoming.exhibitions === "object") {
@@ -2430,13 +2540,21 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
             const cloudData = await res.json();
 
             if (cloudData) {
+              if (
+                !isAdminMode &&
+                cloudData.minRequiredVersion &&
+                Number(cloudData.minRequiredVersion) > APP_BUILD_VERSION
+              ) {
+                forceHardReloadSalesScreen();
+                return false;
+              }
               mergeState(cloudData);
               saveLocalState();
               renderAllUI();
             }
           } else {
-            // سحب خفيف جداً (العملاء + السيلز + إشارة القوالب) بدون سحب الـ 3.11MB الخاصة بالصور
-            const [invRes, teamRes, cfgRes] = await Promise.all([
+            // سحب خفيف جداً (العملاء + السيلز + إشارة القوالب + رقم الإصدار) بدون سحب صور القوالب
+            const [invRes, teamRes, cfgRes, verRes] = await Promise.all([
               fetch(`${baseUrl}/balmeter_vip_system/invitations.json`, {
                 cache: "no-store",
               }),
@@ -2446,15 +2564,29 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
               fetch(`${baseUrl}/balmeter_vip_system/configUpdated.json`, {
                 cache: "no-store",
               }),
+              fetch(`${baseUrl}/balmeter_vip_system/minRequiredVersion.json`, {
+                cache: "no-store",
+              }),
             ]);
 
             if (!invRes.ok) throw new Error("Invitations fetch failed");
 
-            const [invData, teamData, cloudCfgUpdated] = await Promise.all([
-              invRes.json(),
-              teamRes.ok ? teamRes.json() : null,
-              cfgRes.ok ? cfgRes.json() : null,
-            ]);
+            const [invData, teamData, cloudCfgUpdated, cloudMinVer] =
+              await Promise.all([
+                invRes.json(),
+                teamRes.ok ? teamRes.json() : null,
+                cfgRes.ok ? cfgRes.json() : null,
+                verRes.ok ? verRes.json() : null,
+              ]);
+
+            if (
+              !isAdminMode &&
+              cloudMinVer &&
+              Number(cloudMinVer) > APP_BUILD_VERSION
+            ) {
+              forceHardReloadSalesScreen();
+              return false;
+            }
 
             mergeState({
               invitations: invData || [],
@@ -2502,7 +2634,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         }
       }
 
-      // 3. رفع التعديلات الجزئي الذكي (PATCH) بدلاً من إعادة رفع الـ 3.11MB في كل مرة
+      // 3. رفع التعديلات الجزئي الذكي (PATCH) بدلاً من إعادة رفع الصور في كل مرة
       async function patchCloudData(partialPayload) {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
         saveLocalState();
@@ -2513,6 +2645,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
           appState.lastUpdated = nowTs;
           const payload = {
             ...partialPayload,
+            minRequiredVersion: APP_BUILD_VERSION,
             lastUpdated: nowTs,
           };
 
@@ -2547,6 +2680,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
             salesTeam: appState.salesTeam,
             exhibitions: appState.exhibitions,
             invitations: appState.invitations,
+            minRequiredVersion: APP_BUILD_VERSION,
             lastUpdated: nowTs,
             configUpdated: nowTs,
           };
@@ -3057,8 +3191,8 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         window.addEventListener("mouseup", onEnd);
 
         canvas.addEventListener("touchstart", onStart, { passive: false });
-        window.addEventListener("touchmove", onMove, { passive: false });
-        window.addEventListener("touchend", onEnd);
+        canvas.addEventListener("touchmove", onMove, { passive: false });
+        canvas.addEventListener("touchend", onEnd);
       }
 
       function syncSlidersFromExhibition(exh) {
@@ -3208,7 +3342,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         btn.textContent = "⏳ جاري الاتصال بالسحابة وتأكيد التسجيل...";
 
         try {
-          // خطوة 1: سحب أحدث قائمة عملاء من السحابة إجبارياً (خفيفة جداً بدون صور) للتأكد من الاتصال ومنع التكرار
+          // خطوة 1: سحب أحدث قائمة عملاء من السحابة إجبارياً للتأكد من الاتصال ومنع التكرار
           const syncedOk = await syncFromCloud(false, false);
           if (!syncedOk) {
             alert(
@@ -3305,7 +3439,9 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
             newTicket,
           );
         } catch (e) {
-          alert("حدث خطأ غير متوقع أثناء الاتصال بالسحابة، يرجى المحاولة مرة أخرى.");
+          alert(
+            "حدث خطأ غير متوقع أثناء الاتصال بالسحابة، يرجى المحاولة مرة أخرى.",
+          );
           console.error(e);
         } finally {
           isIssuing = false;
@@ -3686,17 +3822,23 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
 
       function buildSalesRowsHTML(list, showTeamColumn = false) {
         if (list.length === 0) {
-          return `<tr><td colspan="${showTeamColumn ? 6 : 5}" style="text-align:center; color:var(--text-muted); padding:14px;">لا يوجد سيلز مسجلين في هذا القسم.</td></tr>`;
+          return `<tr><td colspan="${showTeamColumn ? 7 : 6}" style="text-align:center; color:var(--text-muted); padding:14px;">لا يوجد سيلز مسجلين في هذا القسم.</td></tr>`;
         }
         return list
-          .map(
-            (s) => `
+          .map((s) => {
+            const isHidden = Boolean(s.hideInSitting);
+            const sittingBadgeBtn = isHidden
+              ? `<button class="btn btn-danger" style="padding:4px 9px; font-size:0.73rem;" onclick="toggleSalesSittingVisibility('${s.code}')" title="اضغط لإظهاره في سيلز القعدة">🚫 مخفي من القعدة</button>`
+              : `<button class="btn btn-success" style="padding:4px 9px; font-size:0.73rem;" onclick="toggleSalesSittingVisibility('${s.code}')" title="اضغط لإخفائه من سيلز القعدة">🟢 ظاهر في القعدة</button>`;
+
+            return `
           <tr>
             <td><span class="badge-code">${s.code}</span></td>
             <td style="font-weight:700;">${s.name}</td>
             ${showTeamColumn ? `<td><span class="badge-team">${s.team}</span></td>` : ""}
             <td><span class="badge-count">${s.currentCount} عميل</span></td>
             <td style="color:var(--text-muted); font-weight:700;">${s.allCount}</td>
+            <td>${sittingBadgeBtn}</td>
             <td>
               <div style="display:flex; gap:6px;">
                 <button class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="filterLogsBySales('${s.code}')">عملائه</button>
@@ -3704,8 +3846,8 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
               </div>
             </td>
           </tr>
-        `,
-          )
+        `;
+          })
           .join("");
       }
 
@@ -3725,6 +3867,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
                     <th>التيم</th>
                     <th>عملاء المعرض النشط</th>
                     <th>التوتال في كل المعارض</th>
+                    <th>ظهوره في قعدة المعرض</th>
                     <th>إجراءات</th>
                   </tr>
                 </thead>
@@ -3771,6 +3914,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
                       <th>اسم السيلز</th>
                       <th>عملاء المعرض النشط</th>
                       <th>التوتال في كل المعارض</th>
+                      <th>ظهوره في قعدة المعرض</th>
                       <th>إجراءات</th>
                     </tr>
                   </thead>
@@ -3790,7 +3934,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         container.innerHTML = html;
       }
 
-      // ================= جدول نقل السيلز بين التيمات =================
+      // ================= جدول نقل السيلز بين التيمات والتحكم في ظهورهم بقعدة المعرض =================
       function renderTeamManagementTable() {
         const tbody = document.getElementById("teamManageTbody");
         if (!tbody) return;
@@ -3810,7 +3954,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         );
 
         if (sorted.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">لا يوجد سيلز مطابق للبحث.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:16px; color:var(--text-muted);">لا يوجد سيلز مطابق للبحث.</td></tr>`;
           return;
         }
 
@@ -3818,10 +3962,15 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
           .map((s) => {
             const code = formatSalesCode(s.code);
             const currentTeam = normalizeTeamName(s.team);
+            const isHidden = Boolean(s.hideInSitting);
             const optionsHtml = SALES_TEAMS.map(
               (t) =>
                 `<option value="${t}" ${t === currentTeam ? "selected" : ""}>تيم ${t}</option>`,
             ).join("");
+
+            const visibilityBtnHtml = isHidden
+              ? `<button class="btn btn-danger" style="padding:5px 12px; font-size:0.76rem;" onclick="toggleSalesSittingVisibility('${code}')">🚫 مخفي من القعدة (اضغط لإظهاره)</button>`
+              : `<button class="btn btn-success" style="padding:5px 12px; font-size:0.76rem;" onclick="toggleSalesSittingVisibility('${code}')">🟢 ظاهر في القعدة (اضغط لإخفائه)</button>`;
 
             return `
               <tr>
@@ -3836,6 +3985,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
                     ${optionsHtml}
                   </select>
                 </td>
+                <td>${visibilityBtnHtml}</td>
                 <td>
                   <button class="btn btn-danger" style="padding:4px 10px; font-size:0.75rem;" onclick="deleteSalesRep('${code}')">
                     حذف
@@ -3845,6 +3995,33 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
             `;
           })
           .join("");
+      }
+
+      async function toggleSalesSittingVisibility(code) {
+        const targetCode = formatSalesCode(code);
+        const rep = appState.salesTeam.find(
+          (s) => formatSalesCode(s.code) === targetCode,
+        );
+        if (!rep) return;
+
+        rep.hideInSitting = !rep.hideInSitting;
+        saveLocalState();
+        renderAllUI();
+        await patchCloudData({ salesTeam: appState.salesTeam });
+      }
+
+      async function setAllSalesSittingVisibility(hideFlag) {
+        const msg = hideFlag
+          ? "هل تريد إخفاء جميع السيلز من شاشة (سيلز القعدة بالمعرض)؟\n\n(ملاحظة: سيظلون ظاهرين في الدعوات وفي الريسبشن والتقارير، ويمكنك بعدها الضغط على من تريد فقط لإظهاره في القعدة)"
+          : "هل تريد إظهار جميع السيلز في شاشة (سيلز القعدة بالمعرض)؟";
+        if (!confirm(msg)) return;
+
+        appState.salesTeam.forEach((s) => {
+          s.hideInSitting = Boolean(hideFlag);
+        });
+        saveLocalState();
+        renderAllUI();
+        await patchCloudData({ salesTeam: appState.salesTeam });
       }
 
       function changeSalesRepTeam(code, newTeam) {
@@ -3907,6 +4084,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
             ...s,
             code: formattedCode,
             team: normalizeTeamName(s.team),
+            hideInSitting: Boolean(s.hideInSitting),
             currentCount,
             allCount,
           };
@@ -4013,7 +4191,12 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
           return;
         }
 
-        appState.salesTeam.push({ code, name, team });
+        appState.salesTeam.push({
+          code,
+          name,
+          team,
+          hideInSitting: false,
+        });
         nameInput.value = "";
         codeInput.value = "";
         saveLocalState();
@@ -4039,7 +4222,12 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
         let addedCount = 0;
         lines.forEach((line) => {
           const code = getNextAvailableSalesCode();
-          appState.salesTeam.push({ code, name: line, team });
+          appState.salesTeam.push({
+            code,
+            name: line,
+            team,
+            hideInSitting: false,
+          });
           addedCount++;
         });
 
@@ -4487,6 +4675,7 @@ const DEFAULT_FIREBASE_URL = "https://balmetr-vip-default-rtdb.firebaseio.com";
           salesTeam: appState.salesTeam,
           exhibitions: appState.exhibitions,
           invitations: appState.invitations,
+          minRequiredVersion: APP_BUILD_VERSION,
           lastUpdated: Date.now(),
           configUpdated: Date.now(),
         };
