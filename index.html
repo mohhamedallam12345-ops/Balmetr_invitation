@@ -814,6 +814,194 @@
         text-decoration: none;
       }
 
+      /* ================= نظام طباعة وتصدير PDF (A4 بالعرض - 25 عميل في كل صفحة) ================= */
+      #pdfPrintWrapper {
+        display: none;
+        width: 100%;
+        background: #334155;
+        min-height: 100vh;
+        padding: 70px 16px 30px;
+      }
+
+      body.printing-pdf-mode .app-container {
+        display: none !important;
+      }
+
+      body.printing-pdf-mode #pdfPrintWrapper {
+        display: block !important;
+      }
+
+      .pdf-preview-toolbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #0f172a;
+        border-bottom: 2px solid var(--gold);
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        z-index: 99999;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .pdf-sheet {
+        background: #ffffff;
+        color: #0f172a;
+        width: 281mm;
+        max-width: 100%;
+        margin: 0 auto 20px;
+        padding: 7mm 9mm;
+        border-radius: 6px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        page-break-after: always;
+        break-after: page;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .pdf-sheet:last-child {
+        page-break-after: auto;
+        break-after: auto;
+        margin-bottom: 0;
+      }
+
+      .pdf-sheet-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #0f172a;
+        padding-bottom: 4px;
+        margin-bottom: 6px;
+        gap: 10px;
+      }
+
+      .pdf-sheet-title {
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #0f172a;
+      }
+
+      .pdf-sheet-subtitle {
+        font-size: 11.5px;
+        font-weight: 800;
+        color: #1e293b;
+        background: #e2e8f0;
+        padding: 2px 10px;
+        border-radius: 6px;
+        border: 1px solid #94a3b8;
+      }
+
+      .pdf-sheet-meta {
+        font-size: 11px;
+        font-weight: 800;
+        color: #334155;
+        text-align: left;
+      }
+
+      .pdf-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 100%;
+        table-layout: fixed;
+        background: #ffffff;
+      }
+
+      .pdf-table th,
+      .pdf-table td {
+        border: 1px solid #334155;
+        padding: 2.8px 5px;
+        font-size: 10.8px;
+        line-height: 1.22;
+        color: #0f172a;
+        text-align: right;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .pdf-table th {
+        background: #0f172a !important;
+        color: #ffffff !important;
+        font-weight: 800;
+        font-size: 11px;
+        padding: 4px 5px;
+        text-align: center;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .pdf-table tbody tr:nth-child(even) td {
+        background: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .pdf-table td.center-cell {
+        text-align: center;
+        font-weight: 800;
+      }
+
+      .pdf-table td.phone-cell {
+        text-align: center;
+        font-weight: 800;
+        font-family: monospace, "Cairo", sans-serif;
+        font-size: 11.5px;
+        direction: ltr;
+      }
+
+      @page {
+        size: A4 landscape;
+        margin: 5mm 7mm;
+      }
+
+      @media print {
+        html,
+        body {
+          background: #ffffff !important;
+          color: #000000 !important;
+          min-height: auto !important;
+          height: auto !important;
+          overflow: visible !important;
+          display: block !important;
+        }
+
+        .app-container,
+        .pdf-preview-toolbar,
+        .modal-overlay {
+          display: none !important;
+        }
+
+        #pdfPrintWrapper {
+          display: block !important;
+          background: #ffffff !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          min-height: auto !important;
+        }
+
+        .pdf-sheet {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          page-break-after: always !important;
+          break-after: page !important;
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+
+        .pdf-sheet:last-child {
+          page-break-after: auto !important;
+          break-after: auto !important;
+        }
+      }
+
       /* ================= MOBILE RESPONSIVE FIXES ================= */
       @media (max-width: 900px) {
         .app-container {
@@ -1161,9 +1349,9 @@
                 </button>
                 <button
                   class="btn btn-primary"
-                  onclick="exportGlobalExcelCSV()"
+                  onclick="exportGlobalPDF()"
                 >
-                  📥 تحميل إكسيل شامل
+                  🖨️ تحميل PDF للطباعة (25/صفحة)
                 </button>
               </div>
             </div>
@@ -1331,8 +1519,8 @@
                 <button class="btn btn-success" onclick="copyWhatsAppReport()">
                   🟢 نسخ واتساب
                 </button>
-                <button class="btn btn-primary" onclick="exportExcelCSV()">
-                  📊 تحميل CSV إكسيل
+                <button class="btn btn-primary" onclick="exportLogsPDF()">
+                  🖨️ تحميل PDF للطباعة (25/صفحة)
                 </button>
               </div>
             </div>
@@ -1606,7 +1794,7 @@
               💡 ملاحظة: السيلز <strong>(المخفي من القعدة)</strong> يختفي فقط من
               اختيارات <strong>"سيلز القعدة"</strong> في سيستم المعرض لمنع
               الزحمة، لكنه يظل ظاهراً طبيعياً في إصدار الدعوات وفي الريسبشن (لو
-              العميل فاكر اسمه) وفي التقارير والإكسيل.
+              العميل فاكر اسمه) وفي التقارير والـ PDF.
             </p>
             <div class="table-responsive">
               <table>
@@ -1945,6 +2133,27 @@
       </footer>
     </div>
 
+    <!-- حاوية طباعة وتصدير PDF (A4 بالعرض - 25 عميل في كل صفحة) -->
+    <div id="pdfPrintWrapper">
+      <div class="pdf-preview-toolbar">
+        <div
+          id="pdfPreviewSummaryText"
+          style="font-weight: 800; color: #fbbf24; font-size: 0.9rem"
+        >
+          📄 معاينة ملف الـ PDF الجاهز للطباعة (25 عميل لكل صفحة بالعرض)
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <button class="btn btn-success" onclick="window.print()">
+            🖨️ طباعة / حفظ كملف PDF الآن
+          </button>
+          <button class="btn btn-danger" onclick="closePdfPrintView()">
+            🔙 إغلاق المعاينة والعودة للنظام
+          </button>
+        </div>
+      </div>
+      <div id="pdfPagesContainer"></div>
+    </div>
+
     <!-- Admin PIN Login Modal -->
     <div id="pinModal" class="modal-overlay">
       <div class="modal-box">
@@ -1994,7 +2203,7 @@
       const DEFAULT_ADMIN_PIN = "mo,2242006";
       const ALT_ADMIN_PIN = "2242006,mo";
       const BACKUP_ADMIN_PIN = "1234";
-      const APP_BUILD_VERSION = 10;
+      const APP_BUILD_VERSION = 11;
       const STORAGE_KEY = "BALMETER_VIP_LIGHT_STATE_V10";
       const IDB_NAME = "BalmetrVIP_LocalDB_V10";
       const IDB_STORE_TEMPLATES = "templates";
@@ -2091,6 +2300,7 @@
       let globalReportDate = "";
       let currentLogsPage = 1;
       const LOGS_PER_PAGE = 25;
+      const ROWS_PER_PDF_PAGE = 25;
       let lastVisibilityHiddenAt = 0;
 
       // ================= ذاكرة IndexedDB المفتوحة على الهاتف (لحفظ صور القوالب وآلاف العملاء بدون امتلاء) =================
@@ -2531,7 +2741,6 @@
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(lightState));
           } catch (quotaErr) {
-            // إذا امتلأ LocalStorage مستقبلاً بعد 30 ألف عميل، نحفظ الإعدادات فقط وتتكفل IndexedDB بالعملاء
             const minimalState = { ...lightState, invitations: [] };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(minimalState));
           }
@@ -2650,13 +2859,11 @@
         const exh = getActiveExhibition();
         if (!exh) return false;
 
-        // 1. إذا كانت الصورة محملة بالفعل في الذاكرة
         if (exh.templateDataUrl && exh.templateDataUrl.length > 100) {
           loadActiveExhibitionTemplate();
           return true;
         }
 
-        // 2. فحص ذاكرة الهاتف IndexedDB أولاً (0 بايت إنترنت)
         const cachedInIdb = await idbGet(IDB_STORE_TEMPLATES, exh.id);
         if (cachedInIdb && cachedInIdb.length > 100) {
           exh.templateDataUrl = cachedInIdb;
@@ -2664,7 +2871,6 @@
           return true;
         }
 
-        // 3. إذا لم تكن على الهاتف، نسحب قالب هذا المعرض تحديداً من السحابة تلقائياً
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
         if (!baseUrl || isFetchingTemplate) return false;
 
@@ -2746,7 +2952,6 @@
 
         try {
           if (forceAllTemplates) {
-            // سحب كامل عند الضغط اليدوي على "تحديث البيانات"
             const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
               cache: "no-store",
             });
@@ -2765,13 +2970,11 @@
               mergeState(cloudData);
               await saveLocalState();
               renderAllUI();
-              // تحديث ملف الميتا الخفيف على السحابة ليخدم باقي الهواتف بسرعة
               patchCloudData({
                 exhibitionsMeta: getExhibitionsMetadataOnly(),
               });
             }
           } else {
-            // سحب تلقائي سريع: يسحب جميع العملاء + السيلز + بيانات وأسماء الـ 7 معارض بدون الصور الثقيلة
             const [invRes, teamRes, metaRes, verRes, lastUpRes] =
               await Promise.all([
                 fetch(`${baseUrl}/balmeter_vip_system/invitations.json`, {
@@ -2812,7 +3015,6 @@
               return false;
             }
 
-            // إذا لم يكن ملف exhibitionsMeta موجوداً بعد على السحابة، نسحب المعارض مرة واحدة وننشئه تلقائياً
             let exhibitionsPayload = null;
             if (metaData && typeof metaData === "object") {
               exhibitionsPayload = metaData;
@@ -2835,7 +3037,6 @@
               ...(cloudLastUp ? { lastUpdated: cloudLastUp } : {}),
             });
 
-            // إذا سحبنا المعارض الكاملة لأول مرة، نرفع نسخة الميتا الخفيفة للسحابة
             if (!metaData && exhibitionsPayload) {
               patchCloudData({
                 exhibitionsMeta: getExhibitionsMetadataOnly(),
@@ -2863,7 +3064,6 @@
         }
       }
 
-      // رفع جزئي للإعدادات أو التيمات (بدون المساس بقائمة العملاء إطلاقاً)
       async function patchCloudData(partialPayload) {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
         await saveLocalState();
@@ -2894,7 +3094,6 @@
         }
       }
 
-      // حفظ إعدادات المعارض والقوالب فقط دون الكتابة فوق سجل العملاء (يمنع مسح العملاء بالخطأ!)
       async function pushConfigOnlyToCloud() {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
         const nowTs = Date.now();
@@ -2929,7 +3128,6 @@
         return false;
       }
 
-      // رفع كامل (يُستخدم فقط عند استعادة نسخة احتياطية كاملة Restore JSON)
       async function pushFullStateToCloud() {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
         const nowTs = Date.now();
@@ -3570,7 +3768,7 @@
         document.body.removeChild(link);
       }
 
-      // ================= إصدار الدعوة المحمي 100% (يرفع العميل الجديد فقط + يمنع خروج دعوة بدون صورة القالب) =================
+      // ================= إصدار الدعوة المحمي 100% =================
       async function issueAndDownloadInvitation() {
         const clientNameInput = document.getElementById("clientNameInput");
         const clientPhoneInput = document.getElementById("clientPhoneInput");
@@ -3611,10 +3809,8 @@
         btn.textContent = "⏳ جاري تأكيد التسجيل وتحميل القالب...";
 
         try {
-          // خطوة 1: التأكد الإجباري من تحميل صورة قالب المعرض النشط قبل الإصدار (يمنع خروج دعوة بخلفية كحلي فارغة)
           if (!loadedTemplateImg) {
             await ensureActiveExhibitionTemplateLoaded();
-            // انتظار قصير حتى تكتمل قراءة الصورة في الـ Canvas
             if (!loadedTemplateImg && getActiveExhibition()?.templateDataUrl) {
               await new Promise((resolve) => {
                 const tempImg = new Image();
@@ -3637,7 +3833,6 @@
             return;
           }
 
-          // خطوة 2: سحب أحدث قائمة عملاء من السحابة إجبارياً لمنع التكرار ومعرفة السيريال الحقيقي
           const syncedOk = await syncFromCloud(false, false);
           if (!syncedOk) {
             alert(
@@ -3683,7 +3878,6 @@
             createdAt: now.toLocaleString("ar-EG"),
           };
 
-          // خطوة 3: حفظ العميل الجديد فقط في خانة مستقلة (0.25 كيلوبايت) دون إعادة رفع الـ 2535 عميل، لمنع مسح أي عميل آخر!
           const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
           const targetIdx = Math.max(
             nextCloudInvitationIndex,
@@ -3707,14 +3901,12 @@
             return;
           }
 
-          // تحديث إشارة التوقيت على السحابة
           fetch(`${baseUrl}/balmeter_vip_system/lastUpdated.json`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(nowTs),
           }).catch(() => {});
 
-          // خطوة 4: اعتماد التذكرة بعد تأكيد الحفظ في السحابة ورسمها ومشاركتها
           appState.lastUpdated = nowTs;
           nextCloudInvitationIndex = targetIdx + 1;
           appState.invitations.push(newTicket);
@@ -3800,7 +3992,6 @@
             "🎫 العودة لشاشة الدعوات";
           renderAllUI();
           window.scrollTo({ top: 0, behavior: "smooth" });
-          // تحديث تلقائي فوري عند فتح وضع المدير لضمان عرض أحدث الأرقام بدون لمس أي زر
           await syncFromCloud(false, false);
         } else {
           alert("❌ كلمة سر المدير غير صحيحة!");
@@ -4079,20 +4270,113 @@
         });
       }
 
-      function exportGlobalExcelCSV() {
-        const { stats, grandSelectedTotal, grandAllTimeTotal } =
-          getExhibitionsGlobalStats();
+      // ================= محرك توليد وطباعة ملفات PDF (25 عميل في كل صفحة بالعرض) =================
+      function escapeHtmlStr(str) {
+        return String(str ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
 
-        let csv = "\uFEFF";
-        csv += "ملخص كل المعارض\n";
-        csv += `نوع التقرير,${globalReportMode === "DATE" ? "تقرير يوم " + globalReportDate : "التوتال من أول المعرض"}\n`;
-        csv +=
-          "اسم المعرض,العدد في الفترة المحددة,التوتال من أول المعرض,الرقم التسلسلي القادم,أعلى سيلز\n";
+      function buildAndOpenPDFPages(invitationsList, reportTitle, periodSubtitle) {
+        if (!invitationsList || invitationsList.length === 0) {
+          alert("⚠️ لا توجد بيانات عملاء لتصديرها في ملف PDF!");
+          return;
+        }
 
-        stats.forEach((item) => {
-          csv += `"${item.exh.name}","${item.selectedCount}","${item.allTimeCount}","${item.nextSeq}","${item.topSales}"\n`;
-        });
-        csv += `"الإجمالي الكلي لكل المعارض","${grandSelectedTotal}","${grandAllTimeTotal}","",""\n\n`;
+        const totalClients = invitationsList.length;
+        const chunks = [];
+        for (let i = 0; i < totalClients; i += ROWS_PER_PDF_PAGE) {
+          chunks.push(invitationsList.slice(i, i + ROWS_PER_PDF_PAGE));
+        }
+
+        const totalPages = chunks.length;
+        const pagesHtml = chunks
+          .map((pageItems, pageIndex) => {
+            const startNum = pageIndex * ROWS_PER_PDF_PAGE + 1;
+            const endNum = startNum + pageItems.length - 1;
+
+            const rowsHtml = pageItems
+              .map((inv, idx) => {
+                const rowSerial = startNum + idx;
+                const sCode = formatSalesCode(inv.salesCode);
+                const dateStr = getInvitationDateYYYYMMDD(inv) || "-";
+                return `
+                  <tr>
+                    <td class="center-cell">${rowSerial}</td>
+                    <td class="center-cell">#${escapeHtmlStr(inv.seqNumber)}</td>
+                    <td style="font-weight:700;">${escapeHtmlStr(inv.exhibitionName || "-")}</td>
+                    <td style="font-weight:800;">${escapeHtmlStr(inv.clientName || "-")}</td>
+                    <td class="phone-cell">${escapeHtmlStr(inv.clientPhone || "-")}</td>
+                    <td style="font-weight:700;">${escapeHtmlStr(inv.salesName || "-")}</td>
+                    <td class="center-cell">${escapeHtmlStr(sCode)}</td>
+                    <td class="center-cell" dir="ltr">${escapeHtmlStr(dateStr)}</td>
+                    <td style="font-size:10px;">${escapeHtmlStr(inv.createdAt || "-")}</td>
+                  </tr>
+                `;
+              })
+              .join("");
+
+            return `
+              <section class="pdf-sheet">
+                <div class="pdf-sheet-header">
+                  <div>
+                    <div class="pdf-sheet-title">B.almeter VIP | ${escapeHtmlStr(reportTitle)}</div>
+                  </div>
+                  <div class="pdf-sheet-subtitle">
+                    ${escapeHtmlStr(periodSubtitle)} — (إجمالي الكشف: ${totalClients} عميل)
+                  </div>
+                  <div class="pdf-sheet-meta">
+                    صفحة ${pageIndex + 1} من ${totalPages} | العملاء (${startNum} إلى ${endNum})
+                  </div>
+                </div>
+                <table class="pdf-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%;">م</th>
+                      <th style="width: 8%;">رقم الدعوة</th>
+                      <th style="width: 13%;">المعرض</th>
+                      <th style="width: 22%;">اسم العميل</th>
+                      <th style="width: 13%;">رقم التليفون</th>
+                      <th style="width: 12%;">اسم السيلز</th>
+                      <th style="width: 7%;">كود السيلز</th>
+                      <th style="width: 9%;">تاريخ اليوم</th>
+                      <th style="width: 11%;">التوقيت الكامل</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rowsHtml}
+                  </tbody>
+                </table>
+              </section>
+            `;
+          })
+          .join("");
+
+        const container = document.getElementById("pdfPagesContainer");
+        const summaryText = document.getElementById("pdfPreviewSummaryText");
+        if (container) container.innerHTML = pagesHtml;
+        if (summaryText) {
+          summaryText.textContent = `📄 جاهز للطباعة (A4 بالعرض): ${totalClients} عميل مقسمين على ${totalPages} صفحة (25 عميل في كل صفحة)`;
+        }
+
+        document.body.classList.add("printing-pdf-mode");
+        window.scrollTo({ top: 0, behavior: "instant" });
+
+        setTimeout(() => {
+          window.print();
+        }, 250);
+      }
+
+      function closePdfPrintView() {
+        document.body.classList.remove("printing-pdf-mode");
+        const container = document.getElementById("pdfPagesContainer");
+        if (container) container.innerHTML = "";
+      }
+
+      async function exportGlobalPDF() {
+        await syncFromCloud(false, false);
 
         const relevantInvs = appState.invitations
           .filter(Boolean)
@@ -4102,23 +4386,46 @@
               getInvitationDateYYYYMMDD(i) === globalReportDate,
           );
 
-        csv += "تفاصيل الدعوات المسجلة\n";
-        csv +=
-          "رقم الدعوة,المعرض,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,تاريخ اليوم,التوقيت الكامل\n";
-        relevantInvs.forEach((i) => {
-          csv += `"${i.seqNumber}","${i.exhibitionName || ""}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${formatSalesCode(i.salesCode)}","${getInvitationDateYYYYMMDD(i)}","${i.createdAt || ""}"\n`;
-        });
+        const reportTitle = "الكشف الشامل الموحد لكل المعارض";
+        const periodSubtitle =
+          globalReportMode === "DATE"
+            ? `تقرير يوم: ${globalReportDate}`
+            : "التوتال الشامل منذ بداية المعارض";
 
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        const suffix =
-          globalReportMode === "DATE" ? `_${globalReportDate}` : "_توتال_شامل";
-        a.download = `تقرير_كل_المعارض${suffix}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        buildAndOpenPDFPages(relevantInvs, reportTitle, periodSubtitle);
+      }
+
+      async function exportLogsPDF() {
+        await syncFromCloud(false, false);
+
+        const exh = getActiveExhibition();
+        const list = getFilteredReportList();
+        const exhFilter =
+          document.getElementById("logExhFilter")?.value || "ACTIVE";
+        const dateFilter = (
+          document.getElementById("logDateFilter")?.value || ""
+        ).trim();
+        const salesFilter = document.getElementById("logSalesFilter").value;
+        const salesObj = appState.salesTeam.find(
+          (s) => formatSalesCode(s.code) === formatSalesCode(salesFilter),
+        );
+
+        const exhTitle =
+          exhFilter === "ALL"
+            ? "كل المعارض"
+            : exhFilter === "ACTIVE"
+              ? exh.name
+              : appState.exhibitions[exhFilter]?.name || exh.name;
+
+        const salesTitle = salesObj
+          ? ` — السيلز: ${salesObj.name} (${formatSalesCode(salesObj.code)})`
+          : " — كل السيلز";
+
+        const periodSubtitle = dateFilter
+          ? `يوم: ${dateFilter}${salesTitle}`
+          : `التوتال من أول المعرض${salesTitle}`;
+
+        buildAndOpenPDFPages(list, `كشف عملاء (${exhTitle})`, periodSubtitle);
       }
 
       // ================= عرض إنجاز السيلز (مقسم تيمات بخط فاصل أو الكل) =================
@@ -4760,7 +5067,6 @@
         );
       }
 
-      // حذف آمن للعميل بعد سحب أحدث قائمة أولاً لضمان عدم مسح أي عميل سُجل في نفس اللحظة
       async function deleteInvitationRecord(invId) {
         if (!confirm("هل تريد حذف هذه الدعوة فوراً من السجل؟")) return;
         await syncFromCloud(false, false);
@@ -4817,49 +5123,6 @@
         navigator.clipboard.writeText(text).then(() => {
           alert("✅ تم نسخ التقرير المخصص بنجاح!");
         });
-      }
-
-      function exportExcelCSV() {
-        const exh = getActiveExhibition();
-        const list = getFilteredReportList();
-        const exhFilter =
-          document.getElementById("logExhFilter")?.value || "ACTIVE";
-        const dateFilter = (
-          document.getElementById("logDateFilter")?.value || ""
-        ).trim();
-        const salesFilter = document.getElementById("logSalesFilter").value;
-        const salesObj = appState.salesTeam.find(
-          (s) => formatSalesCode(s.code) === formatSalesCode(salesFilter),
-        );
-
-        const exhTitle =
-          exhFilter === "ALL"
-            ? "كل_المعارض"
-            : exhFilter === "ACTIVE"
-              ? exh.name
-              : appState.exhibitions[exhFilter]?.name || exh.name;
-        const fileSuffix = salesObj ? `_السيلز_${salesObj.name}` : "_كل_السيلز";
-        const dateSuffix = dateFilter ? `_${dateFilter}` : "_التوتال";
-
-        if (list.length === 0) {
-          alert("لا توجد بيانات لتصديرها.");
-          return;
-        }
-
-        let csv =
-          "\uFEFFرقم الدعوة,اسم العميل,رقم التليفون,اسم السيلز,كود السيلز,المعرض,تاريخ اليوم,التاريخ والوقت\n";
-        list.forEach((i) => {
-          csv += `"${i.seqNumber}","${i.clientName}","${i.clientPhone || ""}","${i.salesName}","${formatSalesCode(i.salesCode)}","${i.exhibitionName}","${getInvitationDateYYYYMMDD(i)}","${i.createdAt || ""}"\n`;
-        });
-
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `تقرير_${exhTitle}${fileSuffix}${dateSuffix}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
       }
 
       function handleTemplateUpload(event) {
