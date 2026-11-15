@@ -2045,7 +2045,7 @@
           </div>
         </div>
 
-        <!-- صفحة 6: إعدادات السحابة والأمان والنسخ الاحتياطي -->
+        <!-- صفحة 6: إعدادات السحابة والنسخ الاحتياطي -->
         <div id="pageSettings" class="admin-page">
           <div class="admin-two-col">
             <div class="card">
@@ -2063,20 +2063,22 @@
                   dir="ltr"
                 />
               </div>
-              <div class="form-group">
-                <label class="form-label">كلمة سر المدير (Admin PIN):</label>
-                <input
-                  type="text"
-                  id="adminPinInput"
-                  class="form-control"
-                  dir="ltr"
-                />
-              </div>
+              <p
+                style="
+                  font-size: 0.78rem;
+                  color: #fbbf24;
+                  margin-bottom: 12px;
+                  font-weight: 700;
+                "
+              >
+                🔒 كلمة سر المدير محمية وثابتة داخل الكود المصدري فقط ولا يمكن
+                تغييرها من المتصفح أو قاعدة البيانات.
+              </p>
               <button
                 class="btn btn-primary btn-block"
                 onclick="saveCloudAndSecuritySettings()"
               >
-                💾 حفظ الإعدادات بالسحابة
+                💾 حفظ رابط السحابة
               </button>
             </div>
 
@@ -2200,16 +2202,19 @@
     <script>
       const DEFAULT_FIREBASE_URL =
         "https://balmetr-vip-default-rtdb.firebaseio.com";
+
+      // =========================================================================
+      // كلمة سر المدير الوحيدة المعتمدة (تتجاهل الداتا بيز تماماً)
+      // لتغيير الباسورد مستقبلاً، عدل الرقم داخل علامات التنصيص بالأسفل فقط:
+      // =========================================================================
       const DEFAULT_ADMIN_PIN = "123456";
-      const ALT_ADMIN_PIN = "123456";
-      const BACKUP_ADMIN_PIN = "123456";
+
       const APP_BUILD_VERSION = 11;
       const STORAGE_KEY = "BALMETER_VIP_LIGHT_STATE_V10";
       const IDB_NAME = "BalmetrVIP_LocalDB_V10";
       const IDB_STORE_TEMPLATES = "templates";
       const IDB_STORE_STATE = "state_snapshot";
 
-      // المفاتيح القديمة التي ملأت ذاكرة الهواتف وتسببت في تجمد الرقم عند 1666
       const OBSOLETE_LOCAL_KEYS = [
         "BALMETER_VIP_UNIFIED_STATE_V9",
         "BALMETER_VIP_UNIFIED_STATE_V8",
@@ -2220,7 +2225,6 @@
         "BALMETER_VIP_TEMPLATES_CACHE_V8",
       ];
 
-      // التيمات الأربعة المعتمدة بالترتيب المطلوب
       const SALES_TEAMS = ["المعرض", "الجمعية", "الوديعة", "القاهرة"];
 
       const INITIAL_SALES_TEAM = [
@@ -2242,7 +2246,6 @@
 
       let appState = {
         firebaseUrl: DEFAULT_FIREBASE_URL,
-        adminPin: DEFAULT_ADMIN_PIN,
         activeExhibitionId: "exh_sohag",
         lastUpdated: 0,
         configUpdated: 0,
@@ -2303,7 +2306,7 @@
       const ROWS_PER_PDF_PAGE = 25;
       let lastVisibilityHiddenAt = 0;
 
-      // ================= ذاكرة IndexedDB المفتوحة على الهاتف (لحفظ صور القوالب وآلاف العملاء بدون امتلاء) =================
+      // ================= ذاكرة IndexedDB المفتوحة على الهاتف =================
       let idbPromise = null;
       function openLocalIndexedDB() {
         if (idbPromise) return idbPromise;
@@ -2410,7 +2413,7 @@
         return "";
       }
 
-      // ================= نظام التحديث الذاتي لشاشة الدعوات (بدون تدخل من السيلز) =================
+      // ================= نظام التحديث الذاتي لشاشة الدعوات =================
       function forceHardReloadSalesScreen() {
         if (isAdminMode || isIssuing || draggingTarget) return;
         try {
@@ -2460,13 +2463,9 @@
         setupSalesScreenAutoReload();
         renderAllUI();
 
-        // سحب أحدث البيانات والمعارض تلقائياً لحظة فتح الصفحة دون الحاجة للضغط على "تحديث البيانات"
         await syncFromCloud(false, false);
-
-        // التأكد من تحميل صورة المعرض النشط تلقائياً إذا لم تكن موجودة في ذاكرة الهاتف
         await ensureActiveExhibitionTemplateLoaded();
 
-        // نبضة فحص خفيفة (15 بايت فقط) كل 50 ثانية
         setInterval(() => {
           if (!isSyncing && !isIssuing && !draggingTarget && !document.hidden) {
             checkCloudHeartbeat();
@@ -2616,7 +2615,6 @@
       function cleanFirebaseUrl(url) {
         if (!url) return DEFAULT_FIREBASE_URL;
         const cleaned = url.trim().replace(/\/+$/, "");
-        // تصحيح الرابط القديم تلقائياً إن وجد في أي متصفح
         if (cleaned.includes("balmeter-vip-default-rtdb")) {
           return DEFAULT_FIREBASE_URL;
         }
@@ -2651,7 +2649,6 @@
 
       async function loadLocalState() {
         try {
-          // 1. نقل أي قوالب كانت محفوظة في الكاش القديم إلى IndexedDB قبل مسح الكاش القديم
           for (const oldTplKey of [
             "BALMETER_VIP_TEMPLATES_CACHE_V9",
             "BALMETER_VIP_TEMPLATES_CACHE_V8",
@@ -2673,14 +2670,12 @@
             }
           }
 
-          // 2. مسح جميع المفاتيح القديمة التي كانت تملأ الـ 5MB وتجمد الأرقام عند 1666
           OBSOLETE_LOCAL_KEYS.forEach((k) => {
             try {
               localStorage.removeItem(k);
             } catch (e) {}
           });
 
-          // 3. قراءة أحدث حالة محفوظة من IndexedDB أو LocalStorage النظيف
           const idbState = await idbGet(IDB_STORE_STATE, "main");
           const lsRaw = localStorage.getItem(STORAGE_KEY);
           const lsState = lsRaw ? JSON.parse(lsRaw) : null;
@@ -2696,7 +2691,6 @@
             mergeState(lsState);
           }
 
-          // 4. استرجاع صور القوالب لكل المعارض من IndexedDB المفتوحة
           for (const exhId of Object.keys(appState.exhibitions)) {
             const cachedTpl = await idbGet(IDB_STORE_TEMPLATES, exhId);
             if (cachedTpl && !appState.exhibitions[exhId].templateDataUrl) {
@@ -2724,7 +2718,6 @@
 
           const lightState = {
             firebaseUrl: appState.firebaseUrl,
-            adminPin: appState.adminPin,
             activeExhibitionId: appState.activeExhibitionId,
             lastUpdated: appState.lastUpdated,
             configUpdated: appState.configUpdated,
@@ -2734,10 +2727,8 @@
             invitations: appState.invitations,
           };
 
-          // حفظ في IndexedDB المفتوحة (تستوعب عشرات الآلاف من العملاء بدون حد 5MB)
           idbSet(IDB_STORE_STATE, "main", lightState);
 
-          // حفظ نسخة خفيفة في LocalStorage بعد تنظيفه
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(lightState));
           } catch (quotaErr) {
@@ -2751,7 +2742,7 @@
 
       function mergeState(incoming) {
         if (!incoming || typeof incoming !== "object") return;
-        if (incoming.adminPin) appState.adminPin = incoming.adminPin;
+        // تم إلغاء استدعاء incoming.adminPin نهائياً لعدم تأثر الكود بالداتا بيز
         if (incoming.lastUpdated) appState.lastUpdated = incoming.lastUpdated;
         if (incoming.configUpdated)
           appState.configUpdated = incoming.configUpdated;
@@ -2854,7 +2845,7 @@
         }
       }
 
-      // ================= تحميل قالب المعرض النشط تلقائياً عند الحاجة (منع ظهور الخلفية الفارغة للسيلز) =================
+      // ================= تحميل قالب المعرض النشط تلقائياً عند الحاجة =================
       async function ensureActiveExhibitionTemplateLoaded() {
         const exh = getActiveExhibition();
         if (!exh) return false;
@@ -2913,8 +2904,7 @@
         );
       }
 
-      // ================= نظام المزامنة الذكي فائق السرعة والموفر للـ Bandwidth =================
-
+      // ================= نظام المزامنة الذكي فائق السرعة =================
       async function checkCloudHeartbeat() {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
         if (!baseUrl || isSyncing || isIssuing) return;
@@ -3104,7 +3094,6 @@
 
         try {
           const payload = {
-            adminPin: appState.adminPin,
             salesTeam: appState.salesTeam,
             exhibitions: appState.exhibitions,
             exhibitionsMeta: getExhibitionsMetadataOnly(),
@@ -3138,7 +3127,6 @@
 
         try {
           const payload = {
-            adminPin: appState.adminPin,
             salesTeam: appState.salesTeam,
             exhibitions: appState.exhibitions,
             exhibitionsMeta: getExhibitionsMetadataOnly(),
@@ -3978,12 +3966,9 @@
         const entered = (
           document.getElementById("pinModalInput").value || ""
         ).trim();
-        if (
-          entered === appState.adminPin ||
-          entered === DEFAULT_ADMIN_PIN ||
-          entered === ALT_ADMIN_PIN ||
-          entered === BACKUP_ADMIN_PIN
-        ) {
+
+        // التحقق يعتمد حصرياً على DEFAULT_ADMIN_PIN الموجود في الكود فقط
+        if (entered === DEFAULT_ADMIN_PIN) {
           isAdminMode = true;
           closePinModal();
           document.getElementById("salesWorkspaceView").style.display = "none";
@@ -4057,7 +4042,7 @@
         renderAdminDashboard();
       }
 
-      // ================= دوال التقرير المجمع لكل المعارض (باليوم أو التوتال) =================
+      // ================= دوال التقرير المجمع لكل المعارض =================
       function setGlobalReportMode(mode) {
         globalReportMode = mode;
         const allTimeBtn = document.getElementById("modeAllTimeBtn");
@@ -4270,7 +4255,7 @@
         });
       }
 
-      // ================= محرك توليد وطباعة ملفات PDF (25 عميل في كل صفحة بالعرض) =================
+      // ================= محرك توليد وطباعة ملفات PDF =================
       function escapeHtmlStr(str) {
         return String(str ?? "")
           .replace(/&/g, "&amp;")
@@ -4428,7 +4413,7 @@
         buildAndOpenPDFPages(list, `كشف عملاء (${exhTitle})`, periodSubtitle);
       }
 
-      // ================= عرض إنجاز السيلز (مقسم تيمات بخط فاصل أو الكل) =================
+      // ================= عرض إنجاز السيلز =================
       function sortSalesStatsArray(arr) {
         if (salesSortMode === "count") {
           return [...arr].sort(
@@ -4559,7 +4544,7 @@
         container.innerHTML = html;
       }
 
-      // ================= جدول نقل السيلز بين التيمات والتحكم في ظهورهم بقعدة المعرض =================
+      // ================= جدول نقل السيلز بين التيمات =================
       function renderTeamManagementTable() {
         const tbody = document.getElementById("teamManageTbody");
         if (!tbody) return;
@@ -4758,7 +4743,6 @@
 
         document.getElementById("firebaseUrlInput").value =
           appState.firebaseUrl;
-        document.getElementById("adminPinInput").value = appState.adminPin;
         renderAllCanvases();
       }
 
@@ -5256,21 +5240,16 @@
         const newUrl = cleanFirebaseUrl(
           document.getElementById("firebaseUrlInput").value,
         );
-        const newPin = (
-          document.getElementById("adminPinInput").value || ""
-        ).trim();
 
         if (newUrl) appState.firebaseUrl = newUrl;
-        if (newPin) appState.adminPin = newPin;
 
         await pushConfigOnlyToCloud();
-        alert("✅ تم حفظ إعدادات السحابة بنجاح!");
+        alert("✅ تم حفظ رابط السحابة بنجاح!");
       }
 
       // ================= النسخ الاحتياطي الكامل واستعادته =================
       function downloadFullBackupJSON() {
         const backupObj = {
-          adminPin: appState.adminPin,
           salesTeam: appState.salesTeam,
           exhibitions: appState.exhibitions,
           exhibitionsMeta: getExhibitionsMetadataOnly(),
