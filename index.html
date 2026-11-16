@@ -301,6 +301,91 @@
         border-color: var(--primary);
       }
 
+      .form-control:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        background: #090e1a;
+      }
+
+      /* Sales Selection Guard & Lock Styles */
+      .sales-step-box {
+        background: rgba(56, 189, 248, 0.05);
+        border: 1px solid var(--border-light);
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .sales-step-box.selected {
+        background: rgba(16, 185, 129, 0.07);
+        border-color: rgba(16, 185, 129, 0.4);
+      }
+
+      .sales-quick-pills {
+        display: none;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+        max-height: 120px;
+        overflow-y: auto;
+        padding: 4px 0;
+      }
+
+      .sales-quick-pill {
+        padding: 5px 11px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        background: var(--bg-card);
+        color: var(--text-main);
+        border: 1px solid var(--border-light);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+
+      .sales-quick-pill:hover,
+      .sales-quick-pill.active {
+        background: var(--primary);
+        color: #090d16;
+        border-color: var(--primary);
+      }
+
+      .sales-status-banner {
+        margin-top: 8px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .sales-status-banner.unselected {
+        background: rgba(217, 155, 38, 0.14);
+        border: 1px solid rgba(217, 155, 38, 0.4);
+        color: #fbbf24;
+      }
+
+      .sales-status-banner.selected {
+        background: rgba(16, 185, 129, 0.14);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: #34d399;
+      }
+
+      .client-form-lock-wrap {
+        transition: opacity 0.2s ease, filter 0.2s ease;
+      }
+
+      .client-form-lock-wrap.locked {
+        opacity: 0.42;
+        pointer-events: none;
+        user-select: none;
+      }
+
       input[type="date"].form-control {
         color-scheme: dark;
         cursor: pointer;
@@ -1159,79 +1244,99 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">1. ابحث عن اسمك أو كودك (للسيلز):</label>
+          <!-- الخطوة 1: اختيار السيلز أولاً (إجباري لفتح باقي الحقول) -->
+          <div id="salesStepBox" class="sales-step-box">
+            <label class="form-label" style="color: #fbbf24">
+              1. اختر اسمك أو كودك أولاً (إجباري لفتح التسجيل):
+            </label>
             <input
               type="text"
               id="salesSearchInput"
               class="form-control"
-              placeholder="🔍 اكتب أول حرف من اسمك أو الكود..."
+              placeholder="🔍 اكتب أول حرف من اسمك أو الكود للبحث..."
               oninput="filterSalesDropdown()"
               style="margin-bottom: 8px"
             />
+            <!-- أزرار اختيار سريع تظهر عند البحث -->
+            <div id="salesQuickPills" class="sales-quick-pills"></div>
+
             <select
               id="salesSelect"
               class="form-control"
               onchange="onSalesRepChange()"
             ></select>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label">2. اسم العميل الثلاثي أو الثنائي:</label>
-            <input
-              type="text"
-              id="clientNameInput"
-              class="form-control"
-              placeholder="مثال: أ / أحمد محمود عبد الرحمن"
-              oninput="onClientInputChange()"
-            />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label"
-              >3. رقم تليفون العميل
-              <span style="color: #fda4af"
-                >* (11 رقم إنجليزي أو بكود الدولة)</span
-              >:</label
+            <!-- شريط حالة اختيار السيلز -->
+            <div
+              id="salesSelectionBanner"
+              class="sales-status-banner unselected"
             >
-            <input
-              type="tel"
-              id="clientPhoneInput"
-              class="form-control"
-              placeholder="01012345678 أو +201012345678"
-              dir="ltr"
-              inputmode="tel"
-              autocomplete="off"
-              style="
-                text-align: right;
-                font-family: monospace, &quot;Cairo&quot;, sans-serif;
-                font-size: 16px;
-                letter-spacing: 1px;
-              "
-              oninput="handlePhoneInput(this)"
-            />
-            <div class="phone-hint">
-              <span id="phoneStatusHint"
-                >يقبل 11 رقم مصري (أو كود الدولة +20)</span
-              >
-              <span
-                id="phoneCounterBadge"
-                dir="ltr"
-                style="color: var(--primary)"
-                >0 / 11</span
-              >
+              <span>⚠️ اختر اسمك من القائمة أولاً لتفعيل إصدار الدعوة</span>
             </div>
           </div>
 
-          <div id="duplicateWarningBox" class="duplicate-warning-box"></div>
+          <!-- الخطوة 2 و 3: بيانات العميل وزر الإصدار (مقفولة حتى يختار السيلز اسمه) -->
+          <div id="clientFormLockWrap" class="client-form-lock-wrap locked">
+            <div class="form-group">
+              <label class="form-label">2. اسم العميل الثلاثي أو الثنائي:</label>
+              <input
+                type="text"
+                id="clientNameInput"
+                class="form-control"
+                placeholder="🔒 اختر اسم السيلز أولاً في الخطوة (1)..."
+                oninput="onClientInputChange()"
+                disabled
+              />
+            </div>
 
-          <button
-            id="issueBtn"
-            class="btn btn-primary btn-block"
-            onclick="issueAndDownloadInvitation()"
-          >
-            ✨ إصدار ومشاركة بطاقة الدعوة الآن
-          </button>
+            <div class="form-group">
+              <label class="form-label"
+                >3. رقم تليفون العميل
+                <span style="color: #fda4af"
+                  >* (11 رقم إنجليزي أو بكود الدولة)</span
+                >:</label
+              >
+              <input
+                type="tel"
+                id="clientPhoneInput"
+                class="form-control"
+                placeholder="🔒 اختر اسم السيلز أولاً..."
+                dir="ltr"
+                inputmode="tel"
+                autocomplete="off"
+                style="
+                  text-align: right;
+                  font-family: monospace, &quot;Cairo&quot;, sans-serif;
+                  font-size: 16px;
+                  letter-spacing: 1px;
+                "
+                oninput="handlePhoneInput(this)"
+                disabled
+              />
+              <div class="phone-hint">
+                <span id="phoneStatusHint"
+                  >يقبل 11 رقم مصري (أو كود الدولة +20)</span
+                >
+                <span
+                  id="phoneCounterBadge"
+                  dir="ltr"
+                  style="color: var(--primary)"
+                  >0 / 11</span
+                >
+              </div>
+            </div>
+
+            <div id="duplicateWarningBox" class="duplicate-warning-box"></div>
+
+            <button
+              id="issueBtn"
+              class="btn btn-primary btn-block"
+              onclick="issueAndDownloadInvitation()"
+              disabled
+            >
+              🔒 اختر اسم السيلز أولاً لتفعيل إصدار الدعوة
+            </button>
+          </div>
 
           <!-- صندوق التأكيد وأزرار المشاركة الفورية -->
           <div id="ticketConfirmBox" class="ticket-status-box">
@@ -2209,7 +2314,7 @@
       // =========================================================================
       const DEFAULT_ADMIN_PIN = "123456";
 
-      const APP_BUILD_VERSION = 11;
+      const APP_BUILD_VERSION = 12;
       const STORAGE_KEY = "BALMETER_VIP_LIGHT_STATE_V10";
       const IDB_NAME = "BalmetrVIP_LocalDB_V10";
       const IDB_STORE_TEMPLATES = "templates";
@@ -2223,6 +2328,7 @@
         "BALMETER_VIP_UNIFIED_STATE_V5",
         "BALMETER_VIP_TEMPLATES_CACHE_V9",
         "BALMETER_VIP_TEMPLATES_CACHE_V8",
+        "BALMETER_SAVED_SALES_CODE",
       ];
 
       const SALES_TEAMS = ["المعرض", "الجمعية", "الوديعة", "القاهرة"];
@@ -2285,6 +2391,9 @@
         },
         invitations: [],
       };
+
+      // السيلز المختار حالياً (يبدأ فارغاً دائماً لمنع أي لخبطة)
+      let currentSelectedSalesCode = "";
 
       let isAdminMode = false;
       let loadedTemplateImg = null;
@@ -2742,7 +2851,6 @@
 
       function mergeState(incoming) {
         if (!incoming || typeof incoming !== "object") return;
-        // تم إلغاء استدعاء incoming.adminPin نهائياً لعدم تأثر الكود بالداتا بيز
         if (incoming.lastUpdated) appState.lastUpdated = incoming.lastUpdated;
         if (incoming.configUpdated)
           appState.configUpdated = incoming.configUpdated;
@@ -3155,7 +3263,7 @@
         renderExhibitionPills();
         renderSalesSelectDropdown();
         loadActiveExhibitionTemplate();
-        updateDuplicateAlertUI();
+        updateSalesSelectionLockUI();
         if (isAdminMode) {
           renderAdminDashboard();
         }
@@ -3198,16 +3306,24 @@
           : "";
       }
 
+      // ================= إدارة اختيار السيلز الإجباري وقفل الحقول =================
+      function getSelectedSalesRepObj() {
+        if (!currentSelectedSalesCode) return null;
+        return (
+          appState.salesTeam.find(
+            (s) => formatSalesCode(s.code) === currentSelectedSalesCode,
+          ) || null
+        );
+      }
+
       function renderSalesSelectDropdown() {
         const select = document.getElementById("salesSelect");
-        const searchVal = (
-          document.getElementById("salesSearchInput").value || ""
+        const quickPillsContainer = document.getElementById("salesQuickPills");
+        const searchVal = toEnglishDigits(
+          document.getElementById("salesSearchInput").value || "",
         )
           .trim()
           .toLowerCase();
-        const savedSalesCode = formatSalesCode(
-          localStorage.getItem("BALMETER_SAVED_SALES_CODE") || "",
-        );
 
         const sortedTeam = sortSalesTeamByCode(appState.salesTeam);
         const filtered = sortedTeam.filter(
@@ -3217,6 +3333,14 @@
         );
 
         select.innerHTML = "";
+
+        const placeholderOpt = document.createElement("option");
+        placeholderOpt.value = "";
+        placeholderOpt.textContent = searchVal
+          ? `👇 اختر اسمك من نتائج البحث (${filtered.length})`
+          : "⚠️ -- اختر اسمك وكودك من هنا أولاً --";
+        select.appendChild(placeholderOpt);
+
         filtered.forEach((s) => {
           const formattedCode = formatSalesCode(s.code);
           const opt = document.createElement("option");
@@ -3225,28 +3349,130 @@
           select.appendChild(opt);
         });
 
+        // التأكد من بقاء السيلز المختار إذا كان موجوداً في القائمة المفلترة
         if (
-          savedSalesCode &&
-          filtered.some((s) => formatSalesCode(s.code) === savedSalesCode)
+          currentSelectedSalesCode &&
+          filtered.some(
+            (s) => formatSalesCode(s.code) === currentSelectedSalesCode,
+          )
         ) {
-          select.value = savedSalesCode;
+          select.value = currentSelectedSalesCode;
+        } else {
+          select.value = "";
         }
+
+        // عرض أزرار سريعة للاختيار عند الكتابة في مربع البحث
+        if (quickPillsContainer) {
+          if (searchVal.length > 0) {
+            quickPillsContainer.style.display = "flex";
+            if (filtered.length === 0) {
+              quickPillsContainer.innerHTML = `<span style="font-size:0.78rem; color:#fda4af; font-weight:700;">❌ لا يوجد سيلز مطابق للبحث</span>`;
+            } else {
+              quickPillsContainer.innerHTML = filtered
+                .map((s) => {
+                  const code = formatSalesCode(s.code);
+                  const isActive = code === currentSelectedSalesCode;
+                  return `<button type="button" class="sales-quick-pill ${isActive ? "active" : ""}" onclick="selectSalesRepByCode('${code}')">👤 ${escapeHtmlStr(s.name)} (${code})</button>`;
+                })
+                .join("");
+            }
+          } else {
+            quickPillsContainer.style.display = "none";
+            quickPillsContainer.innerHTML = "";
+          }
+        }
+
+        updateSalesSelectionLockUI();
         renderAllCanvases();
       }
 
+      function selectSalesRepByCode(code) {
+        currentSelectedSalesCode = code ? formatSalesCode(code) : "";
+        const select = document.getElementById("salesSelect");
+        if (select) {
+          select.value = currentSelectedSalesCode;
+        }
+        renderSalesSelectDropdown();
+        if (currentSelectedSalesCode) {
+          const clientNameEl = document.getElementById("clientNameInput");
+          if (clientNameEl && !clientNameEl.disabled) {
+            clientNameEl.focus();
+          }
+        }
+      }
+
+      function clearSelectedSalesRep() {
+        currentSelectedSalesCode = "";
+        const searchInput = document.getElementById("salesSearchInput");
+        const select = document.getElementById("salesSelect");
+        const clientNameInput = document.getElementById("clientNameInput");
+        const clientPhoneInput = document.getElementById("clientPhoneInput");
+
+        if (searchInput) searchInput.value = "";
+        if (select) select.value = "";
+        if (clientNameInput) clientNameInput.value = "";
+        if (clientPhoneInput) clientPhoneInput.value = "";
+        updatePhoneHelperUI("");
+
+        renderSalesSelectDropdown();
+      }
+
       function filterSalesDropdown() {
+        // عند البحث نلغي الاختيار السابق حتى يختار السيلز اسمه بوضوح من النتائج
+        currentSelectedSalesCode = "";
         renderSalesSelectDropdown();
       }
 
       function onSalesRepChange() {
-        const code = document.getElementById("salesSelect").value;
-        if (code) {
-          localStorage.setItem(
-            "BALMETER_SAVED_SALES_CODE",
-            formatSalesCode(code),
-          );
+        const rawCode = document.getElementById("salesSelect").value;
+        currentSelectedSalesCode = rawCode ? formatSalesCode(rawCode) : "";
+        renderSalesSelectDropdown();
+        if (currentSelectedSalesCode) {
+          const clientNameEl = document.getElementById("clientNameInput");
+          if (clientNameEl && !clientNameEl.disabled) {
+            clientNameEl.focus();
+          }
         }
-        renderAllCanvases();
+      }
+
+      function updateSalesSelectionLockUI() {
+        const repObj = getSelectedSalesRepObj();
+        const lockWrap = document.getElementById("clientFormLockWrap");
+        const stepBox = document.getElementById("salesStepBox");
+        const banner = document.getElementById("salesSelectionBanner");
+        const clientNameInput = document.getElementById("clientNameInput");
+        const clientPhoneInput = document.getElementById("clientPhoneInput");
+
+        if (!lockWrap || !banner || !clientNameInput || !clientPhoneInput)
+          return;
+
+        if (repObj) {
+          lockWrap.classList.remove("locked");
+          if (stepBox) stepBox.classList.add("selected");
+          clientNameInput.disabled = false;
+          clientPhoneInput.disabled = false;
+          clientNameInput.placeholder = "مثال: أ / أحمد محمود عبد الرحمن";
+          clientPhoneInput.placeholder = "01012345678 أو +201012345678";
+
+          banner.className = "sales-status-banner selected";
+          banner.innerHTML = `
+            <span>✅ السيلز المختار: <strong>${escapeHtmlStr(repObj.name)}</strong> (كود: <strong>${formatSalesCode(repObj.code)}</strong>)</span>
+            <button type="button" class="btn btn-outline" style="padding:3px 10px; font-size:0.74rem;" onclick="clearSelectedSalesRep()">🔄 تغيير الاسم</button>
+          `;
+        } else {
+          lockWrap.classList.add("locked");
+          if (stepBox) stepBox.classList.remove("selected");
+          clientNameInput.disabled = true;
+          clientPhoneInput.disabled = true;
+          clientNameInput.placeholder =
+            "🔒 اختر اسم السيلز أولاً في الخطوة (1)...";
+          clientPhoneInput.placeholder = "🔒 اختر اسم السيلز أولاً...";
+
+          banner.className = "sales-status-banner unselected";
+          banner.innerHTML = `<span>⚠️ يجب اختيار اسم السيلز أولاً لفتح بيانات العميل وإصدار الدعوة</span>`;
+        }
+
+        updateDuplicateAlertUI();
       }
 
       function findDuplicateInvitation(exhId, rawPhone) {
@@ -3269,7 +3495,18 @@
         const exh = getActiveExhibition();
         const dupBox = document.getElementById("duplicateWarningBox");
         const issueBtn = document.getElementById("issueBtn");
+        const repObj = getSelectedSalesRepObj();
         if (!dupBox || !issueBtn) return;
+
+        if (!repObj) {
+          dupBox.style.display = "none";
+          issueBtn.disabled = true;
+          issueBtn.style.opacity = "0.55";
+          issueBtn.style.cursor = "not-allowed";
+          issueBtn.textContent =
+            "🔒 اختر اسم السيلز أولاً لتفعيل إصدار الدعوة";
+          return;
+        }
 
         if (typedPhone && exh) {
           const dupInv = findDuplicateInvitation(exh.id, typedPhone);
@@ -3280,6 +3517,7 @@
             issueBtn.disabled = true;
             issueBtn.style.opacity = "0.5";
             issueBtn.style.cursor = "not-allowed";
+            issueBtn.textContent = "❌ الرقم مسجل مسبقاً (لا يمكن الإصدار)";
             return;
           }
         }
@@ -3289,6 +3527,7 @@
           issueBtn.disabled = false;
           issueBtn.style.opacity = "1";
           issueBtn.style.cursor = "pointer";
+          issueBtn.textContent = `✨ إصدار ومشاركة بطاقة الدعوة (${repObj.name} - ${formatSalesCode(repObj.code)})`;
         }
       }
 
@@ -3435,10 +3674,14 @@
             ? `مسجل مسبقاً مع: ${dupInv.salesName}`
             : typedName || "أ / أحمد محمود عبد الرحمن";
 
-        const rawSalesCode = activeIssuedTicket
-          ? activeIssuedTicket.salesCode
-          : document.getElementById("salesSelect").value || "S11";
-        const salesCode = formatSalesCode(rawSalesCode);
+        const selectedRep = getSelectedSalesRepObj();
+        const previewSalesCode = activeIssuedTicket
+          ? formatSalesCode(activeIssuedTicket.salesCode)
+          : selectedRep
+            ? formatSalesCode(selectedRep.code)
+            : isStudioCanvas
+              ? "S11"
+              : "اختر اسمك أولاً";
 
         const nameX = ((exh.nameX ?? 50) / 100) * canvas.width;
         const nameY = ((exh.nameY ?? 59) / 100) * canvas.height;
@@ -3491,14 +3734,14 @@
 
         let codeText = "";
         if (isStudioCanvas) {
-          codeText = `${getCalculatedNextSeq(exh.id)}  |  ${salesCode}`;
+          codeText = `${getCalculatedNextSeq(exh.id)}  |  ${previewSalesCode}`;
         } else if (activeIssuedTicket) {
           codeText = `${activeIssuedTicket.seqNumber}  |  ${formatSalesCode(activeIssuedTicket.salesCode)}`;
         } else if (isDuplicatePhone) {
           const dupCode = formatSalesCode(dupInv.salesCode);
           codeText = `❌ تم عمل دعوة من: ${dupInv.salesName} (${dupCode}) #${dupInv.seqNumber}`;
         } else {
-          codeText = `----  |  ${salesCode}`;
+          codeText = `----  |  ${previewSalesCode}`;
         }
 
         ctx.font = `800 ${codeFontSize}px 'Cairo', sans-serif`;
@@ -3758,13 +4001,18 @@
 
       // ================= إصدار الدعوة المحمي 100% =================
       async function issueAndDownloadInvitation() {
+        const selectedRep = getSelectedSalesRepObj();
+        if (!selectedRep) {
+          alert("⚠️ من فضلك اختر اسمك وكودك أولاً من الخطوة رقم (1)!");
+          document.getElementById("salesSelect").focus();
+          return;
+        }
+
+        const salesCode = formatSalesCode(selectedRep.code);
         const clientNameInput = document.getElementById("clientNameInput");
         const clientPhoneInput = document.getElementById("clientPhoneInput");
         const clientName = (clientNameInput.value || "").trim();
         const rawPhone = (clientPhoneInput.value || "").trim();
-        const salesCode = formatSalesCode(
-          document.getElementById("salesSelect").value,
-        );
 
         if (!clientName) {
           alert("من فضلك اكتب اسم العميل أولاً!");
@@ -3785,11 +4033,6 @@
         }
 
         const clientPhone = phoneCheck.normalized;
-
-        if (!salesCode) {
-          alert("من فضلك اختر اسمك من قائمة السيلز!");
-          return;
-        }
 
         const btn = document.getElementById("issueBtn");
         isIssuing = true;
@@ -3845,7 +4088,7 @@
           const assignedSeq = getCalculatedNextSeq(currentExh.id);
           const salesObj = appState.salesTeam.find(
             (s) => formatSalesCode(s.code) === salesCode,
-          ) || { code: salesCode, name: salesCode };
+          ) || { code: salesCode, name: selectedRep.name };
 
           const now = new Date();
           const newTicket = {
@@ -3902,8 +4145,12 @@
           lastIssuedTicket = newTicket;
           await saveLocalState();
 
+          // تفريغ الحقول وإعادة قفل اختيار السيلز للدعوة القادمة لمنع أي لخبطة
           clientNameInput.value = "";
           clientPhoneInput.value = "";
+          currentSelectedSalesCode = "";
+          const searchInput = document.getElementById("salesSearchInput");
+          if (searchInput) searchInput.value = "";
           updatePhoneHelperUI("");
           document.getElementById("duplicateWarningBox").style.display = "none";
 
@@ -3917,7 +4164,7 @@
           const confirmBox = document.getElementById("ticketConfirmBox");
           const confirmText = document.getElementById("ticketConfirmText");
           confirmBox.style.display = "block";
-          confirmText.innerHTML = `✅ تم تسجيل العميل بالسحابة وإصدار الدعوة رقم <strong>${assignedSeq}</strong> باسم <strong>${clientName}</strong> بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
+          confirmText.innerHTML = `✅ تم تسجيل العميل بالسحابة وإصدار الدعوة رقم <strong>${assignedSeq}</strong> باسم <strong>${clientName}</strong> (السيلز: <strong>${salesObj.name} - ${formatSalesCode(salesObj.code)}</strong>) بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
           document.getElementById("previewTopActions").style.display = "flex";
 
           renderAllUI();
@@ -3939,8 +4186,7 @@
           console.error(e);
         } finally {
           isIssuing = false;
-          updateDuplicateAlertUI();
-          btn.textContent = "✨ إصدار ومشاركة بطاقة الدعوة الآن";
+          updateSalesSelectionLockUI();
         }
       }
 
@@ -3967,7 +4213,6 @@
           document.getElementById("pinModalInput").value || ""
         ).trim();
 
-        // التحقق يعتمد حصرياً على DEFAULT_ADMIN_PIN الموجود في الكود فقط
         if (entered === DEFAULT_ADMIN_PIN) {
           isAdminMode = true;
           closePinModal();
@@ -4853,6 +5098,9 @@
         appState.salesTeam = appState.salesTeam.filter(
           (s) => formatSalesCode(s.code) !== targetCode,
         );
+        if (currentSelectedSalesCode === targetCode) {
+          currentSelectedSalesCode = "";
+        }
         saveLocalState();
         renderAllUI();
         patchCloudData({ salesTeam: appState.salesTeam });
