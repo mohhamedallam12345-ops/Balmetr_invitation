@@ -38,7 +38,9 @@
         --radius: 12px;
       }
 
-      * {
+      *,
+      *::before,
+      *::after {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
@@ -497,7 +499,6 @@
         width: 100%;
       }
 
-      /* 6-Page Navigation Grid */
       .admin-nav-grid {
         display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -544,7 +545,6 @@
         display: block;
       }
 
-      /* Filter Toolbar inside Global Report */
       .filter-toolbar {
         background: var(--bg-input);
         border: 1px solid var(--border);
@@ -626,7 +626,6 @@
         font-weight: 700;
       }
 
-      /* Teams Blocks & Dividers in Sales Performance */
       .team-block {
         background: var(--bg-input);
         border: 1px solid var(--border);
@@ -670,7 +669,6 @@
         opacity: 0.65;
       }
 
-      /* Studio & Two-Col Grids */
       .studio-grid {
         display: grid;
         grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
@@ -1138,7 +1136,6 @@
           font-size: 0.8rem;
         }
 
-        /* 3x2 Clean Grid for Admin Navigation on Mobile */
         .admin-nav-grid {
           grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 6px;
@@ -1153,7 +1150,6 @@
           font-size: 1rem;
         }
 
-        /* 2x2 KPIs on Mobile */
         .kpi-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 8px;
@@ -1275,7 +1271,7 @@
             </div>
           </div>
 
-          <!-- الخطوة 2 و 3: بيانات العميل وزر الإصدار (مقفولة حتى يختار السيلز اسمه) -->
+          <!-- الخطوة 2 و 3: بيانات العميل وزر الإصدار -->
           <div id="clientFormLockWrap" class="client-form-lock-wrap locked">
             <div class="form-group">
               <label class="form-label">2. اسم العميل الثلاثي أو الثنائي:</label>
@@ -1306,7 +1302,7 @@
                 autocomplete="off"
                 style="
                   text-align: right;
-                  font-family: monospace, &quot;Cairo&quot;, sans-serif;
+                  font-family: monospace, 'Cairo', sans-serif;
                   font-size: 16px;
                   letter-spacing: 1px;
                 "
@@ -1354,7 +1350,7 @@
                 style="flex: 1; padding: 11px"
                 onclick="downloadCurrentCanvas()"
               >
-                ⬇️ تنزيل
+                ⬇️ تنزيل الصورة
               </button>
             </div>
           </div>
@@ -1452,10 +1448,7 @@
                 >
                   🟢 نسخ التقرير واتساب
                 </button>
-                <button
-                  class="btn btn-primary"
-                  onclick="exportGlobalPDF()"
-                >
+                <button class="btn btn-primary" onclick="exportGlobalPDF()">
                   🖨️ تحميل PDF للطباعة (25/صفحة)
                 </button>
               </div>
@@ -1542,7 +1535,7 @@
           </div>
         </div>
 
-        <!-- صفحة 2: إنجاز ومتابعة السيلز (عرض بالتيمات بخطوط فاصلة أو عرض الكل) -->
+        <!-- صفحة 2: إنجاز ومتابعة السيلز -->
         <div id="pageSalesPerf" class="admin-page">
           <div class="kpi-grid">
             <div class="kpi-card">
@@ -1726,7 +1719,7 @@
           </div>
         </div>
 
-        <!-- صفحة 4: إدارة فريق السيلز ونقلهم بين التيمات + التحكم في ظهورهم بقعدة المعرض + إدارة المعارض -->
+        <!-- صفحة 4: إدارة فريق السيلز والمعارض -->
         <div id="pageTeamManage" class="admin-page">
           <div class="admin-two-col" style="margin-bottom: 14px">
             <div class="card">
@@ -1898,8 +1891,8 @@
             >
               💡 ملاحظة: السيلز <strong>(المخفي من القعدة)</strong> يختفي فقط من
               اختيارات <strong>"سيلز القعدة"</strong> في سيستم المعرض لمنع
-              الزحمة، لكنه يظل ظاهراً طبيعياً في إصدار الدعوات وفي الريسبشن (لو
-              العميل فاكر اسمه) وفي التقارير والـ PDF.
+              الزحمة، لكنه يظل ظاهراً طبيعياً في إصدار الدعوات وفي الريسبشن وفي
+              التقارير والـ PDF.
             </p>
             <div class="table-responsive">
               <table>
@@ -2114,7 +2107,7 @@
                     type="checkbox"
                     id="showGuidesCheckbox"
                     checked
-                    onchange="renderAllCanvases()"
+                    onchange="scheduleRenderAllCanvases()"
                     style="width: 18px; height: 18px; accent-color: var(--gold)"
                   />
                   إظهار الإطار التوضيحي أثناء التعديل
@@ -2308,19 +2301,17 @@
       const DEFAULT_FIREBASE_URL =
         "https://balmetr-vip-default-rtdb.firebaseio.com";
 
-      // =========================================================================
-      // كلمة سر المدير الوحيدة المعتمدة (تتجاهل الداتا بيز تماماً)
-      // لتغيير الباسورد مستقبلاً، عدل الرقم داخل علامات التنصيص بالأسفل فقط:
-      // =========================================================================
       const DEFAULT_ADMIN_PIN = "123456";
 
-      const APP_BUILD_VERSION = 12;
-      const STORAGE_KEY = "BALMETER_VIP_LIGHT_STATE_V10";
+      const APP_BUILD_VERSION = 14;
+      const STORAGE_KEY = "BALMETER_VIP_LIGHT_STATE_V12";
+      const SESSION_SALES_KEY = "BALMETER_ACTIVE_SALES_CODE_V12";
       const IDB_NAME = "BalmetrVIP_LocalDB_V10";
       const IDB_STORE_TEMPLATES = "templates";
       const IDB_STORE_STATE = "state_snapshot";
 
       const OBSOLETE_LOCAL_KEYS = [
+        "BALMETER_VIP_LIGHT_STATE_V10",
         "BALMETER_VIP_UNIFIED_STATE_V9",
         "BALMETER_VIP_UNIFIED_STATE_V8",
         "BALMETER_VIP_UNIFIED_STATE_V7",
@@ -2328,7 +2319,6 @@
         "BALMETER_VIP_UNIFIED_STATE_V5",
         "BALMETER_VIP_TEMPLATES_CACHE_V9",
         "BALMETER_VIP_TEMPLATES_CACHE_V8",
-        "BALMETER_SAVED_SALES_CODE",
       ];
 
       const SALES_TEAMS = ["المعرض", "الجمعية", "الوديعة", "القاهرة"];
@@ -2363,6 +2353,7 @@
             name: "معرض سوهاج",
             nextSeq: 131,
             templateDataUrl: "",
+            hasTemplate: false,
             nameX: 50,
             nameY: 59,
             nameSize: 52,
@@ -2378,6 +2369,7 @@
             name: "معرض المنصورة",
             nextSeq: 131,
             templateDataUrl: "",
+            hasTemplate: false,
             nameX: 50,
             nameY: 59,
             nameSize: 52,
@@ -2392,9 +2384,7 @@
         invitations: [],
       };
 
-      // السيلز المختار حالياً (يبدأ فارغاً دائماً لمنع أي لخبطة)
       let currentSelectedSalesCode = "";
-
       let isAdminMode = false;
       let loadedTemplateImg = null;
       let lastLoadedTemplateSrc = "";
@@ -2403,7 +2393,7 @@
       let isSyncing = false;
       let isIssuing = false;
       let draggingTarget = null;
-      let nextCloudInvitationIndex = 0;
+      let rafCanvasPending = false;
 
       let salesViewMode = "teams";
       let salesSortMode = "code";
@@ -2413,7 +2403,6 @@
       let currentLogsPage = 1;
       const LOGS_PER_PAGE = 25;
       const ROWS_PER_PDF_PAGE = 25;
-      let lastVisibilityHiddenAt = 0;
 
       // ================= ذاكرة IndexedDB المفتوحة على الهاتف =================
       let idbPromise = null;
@@ -2522,42 +2511,11 @@
         return "";
       }
 
-      // ================= نظام التحديث الذاتي لشاشة الدعوات =================
-      function forceHardReloadSalesScreen() {
-        if (isAdminMode || isIssuing || draggingTarget) return;
-        try {
-          const url = new URL(window.location.href);
-          url.searchParams.set("v", Date.now());
-          window.location.replace(url.toString());
-        } catch (e) {
-          window.location.reload();
-        }
-      }
-
-      function setupSalesScreenAutoReload() {
+      // تحديث هادئ في الخلفية عند العودة للتطبيق بدلاً من إعادة التحميل المزعجة
+      function setupVisibilitySync() {
         document.addEventListener("visibilitychange", () => {
-          if (document.hidden) {
-            lastVisibilityHiddenAt = Date.now();
-          } else {
-            if (isAdminMode || isIssuing || draggingTarget) return;
-            const awayDurationMs = lastVisibilityHiddenAt
-              ? Date.now() - lastVisibilityHiddenAt
-              : 0;
-            const typedName = (
-              document.getElementById("clientNameInput")?.value || ""
-            ).trim();
-            const typedPhone = (
-              document.getElementById("clientPhoneInput")?.value || ""
-            ).trim();
-
-            if (
-              (awayDurationMs > 5 * 60 * 1000 && !typedName && !typedPhone) ||
-              awayDurationMs > 20 * 60 * 1000
-            ) {
-              forceHardReloadSalesScreen();
-            } else if (awayDurationMs > 2000) {
-              checkCloudHeartbeat();
-            }
+          if (!document.hidden && !isSyncing && !isIssuing && !draggingTarget) {
+            checkCloudHeartbeat();
           }
         });
       }
@@ -2567,9 +2525,19 @@
         const dateInput = document.getElementById("globalReportDateInput");
         if (dateInput) dateInput.value = globalReportDate;
 
+        try {
+          const savedSales = sessionStorage.getItem(SESSION_SALES_KEY);
+          if (savedSales) currentSelectedSalesCode = formatSalesCode(savedSales);
+        } catch (e) {}
+
         await loadLocalState();
         setupStudioCanvasDragging();
-        setupSalesScreenAutoReload();
+        setupVisibilitySync();
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => scheduleRenderAllCanvases());
+        }
+
         renderAllUI();
 
         await syncFromCloud(false, false);
@@ -2579,7 +2547,7 @@
           if (!isSyncing && !isIssuing && !draggingTarget && !document.hidden) {
             checkCloudHeartbeat();
           }
-        }, 50000);
+        }, 40000);
       });
 
       function toEnglishDigits(str) {
@@ -2730,6 +2698,7 @@
         return cleaned;
       }
 
+      // الحفاظ على حالة hasTemplate حتى لو لم يكن القالب محملاً على الجهاز الحالي
       function getExhibitionsMetadataOnly() {
         const meta = {};
         Object.keys(appState.exhibitions).forEach((k) => {
@@ -2749,7 +2718,8 @@
             codeSize: ex.codeSize ?? 32,
             codeColor: ex.codeColor || "#f59e0b",
             hasTemplate: Boolean(
-              ex.templateDataUrl && ex.templateDataUrl.length > 100,
+              ex.hasTemplate ||
+                (ex.templateDataUrl && ex.templateDataUrl.length > 100),
             ),
           };
         });
@@ -2758,27 +2728,6 @@
 
       async function loadLocalState() {
         try {
-          for (const oldTplKey of [
-            "BALMETER_VIP_TEMPLATES_CACHE_V9",
-            "BALMETER_VIP_TEMPLATES_CACHE_V8",
-          ]) {
-            const rawOldTpls = localStorage.getItem(oldTplKey);
-            if (rawOldTpls) {
-              try {
-                const parsedTpls = JSON.parse(rawOldTpls);
-                for (const exhId of Object.keys(parsedTpls)) {
-                  if (parsedTpls[exhId]) {
-                    await idbSet(
-                      IDB_STORE_TEMPLATES,
-                      exhId,
-                      parsedTpls[exhId],
-                    );
-                  }
-                }
-              } catch (e) {}
-            }
-          }
-
           OBSOLETE_LOCAL_KEYS.forEach((k) => {
             try {
               localStorage.removeItem(k);
@@ -2804,6 +2753,7 @@
             const cachedTpl = await idbGet(IDB_STORE_TEMPLATES, exhId);
             if (cachedTpl && !appState.exhibitions[exhId].templateDataUrl) {
               appState.exhibitions[exhId].templateDataUrl = cachedTpl;
+              appState.exhibitions[exhId].hasTemplate = true;
             }
           }
         } catch (e) {
@@ -2819,13 +2769,21 @@
           const lightExhibitions = {};
           for (const k of Object.keys(appState.exhibitions)) {
             const ex = appState.exhibitions[k];
+            const hasTpl = Boolean(
+              ex.hasTemplate ||
+                (ex.templateDataUrl && ex.templateDataUrl.length > 100),
+            );
             if (ex.templateDataUrl && ex.templateDataUrl.length > 100) {
               idbSet(IDB_STORE_TEMPLATES, k, ex.templateDataUrl);
             }
-            lightExhibitions[k] = { ...ex, templateDataUrl: "" };
+            lightExhibitions[k] = {
+              ...ex,
+              hasTemplate: hasTpl,
+              templateDataUrl: "",
+            };
           }
 
-          const lightState = {
+          const fullSnapshot = {
             firebaseUrl: appState.firebaseUrl,
             activeExhibitionId: appState.activeExhibitionId,
             lastUpdated: appState.lastUpdated,
@@ -2836,17 +2794,47 @@
             invitations: appState.invitations,
           };
 
-          idbSet(IDB_STORE_STATE, "main", lightState);
+          // حفظ السجل الكامل في IndexedDB غير المتزامن لمنع تجميد المتصفح
+          idbSet(IDB_STORE_STATE, "main", fullSnapshot);
 
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(lightState));
-          } catch (quotaErr) {
-            const minimalState = { ...lightState, invitations: [] };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(minimalState));
-          }
+          // حفظ الإعدادات الخفيفة فقط في localStorage لسرعة الاستجابة
+          const ultraLightState = {
+            ...fullSnapshot,
+            invitations: [],
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(ultraLightState));
         } catch (e) {
           console.warn("Save state warning:", e);
         }
+      }
+
+      function normalizeInvitationsList(rawInvs) {
+        if (!rawInvs) return [];
+        const arr = Array.isArray(rawInvs)
+          ? rawInvs
+          : typeof rawInvs === "object"
+            ? Object.values(rawInvs)
+            : [];
+
+        const uniqueMap = new Map();
+        arr.forEach((inv) => {
+          if (!inv || typeof inv !== "object") return;
+          const normalized = {
+            ...inv,
+            salesCode: formatSalesCode(inv.salesCode),
+          };
+          const key =
+            normalized.id ||
+            `${normalized.exhibitionId}_${normalized.seqNumber}_${normalized.clientPhone}`;
+          uniqueMap.set(key, normalized);
+        });
+
+        return Array.from(uniqueMap.values()).sort((a, b) => {
+          const tA = Number(a.timestamp) || 0;
+          const tB = Number(b.timestamp) || 0;
+          if (tA !== tB && tA > 0 && tB > 0) return tA - tB;
+          return (Number(a.seqNumber) || 0) - (Number(b.seqNumber) || 0);
+        });
       }
 
       function mergeState(incoming) {
@@ -2876,27 +2864,30 @@
           Object.keys(incomingExhs).forEach((k) => {
             const ex = incomingExhs[k];
             if (!ex || typeof ex !== "object") return;
-            const existingTpl =
-              appState.exhibitions[k]?.templateDataUrl || "";
+            const prevEx = appState.exhibitions[k] || {};
+            const incomingTpl =
+              ex.templateDataUrl && ex.templateDataUrl.length > 100
+                ? ex.templateDataUrl
+                : "";
+            const finalTpl = incomingTpl || prevEx.templateDataUrl || "";
+            const hasTpl = Boolean(
+              ex.hasTemplate || prevEx.hasTemplate || finalTpl.length > 100,
+            );
+
             mergedExhibitions[k] = {
-              ...appState.exhibitions[k],
+              ...prevEx,
               ...ex,
-              templateDataUrl:
-                ex.templateDataUrl && ex.templateDataUrl.length > 100
-                  ? ex.templateDataUrl
-                  : existingTpl,
-              nameX: ex.nameX ?? appState.exhibitions[k]?.nameX ?? 50,
-              nameY: ex.nameY ?? appState.exhibitions[k]?.nameY ?? 59,
-              nameSize: ex.nameSize ?? appState.exhibitions[k]?.nameSize ?? 52,
-              nameBoxWidth:
-                ex.nameBoxWidth ?? appState.exhibitions[k]?.nameBoxWidth ?? 80,
-              nameColor:
-                ex.nameColor || appState.exhibitions[k]?.nameColor || "#ffffff",
-              codeX: ex.codeX ?? appState.exhibitions[k]?.codeX ?? 50,
-              codeY: ex.codeY ?? appState.exhibitions[k]?.codeY ?? 90.5,
-              codeSize: ex.codeSize ?? appState.exhibitions[k]?.codeSize ?? 32,
-              codeColor:
-                ex.codeColor || appState.exhibitions[k]?.codeColor || "#f59e0b",
+              templateDataUrl: finalTpl,
+              hasTemplate: hasTpl,
+              nameX: ex.nameX ?? prevEx.nameX ?? 50,
+              nameY: ex.nameY ?? prevEx.nameY ?? 59,
+              nameSize: ex.nameSize ?? prevEx.nameSize ?? 52,
+              nameBoxWidth: ex.nameBoxWidth ?? prevEx.nameBoxWidth ?? 80,
+              nameColor: ex.nameColor || prevEx.nameColor || "#ffffff",
+              codeX: ex.codeX ?? prevEx.codeX ?? 50,
+              codeY: ex.codeY ?? prevEx.codeY ?? 90.5,
+              codeSize: ex.codeSize ?? prevEx.codeSize ?? 32,
+              codeColor: ex.codeColor || prevEx.codeColor || "#f59e0b",
             };
           });
           if (Object.keys(mergedExhibitions).length > 0) {
@@ -2905,31 +2896,7 @@
         }
 
         if (incoming.invitations !== undefined) {
-          let rawInvs = incoming.invitations;
-          if (Array.isArray(rawInvs)) {
-            nextCloudInvitationIndex = rawInvs.length;
-            appState.invitations = rawInvs.filter(Boolean).map((inv) => ({
-              ...inv,
-              salesCode: formatSalesCode(inv.salesCode),
-            }));
-          } else if (rawInvs && typeof rawInvs === "object") {
-            const keys = Object.keys(rawInvs);
-            let maxKey = keys.length;
-            keys.forEach((k) => {
-              const n = parseInt(k, 10);
-              if (!isNaN(n) && n >= maxKey) maxKey = n + 1;
-            });
-            nextCloudInvitationIndex = maxKey;
-            appState.invitations = Object.values(rawInvs)
-              .filter(Boolean)
-              .map((inv) => ({
-                ...inv,
-                salesCode: formatSalesCode(inv.salesCode),
-              }));
-          } else {
-            nextCloudInvitationIndex = 0;
-            appState.invitations = [];
-          }
+          appState.invitations = normalizeInvitationsList(incoming.invitations);
         }
 
         if (!appState.exhibitions[appState.activeExhibitionId]) {
@@ -2959,14 +2926,15 @@
         if (!exh) return false;
 
         if (exh.templateDataUrl && exh.templateDataUrl.length > 100) {
-          loadActiveExhibitionTemplate();
+          await loadActiveExhibitionTemplateAsync();
           return true;
         }
 
         const cachedInIdb = await idbGet(IDB_STORE_TEMPLATES, exh.id);
         if (cachedInIdb && cachedInIdb.length > 100) {
           exh.templateDataUrl = cachedInIdb;
-          loadActiveExhibitionTemplate();
+          exh.hasTemplate = true;
+          await loadActiveExhibitionTemplateAsync();
           return true;
         }
 
@@ -2974,7 +2942,7 @@
         if (!baseUrl || isFetchingTemplate) return false;
 
         isFetchingTemplate = true;
-        renderAllCanvases();
+        scheduleRenderAllCanvases();
         try {
           const res = await fetch(
             `${baseUrl}/balmeter_vip_system/exhibitions/${exh.id}.json`,
@@ -2983,20 +2951,22 @@
           if (res.ok) {
             const exhCloudObj = await res.json();
             if (exhCloudObj && typeof exhCloudObj === "object") {
+              const hasCloudTpl = Boolean(
+                exhCloudObj.templateDataUrl &&
+                  exhCloudObj.templateDataUrl.length > 100,
+              );
               appState.exhibitions[exh.id] = {
                 ...appState.exhibitions[exh.id],
                 ...exhCloudObj,
+                hasTemplate: hasCloudTpl,
               };
-              if (
-                exhCloudObj.templateDataUrl &&
-                exhCloudObj.templateDataUrl.length > 100
-              ) {
+              if (hasCloudTpl) {
                 await idbSet(
                   IDB_STORE_TEMPLATES,
                   exh.id,
                   exhCloudObj.templateDataUrl,
                 );
-                loadActiveExhibitionTemplate();
+                await loadActiveExhibitionTemplateAsync();
                 return true;
               }
             }
@@ -3005,7 +2975,7 @@
           console.warn("Template auto-fetch warning:", e);
         } finally {
           isFetchingTemplate = false;
-          renderAllCanvases();
+          scheduleRenderAllCanvases();
         }
         return Boolean(
           exh.templateDataUrl && exh.templateDataUrl.length > 100,
@@ -3057,14 +3027,6 @@
             const cloudData = await res.json();
 
             if (cloudData) {
-              if (
-                !isAdminMode &&
-                cloudData.minRequiredVersion &&
-                Number(cloudData.minRequiredVersion) > APP_BUILD_VERSION
-              ) {
-                forceHardReloadSalesScreen();
-                return false;
-              }
               mergeState(cloudData);
               await saveLocalState();
               renderAllUI();
@@ -3073,45 +3035,30 @@
               });
             }
           } else {
-            const [invRes, teamRes, metaRes, verRes, lastUpRes] =
-              await Promise.all([
-                fetch(`${baseUrl}/balmeter_vip_system/invitations.json`, {
-                  cache: "no-store",
-                }),
-                fetch(`${baseUrl}/balmeter_vip_system/salesTeam.json`, {
-                  cache: "no-store",
-                }),
-                fetch(`${baseUrl}/balmeter_vip_system/exhibitionsMeta.json`, {
-                  cache: "no-store",
-                }),
-                fetch(
-                  `${baseUrl}/balmeter_vip_system/minRequiredVersion.json`,
-                  { cache: "no-store" },
-                ),
-                fetch(`${baseUrl}/balmeter_vip_system/lastUpdated.json`, {
-                  cache: "no-store",
-                }),
-              ]);
+            const [invRes, teamRes, metaRes, lastUpRes] = await Promise.all([
+              fetch(`${baseUrl}/balmeter_vip_system/invitations.json`, {
+                cache: "no-store",
+              }),
+              fetch(`${baseUrl}/balmeter_vip_system/salesTeam.json`, {
+                cache: "no-store",
+              }),
+              fetch(`${baseUrl}/balmeter_vip_system/exhibitionsMeta.json`, {
+                cache: "no-store",
+              }),
+              fetch(`${baseUrl}/balmeter_vip_system/lastUpdated.json`, {
+                cache: "no-store",
+              }),
+            ]);
 
             if (!invRes.ok) throw new Error("Invitations fetch failed");
 
-            const [invData, teamData, metaData, cloudMinVer, cloudLastUp] =
+            const [invData, teamData, metaData, cloudLastUp] =
               await Promise.all([
                 invRes.json(),
                 teamRes.ok ? teamRes.json() : null,
                 metaRes.ok ? metaRes.json() : null,
-                verRes.ok ? verRes.json() : null,
                 lastUpRes.ok ? lastUpRes.json() : null,
               ]);
-
-            if (
-              !isAdminMode &&
-              cloudMinVer &&
-              Number(cloudMinVer) > APP_BUILD_VERSION
-            ) {
-              forceHardReloadSalesScreen();
-              return false;
-            }
 
             let exhibitionsPayload = null;
             if (metaData && typeof metaData === "object") {
@@ -3192,37 +3139,62 @@
         }
       }
 
-      async function pushConfigOnlyToCloud() {
+      // حفظ المعرض النشط فقط لمنع مسح قوالب المعارض الأخرى في السحابة
+      async function pushActiveExhibitionToCloud() {
         const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+        const exh = getActiveExhibition();
         const nowTs = Date.now();
         appState.lastUpdated = nowTs;
         appState.configUpdated = nowTs;
         await saveLocalState();
-        if (!baseUrl) return false;
+        if (!baseUrl || !exh) return false;
 
         try {
-          const payload = {
-            salesTeam: appState.salesTeam,
-            exhibitions: appState.exhibitions,
-            exhibitionsMeta: getExhibitionsMetadataOnly(),
-            minRequiredVersion: APP_BUILD_VERSION,
-            lastUpdated: nowTs,
-            configUpdated: nowTs,
-          };
-          const res = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
+          const exhPayload = { ...exh };
+          if (!exhPayload.templateDataUrl && exh.hasTemplate) {
+            delete exhPayload.templateDataUrl;
+          }
+
+          const exRes = await fetch(
+            `${baseUrl}/balmeter_vip_system/exhibitions/${exh.id}.json`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(exhPayload),
+            },
+          );
+
+          const metaRes = await fetch(`${baseUrl}/balmeter_vip_system.json`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+            body: JSON.stringify({
+              salesTeam: appState.salesTeam,
+              exhibitionsMeta: getExhibitionsMetadataOnly(),
+              minRequiredVersion: APP_BUILD_VERSION,
+              lastUpdated: nowTs,
+              configUpdated: nowTs,
+            }),
           });
-          if (res.ok) {
+
+          if (exRes.ok && metaRes.ok) {
             updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
             return true;
           }
         } catch (e) {
-          console.error("Push config error:", e);
+          console.error("Push exhibition config error:", e);
           updateSyncBadge(false, "🔴 خطأ في الرفع للسحابة");
         }
         return false;
+      }
+
+      function buildInvitationsCloudMap(invList) {
+        const map = {};
+        (invList || []).forEach((inv, idx) => {
+          if (!inv) return;
+          const key = inv.id || `inv_legacy_${idx}`;
+          map[key] = inv;
+        });
+        return map;
       }
 
       async function pushFullStateToCloud() {
@@ -3238,7 +3210,7 @@
             salesTeam: appState.salesTeam,
             exhibitions: appState.exhibitions,
             exhibitionsMeta: getExhibitionsMetadataOnly(),
-            invitations: appState.invitations,
+            invitations: buildInvitationsCloudMap(appState.invitations),
             minRequiredVersion: APP_BUILD_VERSION,
             lastUpdated: nowTs,
             configUpdated: nowTs,
@@ -3262,7 +3234,7 @@
       function renderAllUI() {
         renderExhibitionPills();
         renderSalesSelectDropdown();
-        loadActiveExhibitionTemplate();
+        loadActiveExhibitionTemplateAsync();
         updateSalesSelectionLockUI();
         if (isAdminMode) {
           renderAdminDashboard();
@@ -3316,6 +3288,17 @@
         );
       }
 
+      function setSelectedSalesCode(code) {
+        currentSelectedSalesCode = code ? formatSalesCode(code) : "";
+        try {
+          if (currentSelectedSalesCode) {
+            sessionStorage.setItem(SESSION_SALES_KEY, currentSelectedSalesCode);
+          } else {
+            sessionStorage.removeItem(SESSION_SALES_KEY);
+          }
+        } catch (e) {}
+      }
+
       function renderSalesSelectDropdown() {
         const select = document.getElementById("salesSelect");
         const quickPillsContainer = document.getElementById("salesQuickPills");
@@ -3349,7 +3332,6 @@
           select.appendChild(opt);
         });
 
-        // التأكد من بقاء السيلز المختار إذا كان موجوداً في القائمة المفلترة
         if (
           currentSelectedSalesCode &&
           filtered.some(
@@ -3361,7 +3343,6 @@
           select.value = "";
         }
 
-        // عرض أزرار سريعة للاختيار عند الكتابة في مربع البحث
         if (quickPillsContainer) {
           if (searchVal.length > 0) {
             quickPillsContainer.style.display = "flex";
@@ -3383,11 +3364,11 @@
         }
 
         updateSalesSelectionLockUI();
-        renderAllCanvases();
+        scheduleRenderAllCanvases();
       }
 
       function selectSalesRepByCode(code) {
-        currentSelectedSalesCode = code ? formatSalesCode(code) : "";
+        setSelectedSalesCode(code);
         const select = document.getElementById("salesSelect");
         if (select) {
           select.value = currentSelectedSalesCode;
@@ -3402,7 +3383,7 @@
       }
 
       function clearSelectedSalesRep() {
-        currentSelectedSalesCode = "";
+        setSelectedSalesCode("");
         const searchInput = document.getElementById("salesSearchInput");
         const select = document.getElementById("salesSelect");
         const clientNameInput = document.getElementById("clientNameInput");
@@ -3418,14 +3399,12 @@
       }
 
       function filterSalesDropdown() {
-        // عند البحث نلغي الاختيار السابق حتى يختار السيلز اسمه بوضوح من النتائج
-        currentSelectedSalesCode = "";
         renderSalesSelectDropdown();
       }
 
       function onSalesRepChange() {
         const rawCode = document.getElementById("salesSelect").value;
-        currentSelectedSalesCode = rawCode ? formatSalesCode(rawCode) : "";
+        setSelectedSalesCode(rawCode);
         renderSalesSelectDropdown();
         if (currentSelectedSalesCode) {
           const clientNameEl = document.getElementById("clientNameInput");
@@ -3457,7 +3436,7 @@
           banner.className = "sales-status-banner selected";
           banner.innerHTML = `
             <span>✅ السيلز المختار: <strong>${escapeHtmlStr(repObj.name)}</strong> (كود: <strong>${formatSalesCode(repObj.code)}</strong>)</span>
-            <button type="button" class="btn btn-outline" style="padding:3px 10px; font-size:0.74rem;" onclick="clearSelectedSalesRep()">🔄 تغيير الاسم</button>
+            <button type="button" class="btn btn-outline" style="padding:3px 10px; font-size:0.74rem;" onclick="clearSelectedSalesRep()">🔄 تغيير السيلز</button>
           `;
         } else {
           lockWrap.classList.add("locked");
@@ -3512,7 +3491,7 @@
           const dupInv = findDuplicateInvitation(exh.id, typedPhone);
           if (dupInv) {
             const sCode = formatSalesCode(dupInv.salesCode);
-            dupBox.innerHTML = `❌ رقم التليفون مسجل مسبقاً في هذا المعرض!<br>تم عمل دعوة بواسطة: <strong style="color:#fff;">${dupInv.salesName} (كود: ${sCode})</strong> — رقم الدعوة: <strong style="color:#fbbf24;">#${dupInv.seqNumber}</strong>`;
+            dupBox.innerHTML = `❌ رقم التليفون مسجل مسبقاً في هذا المعرض!<br>تم عمل دعوة بواسطة: <strong style="color:#fff;">${escapeHtmlStr(dupInv.salesName)} (كود: ${sCode})</strong> — رقم الدعوة: <strong style="color:#fbbf24;">#${dupInv.seqNumber}</strong>`;
             dupBox.style.display = "block";
             issueBtn.disabled = true;
             issueBtn.style.opacity = "0.5";
@@ -3532,21 +3511,8 @@
       }
 
       function onClientInputChange() {
-        const typedName = (
-          document.getElementById("clientNameInput").value || ""
-        ).trim();
-        const typedPhone = (
-          document.getElementById("clientPhoneInput").value || ""
-        ).trim();
-
-        if (typedName || typedPhone) {
-          lastIssuedTicket = null;
-          document.getElementById("ticketConfirmBox").style.display = "none";
-          document.getElementById("previewTopActions").style.display = "none";
-        }
-
         updateDuplicateAlertUI();
-        renderAllCanvases();
+        scheduleRenderAllCanvases();
       }
 
       function getCalculatedNextSeq(exhId) {
@@ -3562,29 +3528,56 @@
         return Math.max(baseNext, maxUsed + 1);
       }
 
-      function loadActiveExhibitionTemplate() {
-        const exh = getActiveExhibition();
-        if (!exh) return;
+      function loadActiveExhibitionTemplateAsync() {
+        return new Promise((resolve) => {
+          const exh = getActiveExhibition();
+          if (!exh) {
+            resolve(false);
+            return;
+          }
 
-        if (
-          exh.templateDataUrl &&
-          exh.templateDataUrl.length > 100 &&
-          exh.templateDataUrl !== lastLoadedTemplateSrc
-        ) {
-          const img = new Image();
-          img.onload = () => {
-            loadedTemplateImg = img;
-            lastLoadedTemplateSrc = exh.templateDataUrl;
-            renderAllCanvases();
-          };
-          img.src = exh.templateDataUrl;
-        } else if (!exh.templateDataUrl || exh.templateDataUrl.length <= 100) {
-          loadedTemplateImg = null;
-          lastLoadedTemplateSrc = "";
+          if (
+            exh.templateDataUrl &&
+            exh.templateDataUrl.length > 100 &&
+            exh.templateDataUrl !== lastLoadedTemplateSrc
+          ) {
+            const img = new Image();
+            img.onload = () => {
+              loadedTemplateImg = img;
+              lastLoadedTemplateSrc = exh.templateDataUrl;
+              scheduleRenderAllCanvases();
+              resolve(true);
+            };
+            img.onerror = () => {
+              loadedTemplateImg = null;
+              lastLoadedTemplateSrc = "";
+              scheduleRenderAllCanvases();
+              resolve(false);
+            };
+            img.src = exh.templateDataUrl;
+          } else if (
+            !exh.templateDataUrl ||
+            exh.templateDataUrl.length <= 100
+          ) {
+            loadedTemplateImg = null;
+            lastLoadedTemplateSrc = "";
+            scheduleRenderAllCanvases();
+            resolve(false);
+          } else {
+            scheduleRenderAllCanvases();
+            resolve(true);
+          }
+        });
+      }
+
+      // جدولة الرسم بـ requestAnimationFrame لمنع التهنيج أثناء الكتابة أو السحب
+      function scheduleRenderAllCanvases() {
+        if (rafCanvasPending) return;
+        rafCanvasPending = true;
+        requestAnimationFrame(() => {
+          rafCanvasPending = false;
           renderAllCanvases();
-        } else {
-          renderAllCanvases();
-        }
+        });
       }
 
       function renderAllCanvases(customTicket = null) {
@@ -3592,7 +3585,7 @@
           document.getElementById("invitationCanvas"),
           customTicket,
           false,
-          false,
+          Boolean(customTicket),
         );
         if (isAdminMode) {
           const showGuides =
@@ -3619,13 +3612,23 @@
 
         const isStudioCanvas = canvas.id === "adminStudioCanvas";
 
+        const targetW = loadedTemplateImg
+          ? loadedTemplateImg.naturalWidth || 1080
+          : 1080;
+        const targetH = loadedTemplateImg
+          ? loadedTemplateImg.naturalHeight || 1350
+          : 1350;
+
+        // عدم إعادة تخصيص أبعاد الـ Canvas إلا عند تغيرها الفعلي لمنع تهنيج الموبايل
+        if (canvas.width !== targetW) canvas.width = targetW;
+        if (canvas.height !== targetH) canvas.height = targetH;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.direction = "rtl";
+
         if (loadedTemplateImg) {
-          canvas.width = loadedTemplateImg.naturalWidth || 1080;
-          canvas.height = loadedTemplateImg.naturalHeight || 1350;
           ctx.drawImage(loadedTemplateImg, 0, 0, canvas.width, canvas.height);
         } else {
-          canvas.width = 1080;
-          canvas.height = 1350;
           const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
           grad.addColorStop(0, "#0b192c");
           grad.addColorStop(1, "#050b14");
@@ -3636,20 +3639,32 @@
           ctx.lineWidth = 6;
           ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
 
-          ctx.fillStyle = "#38bdf8";
-          ctx.textAlign = "center";
-          ctx.font = "800 54px 'Cairo', sans-serif";
-          ctx.fillText(exh.name, canvas.width / 2, 260);
+          ctx.strokeStyle = "rgba(217, 155, 38, 0.35)";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(62, 62, canvas.width - 124, canvas.height - 124);
 
           ctx.fillStyle = "#fbbf24";
-          ctx.font = "700 32px 'Cairo', sans-serif";
-          ctx.fillText(
-            isFetchingTemplate
-              ? "⏳ جاري تحميل تصميم القالب تلقائياً..."
-              : "⏳ جاري تجهيز صورة القالب...",
-            canvas.width / 2,
-            340,
-          );
+          ctx.textAlign = "center";
+          ctx.font = "900 44px 'Cairo', sans-serif";
+          ctx.fillText("B.almeter VIP Invitation", canvas.width / 2, 190);
+
+          ctx.fillStyle = "#38bdf8";
+          ctx.font = "800 56px 'Cairo', sans-serif";
+          ctx.fillText(exh.name, canvas.width / 2, 285);
+
+          if (isFetchingTemplate && !forceClean) {
+            ctx.fillStyle = "#fbbf24";
+            ctx.font = "700 30px 'Cairo', sans-serif";
+            ctx.fillText(
+              "⏳ جاري تحميل تصميم القالب من السحابة...",
+              canvas.width / 2,
+              365,
+            );
+          } else {
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "700 34px 'Cairo', sans-serif";
+            ctx.fillText("دعوة حضور خاصة لكبار العملاء", canvas.width / 2, 365);
+          }
         }
 
         const typedName = (
@@ -3717,6 +3732,7 @@
         }
 
         ctx.save();
+        ctx.direction = "rtl";
         ctx.fillStyle = isDuplicatePhone
           ? "#f87171"
           : exh.nameColor || "#ffffff";
@@ -3770,6 +3786,7 @@
         }
 
         ctx.save();
+        ctx.direction = isDuplicatePhone ? "rtl" : "ltr";
         ctx.fillStyle = isDuplicatePhone
           ? "#ef4444"
           : exh.codeColor || "#f59e0b";
@@ -3778,8 +3795,9 @@
         ctx.fillText(codeText, codeX, codeY);
         ctx.restore();
 
-        if (isDuplicatePhone && !forceClean) {
+        if (isDuplicatePhone && !forceClean && !activeIssuedTicket) {
           ctx.save();
+          ctx.direction = "rtl";
           ctx.translate(canvas.width / 2, nameY);
           ctx.rotate(-Math.PI / 10);
 
@@ -3874,7 +3892,7 @@
           }
 
           syncSlidersFromExhibition(exh);
-          renderAllCanvases();
+          scheduleRenderAllCanvases();
         }
 
         function onEnd() {
@@ -3924,16 +3942,23 @@
           exh.codeColor || "#f59e0b";
       }
 
-      function dataURLtoFile(dataurl, filename) {
-        const arr = dataurl.split(",");
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-        while (n--) {
-          u8arr[n] = bstr.charCodeAt(n);
-        }
-        return new File([u8arr], filename, { type: mime });
+      function canvasToBlobAsync(canvas) {
+        return new Promise((resolve) => {
+          if (canvas.toBlob) {
+            canvas.toBlob((blob) => resolve(blob), "image/png");
+          } else {
+            const dataurl = canvas.toDataURL("image/png");
+            const arr = dataurl.split(",");
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) {
+              u8arr[n] = bstr.charCodeAt(n);
+            }
+            resolve(new Blob([u8arr], { type: mime }));
+          }
+        });
       }
 
       async function shareCurrentCanvas(customFilename, ticketObj = null) {
@@ -3951,8 +3976,8 @@
         const fileName = customFilename || `VIP_${seq}_${cleanClient}.png`;
 
         try {
-          const dataUrl = canvas.toDataURL("image/png");
-          const file = dataURLtoFile(dataUrl, fileName);
+          const blob = await canvasToBlobAsync(canvas);
+          const file = new File([blob], fileName, { type: "image/png" });
 
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
@@ -3968,18 +3993,18 @@
             });
             return true;
           } else {
-            downloadCurrentCanvas(fileName, targetTicket);
+            await downloadCurrentCanvas(fileName, targetTicket);
             return false;
           }
         } catch (err) {
           if (err && err.name !== "AbortError") {
-            downloadCurrentCanvas(fileName, targetTicket);
+            await downloadCurrentCanvas(fileName, targetTicket);
           }
           return false;
         }
       }
 
-      function downloadCurrentCanvas(filename, ticketObj = null) {
+      async function downloadCurrentCanvas(filename, ticketObj = null) {
         const targetTicket = ticketObj || lastIssuedTicket;
         if (!targetTicket) {
           alert("من فضلك قم بإصدار الدعوة أولاً!");
@@ -3990,16 +4015,19 @@
         drawSingleCanvas(canvas, targetTicket, false, true);
 
         const defaultName = `VIP_${targetTicket.seqNumber}_${targetTicket.clientName}.png`;
+        const blob = await canvasToBlobAsync(canvas);
+        const url = URL.createObjectURL(blob);
 
         const link = document.createElement("a");
         link.download = filename || defaultName;
-        link.href = canvas.toDataURL("image/png");
+        link.href = url;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
       }
 
-      // ================= إصدار الدعوة المحمي 100% =================
+      // ================= إصدار الدعوة المحمي والسريع =================
       async function issueAndDownloadInvitation() {
         const selectedRep = getSelectedSalesRepObj();
         if (!selectedRep) {
@@ -4037,44 +4065,48 @@
         const btn = document.getElementById("issueBtn");
         isIssuing = true;
         btn.disabled = true;
-        btn.textContent = "⏳ جاري تأكيد التسجيل وتحميل القالب...";
+        btn.textContent = "⏳ جاري تأكيد التسجيل وإصدار الدعوة...";
 
         try {
-          if (!loadedTemplateImg) {
-            await ensureActiveExhibitionTemplateLoaded();
-            if (!loadedTemplateImg && getActiveExhibition()?.templateDataUrl) {
-              await new Promise((resolve) => {
-                const tempImg = new Image();
-                tempImg.onload = () => {
-                  loadedTemplateImg = tempImg;
-                  lastLoadedTemplateSrc =
-                    getActiveExhibition().templateDataUrl;
-                  resolve();
-                };
-                tempImg.onerror = () => resolve();
-                tempImg.src = getActiveExhibition().templateDataUrl;
-              });
-            }
+          if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
           }
 
+          const currentExh = getActiveExhibition();
+
+          // تحميل القالب إذا لم يكن محملاً بعد
           if (!loadedTemplateImg) {
+            await ensureActiveExhibitionTemplateLoaded();
+          }
+
+          // إذا كان المعرض له قالب مرفوع بالسحابة ولكنه لم يُحمّل بسبب انقطاع الإنترنت، ننبّه المستخدم
+          if (!loadedTemplateImg && currentExh.hasTemplate) {
             alert(
               "⚠️ لم يكتمل تحميل صورة تصميم المعرض بعد بسبب ضعف الإنترنت لديك!\n\nانتظر ثانية واحدة واضغط (إصدار) مرة أخرى حتى تخرج الدعوة بالتصميم الصحيح.",
             );
             return;
           }
 
-          const syncedOk = await syncFromCloud(false, false);
-          if (!syncedOk) {
+          // جلب سريع لسجل الدعاوي للتأكد من عدم تكرار الرقم وحساب السيريال الصحيح
+          const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+          try {
+            const invRes = await fetch(
+              `${baseUrl}/balmeter_vip_system/invitations.json`,
+              { cache: "no-store" },
+            );
+            if (!invRes.ok) throw new Error("Cloud fetch error");
+            const latestInvs = await invRes.json();
+            mergeState({ invitations: latestInvs || [] });
+            updateSyncBadge(true, "🟢 متصل بالسحابة لايف");
+          } catch (netErr) {
+            updateSyncBadge(false, "🔴 تعذر الاتصال بالسحابة");
             alert(
               "❌ توقف آمن: لا يمكن إصدار الدعوة حالياً لأن الإنترنت أو السحابة غير متصلة!\n\nتم منع إصدار البطاقة حتى لا يذهب العميل لرسبشن المعرض ويكون غير مسجل في السيستم.",
             );
             return;
           }
 
-          const currentExh = getActiveExhibition();
           const dupInv = findDuplicateInvitation(currentExh.id, clientPhone);
-
           if (dupInv) {
             updateDuplicateAlertUI();
             renderAllCanvases();
@@ -4096,7 +4128,7 @@
               "inv_" +
               now.getTime() +
               "_" +
-              Math.random().toString(36).substring(2, 6),
+              Math.random().toString(36).substring(2, 7),
             timestamp: now.getTime(),
             dateISO: getLocalYYYYMMDD(now),
             exhibitionId: currentExh.id,
@@ -4109,15 +4141,11 @@
             createdAt: now.toLocaleString("ar-EG"),
           };
 
-          const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
-          const targetIdx = Math.max(
-            nextCloudInvitationIndex,
-            appState.invitations.length,
-          );
           const nowTs = Date.now();
 
+          // الحفظ بمعرف التذكرة الفريد لمنع الكتابة فوق دعوة أي سيلز آخر
           const saveSingleRes = await fetch(
-            `${baseUrl}/balmeter_vip_system/invitations/${targetIdx}.json`,
+            `${baseUrl}/balmeter_vip_system/invitations/${newTicket.id}.json`,
             {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
@@ -4139,41 +4167,31 @@
           }).catch(() => {});
 
           appState.lastUpdated = nowTs;
-          nextCloudInvitationIndex = targetIdx + 1;
           appState.invitations.push(newTicket);
           currentExh.nextSeq = assignedSeq + 1;
           lastIssuedTicket = newTicket;
           await saveLocalState();
 
-          // تفريغ الحقول وإعادة قفل اختيار السيلز للدعوة القادمة لمنع أي لخبطة
+          // تفريغ حقول العميل فقط مع الاحتفاظ باسم السيلز لتسهيل إصدار الدعوة التالية
           clientNameInput.value = "";
           clientPhoneInput.value = "";
-          currentSelectedSalesCode = "";
-          const searchInput = document.getElementById("salesSearchInput");
-          if (searchInput) searchInput.value = "";
           updatePhoneHelperUI("");
           document.getElementById("duplicateWarningBox").style.display = "none";
-
-          drawSingleCanvas(
-            document.getElementById("invitationCanvas"),
-            newTicket,
-            false,
-            true,
-          );
 
           const confirmBox = document.getElementById("ticketConfirmBox");
           const confirmText = document.getElementById("ticketConfirmText");
           confirmBox.style.display = "block";
-          confirmText.innerHTML = `✅ تم تسجيل العميل بالسحابة وإصدار الدعوة رقم <strong>${assignedSeq}</strong> باسم <strong>${clientName}</strong> (السيلز: <strong>${salesObj.name} - ${formatSalesCode(salesObj.code)}</strong>) بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالآيفون:</span>`;
+          confirmText.innerHTML = `✅ تم تسجيل العميل بالسحابة وإصدار الدعوة رقم <strong>#${assignedSeq}</strong> باسم <strong>${escapeHtmlStr(clientName)}</strong> (السيلز: <strong>${escapeHtmlStr(salesObj.name)} - ${formatSalesCode(salesObj.code)}</strong>) بنجاح!<br><span style="font-size:0.8rem; color:#cbd5e1;">اضغط على زر المشاركة بالأسفل لإرسالها واتساب أو حفظها بالهاتف:</span>`;
           document.getElementById("previewTopActions").style.display = "flex";
 
-          renderAllUI();
           drawSingleCanvas(
             document.getElementById("invitationCanvas"),
             newTicket,
             false,
             true,
           );
+
+          confirmBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
           await shareCurrentCanvas(
             `${currentExh.name}_${clientName}_${assignedSeq}.png`,
@@ -4256,7 +4274,7 @@
           );
           if (matchingBtn) matchingBtn.classList.add("active");
         }
-        renderAllCanvases();
+        scheduleRenderAllCanvases();
       }
 
       function setSalesViewMode(mode) {
@@ -4415,24 +4433,24 @@
           card.className = "exh-summary-box";
           card.innerHTML = `
             <div class="exh-title">
-              <span>📍 ${item.exh.name}</span>
+              <span>📍 ${escapeHtmlStr(item.exh.name)}</span>
               <span class="badge-code">#${item.nextSeq}</span>
             </div>
             <div class="main-num">${item.selectedCount} <span style="font-size:0.86rem; font-weight:700; color:var(--text-muted);">دعوة</span></div>
             <div class="sub-meta">
               <span>التوتال من أول المعرض: <strong style="color:#fbbf24;">${item.allTimeCount}</strong></span>
-              <span>الأعلى: ${item.topSales}</span>
+              <span>الأعلى: ${escapeHtmlStr(item.topSales)}</span>
             </div>
           `;
           gridEl.appendChild(card);
 
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td style="font-weight:800; color:var(--text-main);">📍 ${item.exh.name}</td>
+            <td style="font-weight:800; color:var(--text-main);">📍 ${escapeHtmlStr(item.exh.name)}</td>
             <td><span class="badge-count">${item.selectedCount} دعوة</span></td>
             <td><strong style="color:#fbbf24;">${item.allTimeCount} دعوة</strong></td>
             <td><span class="badge-code">#${item.nextSeq}</span></td>
-            <td style="font-weight:700; color:var(--primary);">${item.topSales}</td>
+            <td style="font-weight:700; color:var(--primary);">${escapeHtmlStr(item.topSales)}</td>
             <td>
               <button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="openExhibitionLogs('${item.exh.id}')">
                 🔍 السجل
@@ -4509,7 +4527,11 @@
           .replace(/"/g, "&quot;");
       }
 
-      function buildAndOpenPDFPages(invitationsList, reportTitle, periodSubtitle) {
+      function buildAndOpenPDFPages(
+        invitationsList,
+        reportTitle,
+        periodSubtitle,
+      ) {
         if (!invitationsList || invitationsList.length === 0) {
           alert("⚠️ لا توجد بيانات عملاء لتصديرها في ملف PDF!");
           return;
@@ -4689,8 +4711,8 @@
             return `
           <tr>
             <td><span class="badge-code">${s.code}</span></td>
-            <td style="font-weight:700;">${s.name}</td>
-            ${showTeamColumn ? `<td><span class="badge-team">${s.team}</span></td>` : ""}
+            <td style="font-weight:700;">${escapeHtmlStr(s.name)}</td>
+            ${showTeamColumn ? `<td><span class="badge-team">${escapeHtmlStr(s.team)}</span></td>` : ""}
             <td><span class="badge-count">${s.currentCount} عميل</span></td>
             <td style="color:var(--text-muted); font-weight:700;">${s.allCount}</td>
             <td>${sittingBadgeBtn}</td>
@@ -4830,7 +4852,7 @@
             return `
               <tr>
                 <td><span class="badge-code">${code}</span></td>
-                <td style="font-weight:700;">${s.name}</td>
+                <td style="font-weight:700;">${escapeHtmlStr(s.name)}</td>
                 <td>
                   <select
                     class="form-control"
@@ -4988,7 +5010,7 @@
 
         document.getElementById("firebaseUrlInput").value =
           appState.firebaseUrl;
-        renderAllCanvases();
+        scheduleRenderAllCanvases();
       }
 
       function resetLogsPageAndRender() {
@@ -5099,7 +5121,7 @@
           (s) => formatSalesCode(s.code) !== targetCode,
         );
         if (currentSelectedSalesCode === targetCode) {
-          currentSelectedSalesCode = "";
+          setSelectedSalesCode("");
         }
         saveLocalState();
         renderAllUI();
@@ -5236,12 +5258,12 @@
             const sCode = formatSalesCode(inv.salesCode);
             return `
             <tr>
-              <td><strong style="color:#fbbf24;">${inv.seqNumber}</strong></td>
-              <td style="font-weight:700; color:#fbbf24; white-space:nowrap;">${inv.exhibitionName || "-"}</td>
-              <td style="font-weight:700;">${inv.clientName}</td>
-              <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${inv.clientPhone || "-"}</td>
-              <td><span class="badge-code">${inv.salesName} (${sCode})</span></td>
-              <td style="font-size:0.76rem; color:var(--text-muted); white-space:nowrap;">${inv.createdAt || "-"}</td>
+              <td><strong style="color:#fbbf24;">${escapeHtmlStr(inv.seqNumber)}</strong></td>
+              <td style="font-weight:700; color:#fbbf24; white-space:nowrap;">${escapeHtmlStr(inv.exhibitionName || "-")}</td>
+              <td style="font-weight:700;">${escapeHtmlStr(inv.clientName)}</td>
+              <td dir="ltr" style="text-align:right; font-weight:700; color:var(--primary);">${escapeHtmlStr(inv.clientPhone || "-")}</td>
+              <td><span class="badge-code">${escapeHtmlStr(inv.salesName)} (${sCode})</span></td>
+              <td style="font-size:0.76rem; color:var(--text-muted); white-space:nowrap;">${escapeHtmlStr(inv.createdAt || "-")}</td>
               <td>
                 <div style="display:flex; gap:5px;">
                   <button class="btn btn-success" style="padding:4px 8px; font-size:0.74rem;" title="مشاركة" onclick="shareOldInvitation('${inv.id}')">📲</button>
@@ -5267,11 +5289,7 @@
           await ensureActiveExhibitionTemplateLoaded();
         }
         lastIssuedTicket = inv;
-        document.getElementById("clientNameInput").value = "";
-        document.getElementById("clientPhoneInput").value = "";
-        updatePhoneHelperUI("");
-        updateDuplicateAlertUI();
-        shareCurrentCanvas(
+        await shareCurrentCanvas(
           `${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`,
           inv,
         );
@@ -5289,11 +5307,7 @@
           await ensureActiveExhibitionTemplateLoaded();
         }
         lastIssuedTicket = inv;
-        document.getElementById("clientNameInput").value = "";
-        document.getElementById("clientPhoneInput").value = "";
-        updatePhoneHelperUI("");
-        updateDuplicateAlertUI();
-        downloadCurrentCanvas(
+        await downloadCurrentCanvas(
           `${inv.exhibitionName}_${inv.clientName}_${inv.seqNumber}.png`,
           inv,
         );
@@ -5305,10 +5319,11 @@
         appState.invitations = appState.invitations.filter(
           (i) => i && i.id !== invId,
         );
-        nextCloudInvitationIndex = appState.invitations.length;
         await saveLocalState();
         renderAllUI();
-        await patchCloudData({ invitations: appState.invitations });
+        await patchCloudData({
+          invitations: buildInvitationsCloudMap(appState.invitations),
+        });
       }
 
       function copyWhatsAppReport() {
@@ -5383,13 +5398,14 @@
             const offCtx = offCanvas.getContext("2d");
             offCtx.drawImage(img, 0, 0, w, h);
 
-            const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.78);
+            const compressedDataUrl = offCanvas.toDataURL("image/jpeg", 0.82);
             const exh = getActiveExhibition();
             exh.templateDataUrl = compressedDataUrl;
+            exh.hasTemplate = true;
 
             await idbSet(IDB_STORE_TEMPLATES, exh.id, compressedDataUrl);
-            await pushConfigOnlyToCloud();
-            loadActiveExhibitionTemplate();
+            await pushActiveExhibitionToCloud();
+            await loadActiveExhibitionTemplateAsync();
             alert("✅ تم رفع القالب وحفظه بالسحابة بنجاح!");
           };
           img.src = e.target.result;
@@ -5415,7 +5431,7 @@
         exh.codeColor = document.getElementById("codeColorPicker").value;
 
         syncSlidersFromExhibition(exh);
-        renderAllCanvases();
+        scheduleRenderAllCanvases();
       }
 
       async function saveExhibitionSettings() {
@@ -5430,12 +5446,12 @@
           exh.nextSeq = newSeq;
         }
 
-        await pushConfigOnlyToCloud();
+        await pushActiveExhibitionToCloud();
         renderAllUI();
         alert("✅ تم حفظ المقاسات في السحابة!");
       }
 
-      function addNewExhibition() {
+      async function addNewExhibition() {
         const input = document.getElementById("newExhNameInput");
         const name = (input.value || "").trim();
         if (!name) {
@@ -5449,6 +5465,7 @@
           name,
           nextSeq: 131,
           templateDataUrl: "",
+          hasTemplate: false,
           nameX: 50,
           nameY: 59,
           nameSize: 52,
@@ -5462,13 +5479,13 @@
         appState.activeExhibitionId = id;
         input.value = "";
 
-        saveLocalState();
+        await saveLocalState();
         renderAllUI();
-        pushConfigOnlyToCloud();
+        await pushActiveExhibitionToCloud();
         alert(`✅ تم إضافة (${name}) بنجاح!`);
       }
 
-      function deleteCurrentExhibition() {
+      async function deleteCurrentExhibition() {
         const keys = Object.keys(appState.exhibitions);
         if (keys.length <= 1) {
           alert("لا يمكن حذف المعرض الوحيد!");
@@ -5477,11 +5494,22 @@
         const exh = getActiveExhibition();
         if (!confirm(`هل أنت متأكد من حذف (${exh.name})؟`)) return;
 
-        delete appState.exhibitions[exh.id];
+        const baseUrl = cleanFirebaseUrl(appState.firebaseUrl);
+        const deletedId = exh.id;
+
+        delete appState.exhibitions[deletedId];
         appState.activeExhibitionId = Object.keys(appState.exhibitions)[0];
-        saveLocalState();
+        await saveLocalState();
         renderAllUI();
-        pushConfigOnlyToCloud();
+
+        if (baseUrl) {
+          fetch(`${baseUrl}/balmeter_vip_system/exhibitions/${deletedId}.json`, {
+            method: "DELETE",
+          }).catch(() => {});
+          await patchCloudData({
+            exhibitionsMeta: getExhibitionsMetadataOnly(),
+          });
+        }
       }
 
       async function saveCloudAndSecuritySettings() {
@@ -5491,7 +5519,9 @@
 
         if (newUrl) appState.firebaseUrl = newUrl;
 
-        await pushConfigOnlyToCloud();
+        await patchCloudData({
+          exhibitionsMeta: getExhibitionsMetadataOnly(),
+        });
         alert("✅ تم حفظ رابط السحابة بنجاح!");
       }
 
