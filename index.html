@@ -19,7 +19,7 @@
     <style>
       :root {
         --bg-main: #051224;
-        --bg-elevated: rgba(11, 29, 56, 0.84);
+        --bg-elevated: rgba(11, 29, 56, 0.85);
         --bg-input: #07162b;
         --border: rgba(45, 212, 191, 0.16);
         --border-strong: rgba(45, 212, 191, 0.38);
@@ -61,6 +61,66 @@
         display: flex;
         flex-direction: column;
         position: relative;
+      }
+
+      /* Minimal Breathing Logo Splash Loader */
+      .splash-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        background: radial-gradient(circle at center, #0a2244 0%, #051224 72%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+
+      .splash-loader.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .splash-logo {
+        width: min(52vw, 220px);
+        height: auto;
+        animation: logoBreathe 1.9s ease-in-out infinite;
+        filter: drop-shadow(0 0 22px rgba(45, 212, 191, 0.26));
+        user-select: none;
+      }
+
+      .splash-fallback {
+        display: none;
+        font-size: 2.3rem;
+        font-weight: 900;
+        direction: ltr;
+        animation: logoBreathe 1.9s ease-in-out infinite;
+      }
+
+      @keyframes logoBreathe {
+        0%,
+        100% {
+          transform: scale(0.94);
+          opacity: 0.78;
+        }
+        50% {
+          transform: scale(1.06);
+          opacity: 1;
+        }
+      }
+
+      body.is-loading .app-container,
+      body.is-loading .dev-footer,
+      body.is-loading .bg-watermark {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .app-container,
+      .dev-footer {
+        transition: opacity 0.25s ease;
       }
 
       .bg-watermark {
@@ -470,6 +530,19 @@
         font-size: 0.8rem;
         font-weight: 800;
         margin-bottom: 10px;
+      }
+
+      .pass-settings-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+        align-items: end;
+      }
+
+      .pass-input-group {
+        display: flex;
+        gap: 6px;
+        align-items: center;
       }
 
       .preview-container {
@@ -887,7 +960,21 @@
       }
     </style>
   </head>
-  <body class="clean-header-mode">
+  <body class="clean-header-mode is-loading">
+    <!-- Minimal Breathing Logo Splash Loader -->
+    <div id="appSplashLoader" class="splash-loader" aria-label="Loading">
+      <img
+        src="Logo_White.png"
+        alt="B.almetr"
+        class="splash-logo"
+        onerror="this.style.display='none'; document.getElementById('splashFallback').style.display='block';"
+      />
+      <div id="splashFallback" class="splash-fallback">
+        <span style="color: var(--primary-bright)">B.</span
+        ><span style="color: #fff">almetr</span>
+      </div>
+    </div>
+
     <!-- Official B.almetr Watermark -->
     <div class="bg-watermark" aria-hidden="true">
       <img src="Logo_White.png" alt="" onerror="this.style.display='none'" />
@@ -921,7 +1008,7 @@
           <button
             type="button"
             class="btn btn-outline"
-            onclick="loadAllDataFromSupabase(true)"
+            onclick="refreshCurrentScope(true)"
           >
             🔄 تحديث
           </button>
@@ -936,7 +1023,7 @@
         </div>
       </header>
 
-      <!-- Exhibition Pills Bar (Shown ONLY for Manager / Portal) -->
+      <!-- Exhibition Pills Bar (Shown ONLY for Logged-In Manager / Portal) -->
       <section class="exhibition-bar" id="exhibitionBarSection">
         <div class="exhibition-list-wrap">
           <span
@@ -1066,7 +1153,6 @@
               </div>
             </div>
 
-            <!-- Simple Duplicate Alert (Same Exhibition Only, Non-Blocking) -->
             <div id="duplicateNoticeBox" class="duplicate-notice-box"></div>
 
             <button
@@ -1178,7 +1264,7 @@
             style="display: none"
           >
             <div class="control-section-title">
-              🖼️ تصميم الدعوة الخاص بشركتك (الأماكن ثابتة أوتوماتيك)
+              🖼️ تصميم الدعوة الخاص بشركتك (يُضغط أوتوماتيك والأماكن ثابتة)
             </div>
             <div class="dim-notice-box" id="portalDevDimNotice"></div>
             <div
@@ -1208,6 +1294,51 @@
             </div>
           </div>
 
+          <!-- Self-Service Password Settings Card -->
+          <div class="control-section-box">
+            <div class="control-section-title">🔐 إعدادات كلمة السر الخاصة بك</div>
+            <div class="pass-settings-row">
+              <div>
+                <label class="form-label">كلمة السر الحالية:</label>
+                <div class="pass-input-group">
+                  <input
+                    type="password"
+                    id="portalCurrPassDisplay"
+                    class="form-control"
+                    dir="ltr"
+                    readonly
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    onclick="togglePasswordReveal('portalCurrPassDisplay', this)"
+                  >
+                    👁️
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="form-label">تغيير لكلمة سر جديدة:</label>
+                <div class="pass-input-group">
+                  <input
+                    type="text"
+                    id="portalNewPassInput"
+                    class="form-control"
+                    dir="ltr"
+                    placeholder="اكتب الباسورد الجديد..."
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-gold"
+                    onclick="changeOwnPasswordFromInput('portalNewPassInput', 'portalCurrPassDisplay')"
+                  >
+                    💾 حفظ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="kpi-grid">
             <div class="kpi-card">
               <div class="label">دعواتي في المعرض النشط</div>
@@ -1225,7 +1356,6 @@
             </div>
           </div>
 
-          <!-- Search & Filters -->
           <div class="filter-bar-grid">
             <input
               type="text"
@@ -1322,7 +1452,7 @@
             </div>
             <div class="form-group">
               <label class="form-label"
-                >صورة تصميم الدعوة له (بالأبعاد الموضحة أعلاه — اختياري):</label
+                >صورة تصميم الدعوة له (تُضغط أوتوماتيك — اختياري):</label
               >
               <input
                 type="file"
@@ -1346,39 +1476,87 @@
             ></div>
           </div>
 
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">📊 بانل متابعة إنجاز فريقي (عرض فقط)</div>
-            </div>
-            <div class="kpi-grid">
-              <div class="kpi-card">
-                <div class="label">عدد البروكرز/الإنفلونسرز</div>
-                <div class="val" id="abKpiPartners">0</div>
+          <div>
+            <!-- Admin Broker Password Settings -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🔐 إعدادات كلمة السر الخاصة بك</div>
               </div>
-              <div class="kpi-card">
-                <div class="label">إجمالي دعواتهم</div>
-                <div class="val" id="abKpiTotalInvs" style="color: #fcd34d">
-                  0
+              <div class="pass-settings-row">
+                <div>
+                  <label class="form-label">كلمة السر الحالية:</label>
+                  <div class="pass-input-group">
+                    <input
+                      type="password"
+                      id="abCurrPassDisplay"
+                      class="form-control"
+                      dir="ltr"
+                      readonly
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      onclick="togglePasswordReveal('abCurrPassDisplay', this)"
+                    >
+                      👁️
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label">تغيير لكلمة سر جديدة:</label>
+                  <div class="pass-input-group">
+                    <input
+                      type="text"
+                      id="abNewOwnPassInput"
+                      class="form-control"
+                      dir="ltr"
+                      placeholder="الباسورد الجديد..."
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-gold"
+                      onclick="changeOwnPasswordFromInput('abNewOwnPassInput', 'abCurrPassDisplay')"
+                    >
+                      💾 حفظ
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="table-responsive">
-              <table style="min-width: 480px">
-                <thead>
-                  <tr>
-                    <th>الاسم والكود</th>
-                    <th>الباسورد</th>
-                    <th>الدعوات حسب المعرض</th>
-                    <th>الرابط</th>
-                  </tr>
-                </thead>
-                <tbody id="abPartnersTbody"></tbody>
-              </table>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📊 بانل متابعة إنجاز فريقي</div>
+              </div>
+              <div class="kpi-grid">
+                <div class="kpi-card">
+                  <div class="label">عدد البروكرز/الإنفلونسرز</div>
+                  <div class="val" id="abKpiPartners">0</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="label">إجمالي دعواتهم</div>
+                  <div class="val" id="abKpiTotalInvs" style="color: #fcd34d">
+                    0
+                  </div>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table style="min-width: 480px">
+                  <thead>
+                    <tr>
+                      <th>الاسم والكود</th>
+                      <th>الباسورد</th>
+                      <th>الدعوات حسب المعرض</th>
+                      <th>الرابط</th>
+                    </tr>
+                  </thead>
+                  <tbody id="abPartnersTbody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Admin Broker Clients Search & Filter Log -->
         <div class="card">
           <div class="card-header">
             <div class="card-title">
@@ -1509,7 +1687,7 @@
 
           <div class="form-group">
             <label class="form-label"
-              >5. صورة تصميم الدعوة الخاصة بشركتكم (اختياري):</label
+              >5. صورة تصميم الدعوة الخاصة بشركتكم (اختياري — تُضغط أوتوماتيك):</label
             >
             <div class="dim-notice-box" id="devSignupDimNotice"></div>
             <input
@@ -1634,7 +1812,7 @@
                     font-weight: 700;
                   "
                 >
-                  رابط للمعرض النشط فقط (<span id="companyActiveExhLabel"></span>):
+                  رابط مختصر للمعرض النشط (<span id="companyActiveExhLabel"></span>):
                 </div>
                 <div class="link-copy-box">
                   <span
@@ -1928,10 +2106,57 @@
           </div>
         </div>
 
-        <!-- TAB 4: ACCOUNTS & TEAMS -->
+        <!-- TAB 4: ACCOUNTS, PASSWORDS & TEAMS -->
         <div id="mgrTabAccounts" class="admin-page">
           <div class="workspace-grid">
             <div>
+              <!-- Manager Own Password Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">🔐 كلمة سر المدير العام</div>
+                </div>
+                <div class="pass-settings-row">
+                  <div>
+                    <label class="form-label">الحالية:</label>
+                    <div class="pass-input-group">
+                      <input
+                        type="password"
+                        id="mgrCurrPassDisplay"
+                        class="form-control"
+                        dir="ltr"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        class="btn btn-outline"
+                        onclick="togglePasswordReveal('mgrCurrPassDisplay', this)"
+                      >
+                        👁️
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="form-label">تعديلها:</label>
+                    <div class="pass-input-group">
+                      <input
+                        type="text"
+                        id="mgrNewOwnPassInput"
+                        class="form-control"
+                        dir="ltr"
+                        placeholder="باسورد جديد..."
+                      />
+                      <button
+                        type="button"
+                        class="btn btn-gold"
+                        onclick="changeOwnPasswordFromInput('mgrNewOwnPassInput', 'mgrCurrPassDisplay')"
+                      >
+                        💾 حفظ
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div class="card">
                 <div class="card-header">
                   <div class="card-title">
@@ -2206,13 +2431,36 @@
               <div class="control-section-box">
                 <div class="control-section-title">1️⃣ صورة القالب والترقيم</div>
                 <div class="form-group">
-                  <label class="form-label">رفع صورة التصميم:</label>
+                  <label class="form-label"
+                    >رفع صورة التصميم (تُضغط أوتوماتيك لـ WebP ~120KB + كاش سنة):</label
+                  >
                   <input
                     type="file"
                     accept="image/*"
                     class="form-control"
                     onchange="handleExhibitionTemplateUpload(event)"
                   />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="color: var(--primary-bright)"
+                    >أو رابط مباشر / ملف على GitHub (استهلاك 0 من Supabase في الإعلانات):</label
+                  >
+                  <div style="display: flex; gap: 6px">
+                    <input
+                      type="text"
+                      id="studioTemplateUrlInput"
+                      class="form-control"
+                      dir="ltr"
+                      placeholder="مثال: sohag.jpg أو https://..."
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      onclick="saveExhibitionTemplateUrl()"
+                    >
+                      ربط
+                    </button>
+                  </div>
                 </div>
                 <div class="form-group" style="margin-bottom: 0">
                   <label class="form-label">الرقم التسلسلي القادم:</label>
@@ -2489,6 +2737,24 @@
       const SUPABASE_KEY = "sb_publishable_1zDPrrzj5QdaILjGuXZujQ_nNpz3Se_";
       const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+      // Safe public columns (NO passwords exposed on public load)
+      const PUBLIC_ACCOUNT_COLS =
+        "id,role,name,code,team,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
+
+      const CAIRO_DATE_FMT = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Africa/Cairo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+      const CAIRO_TIME_FMT = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Africa/Cairo",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+
       const DEFAULT_LAYOUT = {
         nameX: 50,
         nameY: 59,
@@ -2514,8 +2780,9 @@
         exhibitions: [],
         accounts: [],
         invitations: [],
+        invitationsScope: "NONE", // NONE | USER | ADMIN_BROKER | ALL
         activeExhibitionId: null,
-        developerSignupPass: "DEV2026",
+        developerSignupPass: "",
         designDimensions: "1080 × 1350 px",
         teamsList: ["المعرض", "الجمعية", "الوديعة", "القاهرة"],
         currentUser: null,
@@ -2524,6 +2791,17 @@
         devSignupTempPass: "",
       };
 
+      let cache = {
+        accountsById: new Map(),
+        exhibitionsById: new Map(),
+        invByExh: new Map(),
+        invByExhPhone: new Map(),
+        ownerTotalCount: new Map(),
+        ownerExhCount: new Map(),
+      };
+
+      let activeView = "workspaceView";
+      let activeManagerTab = "mgrTabQuickReport";
       let selectedSalesId = "";
       let lastIssuedTicket = null;
       let loadedTemplateImg = null;
@@ -2532,7 +2810,11 @@
       let logoTapCount = 0;
       let logoTapTimer = null;
       let isImportingLegacy = false;
-      let realtimeTimer = null;
+      let renderDebounceTimer = null;
+      let dupCheckTimer = null;
+      let dupCheckSeq = 0;
+      let canvasRafId = null;
+      let realtimeChannel = null;
 
       let devRegActivities = [];
       let devRegAreas = [];
@@ -2543,28 +2825,27 @@
       let currentLogsPage = 1;
       const LOGS_PER_PAGE = 25;
 
-      // ==================== INIT & REALTIME ====================
+      // ==================== SPLASH LOADER ====================
+      function setSplashLoading(show) {
+        const loader = document.getElementById("appSplashLoader");
+        if (!loader) return;
+        if (show) {
+          document.body.classList.add("is-loading");
+          loader.classList.remove("hidden");
+        } else {
+          document.body.classList.remove("is-loading");
+          loader.classList.add("hidden");
+        }
+      }
+
+      // ==================== INIT (ULTRA-LIGHT PUBLIC BOOT ~15KB) ====================
       window.addEventListener("DOMContentLoaded", async () => {
         const dInput = document.getElementById("globalReportDateInput");
         if (dInput) dInput.value = globalReportDate;
         setupStudioDragging();
-        await loadAllDataFromSupabase(false);
-        checkPublicUrlParams();
-        renderAllUI();
-        initSupabaseRealtime();
+        await loadPublicCoreData(true);
+        setupScopedRealtime();
       });
-
-      function initSupabaseRealtime() {
-        sb.channel("balmetr-live-sync")
-          .on("postgres_changes", { event: "*", schema: "public" }, () => {
-            if (isImportingLegacy) return;
-            clearTimeout(realtimeTimer);
-            realtimeTimer = setTimeout(() => {
-              loadAllDataFromSupabase(false);
-            }, 600);
-          })
-          .subscribe();
-      }
 
       function setSyncBadge(status, text) {
         const el = document.getElementById("syncStatusBadge");
@@ -2581,42 +2862,26 @@
         }
       }
 
-      async function fetchAllInvitationsPaginated() {
-        const all = [];
-        const PAGE_SIZE = 1000;
-        let from = 0;
-        while (true) {
-          const { data, error } = await sb
-            .from("invitations")
-            .select("*")
-            .order("created_at", { ascending: false })
-            .range(from, from + PAGE_SIZE - 1);
-          if (error) throw error;
-          if (!data || data.length === 0) break;
-          all.push(...data);
-          if (data.length < PAGE_SIZE) break;
-          from += PAGE_SIZE;
-        }
-        return all;
-      }
-
-      async function loadAllDataFromSupabase(showToast = false) {
+      // Tier 1: Lightweight Boot (~15 KB total, ZERO invitations, ZERO passwords)
+      async function loadPublicCoreData(showSplash = false) {
+        if (showSplash) setSplashLoading(true);
         setSyncBadge("syncing");
         try {
-          const [exhRes, accRes, setRes, allInvs] = await Promise.all([
+          const [exhRes, accRes, setRes] = await Promise.all([
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
-            sb.from("accounts").select("*").order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*"),
-            fetchAllInvitationsPaginated(),
+            sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
+            sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions"]),
           ]);
 
           if (exhRes.error) throw exhRes.error;
+          if (accRes.error) throw accRes.error;
+
           state.exhibitions = exhRes.data || [];
           state.accounts = accRes.data || [];
-          state.invitations = sortInvitationsSmart(allInvs || [], false);
+          state.invitations = [];
+          state.invitationsScope = "NONE";
 
           (setRes.data || []).forEach((row) => {
-            if (row.key === "developer_signup_pass") state.developerSignupPass = row.value;
             if (row.key === "design_dimensions") state.designDimensions = row.value;
             if (row.key === "teams_list") {
               try {
@@ -2626,28 +2891,426 @@
             }
           });
 
+          rebuildDerivedCaches();
+          checkPublicUrlParams();
           ensureActiveExhibition();
-          if (state.publicHostAccount) {
-            state.publicHostAccount =
-              state.accounts.find((a) => a.id === state.publicHostAccount.id) ||
-              state.publicHostAccount;
-          }
-          if (state.currentUser) {
+          setSyncBadge(true);
+          renderActiveViewOnly();
+        } catch (err) {
+          console.error(err);
+          setSyncBadge(false);
+        } finally {
+          if (showSplash) setSplashLoading(false);
+        }
+      }
+
+      // Tier 2 & 3: Scoped Data Loader ONLY when logged in
+      async function loadScopedDataForLoggedInUser(showSplash = true, showToast = false) {
+        const u = state.currentUser;
+        if (!u) return loadPublicCoreData(showSplash);
+        if (showSplash) setSplashLoading(true);
+        setSyncBadge("syncing");
+
+        try {
+          // Tier 3: Manager (Full accounts with passwords + all invitations in parallel)
+          if (u.role === "manager") {
+            const [exhRes, accRes, setRes, firstInvRes] = await Promise.all([
+              sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
+              sb.from("accounts").select("*").order("created_at", { ascending: true }),
+              sb.from("system_settings").select("*"),
+              sb
+                .from("invitations")
+                .select("*", { count: "exact" })
+                .order("created_at", { ascending: false })
+                .range(0, 999),
+            ]);
+            if (exhRes.error) throw exhRes.error;
+            if (accRes.error) throw accRes.error;
+            if (firstInvRes.error) throw firstInvRes.error;
+
+            state.exhibitions = exhRes.data || [];
+            state.accounts = accRes.data || [];
+            const firstBatch = firstInvRes.data || [];
+            const totalCount = firstInvRes.count || firstBatch.length;
+
+            (setRes.data || []).forEach((row) => {
+              if (row.key === "developer_signup_pass") state.developerSignupPass = row.value;
+              if (row.key === "design_dimensions") state.designDimensions = row.value;
+              if (row.key === "teams_list") {
+                try {
+                  const parsed = JSON.parse(row.value);
+                  if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
+                } catch (e) {}
+              }
+            });
+
             state.currentUser =
-              state.accounts.find((a) => a.id === state.currentUser.id) ||
-              state.currentUser;
+              state.accounts.find((a) => a.id === u.id) || state.currentUser;
+            state.invitations = firstBatch;
+            state.invitationsScope = "ALL";
+            rebuildDerivedCaches();
+            ensureActiveExhibition();
+            renderActiveViewOnly();
+            if (showSplash) setSplashLoading(false);
+
+            // Fetch remaining pages IN PARALLEL in background
+            if (totalCount > 1000) {
+              const promises = [];
+              for (let from = 1000; from < totalCount; from += 1000) {
+                promises.push(
+                  sb
+                    .from("invitations")
+                    .select("*")
+                    .order("created_at", { ascending: false })
+                    .range(from, from + 999)
+                );
+              }
+              const results = await Promise.all(promises);
+              const allRows = [...firstBatch];
+              const seen = new Set(allRows.map((r) => r.id));
+              results.forEach((res) => {
+                (res.data || []).forEach((row) => {
+                  if (!seen.has(row.id)) {
+                    seen.add(row.id);
+                    allRows.push(row);
+                  }
+                });
+              });
+              state.invitations = allRows;
+              rebuildDerivedCaches();
+              renderActiveViewOnly();
+            }
+
+            setSyncBadge(true);
+            if (showToast) alert("✅ تم التحديث بنجاح!");
+            return;
           }
 
+          // Tier 2A: Admin Broker (Own partners with passwords + ONLY their team's invitations)
+          if (u.role === "admin_broker") {
+            const [exhRes, partnersRes, setRes] = await Promise.all([
+              sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
+              sb.from("accounts").select("*").eq("parent_admin_id", u.id),
+              sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions"]),
+            ]);
+            if (exhRes.error) throw exhRes.error;
+            state.exhibitions = exhRes.data || [];
+
+            // Merge partner passwords into accounts cache
+            const partners = partnersRes.data || [];
+            partners.forEach((p) => {
+              const idx = state.accounts.findIndex((a) => a.id === p.id);
+              if (idx >= 0) state.accounts[idx] = p;
+              else state.accounts.push(p);
+            });
+
+            (setRes.data || []).forEach((row) => {
+              if (row.key === "design_dimensions") state.designDimensions = row.value;
+            });
+
+            const partnerIds = partners.map((p) => p.id);
+            let invQuery = sb
+              .from("invitations")
+              .select("*")
+              .order("created_at", { ascending: false })
+              .limit(1000);
+
+            if (partnerIds.length > 0) {
+              invQuery = invQuery.or(
+                `admin_broker_id.eq.${u.id},owner_account_id.in.(${partnerIds.join(",")})`
+              );
+            } else {
+              invQuery = invQuery.eq("admin_broker_id", u.id);
+            }
+            const invRes = await invQuery;
+            if (invRes.error) throw invRes.error;
+
+            state.invitations = invRes.data || [];
+            state.invitationsScope = "ADMIN_BROKER";
+            rebuildDerivedCaches();
+            ensureActiveExhibition();
+            setSyncBadge(true);
+            renderActiveViewOnly();
+            if (showToast) alert("✅ تم التحديث بنجاح!");
+            return;
+          }
+
+          // Tier 2B: Sales / Broker / Influencer / Developer (ONLY their own invitations)
+          const [exhRes, invRes, setRes] = await Promise.all([
+            sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
+            sb
+              .from("invitations")
+              .select("*")
+              .eq("owner_account_id", u.id)
+              .order("created_at", { ascending: false })
+              .limit(1000),
+            sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions"]),
+          ]);
+          if (exhRes.error) throw exhRes.error;
+          if (invRes.error) throw invRes.error;
+
+          state.exhibitions = exhRes.data || [];
+          state.invitations = invRes.data || [];
+          state.invitationsScope = "USER";
+          (setRes.data || []).forEach((row) => {
+            if (row.key === "design_dimensions") state.designDimensions = row.value;
+          });
+
+          rebuildDerivedCaches();
+          ensureActiveExhibition();
           setSyncBadge(true);
-          renderAllUI();
+          renderActiveViewOnly();
           if (showToast) alert("✅ تم التحديث بنجاح!");
         } catch (err) {
           console.error(err);
           setSyncBadge(false);
           if (showToast) alert("❌ خطأ في الاتصال بـ Supabase!");
+        } finally {
+          if (showSplash) setSplashLoading(false);
         }
       }
 
+      async function refreshCurrentScope(showToast = false) {
+        if (state.currentUser) {
+          await loadScopedDataForLoggedInUser(false, showToast);
+        } else {
+          await loadPublicCoreData(false);
+          if (showToast) alert("✅ تم التحديث!");
+        }
+      }
+
+      // ==================== SCOPED REALTIME (ZERO CONNECTIONS FOR AD VISITORS) ====================
+      function scheduleActiveViewRender() {
+        clearTimeout(renderDebounceTimer);
+        renderDebounceTimer = setTimeout(() => {
+          rebuildDerivedCaches();
+          ensureActiveExhibition();
+          renderActiveViewOnly();
+        }, 120);
+      }
+
+      function setupScopedRealtime() {
+        if (realtimeChannel) {
+          sb.removeChannel(realtimeChannel);
+          realtimeChannel = null;
+        }
+
+        // Public ad/client links (?c=BM, ?d=, ?b=) DO NOT open Realtime sockets -> saves concurrent limit!
+        if (state.publicHostAccount && !state.currentUser) {
+          return;
+        }
+
+        const ch = sb.channel("balmetr-scoped-sync");
+
+        // Always sync lightweight metadata (exhibitions, accounts, settings) for Sales & Logged-in users
+        ch.on("postgres_changes", { event: "*", schema: "public", table: "exhibitions" }, (payload) => {
+          if (isImportingLegacy) return;
+          const { eventType, new: newRow, old: oldRow } = payload;
+          if (eventType === "INSERT" && newRow) {
+            if (!state.exhibitions.some((e) => e.id === newRow.id)) state.exhibitions.push(newRow);
+          } else if (eventType === "UPDATE" && newRow) {
+            const idx = state.exhibitions.findIndex((e) => e.id === newRow.id);
+            if (idx >= 0) state.exhibitions[idx] = newRow;
+            if (state.activeExhibitionId === newRow.id) loadActiveTemplateImage();
+          } else if (eventType === "DELETE" && oldRow) {
+            state.exhibitions = state.exhibitions.filter((e) => e.id !== oldRow.id);
+          }
+          scheduleActiveViewRender();
+        });
+
+        ch.on("postgres_changes", { event: "*", schema: "public", table: "accounts" }, (payload) => {
+          if (isImportingLegacy) return;
+          const { eventType, new: newRow, old: oldRow } = payload;
+          const isMgr = state.currentUser?.role === "manager";
+          const safeRow =
+            newRow && !isMgr && newRow.id !== state.currentUser?.id && newRow.parent_admin_id !== state.currentUser?.id
+              ? { ...newRow, password: undefined }
+              : newRow;
+
+          if (eventType === "INSERT" && safeRow) {
+            if (!state.accounts.some((a) => a.id === safeRow.id)) state.accounts.push(safeRow);
+          } else if (eventType === "UPDATE" && safeRow) {
+            const idx = state.accounts.findIndex((a) => a.id === safeRow.id);
+            if (idx >= 0) state.accounts[idx] = { ...state.accounts[idx], ...safeRow };
+            if (state.currentUser?.id === safeRow.id) {
+              state.currentUser = { ...state.currentUser, ...safeRow };
+            }
+          } else if (eventType === "DELETE" && oldRow) {
+            state.accounts = state.accounts.filter((a) => a.id !== oldRow.id);
+          }
+          scheduleActiveViewRender();
+        });
+
+        ch.on("postgres_changes", { event: "*", schema: "public", table: "system_settings" }, (payload) => {
+          if (isImportingLegacy) return;
+          const newRow = payload.new;
+          if (!newRow) return;
+          if (newRow.key === "design_dimensions") state.designDimensions = newRow.value;
+          if (newRow.key === "developer_signup_pass" && state.currentUser?.role === "manager") {
+            state.developerSignupPass = newRow.value;
+          }
+          if (newRow.key === "teams_list") {
+            try {
+              const parsed = JSON.parse(newRow.value);
+              if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
+            } catch (e) {}
+          }
+          scheduleActiveViewRender();
+        });
+
+        // ONLY listen to invitations stream when logged into a portal / manager dashboard
+        if (state.currentUser) {
+          ch.on("postgres_changes", { event: "*", schema: "public", table: "invitations" }, (payload) => {
+            if (isImportingLegacy) return;
+            const { eventType, new: newRow, old: oldRow } = payload;
+            const u = state.currentUser;
+            const isRelevant = (row) => {
+              if (!row) return false;
+              if (u.role === "manager") return true;
+              if (u.role === "admin_broker") {
+                if (row.admin_broker_id === u.id) return true;
+                const own = cache.accountsById.get(row.owner_account_id);
+                return own?.parent_admin_id === u.id;
+              }
+              return row.owner_account_id === u.id;
+            };
+
+            if (eventType === "INSERT" && isRelevant(newRow)) {
+              if (!state.invitations.some((i) => i.id === newRow.id)) {
+                state.invitations.unshift(newRow);
+              }
+              scheduleActiveViewRender();
+            } else if (eventType === "UPDATE" && isRelevant(newRow)) {
+              const idx = state.invitations.findIndex((i) => i.id === newRow.id);
+              if (idx >= 0) state.invitations[idx] = newRow;
+              scheduleActiveViewRender();
+            } else if (eventType === "DELETE" && oldRow) {
+              const prevLen = state.invitations.length;
+              state.invitations = state.invitations.filter((i) => i.id !== oldRow.id);
+              if (state.invitations.length !== prevLen) scheduleActiveViewRender();
+            }
+          });
+        }
+
+        realtimeChannel = ch.subscribe((status) => {
+          if (status === "SUBSCRIBED") setSyncBadge(true);
+        });
+      }
+
+      // ==================== SINGLE-PASS CACHE & CLEAN TIMESTAMPS ====================
+      function decorateInvRaw(inv) {
+        if (inv._decorated && inv._rawCreated === inv.created_at && inv._rawPhone === inv.client_phone) {
+          return;
+        }
+        inv._rawCreated = inv.created_at;
+        inv._rawPhone = inv.client_phone;
+        inv._normPhone = normalizePhone(inv.client_phone);
+        inv._dateStr = String(inv.date_iso || "");
+        inv._seqNum = Number(inv.seq_number) || 0;
+
+        if (inv.created_at) {
+          const d = new Date(inv.created_at);
+          if (!isNaN(d.getTime())) {
+            inv._ms = d.getTime();
+            inv._secKey = Math.floor(inv._ms / 1000);
+            inv._cairoDate = CAIRO_DATE_FMT.format(d);
+            inv._cairoTime = CAIRO_TIME_FMT.format(d);
+          } else {
+            inv._ms = 0;
+            inv._secKey = 0;
+            inv._cairoDate = "";
+            inv._cairoTime = "";
+          }
+        } else {
+          inv._ms = 0;
+          inv._secKey = 0;
+          inv._cairoDate = "";
+          inv._cairoTime = "";
+        }
+        inv._decorated = true;
+      }
+
+      function rebuildDerivedCaches() {
+        cache.accountsById = new Map();
+        cache.exhibitionsById = new Map();
+        cache.invByExh = new Map();
+        cache.invByExhPhone = new Map();
+        cache.ownerTotalCount = new Map();
+        cache.ownerExhCount = new Map();
+
+        for (let i = 0; i < state.accounts.length; i++) {
+          cache.accountsById.set(state.accounts[i].id, state.accounts[i]);
+        }
+        for (let i = 0; i < state.exhibitions.length; i++) {
+          cache.exhibitionsById.set(state.exhibitions[i].id, state.exhibitions[i]);
+          cache.invByExh.set(state.exhibitions[i].id, []);
+        }
+
+        const secCounts = new Map();
+        for (let i = 0; i < state.invitations.length; i++) {
+          const inv = state.invitations[i];
+          decorateInvRaw(inv);
+          if (inv._secKey) {
+            secCounts.set(inv._secKey, (secCounts.get(inv._secKey) || 0) + 1);
+          }
+        }
+
+        for (let i = 0; i < state.invitations.length; i++) {
+          const inv = state.invitations[i];
+          const sameSecCount = inv._secKey ? secCounts.get(inv._secKey) || 0 : 0;
+          const isBulkOrLegacy =
+            !inv._ms || inv._cairoDate !== inv._dateStr || sameSecCount >= 3;
+
+          inv._realTs = isBulkOrLegacy ? 0 : inv._ms;
+          inv._displayDt = isBulkOrLegacy
+            ? inv._dateStr
+            : `${inv._dateStr} • ${inv._cairoTime}`;
+
+          let exhArr = cache.invByExh.get(inv.exhibition_id);
+          if (!exhArr) {
+            exhArr = [];
+            cache.invByExh.set(inv.exhibition_id, exhArr);
+          }
+          exhArr.push(inv);
+
+          if (inv._normPhone && inv._normPhone.length >= 10) {
+            const epKey = `${inv.exhibition_id}|${inv._normPhone}`;
+            let epArr = cache.invByExhPhone.get(epKey);
+            if (!epArr) {
+              epArr = [];
+              cache.invByExhPhone.set(epKey, epArr);
+            }
+            epArr.push(inv);
+          }
+
+          if (inv.owner_account_id) {
+            cache.ownerTotalCount.set(
+              inv.owner_account_id,
+              (cache.ownerTotalCount.get(inv.owner_account_id) || 0) + 1
+            );
+            const oeKey = `${inv.owner_account_id}|${inv.exhibition_id}`;
+            cache.ownerExhCount.set(oeKey, (cache.ownerExhCount.get(oeKey) || 0) + 1);
+          }
+        }
+
+        state.invitations = sortInvitationsFast(state.invitations, false);
+      }
+
+      function sortInvitationsFast(list, isSingleExhibition = false) {
+        return [...list].sort((a, b) => {
+          if (isSingleExhibition) {
+            const seqDiff = (b._seqNum || 0) - (a._seqNum || 0);
+            if (seqDiff !== 0) return seqDiff;
+          }
+          if (a._dateStr !== b._dateStr) return a._dateStr < b._dateStr ? 1 : -1;
+          if (a._realTs !== b._realTs) return b._realTs - a._realTs;
+          const seqDiff = (b._seqNum || 0) - (a._seqNum || 0);
+          if (seqDiff !== 0) return seqDiff;
+          return (b._ms || 0) - (a._ms || 0);
+        });
+      }
+
+      // ==================== URL PARAMS (SHORT 6-CHAR EXHIBITION CODE) ====================
       function checkPublicUrlParams() {
         const params = new URLSearchParams(window.location.search);
         const codeParam = (
@@ -2658,10 +3321,10 @@
         )
           .trim()
           .toUpperCase();
-        const exhParam = (params.get("e") || "").trim();
+        const exhParam = (params.get("e") || "").trim().toLowerCase();
 
         if (!codeParam) {
-          document.body.classList.remove("public-client-mode");
+          if (!state.currentUser) document.body.classList.remove("public-client-mode");
           return;
         }
 
@@ -2671,15 +3334,21 @@
         if (found) {
           state.publicHostAccount = found;
           selectedSalesId = found.id;
-          if (exhParam && state.exhibitions.some((e) => e.id === exhParam)) {
-            state.publicLockedExhId = exhParam;
-            state.activeExhibitionId = exhParam;
+          if (exhParam) {
+            const matchedExh = state.exhibitions.find(
+              (e) =>
+                e.id.toLowerCase() === exhParam ||
+                e.id.toLowerCase().startsWith(exhParam)
+            );
+            if (matchedExh) {
+              state.publicLockedExhId = matchedExh.id;
+              state.activeExhibitionId = matchedExh.id;
+            }
           }
-          document.body.classList.add("public-client-mode");
+          if (!state.currentUser) document.body.classList.add("public-client-mode");
         }
       }
 
-      // 3 Quick Taps on Logo -> Smart Login
       function handleLogoSecretTap() {
         logoTapCount++;
         clearTimeout(logoTapTimer);
@@ -2692,76 +3361,126 @@
         }
       }
 
-      // ==================== SORTING & DATE/TIME HELPERS ====================
-      function getCairoDateFromIso(ts) {
-        if (!ts) return "";
-        const d = new Date(ts);
-        if (isNaN(d.getTime())) return "";
-        try {
-          return new Intl.DateTimeFormat("en-CA", {
-            timeZone: "Africa/Cairo",
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          }).format(d);
-        } catch (e) {
-          return getLocalYYYYMMDD(d);
-        }
-      }
+      // ==================== AUTO IMAGE COMPRESSION + 1-YEAR CACHE UPLOAD ====================
+      async function compressImageFile(file, maxWidth = 1080, quality = 0.84) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const img = new Image();
+          img.onload = () => {
+            URL.revokeObjectURL(url);
+            let w = img.naturalWidth || 1080;
+            let h = img.naturalHeight || 1350;
+            if (w > maxWidth) {
+              h = Math.round((h * maxWidth) / w);
+              w = maxWidth;
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
 
-      function formatInvDateTime(inv) {
-        const dateStr = inv.date_iso || "";
-        if (!inv.created_at) return dateStr;
-        const d = new Date(inv.created_at);
-        if (isNaN(d.getTime())) return dateStr;
-        if (getCairoDateFromIso(inv.created_at) === dateStr) {
-          try {
-            const timeStr = new Intl.DateTimeFormat("en-GB", {
-              timeZone: "Africa/Cairo",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false,
-            }).format(d);
-            return `${dateStr} • ${timeStr}`;
-          } catch (e) {
-            return dateStr;
-          }
-        }
-        return dateStr;
-      }
-
-      function sortInvitationsSmart(list, isSingleExhibition = false) {
-        return [...list].sort((a, b) => {
-          if (isSingleExhibition) {
-            const seqDiff = (Number(b.seq_number) || 0) - (Number(a.seq_number) || 0);
-            if (seqDiff !== 0) return seqDiff;
-          }
-
-          const da = String(a.date_iso || "");
-          const db = String(b.date_iso || "");
-          if (da !== db) return db.localeCompare(da);
-
-          const aRealTs =
-            a.created_at && getCairoDateFromIso(a.created_at) === da
-              ? new Date(a.created_at).getTime()
-              : 0;
-          const bRealTs =
-            b.created_at && getCairoDateFromIso(b.created_at) === db
-              ? new Date(b.created_at).getTime()
-              : 0;
-          if (aRealTs !== bRealTs) return bRealTs - aRealTs;
-
-          const seqDiff = (Number(b.seq_number) || 0) - (Number(a.seq_number) || 0);
-          if (seqDiff !== 0) return seqDiff;
-
-          return (
-            (new Date(b.created_at || 0).getTime() || 0) -
-            (new Date(a.created_at || 0).getTime() || 0)
-          );
+            // Try WebP first (best quality/size ratio), fallback to JPEG
+            canvas.toBlob(
+              (webpBlob) => {
+                if (webpBlob && webpBlob.type === "image/webp") {
+                  resolve({
+                    blob: webpBlob,
+                    ext: "webp",
+                    contentType: "image/webp",
+                  });
+                } else {
+                  canvas.toBlob(
+                    (jpgBlob) => {
+                      if (!jpgBlob) return reject(new Error("Compression failed"));
+                      resolve({
+                        blob: jpgBlob,
+                        ext: "jpg",
+                        contentType: "image/jpeg",
+                      });
+                    },
+                    "image/jpeg",
+                    quality
+                  );
+                }
+              },
+              "image/webp",
+              quality
+            );
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("Invalid image file"));
+          };
+          img.src = url;
         });
       }
 
+      async function uploadCompressedImageToStorage(file, folder) {
+        const origKB = Math.round(file.size / 1024);
+        const compressed = await compressImageFile(file, 1080, 0.84);
+        const finalKB = Math.round(compressed.blob.size / 1024);
+        const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${compressed.ext}`;
+        const { error } = await sb.storage.from("templates").upload(path, compressed.blob, {
+          cacheControl: "31536000", // 1 Year CDN + Browser Cache
+          contentType: compressed.contentType,
+          upsert: true,
+        });
+        if (error) throw error;
+        const { data } = sb.storage.from("templates").getPublicUrl(path);
+        return { url: data.publicUrl, origKB, finalKB };
+      }
+
+      // ==================== SELF-SERVICE PASSWORD SETTINGS ====================
+      function togglePasswordReveal(inputId, btnEl) {
+        const inp = document.getElementById(inputId);
+        if (!inp) return;
+        if (inp.type === "password") {
+          inp.type = "text";
+          btnEl.textContent = "🙈";
+        } else {
+          inp.type = "password";
+          btnEl.textContent = "👁️";
+        }
+      }
+
+      async function changeOwnPasswordFromInput(newInputId, currDisplayId) {
+        const u = state.currentUser;
+        if (!u) return;
+        const newInp = document.getElementById(newInputId);
+        const newPass = (newInp?.value || "").trim();
+        if (!newPass || newPass.length < 4) {
+          return alert("⚠️ كلمة السر الجديدة يجب ألا تقل عن 4 أحرف أو أرقام!");
+        }
+        if (newPass === u.password) {
+          return alert("ℹ️ كلمة السر الجديدة مطابقة للحالية!");
+        }
+        try {
+          const { data, error } = await sb.rpc("update_own_password", {
+            p_account_id: u.id,
+            p_old_password: u.password,
+            p_new_password: newPass,
+          });
+          if (error) throw error;
+          if (data.status !== "UPDATED") {
+            return alert("❌ " + (data.message || "تعذر تغيير كلمة السر"));
+          }
+          u.password = data.password;
+          const acc = cache.accountsById.get(u.id);
+          if (acc) acc.password = data.password;
+          if (currDisplayId) {
+            const disp = document.getElementById(currDisplayId);
+            if (disp) disp.value = data.password;
+          }
+          newInp.value = "";
+          alert("✅ تم تحديث كلمة السر الخاصة بك بنجاح!");
+        } catch (err) {
+          console.error(err);
+          alert("❌ حدث خطأ أثناء التحديث: " + (err.message || ""));
+        }
+      }
+
+      // ==================== HELPERS ====================
       function sortAccountsByCode(list) {
         return [...list].sort((a, b) => {
           const ca = String(a.code || "").toUpperCase();
@@ -2825,7 +3544,11 @@
       }
 
       function getAccountById(id) {
-        return state.accounts.find((a) => a.id === id) || null;
+        return cache.accountsById.get(id) || null;
+      }
+
+      function getExhibitionById(id) {
+        return cache.exhibitionsById.get(id) || null;
       }
 
       function buildRefText(ownerAcc, adminAcc) {
@@ -2852,7 +3575,7 @@
         const param =
           acc.role === "developer" ? "d" : acc.role === "company" ? "c" : "b";
         let url = `${base}?${param}=${encodeURIComponent(acc.code)}`;
-        if (exhId) url += `&e=${encodeURIComponent(exhId)}`;
+        if (exhId) url += `&e=${encodeURIComponent(String(exhId).slice(0, 6))}`;
         return url;
       }
 
@@ -2861,8 +3584,8 @@
       }
 
       function generateUniquePassword(prefix = "BM") {
-        const existing = new Set(state.accounts.map((a) => a.password));
-        existing.add(state.developerSignupPass);
+        const existing = new Set(state.accounts.map((a) => a.password).filter(Boolean));
+        if (state.developerSignupPass) existing.add(state.developerSignupPass);
         for (let i = 0; i < 100; i++) {
           const p = `${prefix}${Math.floor(1000 + Math.random() * 9000)}`;
           if (!existing.has(p)) return p;
@@ -2906,7 +3629,7 @@
 
       function getActiveExhibition() {
         ensureActiveExhibition();
-        return state.exhibitions.find((e) => e.id === state.activeExhibitionId) || null;
+        return cache.exhibitionsById.get(state.activeExhibitionId) || null;
       }
 
       function getActiveLayout() {
@@ -2921,18 +3644,25 @@
         return getActiveExhibition()?.template_url || "";
       }
 
-      // ==================== SMART LOGIN & NAVIGATION ====================
+      // ==================== SECURE SMART LOGIN ====================
       function handleSmartAuthButton() {
         if (state.currentUser) {
           if (confirm("هل تريد تسجيل الخروج من حسابك الحالي؟")) {
             state.currentUser = null;
+            state.invitations = [];
+            state.invitationsScope = "NONE";
+            state.developerSignupPass = "";
+            // Strip passwords from memory on logout
+            state.accounts = state.accounts.map((a) => ({ ...a, password: undefined }));
+            rebuildDerivedCaches();
             returnToWorkspace();
+            setupScopedRealtime();
           }
           return;
         }
         document.getElementById("smartLoginInput").value = "";
         document.getElementById("smartLoginModal").style.display = "flex";
-        setTimeout(() => document.getElementById("smartLoginInput").focus(), 80);
+        setTimeout(() => document.getElementById("smartLoginInput").focus(), 60);
       }
 
       function closeModal(id) {
@@ -2944,7 +3674,7 @@
         if (!pass) return;
         const btn = document.getElementById("smartLoginSubmitBtn");
         btn.disabled = true;
-        btn.textContent = "⏳ جاري التحقق...";
+        btn.textContent = "⏳ تحقق...";
         try {
           const { data, error } = await sb.rpc("smart_login", { p_password: pass });
           if (error) throw error;
@@ -2963,8 +3693,9 @@
             state.currentUser = data.account;
             closeModal("smartLoginModal");
             document.body.classList.remove("clean-header-mode", "public-client-mode");
-            await loadAllDataFromSupabase(false);
             routeLoggedInUser();
+            await loadScopedDataForLoggedInUser(true, false);
+            setupScopedRealtime();
             return;
           }
 
@@ -2979,6 +3710,7 @@
       }
 
       function showOnlyView(viewId) {
+        activeView = viewId;
         [
           "workspaceView",
           "personalPortalView",
@@ -3007,16 +3739,10 @@
           return;
         }
         const role = state.currentUser.role;
-        if (role === "manager") {
-          showOnlyView("managerView");
-          renderAllUI();
-        } else if (role === "admin_broker") {
-          showOnlyView("adminBrokerView");
-          renderAdminBrokerPanel();
-        } else {
-          showOnlyView("personalPortalView");
-          renderPersonalPortal();
-        }
+        if (role === "manager") showOnlyView("managerView");
+        else if (role === "admin_broker") showOnlyView("adminBrokerView");
+        else showOnlyView("personalPortalView");
+        renderActiveViewOnly();
       }
 
       function returnToWorkspace() {
@@ -3024,22 +3750,25 @@
           document.body.classList.add("public-client-mode");
         }
         showOnlyView("workspaceView");
-        renderAllUI();
+        renderActiveViewOnly();
       }
 
-      // ==================== RENDER ALL UI ====================
-      function renderAllUI() {
+      // ==================== LAZY VIEW RENDERER ====================
+      function renderActiveViewOnly() {
         ensureActiveExhibition();
-        renderExhibitionPills();
-        renderWorkspaceControls();
-        populateTeamSelects();
-        loadActiveTemplateImage();
+        if (state.currentUser) renderExhibitionPills();
 
-        if (state.currentUser?.role === "manager") {
-          renderManagerDashboard();
-        } else if (state.currentUser?.role === "admin_broker") {
+        if (activeView === "workspaceView") {
+          const active = getActiveExhibition();
+          const titleEl = document.getElementById("activeExhTitle");
+          if (titleEl) titleEl.textContent = active ? active.name : "";
+          renderWorkspaceControls();
+          loadActiveTemplateImage();
+        } else if (activeView === "managerView") {
+          renderActiveManagerTab();
+        } else if (activeView === "adminBrokerView") {
           renderAdminBrokerPanel();
-        } else if (state.currentUser) {
+        } else if (activeView === "personalPortalView") {
           renderPersonalPortal();
         }
       }
@@ -3070,13 +3799,10 @@
             lastIssuedTicket = null;
             document.getElementById("ticketConfirmBox").style.display = "none";
             document.getElementById("previewTopActions").style.display = "none";
-            renderAllUI();
+            renderActiveViewOnly();
           };
           wrap.appendChild(btn);
         });
-
-        const titleEl = document.getElementById("activeExhTitle");
-        if (titleEl) titleEl.textContent = active ? active.name : "";
       }
 
       // ==================== WORKSPACE (CLEAN FOR SALES & PUBLIC) ====================
@@ -3119,8 +3845,7 @@
         state.activeExhibitionId = exhId;
         lastIssuedTicket = null;
         document.getElementById("ticketConfirmBox").style.display = "none";
-        loadActiveTemplateImage();
-        renderAllUI();
+        renderActiveViewOnly();
       }
 
       function renderSalesDropdown() {
@@ -3135,11 +3860,13 @@
         const salesList = sortAccountsByCode(
           state.accounts.filter((a) => a.role === "sales")
         );
-        const filtered = salesList.filter(
-          (s) =>
-            s.name.toLowerCase().includes(q) ||
-            s.code.toLowerCase().includes(q)
-        );
+        const filtered = q
+          ? salesList.filter(
+              (s) =>
+                s.name.toLowerCase().includes(q) ||
+                s.code.toLowerCase().includes(q)
+            )
+          : salesList;
 
         sel.innerHTML = `<option value="">-- اختر اسمك وكودك --</option>`;
         filtered.forEach((s) => {
@@ -3215,8 +3942,8 @@
           issueBtn.disabled = true;
           issueBtn.textContent = "🔒 اختر اسمك أولاً";
         }
-        checkDuplicatePhoneAdvisoryUI();
-        renderAllCanvases();
+        scheduleDuplicatePhoneCheck();
+        scheduleCanvasRender();
       }
 
       function handlePhoneInput(el) {
@@ -3243,39 +3970,62 @@
       }
 
       function onClientInputChange() {
-        checkDuplicatePhoneAdvisoryUI();
-        renderAllCanvases();
+        scheduleDuplicatePhoneCheck();
+        scheduleCanvasRender();
       }
 
-      // Simple Duplicate Alert: ONLY checks inside the SAME active exhibition
-      function checkDuplicatePhoneAdvisoryUI() {
+      // Ultra-lightweight RPC Duplicate Check (ONLY checks the typed phone in the active exhibition!)
+      function scheduleDuplicatePhoneCheck() {
+        clearTimeout(dupCheckTimer);
         const activeExh = getActiveExhibition();
         const phone = (document.getElementById("clientPhoneInput")?.value || "").trim();
         const noticeBox = document.getElementById("duplicateNoticeBox");
         const norm = normalizePhone(phone);
+
         if (!activeExh || !norm || norm.length < 10) {
           noticeBox.style.display = "none";
           return;
         }
-        const sameExhPrev = state.invitations.filter(
-          (i) => i.exhibition_id === activeExh.id && normalizePhone(i.client_phone) === norm
-        );
-        if (sameExhPrev.length === 0) {
-          noticeBox.style.display = "none";
+
+        // Fast local O(1) check if Manager already loaded all invitations
+        if (state.invitationsScope === "ALL") {
+          const sameExhPrev = cache.invByExhPhone.get(`${activeExh.id}|${norm}`) || [];
+          if (sameExhPrev.length === 0) {
+            noticeBox.style.display = "none";
+            return;
+          }
+          const issuers = [
+            ...new Set(
+              sameExhPrev.map((inv) => {
+                const own = getAccountById(inv.owner_account_id);
+                return own ? `${own.name} (${own.code})` : "مسوق";
+              })
+            ),
+          ];
+          noticeBox.style.display = "block";
+          noticeBox.innerHTML = `⚠️ تم الإصدار من قبل: <strong>${escapeHtml(issuers.join(" ، "))}</strong>`;
           return;
         }
 
-        const issuers = [
-          ...new Set(
-            sameExhPrev.map((inv) => {
-              const own = getAccountById(inv.owner_account_id);
-              return own ? `${own.name} (${own.code})` : "مسوق";
-            })
-          ),
-        ];
-
-        noticeBox.style.display = "block";
-        noticeBox.innerHTML = `⚠️ تم الإصدار من قبل: <strong>${escapeHtml(issuers.join(" ، "))}</strong>`;
+        // Otherwise query ONLY this single phone via tiny RPC (< 0.5 KB)
+        const reqId = ++dupCheckSeq;
+        dupCheckTimer = setTimeout(async () => {
+          try {
+            const { data, error } = await sb.rpc("check_phone_duplicate", {
+              p_exhibition_id: activeExh.id,
+              p_client_phone: norm,
+            });
+            if (reqId !== dupCheckSeq || error) return;
+            const list = data?.issuers || [];
+            if (list.length === 0) {
+              noticeBox.style.display = "none";
+              return;
+            }
+            const issuers = list.map((x) => `${x.name} (${x.code})`);
+            noticeBox.style.display = "block";
+            noticeBox.innerHTML = `⚠️ تم الإصدار من قبل: <strong>${escapeHtml(issuers.join(" ، "))}</strong>`;
+          } catch (e) {}
+        }, 280);
       }
 
       async function issueAndDownloadInvitation() {
@@ -3305,24 +4055,32 @@
           if (data.status === "CREATED" && data.invitation) {
             const inv = data.invitation;
             lastIssuedTicket = inv;
-            state.invitations.unshift(inv);
-            state.invitations = sortInvitationsSmart(state.invitations, false);
             exh.next_seq = Number(inv.seq_number) + 1;
+
+            if (
+              state.invitationsScope === "ALL" ||
+              (state.currentUser && inv.owner_account_id === state.currentUser.id)
+            ) {
+              if (!state.invitations.some((i) => i.id === inv.id)) {
+                state.invitations.unshift(inv);
+              }
+              rebuildDerivedCaches();
+            }
 
             document.getElementById("clientNameInput").value = "";
             document.getElementById("clientPhoneInput").value = "";
+            document.getElementById("duplicateNoticeBox").style.display = "none";
             if (!state.publicHostAccount) selectedSalesId = "";
 
-            renderAllCanvases(inv);
+            drawInvitationCanvas(document.getElementById("invitationCanvas"), inv, false);
             const box = document.getElementById("ticketConfirmBox");
             box.style.display = "block";
             document.getElementById("ticketConfirmText").innerHTML =
               `✅ تم إصدار الدعوة رقم <strong>${formatSeqDisplay(inv.seq_number)}</strong> باسم <strong>${escapeHtml(inv.client_name)}</strong> بنجاح!`;
             document.getElementById("previewTopActions").style.display = "flex";
 
-            setSyncBadge(true);
-            renderAllUI();
-            renderAllCanvases(inv);
+            renderActiveViewOnly();
+            drawInvitationCanvas(document.getElementById("invitationCanvas"), inv, false);
             await shareCurrentCanvas(inv);
           } else {
             alert("❌ " + (data.message || "تعذر إصدار الدعوة"));
@@ -3336,16 +4094,41 @@
       }
 
       // ==================== CANVAS RENDERER ====================
-      function loadActiveTemplateImage() {
+      function scheduleCanvasRender(customTicket = null) {
+        if (canvasRafId) cancelAnimationFrame(canvasRafId);
+        canvasRafId = requestAnimationFrame(() => {
+          canvasRafId = null;
+          if (activeView === "workspaceView") {
+            drawInvitationCanvas(
+              document.getElementById("invitationCanvas"),
+              customTicket,
+              false
+            );
+          } else if (
+            activeView === "managerView" &&
+            activeManagerTab === "mgrTabStudio"
+          ) {
+            drawInvitationCanvas(
+              document.getElementById("adminStudioCanvas"),
+              customTicket,
+              true
+            );
+          }
+        });
+      }
+
+      function loadActiveTemplateImage(callback = null) {
         const url = getActiveTemplateUrl();
         if (!url) {
           loadedTemplateImg = null;
           lastTemplateSrc = "";
-          renderAllCanvases();
+          scheduleCanvasRender();
+          if (callback) callback();
           return;
         }
         if (url === lastTemplateSrc && loadedTemplateImg) {
-          renderAllCanvases();
+          scheduleCanvasRender();
+          if (callback) callback();
           return;
         }
         const img = new Image();
@@ -3353,29 +4136,16 @@
         img.onload = () => {
           loadedTemplateImg = img;
           lastTemplateSrc = url;
-          renderAllCanvases();
+          scheduleCanvasRender();
+          if (callback) callback();
         };
         img.onerror = () => {
           loadedTemplateImg = null;
           lastTemplateSrc = "";
-          renderAllCanvases();
+          scheduleCanvasRender();
+          if (callback) callback();
         };
         img.src = url;
-      }
-
-      function renderAllCanvases(customTicket = null) {
-        drawInvitationCanvas(
-          document.getElementById("invitationCanvas"),
-          customTicket,
-          false
-        );
-        if (state.currentUser?.role === "manager") {
-          drawInvitationCanvas(
-            document.getElementById("adminStudioCanvas"),
-            customTicket,
-            true
-          );
-        }
       }
 
       function drawQrOnCanvas(ctx, text, centerX, centerY, sizePx) {
@@ -3567,13 +4337,16 @@
         setTimeout(() => URL.revokeObjectURL(url), 4000);
       }
 
-      // ==================== PERSONAL PORTAL (WITH SEARCH & FILTERS) ====================
+      // ==================== PERSONAL PORTAL ====================
       function renderPersonalPortal() {
         const u = state.currentUser;
         if (!u) return;
         document.getElementById("portalHeaderTitle").textContent =
           `${getRoleLabel(u.role)}: ${u.name}`;
         document.getElementById("portalKpiCode").textContent = u.code;
+
+        const currPassEl = document.getElementById("portalCurrPassDisplay");
+        if (currPassEl) currPassEl.value = u.password || "";
 
         const linkWrap = document.getElementById("portalLinkWrap");
         const devTplWrap = document.getElementById("portalDevTemplateWrap");
@@ -3597,14 +4370,12 @@
           devTplWrap.style.display = "none";
         }
 
-        const myInvs = state.invitations.filter((i) => i.owner_account_id === u.id);
         const activeExh = getActiveExhibition();
-        const myActive = activeExh
-          ? myInvs.filter((i) => i.exhibition_id === activeExh.id)
-          : [];
-
-        document.getElementById("portalKpiActive").textContent = myActive.length;
-        document.getElementById("portalKpiAll").textContent = myInvs.length;
+        document.getElementById("portalKpiActive").textContent = activeExh
+          ? cache.ownerExhCount.get(`${u.id}|${activeExh.id}`) || 0
+          : 0;
+        document.getElementById("portalKpiAll").textContent =
+          cache.ownerTotalCount.get(u.id) || 0;
 
         const exhSel = document.getElementById("portalExhFilter");
         const prevExh = exhSel.value || "ALL";
@@ -3634,16 +4405,18 @@
         const exhId = document.getElementById("portalExhFilter")?.value || "ALL";
         const dateVal = (document.getElementById("portalDateFilter")?.value || "").trim();
 
-        let list = state.invitations.filter((i) => i.owner_account_id === u.id);
-        if (exhId !== "ALL") list = list.filter((i) => i.exhibition_id === exhId);
-        if (dateVal) list = list.filter((i) => i.date_iso === dateVal);
-        if (q) {
-          list = list.filter((inv) =>
-            `${inv.seq_number} ${inv.client_name} ${inv.client_phone}`.toLowerCase().includes(q)
-          );
-        }
+        let list = state.invitations.filter((i) => {
+          if (i.owner_account_id !== u.id) return false;
+          if (exhId !== "ALL" && i.exhibition_id !== exhId) return false;
+          if (dateVal && i._dateStr !== dateVal) return false;
+          if (q && !`${i.seq_number} ${i.client_name} ${i.client_phone}`.toLowerCase().includes(q)) {
+            return false;
+          }
+          return true;
+        });
 
-        list = sortInvitationsSmart(list, exhId !== "ALL");
+        if (exhId !== "ALL") list = sortInvitationsFast(list, true);
+
         document.getElementById("portalFilteredCountText").textContent =
           `النتائج المعروضة: ${list.length} دعوة`;
 
@@ -3654,16 +4427,16 @@
         }
 
         tbody.innerHTML = list
+          .slice(0, 300)
           .map((inv) => {
-            const exhName =
-              state.exhibitions.find((e) => e.id === inv.exhibition_id)?.name || "-";
+            const exhName = getExhibitionById(inv.exhibition_id)?.name || "-";
             return `
             <tr>
               <td><strong style="color:var(--primary-bright);">${formatSeqDisplay(inv.seq_number)}</strong></td>
               <td>${escapeHtml(exhName)}</td>
               <td style="font-weight:800;">${escapeHtml(inv.client_name)}</td>
               <td dir="ltr" style="text-align:right;">${escapeHtml(inv.client_phone)}</td>
-              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${formatInvDateTime(inv)}</td>
+              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv._displayDt}</td>
               <td>
                 <button type="button" class="btn btn-danger" style="padding:4px 10px; font-size:0.76rem;" onclick="deleteInvitationById('${inv.id}')">🗑️ مسح</button>
               </td>
@@ -3677,17 +4450,17 @@
         const u = state.currentUser;
         if (!file || !u) return;
         const st = document.getElementById("portalDevTplStatus");
-        st.textContent = "⏳ جاري رفع التصميم...";
+        st.textContent = "⏳ جاري ضغط ورفع التصميم...";
         try {
-          const url = await uploadImageToStorage(file, "developers");
+          const { url, origKB, finalKB } = await uploadCompressedImageToStorage(file, "developers");
           const { error } = await sb
             .from("accounts")
             .update({ custom_template_url: url })
             .eq("id", u.id);
           if (error) throw error;
           u.custom_template_url = url;
-          st.textContent = "✅ تم حفظ تصميم شركتك بنجاح!";
-          alert("✅ تم رفع وتفعيل تصميم الدعوة الخاص بشركتك!");
+          st.textContent = `✅ تم الحفظ (${finalKB}KB بعد الضغط)`;
+          alert(`✅ تم ضغط التصميم من ${origKB}KB إلى ${finalKB}KB وتفعيله بنجاح!`);
         } catch (err) {
           console.error(err);
           st.textContent = "❌ فشل الرفع";
@@ -3699,21 +4472,11 @@
         const { error } = await sb.from("invitations").delete().eq("id", invId);
         if (error) return alert("❌ تعذر المسح!");
         state.invitations = state.invitations.filter((i) => i.id !== invId);
-        renderAllUI();
+        rebuildDerivedCaches();
+        renderActiveViewOnly();
       }
 
       // ==================== ADMIN BROKER PANEL ====================
-      async function uploadImageToStorage(file, folder) {
-        const ext = (file.name.split(".").pop() || "png").toLowerCase();
-        const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${ext}`;
-        const { error } = await sb.storage.from("templates").upload(path, file, {
-          upsert: true,
-        });
-        if (error) throw error;
-        const { data } = sb.storage.from("templates").getPublicUrl(path);
-        return data.publicUrl;
-      }
-
       async function adminBrokerCreatePartner() {
         const u = state.currentUser;
         if (!u || u.role !== "admin_broker") return;
@@ -3730,7 +4493,10 @@
         btn.textContent = "⏳ جاري الإنشاء...";
         try {
           let customUrl = "";
-          if (file) customUrl = await uploadImageToStorage(file, "partners");
+          if (file) {
+            const up = await uploadCompressedImageToStorage(file, "partners");
+            customUrl = up.url;
+          }
           const code = generateNextCodeForRole(role);
           const { data, error } = await sb
             .from("accounts")
@@ -3753,6 +4519,7 @@
           }
 
           state.accounts.push(data);
+          rebuildDerivedCaches();
           document.getElementById("abNewName").value = "";
           document.getElementById("abNewPass").value = "";
           document.getElementById("abNewDesignFile").value = "";
@@ -3785,16 +4552,19 @@
         document.getElementById("abDimNotice").innerHTML =
           `📐 الأبعاد المعتمدة للتصميم: <strong dir="ltr">${escapeHtml(state.designDimensions)}</strong> — أماكن الاسم والرقم والـ QR ثابتة أوتوماتيك.`;
 
+        const currPassEl = document.getElementById("abCurrPassDisplay");
+        if (currPassEl) currPassEl.value = u.password || "";
+
         const myPartners = sortAccountsByCode(
           state.accounts.filter((a) => a.parent_admin_id === u.id)
         );
-        const myPartnerIds = new Set(myPartners.map((p) => p.id));
-        const allMyInvs = state.invitations.filter(
-          (i) => i.admin_broker_id === u.id || myPartnerIds.has(i.owner_account_id)
+        const totalInvs = myPartners.reduce(
+          (sum, p) => sum + (cache.ownerTotalCount.get(p.id) || 0),
+          0
         );
 
         document.getElementById("abKpiPartners").textContent = myPartners.length;
-        document.getElementById("abKpiTotalInvs").textContent = allMyInvs.length;
+        document.getElementById("abKpiTotalInvs").textContent = totalInvs;
 
         const tbody = document.getElementById("abPartnersTbody");
         if (myPartners.length === 0) {
@@ -3802,10 +4572,9 @@
         } else {
           tbody.innerHTML = myPartners
             .map((p) => {
-              const pInvs = state.invitations.filter((i) => i.owner_account_id === p.id);
               const byExh = state.exhibitions
                 .map((ex) => {
-                  const c = pInvs.filter((i) => i.exhibition_id === ex.id).length;
+                  const c = cache.ownerExhCount.get(`${p.id}|${ex.id}`) || 0;
                   return c > 0
                     ? `<span class="badge badge-mint" style="margin:2px;">${escapeHtml(ex.name)}: ${c}</span>`
                     : "";
@@ -3816,7 +4585,7 @@
               return `
               <tr>
                 <td><strong>${escapeHtml(p.name)}</strong><br><span class="badge badge-gold">${p.code}</span></td>
-                <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(p.password)}</td>
+                <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(p.password || "-")}</td>
                 <td>${byExh || '<span style="color:var(--text-muted);">0 دعوات</span>'}</td>
                 <td><button type="button" class="btn btn-outline" style="padding:5px 10px; font-size:0.75rem;" onclick="copyText('${link}')">📋 نسخ الرابط</button></td>
               </tr>`;
@@ -3848,9 +4617,9 @@
         const u = state.currentUser;
         if (!u || u.role !== "admin_broker") return;
 
-        const myPartners = state.accounts.filter((a) => a.parent_admin_id === u.id);
-        const myPartnerIds = new Set(myPartners.map((p) => p.id));
-
+        const myPartnerIds = new Set(
+          state.accounts.filter((a) => a.parent_admin_id === u.id).map((p) => p.id)
+        );
         const q = toEnglishDigits(document.getElementById("abClientSearchInput")?.value || "")
           .trim()
           .toLowerCase();
@@ -3858,22 +4627,21 @@
         const exhId = document.getElementById("abClientExhFilter")?.value || "ALL";
         const dateVal = (document.getElementById("abClientDateFilter")?.value || "").trim();
 
-        let list = state.invitations.filter(
-          (i) => i.admin_broker_id === u.id || myPartnerIds.has(i.owner_account_id)
-        );
-        if (partnerId !== "ALL") list = list.filter((i) => i.owner_account_id === partnerId);
-        if (exhId !== "ALL") list = list.filter((i) => i.exhibition_id === exhId);
-        if (dateVal) list = list.filter((i) => i.date_iso === dateVal);
-        if (q) {
-          list = list.filter((inv) => {
-            const own = getAccountById(inv.owner_account_id);
-            return `${inv.seq_number} ${inv.client_name} ${inv.client_phone} ${own?.name || ""} ${own?.code || ""}`
+        let list = state.invitations.filter((i) => {
+          if (i.admin_broker_id !== u.id && !myPartnerIds.has(i.owner_account_id)) return false;
+          if (partnerId !== "ALL" && i.owner_account_id !== partnerId) return false;
+          if (exhId !== "ALL" && i.exhibition_id !== exhId) return false;
+          if (dateVal && i._dateStr !== dateVal) return false;
+          if (q) {
+            const own = getAccountById(i.owner_account_id);
+            return `${i.seq_number} ${i.client_name} ${i.client_phone} ${own?.name || ""} ${own?.code || ""}`
               .toLowerCase()
               .includes(q);
-          });
-        }
+          }
+          return true;
+        });
 
-        list = sortInvitationsSmart(list, exhId !== "ALL");
+        if (exhId !== "ALL") list = sortInvitationsFast(list, true);
         document.getElementById("abClientsCountBadge").textContent = list.length;
 
         const tbody = document.getElementById("abClientsTbody");
@@ -3883,8 +4651,9 @@
         }
 
         tbody.innerHTML = list
+          .slice(0, 300)
           .map((inv) => {
-            const exhName = state.exhibitions.find((e) => e.id === inv.exhibition_id)?.name || "-";
+            const exhName = getExhibitionById(inv.exhibition_id)?.name || "-";
             const own = getAccountById(inv.owner_account_id);
             return `
             <tr>
@@ -3893,7 +4662,7 @@
               <td style="font-weight:800;">${escapeHtml(inv.client_name)}</td>
               <td dir="ltr" style="text-align:right;">${escapeHtml(inv.client_phone)}</td>
               <td><span class="badge badge-gold">${escapeHtml(own?.name || "-")} (${escapeHtml(own?.code || "-")})</span></td>
-              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${formatInvDateTime(inv)}</td>
+              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv._displayDt}</td>
             </tr>`;
           })
           .join("");
@@ -3957,7 +4726,10 @@
         btn.textContent = "⏳ جاري إنشاء حساب الشركة...";
         try {
           let tplUrl = "";
-          if (tplFile) tplUrl = await uploadImageToStorage(tplFile, "developers");
+          if (tplFile) {
+            const up = await uploadCompressedImageToStorage(tplFile, "developers");
+            tplUrl = up.url;
+          }
 
           const { data, error } = await sb.rpc("register_developer_self", {
             p_signup_pass: state.devSignupTempPass,
@@ -3980,11 +4752,16 @@
           }
           if (data.status === "CREATED" && data.developer) {
             state.currentUser = data.developer;
-            await loadAllDataFromSupabase(false);
+            if (!cache.accountsById.has(data.developer.id)) {
+              state.accounts.push(data.developer);
+              rebuildDerivedCaches();
+            }
             alert(
               `✅ أهلاً بك! تم تسجيل شركة (${data.developer.name}) بكود (${data.developer.code}).`
             );
             routeLoggedInUser();
+            await loadScopedDataForLoggedInUser(false, false);
+            setupScopedRealtime();
           }
         } catch (err) {
           console.error(err);
@@ -4055,13 +4832,14 @@
         await saveTeamsListToSupabase();
       }
 
-      // ==================== MANAGER DASHBOARD ====================
+      // ==================== MANAGER DASHBOARD (LAZY TAB RENDERING) ====================
       function switchManagerTab(tabId, btnEl) {
+        activeManagerTab = tabId;
         document.querySelectorAll(".admin-page").forEach((p) => p.classList.remove("active"));
         document.querySelectorAll(".admin-nav-btn").forEach((b) => b.classList.remove("active"));
         document.getElementById(tabId)?.classList.add("active");
         if (btnEl) btnEl.classList.add("active");
-        renderManagerDashboard();
+        renderActiveManagerTab();
       }
 
       function switchAchSubTab(subId, btnEl) {
@@ -4073,19 +4851,27 @@
         if (btnEl) btnEl.className = "btn btn-primary ach-sub-btn";
       }
 
-      function renderManagerDashboard() {
-        renderCompanyLinksCard();
-        renderMgrQuickReport();
-        renderMgrAchievements();
-        populateLogsFilters();
-        renderClientLogsTable();
-        document.getElementById("mgrDevSignupPassInput").value = state.developerSignupPass;
-        document.getElementById("mgrDesignDimInput").value = state.designDimensions;
-        populateTeamSelects();
-        renderManagerAccountsTable();
-        renderMgrExhibitionsTable();
-        syncStudioControls();
-        renderAllCanvases();
+      function renderActiveManagerTab() {
+        if (activeManagerTab === "mgrTabQuickReport") {
+          renderCompanyLinksCard();
+          renderMgrQuickReport();
+        } else if (activeManagerTab === "mgrTabAchievements") {
+          renderMgrAchievements();
+        } else if (activeManagerTab === "mgrTabClients") {
+          populateLogsFilters();
+          renderClientLogsTable();
+        } else if (activeManagerTab === "mgrTabAccounts") {
+          const currPassEl = document.getElementById("mgrCurrPassDisplay");
+          if (currPassEl) currPassEl.value = state.currentUser?.password || "";
+          document.getElementById("mgrDevSignupPassInput").value = state.developerSignupPass;
+          populateTeamSelects();
+          renderManagerAccountsTable();
+        } else if (activeManagerTab === "mgrTabStudio") {
+          document.getElementById("mgrDesignDimInput").value = state.designDimensions;
+          renderMgrExhibitionsTable();
+          syncStudioControls();
+          loadActiveTemplateImage();
+        }
       }
 
       function renderCompanyLinksCard() {
@@ -4134,26 +4920,27 @@
         let grandAll = 0;
         const rowsHtml = state.exhibitions
           .map((exh) => {
-            const allExh = state.invitations.filter((i) => i.exhibition_id === exh.id);
+            const allExh = cache.invByExh.get(exh.id) || [];
             const periodExh =
               globalReportMode === "DATE"
-                ? allExh.filter((i) => i.date_iso === globalReportDate)
+                ? allExh.filter((i) => i._dateStr === globalReportDate)
                 : allExh;
             grandPeriod += periodExh.length;
             grandAll += allExh.length;
 
-            const counts = {};
+            const counts = new Map();
             let topName = "-";
             let topVal = 0;
-            periodExh.forEach((i) => {
-              const id = i.owner_account_id || "none";
-              counts[id] = (counts[id] || 0) + 1;
-              if (counts[id] > topVal) {
-                topVal = counts[id];
+            for (let k = 0; k < periodExh.length; k++) {
+              const id = periodExh[k].owner_account_id || "none";
+              const c = (counts.get(id) || 0) + 1;
+              counts.set(id, c);
+              if (c > topVal) {
+                topVal = c;
                 const acc = getAccountById(id);
                 topName = acc ? `${acc.name} (${topVal})` : `${topVal}`;
               }
-            });
+            }
 
             return `
             <tr>
@@ -4169,9 +4956,7 @@
         tbody.innerHTML = rowsHtml;
 
         const compAcc = state.accounts.find((a) => a.role === "company" || a.code === "BM");
-        const compCount = compAcc
-          ? state.invitations.filter((i) => i.owner_account_id === compAcc.id).length
-          : 0;
+        const compCount = compAcc ? cache.ownerTotalCount.get(compAcc.id) || 0 : 0;
 
         kpiGrid.innerHTML = `
           <div class="kpi-card"><div class="label">الدعوات (${globalReportMode === "DATE" ? globalReportDate : "التوتال"})</div><div class="val">${grandPeriod}</div></div>
@@ -4185,10 +4970,10 @@
         let text = `📊 *تقرير دعوات B.almetr* (${globalReportMode === "DATE" ? globalReportDate : "التوتال الكلي"})\n======================\n`;
         let total = 0;
         state.exhibitions.forEach((exh) => {
-          const allExh = state.invitations.filter((i) => i.exhibition_id === exh.id);
+          const allExh = cache.invByExh.get(exh.id) || [];
           const pCount =
             globalReportMode === "DATE"
-              ? allExh.filter((i) => i.date_iso === globalReportDate).length
+              ? allExh.filter((i) => i._dateStr === globalReportDate).length
               : allExh.length;
           total += pCount;
           text += `📍 *${exh.name}:* ${pCount} دعوة (توتال: ${allExh.length})\n`;
@@ -4206,9 +4991,9 @@
         );
         salesTbody.innerHTML = sales
           .map((s) => {
-            const allC = state.invitations.filter((i) => i.owner_account_id === s.id).length;
+            const allC = cache.ownerTotalCount.get(s.id) || 0;
             const actC = activeExh
-              ? state.invitations.filter((i) => i.owner_account_id === s.id && i.exhibition_id === activeExh.id).length
+              ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0
               : 0;
             return `
             <tr>
@@ -4235,9 +5020,9 @@
             ? `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:18px;">لا توجد شركات مطورة مسجلة بعد.</td></tr>`
             : devs
                 .map((d) => {
-                  const allC = state.invitations.filter((i) => i.owner_account_id === d.id).length;
+                  const allC = cache.ownerTotalCount.get(d.id) || 0;
                   const actC = activeExh
-                    ? state.invitations.filter((i) => i.owner_account_id === d.id && i.exhibition_id === activeExh.id).length
+                    ? cache.ownerExhCount.get(`${d.id}|${activeExh.id}`) || 0
                     : 0;
                   const link = buildShareLink(d);
                   return `
@@ -4250,7 +5035,7 @@
                       <div>💰 <strong>أقل مقدم:</strong> ${escapeHtml(d.dev_min_downpayment || "-")}</div>
                     </td>
                     <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
-                    <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(d.password)}</td>
+                    <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(d.password || "-")}</td>
                     <td><button type="button" class="btn btn-outline" style="padding:4px 9px; font-size:0.75rem;" onclick="copyText('${link}')">📋 نسخ الرابط</button></td>
                   </tr>`;
                 })
@@ -4269,14 +5054,13 @@
                 state.accounts.filter((p) => p.parent_admin_id === ab.id)
               );
               const totalInvs = partners.reduce(
-                (sum, p) =>
-                  sum + state.invitations.filter((i) => i.owner_account_id === p.id).length,
+                (sum, p) => sum + (cache.ownerTotalCount.get(p.id) || 0),
                 0
               );
               const rows = partners
                 .map((p) => {
-                  const cnt = state.invitations.filter((i) => i.owner_account_id === p.id).length;
-                  return `<tr><td>${getRoleLabel(p.role)}</td><td><strong>${escapeHtml(p.name)}</strong> (${p.code})</td><td><span class="badge badge-success">${cnt} دعوة</span></td><td dir="ltr" style="font-family:monospace;">${escapeHtml(p.password)}</td></tr>`;
+                  const cnt = cache.ownerTotalCount.get(p.id) || 0;
+                  return `<tr><td>${getRoleLabel(p.role)}</td><td><strong>${escapeHtml(p.name)}</strong> (${p.code})</td><td><span class="badge badge-success">${cnt} دعوة</span></td><td dir="ltr" style="font-family:monospace;">${escapeHtml(p.password || "-")}</td></tr>`;
                 })
                 .join("");
               return `
@@ -4338,10 +5122,12 @@
         const ownId = document.getElementById("logOwnerFilter")?.value || "ALL";
         const dateVal = (document.getElementById("logDateFilter")?.value || "").trim();
 
-        const filtered = state.invitations.filter((inv) => {
-          if (exhId !== "ALL" && inv.exhibition_id !== exhId) return false;
+        const basePool =
+          exhId !== "ALL" ? cache.invByExh.get(exhId) || [] : state.invitations;
+
+        const filtered = basePool.filter((inv) => {
           if (ownId !== "ALL" && inv.owner_account_id !== ownId && inv.admin_broker_id !== ownId) return false;
-          if (dateVal && inv.date_iso !== dateVal) return false;
+          if (dateVal && inv._dateStr !== dateVal) return false;
           if (q) {
             const own = getAccountById(inv.owner_account_id);
             const hay = `${inv.seq_number} ${inv.client_name} ${inv.client_phone} ${own?.name || ""} ${own?.code || ""}`.toLowerCase();
@@ -4350,7 +5136,7 @@
           return true;
         });
 
-        return sortInvitationsSmart(filtered, exhId !== "ALL");
+        return exhId !== "ALL" ? sortInvitationsFast(filtered, true) : filtered;
       }
 
       function renderClientLogsTable() {
@@ -4377,7 +5163,7 @@
 
         tbody.innerHTML = items
           .map((inv) => {
-            const exhName = state.exhibitions.find((e) => e.id === inv.exhibition_id)?.name || "-";
+            const exhName = getExhibitionById(inv.exhibition_id)?.name || "-";
             const own = getAccountById(inv.owner_account_id);
             const adm = getAccountById(inv.admin_broker_id || own?.parent_admin_id);
             return `
@@ -4390,7 +5176,7 @@
                 <span class="badge badge-mint">${escapeHtml(own?.name || "-")}</span>
                 <span class="badge badge-gold">${buildRefText(own, adm)}</span>
               </td>
-              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${formatInvDateTime(inv)}</td>
+              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv._displayDt}</td>
               <td>
                 <button type="button" class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="downloadOldInvitation('${inv.id}')">⬇️</button>
                 <button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteInvitationById('${inv.id}')">🗑️</button>
@@ -4400,12 +5186,11 @@
           .join("");
       }
 
-      async function downloadOldInvitation(invId) {
+      function downloadOldInvitation(invId) {
         const inv = state.invitations.find((i) => i.id === invId);
         if (!inv) return;
         state.activeExhibitionId = inv.exhibition_id;
-        loadActiveTemplateImage();
-        setTimeout(() => downloadCurrentCanvas(inv), 350);
+        loadActiveTemplateImage(() => downloadCurrentCanvas(inv));
       }
 
       function copyFilteredLogsWhatsApp() {
@@ -4428,7 +5213,7 @@
           const chunk = invList.slice(p * CHUNK, (p + 1) * CHUNK);
           const rows = chunk
             .map((inv, idx) => {
-              const exhName = state.exhibitions.find((e) => e.id === inv.exhibition_id)?.name || "-";
+              const exhName = getExhibitionById(inv.exhibition_id)?.name || "-";
               const own = getAccountById(inv.owner_account_id);
               const adm = getAccountById(inv.admin_broker_id || own?.parent_admin_id);
               return `<tr>
@@ -4439,7 +5224,7 @@
                 <td dir="ltr">${escapeHtml(inv.client_phone)}</td>
                 <td>${escapeHtml(own?.name || "-")}</td>
                 <td>${buildRefText(own, adm)}</td>
-                <td dir="ltr">${formatInvDateTime(inv)}</td>
+                <td dir="ltr">${inv._displayDt}</td>
               </tr>`;
             })
             .join("");
@@ -4477,9 +5262,9 @@
       function exportGlobalPDF() {
         const list =
           globalReportMode === "DATE"
-            ? state.invitations.filter((i) => i.date_iso === globalReportDate)
+            ? state.invitations.filter((i) => i._dateStr === globalReportDate)
             : state.invitations;
-        buildAndOpenPDF(sortInvitationsSmart(list, false), "التقرير الشامل لكل المعارض");
+        buildAndOpenPDF(list, "التقرير الشامل لكل المعارض");
       }
 
       async function saveDeveloperSignupPassword() {
@@ -4522,11 +5307,12 @@
           return alert("❌ خطأ أثناء الإضافة!");
         }
 
-        state.accounts.push(data);
+        if (!cache.accountsById.has(data.id)) state.accounts.push(data);
+        rebuildDerivedCaches();
         document.getElementById("mgrAddName").value = "";
         document.getElementById("mgrAddCode").value = "";
         document.getElementById("mgrAddPass").value = "";
-        renderAllUI();
+        renderActiveViewOnly();
         alert(`✅ تم إضافة (${data.name}) — الكود: ${data.code} | الباسورد: ${data.password}`);
       }
 
@@ -4536,7 +5322,7 @@
         const list = sortAccountsByCode(
           state.accounts.filter((a) => {
             if (roleF !== "ALL" && a.role !== roleF) return false;
-            if (q && !`${a.name} ${a.code} ${a.password}`.toLowerCase().includes(q)) return false;
+            if (q && !`${a.name} ${a.code} ${a.password || ""}`.toLowerCase().includes(q)) return false;
             return true;
           })
         );
@@ -4551,7 +5337,7 @@
               <td>${getRoleLabel(a.role)}</td>
               <td><span class="badge badge-mint">${escapeHtml(a.code)}</span></td>
               <td style="font-weight:800;">${escapeHtml(a.name)}</td>
-              <td dir="ltr" style="font-family:monospace; color:#fcd34d;">${escapeHtml(a.password)}</td>
+              <td dir="ltr" style="font-family:monospace; color:#fcd34d;">${escapeHtml(a.password || "-")}</td>
               <td style="font-size:0.78rem;">${escapeHtml(meta)}</td>
               <td>
                 <button type="button" class="btn btn-outline" style="padding:4px 9px; font-size:0.75rem;" onclick="openEditAccountModal('${a.id}')">✏️ تعديل</button>
@@ -4573,7 +5359,7 @@
         document.getElementById("editAccId").value = a.id;
         document.getElementById("editAccName").value = a.name;
         document.getElementById("editAccCode").value = a.code;
-        document.getElementById("editAccPass").value = a.password;
+        document.getElementById("editAccPass").value = a.password || "";
         if (a.team && !state.teamsList.includes(a.team)) {
           document.getElementById("editAccTeam").innerHTML +=
             `<option value="${escapeHtml(a.team)}">${escapeHtml(a.team)}</option>`;
@@ -4607,8 +5393,10 @@
 
         const idx = state.accounts.findIndex((a) => a.id === id);
         if (idx >= 0) state.accounts[idx] = data;
+        if (state.currentUser?.id === id) state.currentUser = data;
+        rebuildDerivedCaches();
         closeModal("editAccountModal");
-        renderAllUI();
+        renderActiveViewOnly();
         alert("✅ تم التعديل وتحديثه للجميع فوراً!");
       }
 
@@ -4617,7 +5405,8 @@
         const { error } = await sb.from("accounts").delete().eq("id", accId);
         if (error) return alert("❌ تعذر الحذف!");
         state.accounts = state.accounts.filter((a) => a.id !== accId);
-        renderAllUI();
+        rebuildDerivedCaches();
+        renderActiveViewOnly();
       }
 
       async function saveDesignDimensions() {
@@ -4659,10 +5448,11 @@
           .select()
           .single();
         if (error) return alert("❌ تعذر إضافة المعرض!");
-        state.exhibitions.push(data);
+        if (!cache.exhibitionsById.has(data.id)) state.exhibitions.push(data);
         state.activeExhibitionId = data.id;
+        rebuildDerivedCaches();
         document.getElementById("newExhNameInput").value = "";
-        renderAllUI();
+        renderActiveViewOnly();
       }
 
       async function toggleExhibitionVisibility(exhId, hideVal) {
@@ -4671,9 +5461,9 @@
           .update({ hide_in_sales: hideVal })
           .eq("id", exhId);
         if (error) return alert("❌ تعذر التحديث!");
-        const ex = state.exhibitions.find((e) => e.id === exhId);
+        const ex = getExhibitionById(exhId);
         if (ex) ex.hide_in_sales = hideVal;
-        renderAllUI();
+        renderActiveViewOnly();
       }
 
       async function deleteExhibitionById(exhId) {
@@ -4682,8 +5472,10 @@
         const { error } = await sb.from("exhibitions").delete().eq("id", exhId);
         if (error) return alert("❌ تعذر الحذف!");
         state.exhibitions = state.exhibitions.filter((e) => e.id !== exhId);
+        state.invitations = state.invitations.filter((i) => i.exhibition_id !== exhId);
+        rebuildDerivedCaches();
         ensureActiveExhibition();
-        renderAllUI();
+        renderActiveViewOnly();
       }
 
       async function handleExhibitionTemplateUpload(e) {
@@ -4691,22 +5483,37 @@
         const exh = getActiveExhibition();
         if (!file || !exh) return;
         try {
-          setSyncBadge("syncing", "⏳ Uploading...");
-          const url = await uploadImageToStorage(file, "exhibitions");
+          setSyncBadge("syncing", "⏳ Compressing...");
+          const { url, origKB, finalKB } = await uploadCompressedImageToStorage(file, "exhibitions");
           const { error } = await sb
             .from("exhibitions")
             .update({ template_url: url })
             .eq("id", exh.id);
           if (error) throw error;
           exh.template_url = url;
+          document.getElementById("studioTemplateUrlInput").value = url;
           loadActiveTemplateImage();
           setSyncBadge(true);
-          alert("✅ تم رفع القالب بنجاح!");
+          alert(`✅ تم ضغط القالب من ${origKB}KB إلى ${finalKB}KB ورفعه بكاش سنة بنجاح!`);
         } catch (err) {
           console.error(err);
           setSyncBadge(false);
           alert("❌ فشل رفع الصورة!");
         }
+      }
+
+      async function saveExhibitionTemplateUrl() {
+        const exh = getActiveExhibition();
+        const url = (document.getElementById("studioTemplateUrlInput").value || "").trim();
+        if (!exh) return;
+        const { error } = await sb
+          .from("exhibitions")
+          .update({ template_url: url })
+          .eq("id", exh.id);
+        if (error) return alert("❌ تعذر ربط الصورة!");
+        exh.template_url = url;
+        loadActiveTemplateImage();
+        alert("✅ تم ربط صورة القالب بنجاح!");
       }
 
       function syncStudioControls() {
@@ -4715,6 +5522,7 @@
         const L = getActiveLayout();
         document.getElementById("studioExhName").textContent = exh.name;
         document.getElementById("studioNextSeqInput").value = exh.next_seq;
+        document.getElementById("studioTemplateUrlInput").value = exh.template_url || "";
 
         document.getElementById("nameSizeRange").value = L.nameSize;
         document.getElementById("nameSizeVal").textContent = L.nameSize + "px";
@@ -4772,7 +5580,7 @@
           showQr: document.getElementById("showQrCheck").checked,
         };
         syncStudioControls();
-        renderAllCanvases();
+        scheduleCanvasRender();
       }
 
       async function saveStudioSettings() {
@@ -4785,7 +5593,7 @@
           .eq("id", exh.id);
         if (error) return alert("❌ تعذر حفظ الإعدادات!");
         exh.next_seq = nextSeq;
-        renderAllUI();
+        renderActiveViewOnly();
         alert("✅ تم حفظ إعدادات القالب وتحديثها عند الجميع!");
       }
 
@@ -4826,7 +5634,7 @@
           else if (draggingTarget === "qr") { L.qrX = p.x; L.qrY = p.y; }
           exh.layout_config = L;
           syncStudioControls();
-          renderAllCanvases();
+          scheduleCanvasRender();
         };
         const onEnd = () => { draggingTarget = null; };
         canvas.addEventListener("mousedown", onStart);
@@ -4872,7 +5680,8 @@
             if (!tplUrl && oe.templateDataUrl && oe.templateDataUrl.startsWith("data:image")) {
               try {
                 const imgFile = await base64ToFile(oe.templateDataUrl, `legacy_${Date.now()}.jpg`);
-                tplUrl = await uploadImageToStorage(imgFile, "exhibitions");
+                const up = await uploadCompressedImageToStorage(imgFile, "exhibitions");
+                tplUrl = up.url;
               } catch (e) {}
             }
             if (existing) {
@@ -4931,7 +5740,7 @@
 
           const existingSigs = new Set(
             state.invitations.map(
-              (i) => `${i.exhibition_id}|${i.seq_number}|${normalizePhone(i.client_phone)}`
+              (i) => `${i.exhibition_id}|${i.seq_number}|${i._normPhone}`
             )
           );
 
@@ -4979,7 +5788,7 @@
           }
 
           isImportingLegacy = false;
-          await loadAllDataFromSupabase(false);
+          await loadScopedDataForLoggedInUser(false, false);
           progress.textContent = `✅ اكتمل الدمج! تمت إضافة ${insertedCount} دعوة — الإجمالي الآن: ${state.invitations.length} دعوة.`;
           alert(`✅ تم الدمج بنجاح! الإجمالي الآن: ${state.invitations.length} دعوة.`);
         } catch (err) {
