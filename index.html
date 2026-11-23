@@ -1338,21 +1338,67 @@
 
           <div id="portalLinkWrap" style="display: none; margin-bottom: 14px">
             <label class="form-label" style="color: var(--primary-bright)"
-              >🔗 رابط الدعوات للعملاء (اضغط على اللوجو 3 مرات في أي وقت للدخول لمتابعتك):</label
+              >🔗 روابط الدعوات للعملاء (اضغط على اللوجو 3 مرات في أي وقت للدخول لمتابعتك):</label
             >
-            <div class="link-copy-box">
-              <span
-                id="portalShareLinkText"
-                style="flex: 1; overflow: hidden; text-overflow: ellipsis"
-              ></span>
-              <button
-                type="button"
-                class="btn btn-primary"
-                style="padding: 5px 11px; font-size: 0.76rem"
-                onclick="copyText(document.getElementById('portalShareLinkText').textContent)"
-              >
-                📋 نسخ الرابط
-              </button>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 10px;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    font-size: 0.76rem;
+                    color: var(--text-muted);
+                    margin-bottom: 4px;
+                    font-weight: 700;
+                  "
+                >
+                  🌍 رابط لكل المعارض (العميل يختار المعرض):
+                </div>
+                <div class="link-copy-box">
+                  <span
+                    id="portalShareLinkText"
+                    style="flex: 1; overflow: hidden; text-overflow: ellipsis"
+                  ></span>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    style="padding: 5px 11px; font-size: 0.75rem"
+                    onclick="copyText(document.getElementById('portalShareLinkText').textContent, '✅ تم نسخ الرابط العام لكل المعارض!')"
+                  >
+                    📋 نسخ
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 0.76rem;
+                    color: var(--text-muted);
+                    margin-bottom: 4px;
+                    font-weight: 700;
+                  "
+                >
+                  📍 رابط المعرض النشط فقط (<span id="portalActiveExhLabel">-</span>):
+                </div>
+                <div class="link-copy-box">
+                  <span
+                    id="portalActiveExhLinkText"
+                    style="flex: 1; overflow: hidden; text-overflow: ellipsis"
+                  ></span>
+                  <button
+                    type="button"
+                    class="btn btn-gold"
+                    style="padding: 5px 11px; font-size: 0.75rem"
+                    onclick="copyText(document.getElementById('portalActiveExhLinkText').textContent, '✅ تم نسخ رابط المعرض النشط فقط!')"
+                  >
+                    📋 نسخ
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -3292,6 +3338,7 @@
       let renderDebounceTimer = null;
       let dupCheckTimer = null;
       let dupCheckSeq = 0;
+      const sessionIssuedByExhPhone = new Map();
       let canvasRafId = null;
       let realtimeChannel = null;
 
@@ -4089,18 +4136,18 @@
         return url;
       }
 
-      function copyText(txt) {
+      function copyText(txt, successMsg = "✅ تم النسخ بنجاح!") {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard
             .writeText(txt)
-            .then(() => alert("✅ تم النسخ بنجاح!"))
-            .catch(() => fallbackCopyText(txt));
+            .then(() => alert(successMsg))
+            .catch(() => fallbackCopyText(txt, successMsg));
         } else {
-          fallbackCopyText(txt);
+          fallbackCopyText(txt, successMsg);
         }
       }
 
-      function fallbackCopyText(txt) {
+      function fallbackCopyText(txt, successMsg = "✅ تم النسخ بنجاح!") {
         try {
           const ta = document.createElement("textarea");
           ta.value = txt;
@@ -4110,7 +4157,7 @@
           ta.select();
           document.execCommand("copy");
           document.body.removeChild(ta);
-          alert("✅ تم النسخ بنجاح!");
+          alert(successMsg);
         } catch (e) {
           alert("⚠️ تعذر النسخ التلقائي.");
         }
@@ -4120,10 +4167,24 @@
         return ["developer", "broker", "influencer", "company"].includes(acc?.role);
       }
 
-      function copyAccountClientLink(accId) {
+      function copyAccountClientLink(accId, activeExhOnly = false) {
         const acc = getAccountById(accId);
         if (!acc) return;
-        copyText(buildShareLink(acc));
+        const activeExh = activeExhOnly ? getActiveExhibition() : null;
+        const link = buildShareLink(acc, activeExh ? activeExh.id : null);
+        const msg = activeExh
+          ? `✅ تم نسخ رابط «${acc.name}» لمعرض «${activeExh.name}» فقط!`
+          : `✅ تم نسخ رابط «${acc.name}» لكل المعارض!`;
+        copyText(link, msg);
+      }
+
+      function renderDualLinkButtonsHtml(accId) {
+        const activeExh = getActiveExhibition();
+        const exhTitle = activeExh ? `نسخ رابط معرض ${escapeHtml(activeExh.name)} فقط` : "نسخ رابط المعرض النشط فقط";
+        return `<span style="display:inline-flex; gap:4px; flex-wrap:wrap; vertical-align:middle;">
+          <button type="button" class="btn btn-gold" style="padding:4px 8px; font-size:0.73rem;" title="${exhTitle}" onclick="copyAccountClientLink('${accId}', true)">📍 المعرض ده</button>
+          <button type="button" class="btn btn-primary" style="padding:4px 8px; font-size:0.73rem;" title="نسخ رابط عام لكل المعارض" onclick="copyAccountClientLink('${accId}', false)">🌍 كل المعارض</button>
+        </span>`;
       }
 
       function buildDimensionsNoticeHtml(suffixText = "") {
@@ -4584,7 +4645,80 @@
         scheduleCanvasRender();
       }
 
-      // Ultra-lightweight RPC Duplicate Check (ONLY checks the typed phone in the active exhibition!)
+      // Rock-solid Duplicate Phone Check (Local Cache + Session Cache + RPC + Direct Table Fallback)
+      async function fetchDuplicateIssuers(exhId, normPhone) {
+        const foundLabels = new Set();
+        const epKey = `${exhId}|${normPhone}`;
+
+        // 1. Check in-memory session cache (instant for recently issued tickets)
+        const sessList = sessionIssuedByExhPhone.get(epKey) || [];
+        sessList.forEach((lbl) => foundLabels.add(lbl));
+
+        // 2. Check full local cache if loaded (Manager / loaded user records)
+        const localPrev = cache.invByExhPhone.get(epKey) || [];
+        localPrev.forEach((inv) => {
+          const own = getAccountById(inv.owner_account_id);
+          foundLabels.add(own ? `${own.name} (${own.code})` : "مسوق");
+        });
+        if (state.invitationsScope === "ALL") {
+          return [...foundLabels];
+        }
+
+        // 3. Query Supabase RPC first
+        let rpcWorked = false;
+        try {
+          const { data, error } = await sb.rpc("check_phone_duplicate", {
+            p_exhibition_id: exhId,
+            p_client_phone: normPhone,
+          });
+          if (!error && data) {
+            rpcWorked = true;
+            const list = Array.isArray(data) ? data : data.issuers || [];
+            list.forEach((x) => {
+              if (x && (x.name || x.code)) {
+                foundLabels.add(`${x.name || "مسوق"} (${x.code || "-"})`);
+              }
+            });
+          }
+        } catch (e) {}
+
+        // 4. Direct lightweight table fallback if RPC errored or returned nothing
+        if (!rpcWorked || foundLabels.size === 0) {
+          try {
+            const { data: rows, error: qErr } = await sb
+              .from("invitations")
+              .select("seq_number, client_name, owner_account_id")
+              .eq("exhibition_id", exhId)
+              .eq("client_phone", normPhone)
+              .limit(10);
+            if (!qErr && Array.isArray(rows) && rows.length > 0) {
+              rows.forEach((r) => {
+                const own = getAccountById(r.owner_account_id);
+                const lbl = own
+                  ? `${own.name} (${own.code})`
+                  : r.client_name
+                  ? `${r.client_name} (${formatSeqDisplay(r.seq_number)})`
+                  : "مسوق";
+                foundLabels.add(lbl);
+              });
+            }
+          } catch (e) {}
+        }
+
+        return [...foundLabels];
+      }
+
+      function renderDuplicateNotice(issuers, exhName) {
+        const noticeBox = document.getElementById("duplicateNoticeBox");
+        if (!noticeBox) return;
+        if (!issuers || issuers.length === 0) {
+          noticeBox.style.display = "none";
+          return;
+        }
+        noticeBox.style.display = "block";
+        noticeBox.innerHTML = `⚠️ تنبيه: هذا الرقم مسجل مسبقاً في معرض <strong>«${escapeHtml(exhName || "")}»</strong> من قِبل: <strong>${escapeHtml(issuers.join(" ، "))}</strong>`;
+      }
+
       function scheduleDuplicatePhoneCheck() {
         clearTimeout(dupCheckTimer);
         const activeExh = getActiveExhibition();
@@ -4592,50 +4726,32 @@
         const noticeBox = document.getElementById("duplicateNoticeBox");
         const norm = normalizePhone(phone);
 
-        if (!activeExh || !norm || norm.length < 10) {
-          noticeBox.style.display = "none";
+        if (!activeExh || !norm || norm.replace(/\D/g, "").length < 10) {
+          if (noticeBox) noticeBox.style.display = "none";
           return;
         }
 
-        // Fast local O(1) check if Manager already loaded all invitations
+        // Instant local/session preview before async check completes
+        const epKey = `${activeExh.id}|${norm}`;
+        const quickSet = new Set(sessionIssuedByExhPhone.get(epKey) || []);
+        (cache.invByExhPhone.get(epKey) || []).forEach((inv) => {
+          const own = getAccountById(inv.owner_account_id);
+          quickSet.add(own ? `${own.name} (${own.code})` : "مسوق");
+        });
+        if (quickSet.size > 0) {
+          renderDuplicateNotice([...quickSet], activeExh.name);
+        }
         if (state.invitationsScope === "ALL") {
-          const sameExhPrev = cache.invByExhPhone.get(`${activeExh.id}|${norm}`) || [];
-          if (sameExhPrev.length === 0) {
-            noticeBox.style.display = "none";
-            return;
-          }
-          const issuers = [
-            ...new Set(
-              sameExhPrev.map((inv) => {
-                const own = getAccountById(inv.owner_account_id);
-                return own ? `${own.name} (${own.code})` : "مسوق";
-              })
-            ),
-          ];
-          noticeBox.style.display = "block";
-          noticeBox.innerHTML = `⚠️ تم الإصدار من قبل: <strong>${escapeHtml(issuers.join(" ، "))}</strong>`;
+          if (quickSet.size === 0 && noticeBox) noticeBox.style.display = "none";
           return;
         }
 
-        // Otherwise query ONLY this single phone via tiny RPC (< 0.5 KB)
         const reqId = ++dupCheckSeq;
         dupCheckTimer = setTimeout(async () => {
-          try {
-            const { data, error } = await sb.rpc("check_phone_duplicate", {
-              p_exhibition_id: activeExh.id,
-              p_client_phone: norm,
-            });
-            if (reqId !== dupCheckSeq || error) return;
-            const list = data?.issuers || [];
-            if (list.length === 0) {
-              noticeBox.style.display = "none";
-              return;
-            }
-            const issuers = list.map((x) => `${x.name} (${x.code})`);
-            noticeBox.style.display = "block";
-            noticeBox.innerHTML = `⚠️ تم الإصدار من قبل: <strong>${escapeHtml(issuers.join(" ، "))}</strong>`;
-          } catch (e) {}
-        }, 280);
+          const issuers = await fetchDuplicateIssuers(activeExh.id, norm);
+          if (reqId !== dupCheckSeq) return;
+          renderDuplicateNotice(issuers, activeExh.name);
+        }, 160);
       }
 
       async function issueAndDownloadInvitation() {
@@ -4651,9 +4767,23 @@
 
         const btn = document.getElementById("issueBtn");
         btn.disabled = true;
-        btn.textContent = "⏳ جاري إصدار الدعوة...";
+        btn.textContent = "⏳ جاري التحقق من الرقم...";
 
         try {
+          // Verify duplicate phone right before issuing so it NEVER slips through silently
+          const existingIssuers = await fetchDuplicateIssuers(exh.id, pCheck.normalized);
+          if (existingIssuers.length > 0) {
+            renderDuplicateNotice(existingIssuers, exh.name);
+            const proceed = confirm(
+              `⚠️ تنبيه تكرار!\nالرقم (${pCheck.normalized}) تم إصدار دعوة له مسبقاً في معرض «${exh.name}» من قِبل:\n${existingIssuers.join(" ، ")}\n\nهل تريد إصدار دعوة أخرى لنفس الرقم رغم التكرار؟`
+            );
+            if (!proceed) {
+              updateWorkspaceLockUI();
+              return;
+            }
+          }
+
+          btn.textContent = "⏳ جاري إصدار الدعوة...";
           const { data, error } = await sb.rpc("issue_invitation_atomic", {
             p_exhibition_id: exh.id,
             p_client_name: clientName,
@@ -4666,6 +4796,13 @@
             const inv = data.invitation;
             lastIssuedTicket = inv;
             exh.next_seq = Number(inv.seq_number) + 1;
+
+            // Record in session duplicate cache immediately
+            const epKey = `${exh.id}|${pCheck.normalized}`;
+            const curSess = sessionIssuedByExhPhone.get(epKey) || [];
+            const ownerLbl = `${owner.name} (${owner.code})`;
+            if (!curSess.includes(ownerLbl)) curSess.push(ownerLbl);
+            sessionIssuedByExhPhone.set(epKey, curSess);
 
             if (
               state.invitationsScope === "ALL" ||
@@ -4993,8 +5130,17 @@
 
         if (["broker", "influencer", "developer"].includes(u.role)) {
           linkWrap.style.display = "block";
+          const activeExhForLink = getActiveExhibition();
           document.getElementById("portalShareLinkText").textContent =
             buildShareLink(u);
+          const actLinkEl = document.getElementById("portalActiveExhLinkText");
+          const actLblEl = document.getElementById("portalActiveExhLabel");
+          if (actLinkEl) {
+            actLinkEl.textContent = buildShareLink(u, activeExhForLink?.id);
+          }
+          if (actLblEl) {
+            actLblEl.textContent = activeExhForLink?.name || "-";
+          }
         } else {
           linkWrap.style.display = "none";
         }
@@ -5164,14 +5310,22 @@
           document.getElementById("abNewPass").value = "";
           document.getElementById("abNewDesignFile").value = "";
 
-          const link = buildShareLink(data);
+          const activeExh = getActiveExhibition();
+          const genLink = buildShareLink(data);
+          const exhLink = buildShareLink(data, activeExh?.id);
           const box = document.getElementById("abCreatedResultBox");
           box.style.display = "block";
           box.innerHTML = `
             <div>✅ تم إنشاء <strong>${escapeHtml(data.name)}</strong> (كود: <strong>${data.code}</strong> | باسورد: <strong>${escapeHtml(data.password)}</strong>)</div>
-            <div class="link-copy-box" style="margin-top:8px;">
-              <span style="flex:1; overflow:hidden; text-overflow:ellipsis;">${link}</span>
-              <button type="button" class="btn btn-primary" style="padding:4px 9px; font-size:0.75rem;" onclick="copyText('${link}')">📋 نسخ</button>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">📍 رابط معرض (${escapeHtml(activeExh?.name || "-")}):</div>
+            <div class="link-copy-box" style="margin-top:4px;">
+              <span style="flex:1; overflow:hidden; text-overflow:ellipsis;">${exhLink}</span>
+              <button type="button" class="btn btn-gold" style="padding:4px 9px; font-size:0.75rem;" onclick="copyAccountClientLink('${data.id}', true)">📋 نسخ</button>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">🌍 رابط لكل المعارض:</div>
+            <div class="link-copy-box" style="margin-top:4px;">
+              <span style="flex:1; overflow:hidden; text-overflow:ellipsis;">${genLink}</span>
+              <button type="button" class="btn btn-primary" style="padding:4px 9px; font-size:0.75rem;" onclick="copyAccountClientLink('${data.id}', false)">📋 نسخ</button>
             </div>
           `;
           renderAdminBrokerPanel();
@@ -5221,13 +5375,12 @@
                 })
                 .filter(Boolean)
                 .join("");
-              const link = buildShareLink(p);
               return `
               <tr>
                 <td><strong>${escapeHtml(p.name)}</strong><br><span class="badge badge-gold">${p.code}</span></td>
                 <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(p.password || "-")}</td>
                 <td>${byExh || '<span style="color:var(--text-muted);">0 دعوات</span>'}</td>
-                <td><button type="button" class="btn btn-outline" style="padding:5px 10px; font-size:0.75rem;" onclick="copyText('${link}')">📋 نسخ الرابط</button></td>
+                <td>${renderDualLinkButtonsHtml(p.id)}</td>
               </tr>`;
             })
             .join("");
@@ -5676,7 +5829,7 @@
                     </td>
                     <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
                     <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(d.password || "-")}</td>
-                    <td><button type="button" class="btn btn-primary" style="padding:4px 9px; font-size:0.75rem;" onclick="copyAccountClientLink('${d.id}')">🔗 لينك</button></td>
+                    <td>${renderDualLinkButtonsHtml(d.id)}</td>
                   </tr>`;
                 })
                 .join("");
@@ -5707,7 +5860,7 @@
               const rows = partners
                 .map((p) => {
                   const cnt = cache.ownerTotalCount.get(p.id) || 0;
-                  return `<tr><td>${getRoleLabel(p.role)}</td><td><strong>${escapeHtml(p.name)}</strong> (${escapeHtml(p.code)})</td><td><span class="badge badge-success">${cnt} دعوة</span></td><td dir="ltr" style="font-family:monospace;">${escapeHtml(p.password || "-")}</td><td><button type="button" class="btn btn-primary" style="padding:4px 9px; font-size:0.74rem;" onclick="copyAccountClientLink('${p.id}')">🔗 لينك</button></td></tr>`;
+                  return `<tr><td>${getRoleLabel(p.role)}</td><td><strong>${escapeHtml(p.name)}</strong> (${escapeHtml(p.code)})</td><td><span class="badge badge-success">${cnt} دعوة</span></td><td dir="ltr" style="font-family:monospace;">${escapeHtml(p.password || "-")}</td><td>${renderDualLinkButtonsHtml(p.id)}</td></tr>`;
                 })
                 .join("");
               return `
@@ -5731,7 +5884,7 @@
           const directRows = directPartners
             .map((p) => {
               const cnt = cache.ownerTotalCount.get(p.id) || 0;
-              return `<tr><td>${getRoleLabel(p.role)}</td><td><strong>${escapeHtml(p.name)}</strong> (${escapeHtml(p.code)})</td><td><span class="badge badge-success">${cnt} دعوة</span></td><td dir="ltr" style="font-family:monospace;">${escapeHtml(p.password || "-")}</td><td><button type="button" class="btn btn-primary" style="padding:4px 9px; font-size:0.74rem;" onclick="copyAccountClientLink('${p.id}')">🔗 لينك</button></td></tr>`;
+              return `<tr><td>${getRoleLabel(p.role)}</td><td><strong>${escapeHtml(p.name)}</strong> (${escapeHtml(p.code)})</td><td><span class="badge badge-success">${cnt} دعوة</span></td><td dir="ltr" style="font-family:monospace;">${escapeHtml(p.password || "-")}</td><td>${renderDualLinkButtonsHtml(p.id)}</td></tr>`;
             })
             .join("");
           abHtml += `
@@ -6067,7 +6220,7 @@
               <td style="white-space:nowrap;">
                 ${
                   hasClientLink(a)
-                    ? `<button type="button" class="btn btn-primary" style="padding:4px 9px; font-size:0.75rem;" onclick="copyAccountClientLink('${a.id}')">🔗 لينك</button> `
+                    ? `${renderDualLinkButtonsHtml(a.id)} `
                     : ""
                 }
                 <button type="button" class="btn btn-outline" style="padding:4px 9px; font-size:0.75rem;" onclick="openEditAccountModal('${a.id}')">✏️ تعديل</button>
