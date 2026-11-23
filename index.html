@@ -19,12 +19,11 @@
     <style>
       :root {
         --bg-main: #051224;
-        --bg-elevated: rgba(11, 29, 56, 0.82);
-        --bg-surface: #091a33;
+        --bg-elevated: rgba(11, 29, 56, 0.84);
         --bg-input: #07162b;
         --border: rgba(45, 212, 191, 0.16);
         --border-strong: rgba(45, 212, 191, 0.38);
-        --primary: #00b8ac; /* B.almetr Official Teal */
+        --primary: #00b8ac;
         --primary-bright: #2dd4bf;
         --primary-soft: rgba(0, 184, 172, 0.14);
         --gold: #f5b041;
@@ -64,7 +63,6 @@
         position: relative;
       }
 
-      /* Subtle Brand Watermark */
       .bg-watermark {
         position: fixed;
         inset: 0;
@@ -77,10 +75,9 @@
       }
 
       .bg-watermark img {
-        width: min(72vw, 560px);
+        width: min(72vw, 540px);
         height: auto;
         opacity: 0.04;
-        filter: grayscale(15%);
         user-select: none;
       }
 
@@ -88,34 +85,50 @@
         max-width: 1220px;
         width: 100%;
         margin: 0 auto;
-        padding: 14px;
+        padding: 12px;
         flex: 1;
         position: relative;
         z-index: 1;
       }
 
-      /* Header */
+      /* Compact Minimal Header */
       .top-header {
         background: var(--bg-elevated);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 12px 18px;
+        padding: 10px 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 14px;
+        gap: 10px;
+        margin-bottom: 12px;
         box-shadow: var(--shadow-card);
+      }
+
+      body.clean-header-mode .top-header {
+        justify-content: space-between;
+      }
+
+      body.clean-header-mode .header-actions,
+      body.clean-header-mode #exhibitionBarSection {
+        display: none !important;
+      }
+
+      body.public-client-mode .top-header {
+        justify-content: center;
+      }
+
+      body.public-client-mode #syncStatusBadge {
+        display: none !important;
       }
 
       .brand-box {
         display: flex;
         align-items: center;
-        gap: 14px;
-        flex-wrap: wrap;
+        gap: 10px;
       }
 
       .brand-logo-btn {
@@ -123,17 +136,11 @@
         align-items: center;
         cursor: pointer;
         user-select: none;
-        padding: 2px 4px;
-        border-radius: 10px;
-        transition: opacity 0.15s;
-      }
-
-      .brand-logo-btn:active {
-        opacity: 0.8;
+        padding: 2px;
       }
 
       .brand-logo-img {
-        height: 40px;
+        height: 36px;
         width: auto;
         display: block;
         object-fit: contain;
@@ -141,7 +148,7 @@
 
       .brand-fallback-text {
         display: none;
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         font-weight: 900;
         direction: ltr;
       }
@@ -149,10 +156,10 @@
       .sync-badge {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        font-size: 0.74rem;
+        gap: 5px;
+        font-size: 0.72rem;
         font-weight: 800;
-        padding: 5px 12px;
+        padding: 4px 10px;
         border-radius: 999px;
         background: rgba(16, 185, 129, 0.12);
         color: #34d399;
@@ -178,37 +185,21 @@
         flex-wrap: wrap;
       }
 
-      /* Clean Public Client Mode */
-      body.public-client-mode .top-header {
-        justify-content: center;
-        padding: 14px 18px;
-      }
-
-      body.public-client-mode .header-actions,
-      body.public-client-mode #syncStatusBadge,
-      body.public-client-mode #exhibitionBarSection {
-        display: none !important;
-      }
-
       /* Buttons */
       .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 7px;
-        padding: 9px 15px;
+        gap: 6px;
+        padding: 9px 14px;
         border-radius: 11px;
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         font-weight: 800;
         border: 1px solid transparent;
         cursor: pointer;
-        transition: all 0.18s ease;
+        transition: all 0.16s ease;
         text-decoration: none;
         white-space: nowrap;
-      }
-
-      .btn:hover:not(:disabled) {
-        transform: translateY(-1px);
       }
 
       .btn:active:not(:disabled) {
@@ -223,7 +214,7 @@
       .btn-primary {
         background: linear-gradient(135deg, var(--primary-bright), var(--primary));
         color: #031a1f;
-        box-shadow: 0 4px 16px rgba(0, 184, 172, 0.25);
+        box-shadow: 0 4px 16px rgba(0, 184, 172, 0.24);
       }
 
       .btn-gold {
@@ -250,63 +241,61 @@
 
       .btn-block {
         width: 100%;
-        padding: 13px;
-        font-size: 0.96rem;
+        padding: 12px;
+        font-size: 0.95rem;
       }
 
-      /* Exhibition Bar */
+      /* Exhibition Bar (Shown only in Manager/Portal views) */
       .exhibition-bar {
         background: var(--bg-elevated);
         backdrop-filter: blur(12px);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 11px 16px;
-        margin-bottom: 14px;
+        padding: 10px 14px;
+        margin-bottom: 12px;
       }
 
       .exhibition-list-wrap {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
       }
 
       .exh-pills {
         display: flex;
-        gap: 8px;
+        gap: 7px;
         flex-wrap: wrap;
         flex: 1;
       }
 
       .exh-pill {
-        padding: 7px 15px;
-        border-radius: 10px;
-        font-size: 0.84rem;
+        padding: 6px 13px;
+        border-radius: 9px;
+        font-size: 0.82rem;
         font-weight: 800;
         background: var(--bg-input);
         color: var(--text-muted);
         border: 1px solid var(--border);
         cursor: pointer;
-        transition: 0.16s;
       }
 
       .exh-pill.active {
         background: var(--primary-soft);
         color: var(--primary-bright);
         border-color: var(--primary-bright);
-        box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.25);
       }
 
       .exh-pill.hidden-exh {
         border-style: dashed;
-        opacity: 0.68;
+        opacity: 0.65;
       }
 
       /* Grids & Cards */
       .workspace-grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 16px;
+        gap: 14px;
         align-items: start;
       }
 
@@ -316,9 +305,9 @@
         -webkit-backdrop-filter: blur(14px);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 18px;
+        padding: 16px;
         min-width: 0;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
         box-shadow: var(--shadow-card);
       }
 
@@ -326,38 +315,38 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-bottom: 12px;
-        margin-bottom: 16px;
+        padding-bottom: 10px;
+        margin-bottom: 14px;
         border-bottom: 1px solid var(--border);
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
       }
 
       .card-title {
-        font-size: 1rem;
+        font-size: 0.98rem;
         font-weight: 900;
         color: var(--primary-bright);
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 7px;
       }
 
-      /* Forms & Styled Selects */
+      /* Forms */
       .form-group {
-        margin-bottom: 13px;
+        margin-bottom: 12px;
       }
 
       .form-label {
         display: block;
-        font-size: 0.84rem;
+        font-size: 0.82rem;
         font-weight: 800;
         color: #dbeafe;
-        margin-bottom: 6px;
+        margin-bottom: 5px;
       }
 
       .form-control {
         width: 100%;
-        padding: 11px 14px;
+        padding: 10px 13px;
         font-size: 15px;
         font-weight: 700;
         color: var(--text-main);
@@ -386,7 +375,6 @@
       select.form-control option {
         background-color: #081a33;
         color: #f8fafc;
-        padding: 10px;
       }
 
       input[type="date"].form-control {
@@ -400,15 +388,14 @@
         text-align: right;
       }
 
-      /* Chips */
       .chips-grid {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 7px;
       }
 
       .chip-btn {
-        padding: 7px 13px;
+        padding: 7px 12px;
         border-radius: 10px;
         background: var(--bg-input);
         border: 1.5px solid var(--border);
@@ -417,7 +404,6 @@
         font-weight: 800;
         cursor: pointer;
         user-select: none;
-        transition: 0.15s;
       }
 
       .chip-btn.selected {
@@ -426,31 +412,17 @@
         color: var(--primary-bright);
       }
 
-      /* Sales Selection Box */
-      .sales-step-box {
-        background: rgba(0, 184, 172, 0.04);
-        border: 1px solid var(--border);
-        border-radius: 13px;
-        padding: 13px;
-        margin-bottom: 14px;
-      }
-
-      .sales-step-box.selected {
-        background: rgba(16, 185, 129, 0.07);
-        border-color: rgba(16, 185, 129, 0.4);
-      }
-
       .sales-quick-pills {
         display: none;
         gap: 6px;
         flex-wrap: wrap;
         margin-bottom: 8px;
-        max-height: 115px;
+        max-height: 110px;
         overflow-y: auto;
       }
 
       .sales-quick-pill {
-        padding: 5px 12px;
+        padding: 5px 11px;
         border-radius: 8px;
         font-size: 0.78rem;
         font-weight: 800;
@@ -467,33 +439,8 @@
         border-color: var(--primary-bright);
       }
 
-      .sales-status-banner {
-        margin-top: 8px;
-        padding: 9px 12px;
-        border-radius: 9px;
-        font-size: 0.82rem;
-        font-weight: 800;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-
-      .sales-status-banner.unselected {
-        background: var(--gold-soft);
-        border: 1px solid rgba(245, 176, 65, 0.4);
-        color: #fcd34d;
-      }
-
-      .sales-status-banner.selected {
-        background: rgba(16, 185, 129, 0.14);
-        border: 1px solid rgba(16, 185, 129, 0.4);
-        color: #34d399;
-      }
-
       .client-form-lock-wrap.locked {
-        opacity: 0.42;
+        opacity: 0.44;
         pointer-events: none;
         user-select: none;
       }
@@ -505,9 +452,9 @@
           rgba(11, 29, 56, 0.45)
         );
         border: 1.5px solid var(--border-strong);
-        border-radius: 13px;
-        padding: 14px;
-        margin-bottom: 16px;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 14px;
         text-align: center;
       }
 
@@ -520,27 +467,25 @@
         font-size: 0.8rem;
         font-weight: 800;
         margin-bottom: 10px;
-        line-height: 1.6;
       }
 
-      /* Preview Canvas */
       .preview-container {
         background: var(--bg-input);
         border: 1px dashed var(--border-strong);
-        border-radius: 13px;
-        padding: 12px;
+        border-radius: 12px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 260px;
+        min-height: 240px;
         overflow: hidden;
       }
 
       #invitationCanvas,
       #adminStudioCanvas {
         max-width: 100%;
-        max-height: 560px;
+        max-height: 540px;
         width: auto;
         height: auto;
         border-radius: 10px;
@@ -553,39 +498,37 @@
       }
 
       .ticket-status-box {
-        margin-top: 14px;
-        padding: 13px;
+        margin-top: 12px;
+        padding: 12px;
         border-radius: 11px;
         background: rgba(16, 185, 129, 0.11);
         border: 1px solid rgba(16, 185, 129, 0.35);
         color: #34d399;
-        font-size: 0.86rem;
+        font-size: 0.85rem;
         font-weight: 800;
         text-align: center;
         display: none;
       }
 
-      /* Soft Advisory Notice for Duplicate Phone (Non-Blocking) */
       .duplicate-notice-box {
         margin-bottom: 12px;
-        padding: 12px;
+        padding: 11px;
         border-radius: 11px;
         background: var(--gold-soft);
         border: 1.5px solid rgba(245, 176, 65, 0.5);
         color: #fde68a;
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         font-weight: 700;
         text-align: right;
         display: none;
-        line-height: 1.65;
+        line-height: 1.6;
       }
 
-      /* Navigation & Tabs */
       .admin-nav-grid {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 9px;
-        margin-bottom: 16px;
+        gap: 8px;
+        margin-bottom: 14px;
       }
 
       .admin-nav-btn {
@@ -594,15 +537,14 @@
         align-items: center;
         justify-content: center;
         gap: 4px;
-        padding: 12px 6px;
+        padding: 11px 6px;
         border-radius: 12px;
         background: var(--bg-elevated);
         color: var(--text-muted);
         border: 1.5px solid var(--border);
         font-weight: 800;
-        font-size: 0.83rem;
+        font-size: 0.82rem;
         cursor: pointer;
-        transition: 0.16s;
       }
 
       .admin-nav-btn.active {
@@ -628,36 +570,34 @@
         display: block;
       }
 
-      /* KPI & Summary Grids */
       .kpi-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 10px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
       }
 
       .kpi-card {
         background: var(--bg-input);
         border: 1px solid var(--border);
         border-radius: 12px;
-        padding: 13px;
+        padding: 12px;
         text-align: center;
       }
 
       .kpi-card .label {
-        font-size: 0.76rem;
+        font-size: 0.75rem;
         color: var(--text-muted);
         font-weight: 700;
       }
 
       .kpi-card .val {
-        font-size: 1.5rem;
+        font-size: 1.45rem;
         font-weight: 900;
         color: var(--primary-bright);
-        margin-top: 3px;
+        margin-top: 2px;
       }
 
-      /* Tables */
       .table-responsive {
         width: 100%;
         overflow-x: auto;
@@ -669,7 +609,7 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 560px;
+        min-width: 540px;
       }
 
       th,
@@ -688,15 +628,11 @@
         white-space: nowrap;
       }
 
-      tr:hover td {
-        background: rgba(45, 212, 191, 0.035);
-      }
-
       .badge {
         padding: 3px 9px;
         border-radius: 7px;
         font-weight: 800;
-        font-size: 0.75rem;
+        font-size: 0.74rem;
         display: inline-block;
         white-space: nowrap;
       }
@@ -738,7 +674,7 @@
       .studio-grid {
         display: grid;
         grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-        gap: 16px;
+        gap: 14px;
         align-items: start;
       }
 
@@ -746,12 +682,12 @@
         background: var(--bg-input);
         border: 1px solid var(--border);
         border-radius: 12px;
-        padding: 13px;
+        padding: 12px;
         margin-bottom: 12px;
       }
 
       .control-section-title {
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         font-weight: 900;
         color: #fcd34d;
         margin-bottom: 10px;
@@ -768,7 +704,7 @@
       }
 
       .range-row label {
-        min-width: 82px;
+        min-width: 80px;
         font-size: 0.78rem;
         color: var(--text-muted);
         font-weight: 700;
@@ -788,7 +724,6 @@
         text-align: left;
       }
 
-      /* Modals */
       .modal-overlay {
         position: fixed;
         inset: 0;
@@ -805,9 +740,9 @@
         background: #0a1d38;
         border: 1.5px solid var(--border-strong);
         border-radius: 16px;
-        padding: 22px;
+        padding: 20px;
         width: 100%;
-        max-width: 440px;
+        max-width: 420px;
         max-height: 90vh;
         overflow-y: auto;
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
@@ -815,11 +750,11 @@
 
       .dev-footer {
         text-align: center;
-        padding: 16px 10px 22px;
-        margin-top: 20px;
+        padding: 14px 10px 20px;
+        margin-top: 16px;
         border-top: 1px solid var(--border);
         color: var(--text-muted);
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         font-weight: 700;
         direction: ltr;
         position: relative;
@@ -831,13 +766,13 @@
         font-weight: 900;
         background: var(--primary-soft);
         border: 1px solid var(--border-strong);
-        padding: 3px 12px;
+        padding: 3px 11px;
         border-radius: 999px;
         margin-left: 6px;
         text-decoration: none;
       }
 
-      /* PDF Print Mode (A4 Landscape, 25 rows/page) */
+      /* PDF Print Mode */
       #pdfPrintWrapper {
         display: none;
         width: 100%;
@@ -948,32 +883,19 @@
         .admin-nav-grid {
           grid-template-columns: repeat(3, minmax(0, 1fr));
         }
-        .top-header {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .brand-box,
-        .header-actions {
-          justify-content: center;
-        }
       }
     </style>
   </head>
-  <body>
+  <body class="clean-header-mode">
     <!-- Official B.almetr Watermark -->
     <div class="bg-watermark" aria-hidden="true">
-      <img
-        src="Logo_White.png"
-        alt=""
-        onerror="this.style.display='none'"
-      />
+      <img src="Logo_White.png" alt="" onerror="this.style.display='none'" />
     </div>
 
     <div class="app-container">
-      <!-- Top Header -->
+      <!-- Minimal Clean Top Header (3 Quick Taps on Logo -> Smart Login) -->
       <header class="top-header">
         <div class="brand-box">
-          <!-- 3 Quick Taps on Logo opens Smart Login (ideal for Clean Public Link Mode) -->
           <div
             class="brand-logo-btn"
             onclick="handleLogoSecretTap()"
@@ -990,10 +912,9 @@
               ><span style="color: #fff">almetr</span>
             </div>
           </div>
-          <div id="syncStatusBadge" class="sync-badge syncing">
-            ⏳ جاري الاتصال بـ Supabase...
-          </div>
         </div>
+
+        <div id="syncStatusBadge" class="sync-badge syncing">⏳ اتصال...</div>
 
         <div class="header-actions">
           <button
@@ -1006,39 +927,39 @@
           <button
             type="button"
             id="smartLoginBtn"
-            class="btn btn-primary"
+            class="btn btn-danger"
             onclick="handleSmartAuthButton()"
           >
-            🔐 دخول (إدارة / سيلز / مطور)
+            🚪 خروج
           </button>
         </div>
       </header>
 
-      <!-- Exhibition Selector Bar (Hidden in Clean Public Client Mode) -->
+      <!-- Exhibition Pills Bar (Shown ONLY for Manager / Portal) -->
       <section class="exhibition-bar" id="exhibitionBarSection">
         <div class="exhibition-list-wrap">
           <span
             style="
-              font-size: 0.84rem;
+              font-size: 0.82rem;
               font-weight: 800;
               color: var(--primary-bright);
             "
-            >📍 المعرض النشط:</span
+            >📍 المعرض:</span
           >
           <div id="exhibitionPills" class="exh-pills"></div>
         </div>
       </section>
 
-      <!-- ==================== 1. INVITATION WORKSPACE (PUBLIC CLIENT OR SALES) ==================== -->
+      <!-- ==================== 1. CLEAN WORKSPACE (SALES OR PUBLIC CLIENT) ==================== -->
       <main id="workspaceView" class="workspace-grid">
         <div class="card">
           <div class="card-header">
-            <div class="card-title" id="workspaceCardTitle">
+            <div class="card-title">
               🎫 إصدار دعوة VIP (<span id="activeExhTitle">...</span>)
             </div>
           </div>
 
-          <!-- Banner shown in Public Client Mode (?b= or ?d= or ?c=BM) -->
+          <!-- Public Host Banner (?b= or ?d= or ?c=BM) -->
           <div
             id="publicHostBanner"
             class="public-host-banner"
@@ -1046,7 +967,7 @@
           >
             <div
               style="
-                font-size: 0.8rem;
+                font-size: 0.78rem;
                 color: var(--primary-bright);
                 font-weight: 800;
               "
@@ -1055,41 +976,36 @@
             </div>
             <div
               id="publicHostName"
-              style="
-                font-size: 1.2rem;
-                font-weight: 900;
-                color: #fff;
-                margin-top: 2px;
-              "
+              style="font-size: 1.15rem; font-weight: 900; color: #fff"
             ></div>
           </div>
 
-          <!-- Public Client Exhibition Dropdown (Shown ONLY in Public Client Mode when not locked by ?e=) -->
+          <!-- Compact Exhibition Dropdown (Replaces cluttered pills on mobile) -->
           <div
-            id="publicExhSelectWrap"
+            id="workspaceExhSelectWrap"
             class="form-group"
             style="display: none"
           >
-            <label class="form-label">1. اختر المعرض:</label>
+            <label class="form-label">📍 المعرض:</label>
             <select
-              id="publicExhSelect"
+              id="workspaceExhSelect"
               class="form-control"
-              onchange="onPublicExhChange(this.value)"
+              onchange="onWorkspaceExhChange(this.value)"
             ></select>
           </div>
 
-          <!-- Sales Selector (Hidden automatically in Public Client Mode) -->
-          <div id="salesStepBox" class="sales-step-box">
-            <label class="form-label" style="color: #fcd34d">
-              1. اختر اسمك أو كودك أولاً (إجباري لفتح التسجيل):
-            </label>
+          <!-- Compact Sales Selector (Hidden in Public Link mode) -->
+          <div id="salesStepBox" class="form-group">
+            <label class="form-label" style="color: #fcd34d"
+              >👤 السيلز (ابحث أو اختر كودك):</label
+            >
             <input
               type="text"
               id="salesSearchInput"
               class="form-control"
               placeholder="🔍 ابحث بالاسم أو الكود..."
               oninput="filterSalesDropdown()"
-              style="margin-bottom: 8px"
+              style="margin-bottom: 7px"
             />
             <div id="salesQuickPills" class="sales-quick-pills"></div>
             <select
@@ -1097,19 +1013,13 @@
               class="form-control"
               onchange="onSalesRepChange()"
             ></select>
-            <div
-              id="salesSelectionBanner"
-              class="sales-status-banner unselected"
-            >
-              <span>⚠️ اختر اسمك من القائمة أولاً لتفعيل إصدار الدعوة</span>
-            </div>
           </div>
 
           <!-- Client Data Form -->
           <div id="clientFormLockWrap" class="client-form-lock-wrap locked">
             <div class="form-group">
               <label class="form-label" id="clientNameLabel"
-                >2. اسم العميل الثلاثي أو الثنائي:</label
+                >اسم العميل:</label
               >
               <input
                 type="text"
@@ -1123,7 +1033,7 @@
 
             <div class="form-group">
               <label class="form-label" id="clientPhoneLabel"
-                >3. رقم التليفون (11 رقم مصري أو بكود الدولة):</label
+                >رقم التليفون:</label
               >
               <input
                 type="tel"
@@ -1145,13 +1055,13 @@
                 style="
                   display: flex;
                   justify-content: space-between;
-                  font-size: 0.74rem;
+                  font-size: 0.72rem;
                   color: var(--text-muted);
-                  margin-top: 5px;
+                  margin-top: 4px;
                   font-weight: 700;
                 "
               >
-                <span id="phoneStatusHint">يقبل 11 رقم مصري أو +20</span>
+                <span id="phoneStatusHint">11 رقم مصري أو +20</span>
                 <span
                   id="phoneCounterBadge"
                   dir="ltr"
@@ -1161,7 +1071,6 @@
               </div>
             </div>
 
-            <!-- Non-Blocking Duplicate Advisory Notice -->
             <div id="duplicateNoticeBox" class="duplicate-notice-box"></div>
 
             <button
@@ -1171,7 +1080,7 @@
               onclick="issueAndDownloadInvitation()"
               disabled
             >
-              🔒 اختر اسمك أولاً لتفعيل الإصدار
+              🔒 اختر اسمك أولاً
             </button>
           </div>
 
@@ -1199,7 +1108,7 @@
                 style="flex: 1"
                 onclick="downloadCurrentCanvas()"
               >
-                ⬇️ تنزيل الصورة
+                ⬇️ تنزيل
               </button>
             </div>
           </div>
@@ -1207,12 +1116,12 @@
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🖼️ معاينة الدعوة مباشرة</div>
+            <div class="card-title">🖼️ معاينة الدعوة</div>
             <div id="previewTopActions" style="display: none; gap: 6px">
               <button
                 type="button"
                 class="btn btn-success"
-                style="padding: 6px 10px; font-size: 0.78rem"
+                style="padding: 5px 10px; font-size: 0.76rem"
                 onclick="shareCurrentCanvas()"
               >
                 📲 شير
@@ -1220,7 +1129,7 @@
               <button
                 type="button"
                 class="btn btn-outline"
-                style="padding: 6px 10px; font-size: 0.78rem"
+                style="padding: 5px 10px; font-size: 0.76rem"
                 onclick="downloadCurrentCanvas()"
               >
                 ⬇️ تنزيل
@@ -1233,7 +1142,7 @@
         </div>
       </main>
 
-      <!-- ==================== 2. PERSONAL PORTAL (SALES / BROKER / INFLUENCER / DEVELOPER) ==================== -->
+      <!-- ==================== 2. PERSONAL PORTAL ==================== -->
       <section id="personalPortalView" style="display: none">
         <div class="card">
           <div class="card-header">
@@ -1249,7 +1158,7 @@
 
           <div id="portalLinkWrap" style="display: none; margin-bottom: 14px">
             <label class="form-label" style="color: var(--primary-bright)"
-              >🔗 رابط الدعوات للعملاء (صفحة بسيطة للعميل فقط — اضغط على اللوجو 3 مرات للدخول لمتابعتك):</label
+              >🔗 رابط الدعوات للعملاء (اضغط على اللوجو 3 مرات في أي وقت للدخول لمتابعتك):</label
             >
             <div class="link-copy-box">
               <span
@@ -1267,7 +1176,6 @@
             </div>
           </div>
 
-          <!-- Developer Custom Template Upload (Fixed Coordinates) -->
           <div
             id="portalDevTemplateWrap"
             class="control-section-box"
@@ -1295,7 +1203,11 @@
               />
               <span
                 id="portalDevTplStatus"
-                style="font-size: 0.8rem; font-weight: 800; color: var(--primary-bright)"
+                style="
+                  font-size: 0.8rem;
+                  font-weight: 800;
+                  color: var(--primary-bright);
+                "
               ></span>
             </div>
           </div>
@@ -1392,7 +1304,6 @@
             >
               ✨ Create & توليد الرابط
             </button>
-
             <div
               id="abCreatedResultBox"
               class="ticket-status-box"
@@ -1433,12 +1344,12 @@
         </div>
       </section>
 
-      <!-- ==================== 4. DEVELOPER SELF-REGISTRATION VIEW ==================== -->
+      <!-- ==================== 4. DEVELOPER SELF-REGISTRATION ==================== -->
       <section id="devSignupView" style="display: none">
         <div class="card" style="max-width: 700px; margin: 0 auto">
           <div class="card-header">
             <div class="card-title">
-              🏗️ تسجيل شركة مطورة جديدة (Developer) — إصدار رابط الدعوات
+              🏗️ تسجيل شركة مطورة جديدة (Developer)
             </div>
             <button
               type="button"
@@ -1514,7 +1425,7 @@
 
           <div class="form-group">
             <label class="form-label"
-              >5. صورة تصميم الدعوة الخاصة بشركتكم (اختياري — الأماكن ثابتة أوتوماتيك):</label
+              >5. صورة تصميم الدعوة الخاصة بشركتكم (اختياري):</label
             >
             <div class="dim-notice-box" id="devSignupDimNotice"></div>
             <input
@@ -1549,7 +1460,7 @@
         </div>
       </section>
 
-      <!-- ==================== 5. MANAGER PANEL (5 TABS) ==================== -->
+      <!-- ==================== 5. MANAGER PANEL ==================== -->
       <section id="managerView" style="display: none">
         <nav class="admin-nav-grid">
           <button
@@ -1591,7 +1502,6 @@
 
         <!-- TAB 1: QUICK REPORT -->
         <div id="mgrTabQuickReport" class="admin-page active">
-          <!-- Company Ads Link Card -->
           <div class="card">
             <div class="card-header">
               <div class="card-title">
@@ -1640,7 +1550,7 @@
                     font-weight: 700;
                   "
                 >
-                  رابط مخصص للمعرض النشط فقط (<span id="companyActiveExhLabel"></span>):
+                  رابط للمعرض النشط فقط (<span id="companyActiveExhLabel"></span>):
                 </div>
                 <div class="link-copy-box">
                   <span
@@ -1676,7 +1586,7 @@
                   class="btn btn-primary"
                   onclick="exportGlobalPDF()"
                 >
-                  🖨️ تحميل PDF بالعرض
+                  🖨️ تحميل PDF
                 </button>
               </div>
             </div>
@@ -1696,7 +1606,7 @@
                 class="btn btn-gold"
                 onclick="setGlobalReportMode('ALL_TIME')"
               >
-                🌐 التوتال من أول المعرض
+                🌐 التوتال
               </button>
               <button
                 type="button"
@@ -1800,9 +1710,7 @@
           <div id="achDevelopers" class="sub-page">
             <div class="card">
               <div class="card-header">
-                <div class="card-title">
-                  🏗️ الشركات المطورة المسجلة وإنجازها
-                </div>
+                <div class="card-title">🏗️ الشركات المطورة المسجلة</div>
               </div>
               <div class="table-responsive">
                 <table>
@@ -1862,7 +1770,7 @@
             <div
               style="
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
                 gap: 8px;
                 margin-bottom: 12px;
               "
@@ -1943,7 +1851,7 @@
           </div>
         </div>
 
-        <!-- TAB 4: ACCOUNTS, PASSWORDS & TEAMS -->
+        <!-- TAB 4: ACCOUNTS & TEAMS -->
         <div id="mgrTabAccounts" class="admin-page">
           <div class="workspace-grid">
             <div>
@@ -1959,7 +1867,6 @@
                     id="mgrDevSignupPassInput"
                     class="form-control"
                     dir="ltr"
-                    placeholder="مثال: DEV2026"
                   />
                   <button
                     type="button"
@@ -1971,7 +1878,6 @@
                 </div>
               </div>
 
-              <!-- Dynamic Teams Management -->
               <div class="card">
                 <div class="card-header">
                   <div class="card-title">🏷️ إدارة أسماء التيمات</div>
@@ -2043,7 +1949,7 @@
                   id="mgrAddPass"
                   class="form-control"
                   dir="ltr"
-                  placeholder="الباسورد (اختياري — يتولد تلقائي)"
+                  placeholder="الباسورد (اختياري)"
                 />
                 <button
                   type="button"
@@ -2162,9 +2068,8 @@
                   margin-bottom: 12px;
                 "
               >
-                اختر ملف الـ Backup القديم (<code>system23_11.json</code> أو
-                <code>Balmeter_VIP_Backup_*.json</code>) وسيقوم النظام بدمج كل
-                الدعوات الناقصة في Supabase بدون فقد أي صف.
+                اختر ملف الـ Backup القديم (<code>system23_11.json</code>)
+                وسيقوم النظام بدمج كل الدعوات الناقصة في Supabase بدون فقد أي صف.
               </p>
               <input
                 type="file"
@@ -2200,7 +2105,6 @@
                 </button>
               </div>
 
-              <!-- Required Dimensions for Developer & Admin Broker -->
               <div class="control-section-box">
                 <div class="control-section-title">
                   📐 أبعاد التصميم المطلوبة (تظهر للديفولبر والأدمن بروكر)
@@ -2211,7 +2115,6 @@
                     id="mgrDesignDimInput"
                     class="form-control"
                     dir="ltr"
-                    placeholder="مثال: 1080 × 1350 px"
                   />
                   <button
                     type="button"
@@ -2226,7 +2129,7 @@
               <div class="control-section-box">
                 <div class="control-section-title">1️⃣ صورة القالب والترقيم</div>
                 <div class="form-group">
-                  <label class="form-label">رفع صورة التصميم (Supabase Storage):</label>
+                  <label class="form-label">رفع صورة التصميم:</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -2357,7 +2260,7 @@
 
             <div class="card">
               <div class="card-header">
-                <div class="card-title">🖼️ معاينة القالب (اسحب العناصر مباشرة)</div>
+                <div class="card-title">🖼️ معاينة القالب (اسحب العناصر)</div>
               </div>
               <div class="preview-container">
                 <canvas
@@ -2372,7 +2275,6 @@
       </section>
     </div>
 
-    <!-- Developer Signature Footer -->
     <footer class="dev-footer">
       ⚡ Developed by
       <a
@@ -2385,7 +2287,7 @@
 
     <!-- Smart Password Login Modal -->
     <div id="smartLoginModal" class="modal-overlay">
-      <div class="modal-box" style="max-width: 380px">
+      <div class="modal-box" style="max-width: 370px">
         <h3 style="color: var(--primary-bright); margin-bottom: 6px">
           🔐 الدخول الذكي — B.almetr
         </h3>
@@ -2396,8 +2298,7 @@
             margin-bottom: 14px;
           "
         >
-          أدخل كلمة السر الخاصة بك (إدارة، أدمن بروكر، سيلز، بروكر، أو مطور)
-          وسيتم توجيهك تلقائياً:
+          أدخل كلمة السر الخاصة بك (إدارة، أدمن بروكر، سيلز، بروكر، أو مطور):
         </p>
         <input
           type="password"
@@ -2442,9 +2343,7 @@
           <input type="text" id="editAccName" class="form-control" />
         </div>
         <div class="form-group">
-          <label class="form-label"
-            >الكود (يتحدث تلقائياً في كل التقارير):</label
-          >
+          <label class="form-label">الكود:</label>
           <input type="text" id="editAccCode" class="form-control" dir="ltr" />
         </div>
         <div class="form-group">
@@ -2452,7 +2351,7 @@
           <input type="text" id="editAccPass" class="form-control" dir="ltr" />
         </div>
         <div class="form-group">
-          <label class="form-label">التيم (للسيلز):</label>
+          <label class="form-label">التيم:</label>
           <select id="editAccTeam" class="form-control"></select>
         </div>
         <div style="display: flex; gap: 8px; margin-top: 12px">
@@ -2555,6 +2454,8 @@
       let draggingTarget = null;
       let logoTapCount = 0;
       let logoTapTimer = null;
+      let isImportingLegacy = false;
+      let realtimeTimer = null;
 
       let devRegActivities = [];
       let devRegAreas = [];
@@ -2565,7 +2466,7 @@
       let currentLogsPage = 1;
       const LOGS_PER_PAGE = 25;
 
-      // ==================== INIT ====================
+      // ==================== INIT & REALTIME ====================
       window.addEventListener("DOMContentLoaded", async () => {
         const dInput = document.getElementById("globalReportDateInput");
         if (dInput) dInput.value = globalReportDate;
@@ -2573,25 +2474,36 @@
         await loadAllDataFromSupabase(false);
         checkPublicUrlParams();
         renderAllUI();
+        initSupabaseRealtime();
       });
+
+      function initSupabaseRealtime() {
+        sb.channel("balmetr-live-sync")
+          .on("postgres_changes", { event: "*", schema: "public" }, () => {
+            if (isImportingLegacy) return;
+            clearTimeout(realtimeTimer);
+            realtimeTimer = setTimeout(() => {
+              loadAllDataFromSupabase(false);
+            }, 600);
+          })
+          .subscribe();
+      }
 
       function setSyncBadge(status, text) {
         const el = document.getElementById("syncStatusBadge");
         if (!el) return;
         if (status === "syncing") {
           el.className = "sync-badge syncing";
-          el.textContent = text || "⏳ جاري التحديث...";
+          el.textContent = text || "⏳ تحديث...";
         } else if (status === true) {
           el.className = "sync-badge";
-          el.textContent =
-            text || `🟢 متصل لايف (${state.invitations.length} دعوة)`;
+          el.textContent = text || `🟢 لايف (${state.invitations.length})`;
         } else {
           el.className = "sync-badge offline";
-          el.textContent = text || "🔴 تعذر الاتصال بالسحابة";
+          el.textContent = text || "🔴 غير متصل";
         }
       }
 
-      // Fetch ALL invitations beyond Supabase's 1,000-row limit
       async function fetchAllInvitationsPaginated() {
         const all = [];
         const PAGE_SIZE = 1000;
@@ -2612,7 +2524,7 @@
       }
 
       async function loadAllDataFromSupabase(showToast = false) {
-        setSyncBadge("syncing", "⏳ جاري تحميل كل البيانات...");
+        setSyncBadge("syncing");
         try {
           const [exhRes, accRes, setRes, allInvs] = await Promise.all([
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
@@ -2652,7 +2564,7 @@
           setSyncBadge(true);
           renderAllUI();
           if (showToast)
-            alert(`✅ تم تحديث البيانات بنجاح (${state.invitations.length} دعوة)!`);
+            alert(`✅ تم التحديث (${state.invitations.length} دعوة)!`);
         } catch (err) {
           console.error(err);
           setSyncBadge(false);
@@ -2691,7 +2603,7 @@
         }
       }
 
-      // 3 Quick Taps on Logo -> Smart Login
+      // 3 Quick Taps on Logo -> Smart Login (Works on BOTH Sales & Public pages)
       function handleLogoSecretTap() {
         logoTapCount++;
         clearTimeout(logoTapTimer);
@@ -2704,7 +2616,7 @@
         }
       }
 
-      // ==================== NATURAL SORT & HELPERS ====================
+      // ==================== HELPERS ====================
       function sortAccountsByCode(list) {
         return [...list].sort((a, b) => {
           const ca = String(a.code || "").toUpperCase();
@@ -2895,7 +2807,7 @@
           if (data.status === "DEV_SIGNUP") {
             state.devSignupTempPass = pass;
             closeModal("smartLoginModal");
-            document.body.classList.remove("public-client-mode");
+            document.body.classList.remove("clean-header-mode", "public-client-mode");
             document.getElementById("devSignupDimNotice").innerHTML =
               `📐 الأبعاد المطلوبة لصورة التصميم: <strong dir="ltr">${escapeHtml(state.designDimensions)}</strong> — الأماكن (الاسم، الرقم، QR) ثابتة أوتوماتيك.`;
             showOnlyView("devSignupView");
@@ -2905,7 +2817,7 @@
           if (data.status === "ACCOUNT" && data.account) {
             state.currentUser = data.account;
             closeModal("smartLoginModal");
-            document.body.classList.remove("public-client-mode");
+            document.body.classList.remove("clean-header-mode", "public-client-mode");
             await loadAllDataFromSupabase(false);
             routeLoggedInUser();
             return;
@@ -2914,7 +2826,7 @@
           alert("❌ كلمة السر غير صحيحة!");
         } catch (err) {
           console.error(err);
-          alert("❌ تعذر التحقق من كلمة السر!");
+          alert("❌ تعذر التحقق: " + (err.message || ""));
         } finally {
           btn.disabled = false;
           btn.textContent = "دخول ✅";
@@ -2934,13 +2846,13 @@
             el.style.display =
               id === viewId ? (id === "workspaceView" ? "grid" : "block") : "none";
         });
+
         const authBtn = document.getElementById("smartLoginBtn");
         if (state.currentUser) {
+          document.body.classList.remove("clean-header-mode");
           authBtn.textContent = `🚪 خروج (${state.currentUser.name})`;
-          authBtn.className = "btn btn-danger";
         } else {
-          authBtn.textContent = "🔐 دخول (إدارة / سيلز / مطور)";
-          authBtn.className = "btn btn-primary";
+          document.body.classList.add("clean-header-mode");
         }
       }
 
@@ -3022,51 +2934,44 @@
         if (titleEl) titleEl.textContent = active ? active.name : "";
       }
 
-      // ==================== WORKSPACE (PUBLIC CLIENT OR SALES) ====================
+      // ==================== WORKSPACE (CLEAN FOR SALES & PUBLIC) ====================
       function renderWorkspaceControls() {
         const publicBanner = document.getElementById("publicHostBanner");
-        const publicExhWrap = document.getElementById("publicExhSelectWrap");
+        const exhWrap = document.getElementById("workspaceExhSelectWrap");
         const salesBox = document.getElementById("salesStepBox");
+
+        const visibleExhs = state.exhibitions.filter((e) => !e.hide_in_sales);
+        const pool = visibleExhs.length > 0 ? visibleExhs : state.exhibitions;
+
+        // Compact dropdown for exhibition (hidden if locked by ?e= or only 1 visible exhibition)
+        if (!state.publicLockedExhId && pool.length > 1) {
+          exhWrap.style.display = "block";
+          const sel = document.getElementById("workspaceExhSelect");
+          sel.innerHTML = pool
+            .map(
+              (e) =>
+                `<option value="${e.id}" ${e.id === state.activeExhibitionId ? "selected" : ""}>📍 ${escapeHtml(e.name)}</option>`
+            )
+            .join("");
+        } else {
+          exhWrap.style.display = "none";
+        }
 
         if (state.publicHostAccount) {
           publicBanner.style.display = "block";
           salesBox.style.display = "none";
           document.getElementById("publicHostName").textContent =
             state.publicHostAccount.name;
-
-          const visibleExhs = state.exhibitions.filter((e) => !e.hide_in_sales);
-          const pool = visibleExhs.length > 0 ? visibleExhs : state.exhibitions;
-          if (!state.publicLockedExhId && pool.length > 1) {
-            publicExhWrap.style.display = "block";
-            const sel = document.getElementById("publicExhSelect");
-            sel.innerHTML = pool
-              .map(
-                (e) =>
-                  `<option value="${e.id}" ${e.id === state.activeExhibitionId ? "selected" : ""}>📍 ${escapeHtml(e.name)}</option>`
-              )
-              .join("");
-            document.getElementById("clientNameLabel").textContent = "2. اكتب اسمك بالكامل:";
-            document.getElementById("clientPhoneLabel").textContent = "3. رقم موبايلك:";
-          } else {
-            publicExhWrap.style.display = "none";
-            document.getElementById("clientNameLabel").textContent = "1. اكتب اسمك بالكامل:";
-            document.getElementById("clientPhoneLabel").textContent = "2. رقم موبايلك:";
-          }
           selectedSalesId = state.publicHostAccount.id;
         } else {
           publicBanner.style.display = "none";
-          publicExhWrap.style.display = "none";
           salesBox.style.display = "block";
-          document.getElementById("clientNameLabel").textContent =
-            "2. اسم العميل الثلاثي أو الثنائي:";
-          document.getElementById("clientPhoneLabel").textContent =
-            "3. رقم التليفون (11 رقم مصري أو بكود الدولة):";
           renderSalesDropdown();
         }
         updateWorkspaceLockUI();
       }
 
-      function onPublicExhChange(exhId) {
+      function onWorkspaceExhChange(exhId) {
         state.activeExhibitionId = exhId;
         lastIssuedTicket = null;
         document.getElementById("ticketConfirmBox").style.display = "none";
@@ -3092,7 +2997,7 @@
             s.code.toLowerCase().includes(q)
         );
 
-        sel.innerHTML = `<option value="">⚠️ -- اختر اسمك وكودك من هنا أولاً --</option>`;
+        sel.innerHTML = `<option value="">-- اختر اسمك وكودك --</option>`;
         filtered.forEach((s) => {
           const opt = document.createElement("option");
           opt.value = s.id;
@@ -3147,36 +3052,24 @@
       function updateWorkspaceLockUI() {
         const owner = getActiveOwnerAccount();
         const lockWrap = document.getElementById("clientFormLockWrap");
-        const stepBox = document.getElementById("salesStepBox");
-        const banner = document.getElementById("salesSelectionBanner");
         const nameInp = document.getElementById("clientNameInput");
         const phoneInp = document.getElementById("clientPhoneInput");
         const issueBtn = document.getElementById("issueBtn");
 
         if (owner) {
           lockWrap.classList.remove("locked");
-          if (stepBox) stepBox.classList.add("selected");
           nameInp.disabled = false;
           phoneInp.disabled = false;
-          if (banner) {
-            banner.className = "sales-status-banner selected";
-            banner.innerHTML = `<span>✅ ${escapeHtml(owner.code)} — ${escapeHtml(owner.name)}</span>`;
-          }
           issueBtn.disabled = false;
           issueBtn.textContent = state.publicHostAccount
-            ? "✨ إصدار وتحميل بطاقة الدعوة الآن"
-            : `✨ إصدار ومشاركة الدعوة (${owner.code} - ${owner.name})`;
+            ? "✨ إصدار وتحميل الدعوة الآن"
+            : `✨ إصدار الدعوة (${owner.code} - ${owner.name})`;
         } else {
           lockWrap.classList.add("locked");
-          if (stepBox) stepBox.classList.remove("selected");
           nameInp.disabled = true;
           phoneInp.disabled = true;
-          if (banner) {
-            banner.className = "sales-status-banner unselected";
-            banner.innerHTML = `<span>⚠️ اختر اسمك أولاً لفتح بيانات العميل</span>`;
-          }
           issueBtn.disabled = true;
-          issueBtn.textContent = "🔒 اختر اسمك أولاً لتفعيل الإصدار";
+          issueBtn.textContent = "🔒 اختر اسمك أولاً";
         }
         checkDuplicatePhoneAdvisoryUI();
         renderAllCanvases();
@@ -3210,7 +3103,6 @@
         renderAllCanvases();
       }
 
-      // Non-Blocking Advisory Warning: Allows creating multiple invitations for the same number
       function checkDuplicatePhoneAdvisoryUI() {
         const phone = (document.getElementById("clientPhoneInput")?.value || "").trim();
         const noticeBox = document.getElementById("duplicateNoticeBox");
@@ -3293,13 +3185,13 @@
           }
         } catch (err) {
           console.error(err);
-          alert("❌ حدث خطأ أثناء الاتصال بـ Supabase!");
+          alert("❌ خطأ في Supabase:\n" + (err.message || JSON.stringify(err)));
         } finally {
           updateWorkspaceLockUI();
         }
       }
 
-      // ==================== CANVAS RENDERER (NAME + #SEQ + REF + QR) ====================
+      // ==================== CANVAS RENDERER ====================
       function loadActiveTemplateImage() {
         const url = getActiveTemplateUrl();
         if (!url) {
@@ -3557,7 +3449,7 @@
         if (u.role === "developer") {
           devTplWrap.style.display = "block";
           document.getElementById("portalDevDimNotice").innerHTML =
-            `📐 الأبعاد المطلوبة للتصميم: <strong dir="ltr">${escapeHtml(state.designDimensions)}</strong> — ارفع الصورة فقط وستنزل عليها البيانات أوتوماتيك في أماكنها الثابتة.`;
+            `📐 الأبعاد المطلوبة للتصميم: <strong dir="ltr">${escapeHtml(state.designDimensions)}</strong> — ارفع الصورة فقط وستنزل عليها البيانات أوتوماتيك.`;
           document.getElementById("portalDevTplStatus").textContent = u.custom_template_url
             ? "✅ تم رفع تصميم خاص بشركتك"
             : "ℹ️ يستخدم القالب الافتراضي حالياً";
@@ -3837,20 +3729,20 @@
             state.currentUser = data.developer;
             await loadAllDataFromSupabase(false);
             alert(
-              `✅ أهلاً بك! تم تسجيل شركة (${data.developer.name}) بكود (${data.developer.code}). انسخ رابط العملاء من صفحتك الآن!`
+              `✅ أهلاً بك! تم تسجيل شركة (${data.developer.name}) بكود (${data.developer.code}).`
             );
             routeLoggedInUser();
           }
         } catch (err) {
           console.error(err);
-          alert("❌ تعذر التسجيل، حاول مرة أخرى!");
+          alert("❌ تعذر التسجيل: " + (err.message || ""));
         } finally {
           btn.disabled = false;
           btn.textContent = "✅ Create & إصدار كود ورابط الشركة";
         }
       }
 
-      // ==================== DYNAMIC TEAMS MANAGEMENT ====================
+      // ==================== DYNAMIC TEAMS ====================
       function populateTeamSelects() {
         ["mgrAddTeam", "editAccTeam"].forEach((id) => {
           const sel = document.getElementById(id);
@@ -3869,8 +3761,8 @@
               (t, idx) => `
             <div class="chip-btn selected" style="display:inline-flex; align-items:center; gap:6px;">
               <span>${escapeHtml(t)}</span>
-              <span style="cursor:pointer; color:#fcd34d;" title="تعديل" onclick="editTeamName(${idx})">✏️</span>
-              <span style="cursor:pointer; color:#fda4af;" title="حذف" onclick="deleteTeamName(${idx})">✕</span>
+              <span style="cursor:pointer; color:#fcd34d;" onclick="editTeamName(${idx})">✏️</span>
+              <span style="cursor:pointer; color:#fda4af;" onclick="deleteTeamName(${idx})">✕</span>
             </div>`
             )
             .join("");
@@ -3958,7 +3850,6 @@
         if (lblEl) lblEl.textContent = activeExh?.name || "-";
       }
 
-      // --- Tab 1: Quick Report ---
       function setGlobalReportMode(mode) {
         globalReportMode = mode;
         document.getElementById("modeAllTimeBtn").className =
@@ -4032,7 +3923,7 @@
         kpiGrid.innerHTML = `
           <div class="kpi-card"><div class="label">الدعوات (${globalReportMode === "DATE" ? globalReportDate : "التوتال"})</div><div class="val">${grandPeriod}</div></div>
           <div class="kpi-card"><div class="label">التوتال التراكمي</div><div class="val" style="color:#fcd34d;">${grandAll}</div></div>
-          <div class="kpi-card"><div class="label">عملاء إعلانات الشركة (BM)</div><div class="val" style="color:#34d399;">${compCount}</div></div>
+          <div class="kpi-card"><div class="label">عملاء الشركة (BM)</div><div class="val" style="color:#34d399;">${compCount}</div></div>
           <div class="kpi-card"><div class="label">الشركات المطورة</div><div class="val">${state.accounts.filter((a) => a.role === "developer").length}</div></div>
         `;
       }
@@ -4053,11 +3944,9 @@
         copyText(text);
       }
 
-      // --- Tab 2: Achievements ---
       function renderMgrAchievements() {
         const activeExh = getActiveExhibition();
 
-        // 1. Sales sorted by code
         const salesTbody = document.getElementById("mgrSalesAchTbody");
         const sales = sortAccountsByCode(
           state.accounts.filter((a) => a.role === "sales")
@@ -4077,14 +3966,13 @@
               <td><strong>${allC}</strong></td>
               <td>
                 <button type="button" class="btn ${s.hide_in_sitting ? "btn-danger" : "btn-success"}" style="padding:4px 9px; font-size:0.74rem;" onclick="toggleHideInSitting('${s.id}', ${!s.hide_in_sitting})">
-                  ${s.hide_in_sitting ? "🚫 مخفي من القعدة" : "🟢 ظاهر في القعدة"}
+                  ${s.hide_in_sitting ? "🚫 مخفي" : "🟢 ظاهر"}
                 </button>
               </td>
             </tr>`;
           })
           .join("");
 
-        // 2. Developers
         const devTbody = document.getElementById("mgrDevsAchTbody");
         const devs = sortAccountsByCode(
           state.accounts.filter((a) => a.role === "developer")
@@ -4115,7 +4003,6 @@
                 })
                 .join("");
 
-        // 3. Admin Brokers
         const abContainer = document.getElementById("mgrAdminBrokersAchContainer");
         const adminBrokers = sortAccountsByCode(
           state.accounts.filter((a) => a.role === "admin_broker")
@@ -4168,7 +4055,6 @@
         renderMgrAchievements();
       }
 
-      // --- Tab 3: Client Logs ---
       function populateLogsFilters() {
         const exhSel = document.getElementById("logExhFilter");
         const ownSel = document.getElementById("logOwnerFilter");
@@ -4341,7 +4227,6 @@
         buildAndOpenPDF(list, "التقرير الشامل لكل المعارض");
       }
 
-      // --- Tab 4: Accounts & Passwords ---
       async function saveDeveloperSignupPassword() {
         const val = (document.getElementById("mgrDevSignupPassInput").value || "").trim();
         if (!val) return alert("⚠️ اكتب الباسورد!");
@@ -4353,7 +4238,7 @@
           .upsert({ key: "developer_signup_pass", value: val });
         if (error) return alert("❌ تعذر الحفظ!");
         state.developerSignupPass = val;
-        alert("✅ تم تحديث باسورد تسجيل المطورين بنجاح!");
+        alert("✅ تم تحديث باسورد تسجيل المطورين!");
       }
 
       async function managerAddAccount() {
@@ -4368,7 +4253,7 @@
         if (!pass) pass = generateUniquePassword(code);
 
         if (pass === state.developerSignupPass) {
-          return alert("❌ الباسورد ده هو نفسه باسورد تسجيل المطورين، اختار غيره!");
+          return alert("❌ الباسورد ده هو نفسه باسورد تسجيل المطورين!");
         }
 
         const { data, error } = await sb
@@ -4378,7 +4263,7 @@
           .single();
 
         if (error) {
-          if (error.code === "23505") return alert("❌ الكود أو الباسورد ده موجود بالفعل!");
+          if (error.code === "23505") return alert("❌ الكود أو الباسورد موجود بالفعل!");
           return alert("❌ خطأ أثناء الإضافة!");
         }
 
@@ -4469,18 +4354,17 @@
         if (idx >= 0) state.accounts[idx] = data;
         closeModal("editAccountModal");
         renderAllUI();
-        alert("✅ تم التعديل بنجاح وتحديثه في كل التقارير!");
+        alert("✅ تم التعديل وتحديثه للجميع فوراً!");
       }
 
       async function deleteAccountById(accId) {
-        if (!confirm("هل أنت متأكد من حذف هذا الحساب؟ (ستبقى دعواته محفوظة في السجل)")) return;
+        if (!confirm("هل أنت متأكد من حذف هذا الحساب؟")) return;
         const { error } = await sb.from("accounts").delete().eq("id", accId);
         if (error) return alert("❌ تعذر الحذف!");
         state.accounts = state.accounts.filter((a) => a.id !== accId);
         renderAllUI();
       }
 
-      // --- Tab 5: Exhibitions, Studio & Robust JSON Merge ---
       async function saveDesignDimensions() {
         const val = (document.getElementById("mgrDesignDimInput").value || "").trim();
         if (!val) return alert("⚠️ اكتب الأبعاد!");
@@ -4489,7 +4373,7 @@
           .upsert({ key: "design_dimensions", value: val });
         if (error) return alert("❌ تعذر الحفظ!");
         state.designDimensions = val;
-        alert("✅ تم حفظ أبعاد التصميم وستظهر للديفولبر والأدمن بروكر!");
+        alert("✅ تم حفظ أبعاد التصميم!");
       }
 
       function renderMgrExhibitionsTable() {
@@ -4552,7 +4436,7 @@
         const exh = getActiveExhibition();
         if (!file || !exh) return;
         try {
-          setSyncBadge("syncing", "⏳ جاري رفع القالب...");
+          setSyncBadge("syncing", "⏳ رفع القالب...");
           const url = await uploadImageToStorage(file, "exhibitions");
           const { error } = await sb
             .from("exhibitions")
@@ -4562,7 +4446,7 @@
           exh.template_url = url;
           loadActiveTemplateImage();
           setSyncBadge(true);
-          alert("✅ تم رفع القالب على Supabase Storage بنجاح!");
+          alert("✅ تم رفع القالب بنجاح!");
         } catch (err) {
           console.error(err);
           setSyncBadge(false);
@@ -4647,7 +4531,7 @@
         if (error) return alert("❌ تعذر حفظ الإعدادات!");
         exh.next_seq = nextSeq;
         renderAllUI();
-        alert("✅ تم حفظ إعدادات ومقاسات القالب في Supabase!");
+        alert("✅ تم حفظ إعدادات القالب وتحديثها عند الجميع!");
       }
 
       function setupStudioDragging() {
@@ -4698,7 +4582,7 @@
         window.addEventListener("touchend", onEnd);
       }
 
-      // ==================== ROBUST LEGACY JSON MERGE (ZERO DROPPED ROWS) ====================
+      // ==================== LEGACY JSON MERGE ====================
       async function base64ToFile(dataUrl, filename) {
         const res = await fetch(dataUrl);
         const blob = await res.blob();
@@ -4710,6 +4594,7 @@
         if (!file) return;
         const progress = document.getElementById("importProgressBox");
         progress.textContent = "⏳ جاري قراءة الملف...";
+        isImportingLegacy = true;
 
         try {
           const text = await file.text();
@@ -4718,13 +4603,12 @@
 
           if (!confirm("هل تريد دمج جميع الدعوات الناقصة من هذا الملف داخل Supabase الآن؟")) {
             progress.textContent = "";
+            isImportingLegacy = false;
             return;
           }
 
-          // 1. Exhibitions
           const exhIdMap = {};
           const oldExhs = Object.values(src.exhibitions || src.exhibitionsMeta || {});
-          progress.textContent = `⏳ جاري فحص ${oldExhs.length} معارض...`;
           for (const oe of oldExhs) {
             let existing = state.exhibitions.find(
               (e) => e.name.trim() === String(oe.name || "").trim()
@@ -4759,7 +4643,6 @@
             }
           }
 
-          // 2. Sales Team
           const salesCodeMap = {};
           const oldSales = Array.isArray(src.salesTeam) ? src.salesTeam : [];
           for (const os of oldSales) {
@@ -4787,12 +4670,10 @@
               }
             }
           }
-          // Also map any already-existing accounts
           state.accounts.forEach((a) => {
             salesCodeMap[String(a.code || "").toUpperCase()] = a.id;
           });
 
-          // 3. Build signature set of existing invitations in Supabase to skip only exact duplicates
           const existingSigs = new Set(
             state.invitations.map(
               (i) => `${i.exhibition_id}|${i.seq_number}|${normalizePhone(i.client_phone)}`
@@ -4826,7 +4707,7 @@
             });
           }
 
-          progress.textContent = `⏳ جاري استكمال رفع ${toInsert.length} دعوة ناقصة إلى Supabase...`;
+          progress.textContent = `⏳ جاري استكمال رفع ${toInsert.length} دعوة ناقصة...`;
           let insertedCount = 0;
           for (let i = 0; i < toInsert.length; i += 100) {
             const batch = toInsert.slice(i, i + 100);
@@ -4834,24 +4715,23 @@
             if (!error) {
               insertedCount += batch.length;
             } else {
-              // Fallback row-by-row so zero valid rows are lost
               for (const row of batch) {
                 const { error: rowErr } = await sb.from("invitations").insert(row);
                 if (!rowErr) insertedCount++;
               }
             }
-            progress.textContent = `⏳ تم رفع ${insertedCount} من ${toInsert.length} دعوة ناقصة...`;
+            progress.textContent = `⏳ تم رفع ${insertedCount} من ${toInsert.length}...`;
           }
 
+          isImportingLegacy = false;
           await loadAllDataFromSupabase(false);
-          progress.textContent = `✅ اكتمل الدمج بنجاح! تمت إضافة ${insertedCount} دعوة ناقصة — الإجمالي الآن في Supabase: ${state.invitations.length} دعوة.`;
-          alert(
-            `✅ تم إكمال الدمج بنجاح!\nالإجمالي الآن في السيستم: ${state.invitations.length} دعوة.`
-          );
+          progress.textContent = `✅ اكتمل الدمج! تمت إضافة ${insertedCount} دعوة — الإجمالي الآن: ${state.invitations.length} دعوة.`;
+          alert(`✅ تم الدمج بنجاح! الإجمالي الآن: ${state.invitations.length} دعوة.`);
         } catch (err) {
           console.error(err);
-          progress.textContent = "❌ فشل قراءة أو دمج الملف!";
-          alert("❌ ملف JSON غير صالح أو حدث خطأ أثناء الدمج.");
+          isImportingLegacy = false;
+          progress.textContent = "❌ فشل الدمج!";
+          alert("❌ ملف JSON غير صالح أو حدث خطأ.");
         }
       }
     </script>
