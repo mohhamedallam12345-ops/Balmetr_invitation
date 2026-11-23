@@ -91,7 +91,6 @@
         z-index: 1;
       }
 
-      /* Compact Minimal Header */
       .top-header {
         background: var(--bg-elevated);
         backdrop-filter: blur(16px);
@@ -157,13 +156,14 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        font-size: 0.72rem;
+        font-size: 0.74rem;
         font-weight: 800;
-        padding: 4px 10px;
+        padding: 4px 12px;
         border-radius: 999px;
         background: rgba(16, 185, 129, 0.12);
         color: #34d399;
         border: 1px solid rgba(16, 185, 129, 0.3);
+        direction: ltr;
       }
 
       .sync-badge.syncing {
@@ -185,7 +185,6 @@
         flex-wrap: wrap;
       }
 
-      /* Buttons */
       .btn {
         display: inline-flex;
         align-items: center;
@@ -245,7 +244,6 @@
         font-size: 0.95rem;
       }
 
-      /* Exhibition Bar (Shown only in Manager/Portal views) */
       .exhibition-bar {
         background: var(--bg-elevated);
         backdrop-filter: blur(12px);
@@ -291,12 +289,18 @@
         opacity: 0.65;
       }
 
-      /* Grids & Cards */
       .workspace-grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 14px;
         align-items: start;
+      }
+
+      .filter-bar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
       }
 
       .card {
@@ -331,7 +335,6 @@
         gap: 7px;
       }
 
-      /* Forms */
       .form-group {
         margin-bottom: 12px;
       }
@@ -512,16 +515,15 @@
 
       .duplicate-notice-box {
         margin-bottom: 12px;
-        padding: 11px;
+        padding: 10px 12px;
         border-radius: 11px;
         background: var(--gold-soft);
         border: 1.5px solid rgba(245, 176, 65, 0.5);
         color: #fde68a;
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-align: right;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-align: center;
         display: none;
-        line-height: 1.6;
       }
 
       .admin-nav-grid {
@@ -772,7 +774,6 @@
         text-decoration: none;
       }
 
-      /* PDF Print Mode */
       #pdfPrintWrapper {
         display: none;
         width: 100%;
@@ -893,7 +894,7 @@
     </div>
 
     <div class="app-container">
-      <!-- Minimal Clean Top Header (3 Quick Taps on Logo -> Smart Login) -->
+      <!-- Minimal Clean Header (3 Quick Taps on Logo -> Smart Login) -->
       <header class="top-header">
         <div class="brand-box">
           <div
@@ -914,7 +915,7 @@
           </div>
         </div>
 
-        <div id="syncStatusBadge" class="sync-badge syncing">⏳ اتصال...</div>
+        <div id="syncStatusBadge" class="sync-badge syncing">⏳ Syncing...</div>
 
         <div class="header-actions">
           <button
@@ -959,7 +960,6 @@
             </div>
           </div>
 
-          <!-- Public Host Banner (?b= or ?d= or ?c=BM) -->
           <div
             id="publicHostBanner"
             class="public-host-banner"
@@ -980,7 +980,6 @@
             ></div>
           </div>
 
-          <!-- Compact Exhibition Dropdown (Replaces cluttered pills on mobile) -->
           <div
             id="workspaceExhSelectWrap"
             class="form-group"
@@ -994,7 +993,6 @@
             ></select>
           </div>
 
-          <!-- Compact Sales Selector (Hidden in Public Link mode) -->
           <div id="salesStepBox" class="form-group">
             <label class="form-label" style="color: #fcd34d"
               >👤 السيلز (ابحث أو اختر كودك):</label
@@ -1015,12 +1013,9 @@
             ></select>
           </div>
 
-          <!-- Client Data Form -->
           <div id="clientFormLockWrap" class="client-form-lock-wrap locked">
             <div class="form-group">
-              <label class="form-label" id="clientNameLabel"
-                >اسم العميل:</label
-              >
+              <label class="form-label" id="clientNameLabel">اسم العميل:</label>
               <input
                 type="text"
                 id="clientNameInput"
@@ -1071,6 +1066,7 @@
               </div>
             </div>
 
+            <!-- Simple Duplicate Alert (Same Exhibition Only, Non-Blocking) -->
             <div id="duplicateNoticeBox" class="duplicate-notice-box"></div>
 
             <button
@@ -1142,7 +1138,7 @@
         </div>
       </main>
 
-      <!-- ==================== 2. PERSONAL PORTAL ==================== -->
+      <!-- ==================== 2. PERSONAL PORTAL (SALES / BROKER / INFLUENCER / DEVELOPER) ==================== -->
       <section id="personalPortalView" style="display: none">
         <div class="card">
           <div class="card-header">
@@ -1229,6 +1225,45 @@
             </div>
           </div>
 
+          <!-- Search & Filters -->
+          <div class="filter-bar-grid">
+            <input
+              type="text"
+              id="portalSearchInput"
+              class="form-control"
+              placeholder="🔍 بحث باسم العميل أو الرقم أو كود الدعوة..."
+              oninput="renderPersonalPortalTable()"
+            />
+            <select
+              id="portalExhFilter"
+              class="form-control"
+              onchange="renderPersonalPortalTable()"
+            ></select>
+            <input
+              type="date"
+              id="portalDateFilter"
+              class="form-control"
+              onchange="renderPersonalPortalTable()"
+            />
+            <button
+              type="button"
+              class="btn btn-outline"
+              onclick="clearPortalFilters()"
+            >
+              مسح الفلاتر
+            </button>
+          </div>
+
+          <div
+            id="portalFilteredCountText"
+            style="
+              font-size: 0.78rem;
+              color: var(--text-muted);
+              margin-bottom: 8px;
+              font-weight: 700;
+            "
+          ></div>
+
           <div class="table-responsive">
             <table>
               <thead>
@@ -1237,7 +1272,7 @@
                   <th>المعرض</th>
                   <th>اسم العميل</th>
                   <th>التليفون</th>
-                  <th>التاريخ</th>
+                  <th>التاريخ والوقت</th>
                   <th>إجراءات</th>
                 </tr>
               </thead>
@@ -1340,6 +1375,55 @@
                 <tbody id="abPartnersTbody"></tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        <!-- Admin Broker Clients Search & Filter Log -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              🔍 بحث وفلترة عملاء فريقي (<span id="abClientsCountBadge">0</span>)
+            </div>
+          </div>
+          <div class="filter-bar-grid">
+            <input
+              type="text"
+              id="abClientSearchInput"
+              class="form-control"
+              placeholder="🔍 بحث باسم العميل أو التليفون أو رقم الدعوة..."
+              oninput="renderAdminBrokerClientsTable()"
+            />
+            <select
+              id="abClientPartnerFilter"
+              class="form-control"
+              onchange="renderAdminBrokerClientsTable()"
+            ></select>
+            <select
+              id="abClientExhFilter"
+              class="form-control"
+              onchange="renderAdminBrokerClientsTable()"
+            ></select>
+            <input
+              type="date"
+              id="abClientDateFilter"
+              class="form-control"
+              onchange="renderAdminBrokerClientsTable()"
+            />
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>رقم الدعوة</th>
+                  <th>المعرض</th>
+                  <th>اسم العميل</th>
+                  <th>التليفون</th>
+                  <th>البروكر / الإنفلونسر</th>
+                  <th>التاريخ والوقت</th>
+                </tr>
+              </thead>
+              <tbody id="abClientsTbody"></tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -1767,14 +1851,7 @@
               </div>
             </div>
 
-            <div
-              style="
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
-                gap: 8px;
-                margin-bottom: 12px;
-              "
-            >
+            <div class="filter-bar-grid">
               <input
                 type="text"
                 id="logSearchInput"
@@ -1809,7 +1886,7 @@
                     <th>اسم العميل</th>
                     <th>التليفون</th>
                     <th>صاحب الدعوة (REF)</th>
-                    <th>التاريخ</th>
+                    <th>التاريخ والوقت</th>
                     <th>إجراءات</th>
                   </tr>
                 </thead>
@@ -2494,13 +2571,13 @@
         if (!el) return;
         if (status === "syncing") {
           el.className = "sync-badge syncing";
-          el.textContent = text || "⏳ تحديث...";
+          el.textContent = text || "⏳ Syncing...";
         } else if (status === true) {
           el.className = "sync-badge";
-          el.textContent = text || `🟢 لايف (${state.invitations.length})`;
+          el.textContent = text || "🟢 Live Now";
         } else {
           el.className = "sync-badge offline";
-          el.textContent = text || "🔴 غير متصل";
+          el.textContent = text || "🔴 Offline";
         }
       }
 
@@ -2536,7 +2613,7 @@
           if (exhRes.error) throw exhRes.error;
           state.exhibitions = exhRes.data || [];
           state.accounts = accRes.data || [];
-          state.invitations = allInvs || [];
+          state.invitations = sortInvitationsSmart(allInvs || [], false);
 
           (setRes.data || []).forEach((row) => {
             if (row.key === "developer_signup_pass") state.developerSignupPass = row.value;
@@ -2563,8 +2640,7 @@
 
           setSyncBadge(true);
           renderAllUI();
-          if (showToast)
-            alert(`✅ تم التحديث (${state.invitations.length} دعوة)!`);
+          if (showToast) alert("✅ تم التحديث بنجاح!");
         } catch (err) {
           console.error(err);
           setSyncBadge(false);
@@ -2603,7 +2679,7 @@
         }
       }
 
-      // 3 Quick Taps on Logo -> Smart Login (Works on BOTH Sales & Public pages)
+      // 3 Quick Taps on Logo -> Smart Login
       function handleLogoSecretTap() {
         logoTapCount++;
         clearTimeout(logoTapTimer);
@@ -2616,7 +2692,76 @@
         }
       }
 
-      // ==================== HELPERS ====================
+      // ==================== SORTING & DATE/TIME HELPERS ====================
+      function getCairoDateFromIso(ts) {
+        if (!ts) return "";
+        const d = new Date(ts);
+        if (isNaN(d.getTime())) return "";
+        try {
+          return new Intl.DateTimeFormat("en-CA", {
+            timeZone: "Africa/Cairo",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(d);
+        } catch (e) {
+          return getLocalYYYYMMDD(d);
+        }
+      }
+
+      function formatInvDateTime(inv) {
+        const dateStr = inv.date_iso || "";
+        if (!inv.created_at) return dateStr;
+        const d = new Date(inv.created_at);
+        if (isNaN(d.getTime())) return dateStr;
+        if (getCairoDateFromIso(inv.created_at) === dateStr) {
+          try {
+            const timeStr = new Intl.DateTimeFormat("en-GB", {
+              timeZone: "Africa/Cairo",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false,
+            }).format(d);
+            return `${dateStr} • ${timeStr}`;
+          } catch (e) {
+            return dateStr;
+          }
+        }
+        return dateStr;
+      }
+
+      function sortInvitationsSmart(list, isSingleExhibition = false) {
+        return [...list].sort((a, b) => {
+          if (isSingleExhibition) {
+            const seqDiff = (Number(b.seq_number) || 0) - (Number(a.seq_number) || 0);
+            if (seqDiff !== 0) return seqDiff;
+          }
+
+          const da = String(a.date_iso || "");
+          const db = String(b.date_iso || "");
+          if (da !== db) return db.localeCompare(da);
+
+          const aRealTs =
+            a.created_at && getCairoDateFromIso(a.created_at) === da
+              ? new Date(a.created_at).getTime()
+              : 0;
+          const bRealTs =
+            b.created_at && getCairoDateFromIso(b.created_at) === db
+              ? new Date(b.created_at).getTime()
+              : 0;
+          if (aRealTs !== bRealTs) return bRealTs - aRealTs;
+
+          const seqDiff = (Number(b.seq_number) || 0) - (Number(a.seq_number) || 0);
+          if (seqDiff !== 0) return seqDiff;
+
+          return (
+            (new Date(b.created_at || 0).getTime() || 0) -
+            (new Date(a.created_at || 0).getTime() || 0)
+          );
+        });
+      }
+
       function sortAccountsByCode(list) {
         return [...list].sort((a, b) => {
           const ca = String(a.code || "").toUpperCase();
@@ -2943,7 +3088,6 @@
         const visibleExhs = state.exhibitions.filter((e) => !e.hide_in_sales);
         const pool = visibleExhs.length > 0 ? visibleExhs : state.exhibitions;
 
-        // Compact dropdown for exhibition (hidden if locked by ?e= or only 1 visible exhibition)
         if (!state.publicLockedExhId && pool.length > 1) {
           exhWrap.style.display = "block";
           const sel = document.getElementById("workspaceExhSelect");
@@ -3103,36 +3247,35 @@
         renderAllCanvases();
       }
 
+      // Simple Duplicate Alert: ONLY checks inside the SAME active exhibition
       function checkDuplicatePhoneAdvisoryUI() {
+        const activeExh = getActiveExhibition();
         const phone = (document.getElementById("clientPhoneInput")?.value || "").trim();
         const noticeBox = document.getElementById("duplicateNoticeBox");
         const norm = normalizePhone(phone);
-        if (!norm || norm.length < 10) {
+        if (!activeExh || !norm || norm.length < 10) {
           noticeBox.style.display = "none";
           return;
         }
-        const prevList = state.invitations.filter(
-          (i) => normalizePhone(i.client_phone) === norm
+        const sameExhPrev = state.invitations.filter(
+          (i) => i.exhibition_id === activeExh.id && normalizePhone(i.client_phone) === norm
         );
-        if (prevList.length === 0) {
+        if (sameExhPrev.length === 0) {
           noticeBox.style.display = "none";
           return;
         }
 
-        const lines = prevList.slice(0, 5).map((inv) => {
-          const own = getAccountById(inv.owner_account_id);
-          const exhName =
-            state.exhibitions.find((e) => e.id === inv.exhibition_id)?.name || "معرض";
-          return `• دعوة <strong>${formatSeqDisplay(inv.seq_number)}</strong> في <strong>${escapeHtml(exhName)}</strong> بواسطة <strong>${escapeHtml(own?.name || "مسوق")} (${escapeHtml(own?.code || "-")})</strong> بتاريخ ${inv.date_iso}`;
-        });
+        const issuers = [
+          ...new Set(
+            sameExhPrev.map((inv) => {
+              const own = getAccountById(inv.owner_account_id);
+              return own ? `${own.name} (${own.code})` : "مسوق";
+            })
+          ),
+        ];
 
         noticeBox.style.display = "block";
-        noticeBox.innerHTML = `
-          <div style="color:#fcd34d; font-weight:900; margin-bottom:4px;">
-            🔔 تنبيه: تم عمل (${prevList.length}) دعوة لهذا الرقم من قبل (ويمكنك إصدار دعوة جديدة عادي):
-          </div>
-          ${lines.join("<br>")}
-        `;
+        noticeBox.innerHTML = `⚠️ تم الإصدار من قبل: <strong>${escapeHtml(issuers.join(" ، "))}</strong>`;
       }
 
       async function issueAndDownloadInvitation() {
@@ -3163,6 +3306,7 @@
             const inv = data.invitation;
             lastIssuedTicket = inv;
             state.invitations.unshift(inv);
+            state.invitations = sortInvitationsSmart(state.invitations, false);
             exh.next_seq = Number(inv.seq_number) + 1;
 
             document.getElementById("clientNameInput").value = "";
@@ -3326,7 +3470,6 @@
           : "#----";
         const refText = buildRefText(ownerAcc, adminAcc);
 
-        // 1. Client Name
         const nameX = (layout.nameX / 100) * canvas.width;
         const nameY = (layout.nameY / 100) * canvas.height;
         const maxWidth = (layout.nameBoxWidth / 100) * canvas.width;
@@ -3354,7 +3497,6 @@
         ctx.fillText(clientName, nameX, nameY);
         ctx.restore();
 
-        // 2. Serial Number
         const codeX = (layout.codeX / 100) * canvas.width;
         const codeY = (layout.codeY / 100) * canvas.height;
         const codeSize = Math.round((layout.codeSize / 1080) * canvas.width);
@@ -3366,7 +3508,6 @@
         ctx.fillText(seqText, codeX, codeY);
         ctx.restore();
 
-        // 3. Subtle REF Code
         if (layout.showRef !== false) {
           const refX = (layout.refX / 100) * canvas.width;
           const refY = (layout.refY / 100) * canvas.height;
@@ -3378,7 +3519,6 @@
           ctx.restore();
         }
 
-        // 4. QR Code
         if (layout.showQr !== false) {
           const qrX = (layout.qrX / 100) * canvas.width;
           const qrY = (layout.qrY / 100) * canvas.height;
@@ -3427,7 +3567,7 @@
         setTimeout(() => URL.revokeObjectURL(url), 4000);
       }
 
-      // ==================== PERSONAL PORTAL ====================
+      // ==================== PERSONAL PORTAL (WITH SEARCH & FILTERS) ====================
       function renderPersonalPortal() {
         const u = state.currentUser;
         if (!u) return;
@@ -3466,13 +3606,54 @@
         document.getElementById("portalKpiActive").textContent = myActive.length;
         document.getElementById("portalKpiAll").textContent = myInvs.length;
 
+        const exhSel = document.getElementById("portalExhFilter");
+        const prevExh = exhSel.value || "ALL";
+        exhSel.innerHTML = `<option value="ALL">🌍 كل المعارض</option>`;
+        state.exhibitions.forEach((e) => {
+          exhSel.innerHTML += `<option value="${e.id}">📍 ${escapeHtml(e.name)}</option>`;
+        });
+        exhSel.value = prevExh;
+
+        renderPersonalPortalTable();
+      }
+
+      function clearPortalFilters() {
+        document.getElementById("portalSearchInput").value = "";
+        document.getElementById("portalExhFilter").value = "ALL";
+        document.getElementById("portalDateFilter").value = "";
+        renderPersonalPortalTable();
+      }
+
+      function renderPersonalPortalTable() {
+        const u = state.currentUser;
+        if (!u) return;
+
+        const q = toEnglishDigits(document.getElementById("portalSearchInput")?.value || "")
+          .trim()
+          .toLowerCase();
+        const exhId = document.getElementById("portalExhFilter")?.value || "ALL";
+        const dateVal = (document.getElementById("portalDateFilter")?.value || "").trim();
+
+        let list = state.invitations.filter((i) => i.owner_account_id === u.id);
+        if (exhId !== "ALL") list = list.filter((i) => i.exhibition_id === exhId);
+        if (dateVal) list = list.filter((i) => i.date_iso === dateVal);
+        if (q) {
+          list = list.filter((inv) =>
+            `${inv.seq_number} ${inv.client_name} ${inv.client_phone}`.toLowerCase().includes(q)
+          );
+        }
+
+        list = sortInvitationsSmart(list, exhId !== "ALL");
+        document.getElementById("portalFilteredCountText").textContent =
+          `النتائج المعروضة: ${list.length} دعوة`;
+
         const tbody = document.getElementById("portalInvitationsTbody");
-        if (myInvs.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لم تصدر أي دعوات بعد.</td></tr>`;
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد دعوات مطابقة.</td></tr>`;
           return;
         }
 
-        tbody.innerHTML = myInvs
+        tbody.innerHTML = list
           .map((inv) => {
             const exhName =
               state.exhibitions.find((e) => e.id === inv.exhibition_id)?.name || "-";
@@ -3482,7 +3663,7 @@
               <td>${escapeHtml(exhName)}</td>
               <td style="font-weight:800;">${escapeHtml(inv.client_name)}</td>
               <td dir="ltr" style="text-align:right;">${escapeHtml(inv.client_phone)}</td>
-              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv.date_iso}</td>
+              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${formatInvDateTime(inv)}</td>
               <td>
                 <button type="button" class="btn btn-danger" style="padding:4px 10px; font-size:0.76rem;" onclick="deleteInvitationById('${inv.id}')">🗑️ مسح</button>
               </td>
@@ -3518,7 +3699,6 @@
         const { error } = await sb.from("invitations").delete().eq("id", invId);
         if (error) return alert("❌ تعذر المسح!");
         state.invitations = state.invitations.filter((i) => i.id !== invId);
-        setSyncBadge(true);
         renderAllUI();
       }
 
@@ -3619,28 +3799,101 @@
         const tbody = document.getElementById("abPartnersTbody");
         if (myPartners.length === 0) {
           tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">لم تقم بإضافة أي بروكر أو إنفلونسر بعد.</td></tr>`;
+        } else {
+          tbody.innerHTML = myPartners
+            .map((p) => {
+              const pInvs = state.invitations.filter((i) => i.owner_account_id === p.id);
+              const byExh = state.exhibitions
+                .map((ex) => {
+                  const c = pInvs.filter((i) => i.exhibition_id === ex.id).length;
+                  return c > 0
+                    ? `<span class="badge badge-mint" style="margin:2px;">${escapeHtml(ex.name)}: ${c}</span>`
+                    : "";
+                })
+                .filter(Boolean)
+                .join("");
+              const link = buildShareLink(p);
+              return `
+              <tr>
+                <td><strong>${escapeHtml(p.name)}</strong><br><span class="badge badge-gold">${p.code}</span></td>
+                <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(p.password)}</td>
+                <td>${byExh || '<span style="color:var(--text-muted);">0 دعوات</span>'}</td>
+                <td><button type="button" class="btn btn-outline" style="padding:5px 10px; font-size:0.75rem;" onclick="copyText('${link}')">📋 نسخ الرابط</button></td>
+              </tr>`;
+            })
+            .join("");
+        }
+
+        const pSel = document.getElementById("abClientPartnerFilter");
+        const eSel = document.getElementById("abClientExhFilter");
+        const prevP = pSel.value || "ALL";
+        const prevE = eSel.value || "ALL";
+
+        pSel.innerHTML = `<option value="ALL">👥 كل البروكرز والإنفلونسرز</option>`;
+        myPartners.forEach((p) => {
+          pSel.innerHTML += `<option value="${p.id}">${escapeHtml(p.code)} — ${escapeHtml(p.name)}</option>`;
+        });
+        pSel.value = prevP;
+
+        eSel.innerHTML = `<option value="ALL">🌍 كل المعارض</option>`;
+        state.exhibitions.forEach((ex) => {
+          eSel.innerHTML += `<option value="${ex.id}">📍 ${escapeHtml(ex.name)}</option>`;
+        });
+        eSel.value = prevE;
+
+        renderAdminBrokerClientsTable();
+      }
+
+      function renderAdminBrokerClientsTable() {
+        const u = state.currentUser;
+        if (!u || u.role !== "admin_broker") return;
+
+        const myPartners = state.accounts.filter((a) => a.parent_admin_id === u.id);
+        const myPartnerIds = new Set(myPartners.map((p) => p.id));
+
+        const q = toEnglishDigits(document.getElementById("abClientSearchInput")?.value || "")
+          .trim()
+          .toLowerCase();
+        const partnerId = document.getElementById("abClientPartnerFilter")?.value || "ALL";
+        const exhId = document.getElementById("abClientExhFilter")?.value || "ALL";
+        const dateVal = (document.getElementById("abClientDateFilter")?.value || "").trim();
+
+        let list = state.invitations.filter(
+          (i) => i.admin_broker_id === u.id || myPartnerIds.has(i.owner_account_id)
+        );
+        if (partnerId !== "ALL") list = list.filter((i) => i.owner_account_id === partnerId);
+        if (exhId !== "ALL") list = list.filter((i) => i.exhibition_id === exhId);
+        if (dateVal) list = list.filter((i) => i.date_iso === dateVal);
+        if (q) {
+          list = list.filter((inv) => {
+            const own = getAccountById(inv.owner_account_id);
+            return `${inv.seq_number} ${inv.client_name} ${inv.client_phone} ${own?.name || ""} ${own?.code || ""}`
+              .toLowerCase()
+              .includes(q);
+          });
+        }
+
+        list = sortInvitationsSmart(list, exhId !== "ALL");
+        document.getElementById("abClientsCountBadge").textContent = list.length;
+
+        const tbody = document.getElementById("abClientsTbody");
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد عملاء مطابقين للبحث.</td></tr>`;
           return;
         }
 
-        tbody.innerHTML = myPartners
-          .map((p) => {
-            const pInvs = state.invitations.filter((i) => i.owner_account_id === p.id);
-            const byExh = state.exhibitions
-              .map((ex) => {
-                const c = pInvs.filter((i) => i.exhibition_id === ex.id).length;
-                return c > 0
-                  ? `<span class="badge badge-mint" style="margin:2px;">${escapeHtml(ex.name)}: ${c}</span>`
-                  : "";
-              })
-              .filter(Boolean)
-              .join("");
-            const link = buildShareLink(p);
+        tbody.innerHTML = list
+          .map((inv) => {
+            const exhName = state.exhibitions.find((e) => e.id === inv.exhibition_id)?.name || "-";
+            const own = getAccountById(inv.owner_account_id);
             return `
             <tr>
-              <td><strong>${escapeHtml(p.name)}</strong><br><span class="badge badge-gold">${p.code}</span></td>
-              <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(p.password)}</td>
-              <td>${byExh || '<span style="color:var(--text-muted);">0 دعوات</span>'}</td>
-              <td><button type="button" class="btn btn-outline" style="padding:5px 10px; font-size:0.75rem;" onclick="copyText('${link}')">📋 نسخ الرابط</button></td>
+              <td><strong style="color:var(--primary-bright);">${formatSeqDisplay(inv.seq_number)}</strong></td>
+              <td>${escapeHtml(exhName)}</td>
+              <td style="font-weight:800;">${escapeHtml(inv.client_name)}</td>
+              <td dir="ltr" style="text-align:right;">${escapeHtml(inv.client_phone)}</td>
+              <td><span class="badge badge-gold">${escapeHtml(own?.name || "-")} (${escapeHtml(own?.code || "-")})</span></td>
+              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${formatInvDateTime(inv)}</td>
             </tr>`;
           })
           .join("");
@@ -4085,7 +4338,7 @@
         const ownId = document.getElementById("logOwnerFilter")?.value || "ALL";
         const dateVal = (document.getElementById("logDateFilter")?.value || "").trim();
 
-        return state.invitations.filter((inv) => {
+        const filtered = state.invitations.filter((inv) => {
           if (exhId !== "ALL" && inv.exhibition_id !== exhId) return false;
           if (ownId !== "ALL" && inv.owner_account_id !== ownId && inv.admin_broker_id !== ownId) return false;
           if (dateVal && inv.date_iso !== dateVal) return false;
@@ -4096,6 +4349,8 @@
           }
           return true;
         });
+
+        return sortInvitationsSmart(filtered, exhId !== "ALL");
       }
 
       function renderClientLogsTable() {
@@ -4135,7 +4390,7 @@
                 <span class="badge badge-mint">${escapeHtml(own?.name || "-")}</span>
                 <span class="badge badge-gold">${buildRefText(own, adm)}</span>
               </td>
-              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv.date_iso}</td>
+              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${formatInvDateTime(inv)}</td>
               <td>
                 <button type="button" class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="downloadOldInvitation('${inv.id}')">⬇️</button>
                 <button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteInvitationById('${inv.id}')">🗑️</button>
@@ -4184,7 +4439,7 @@
                 <td dir="ltr">${escapeHtml(inv.client_phone)}</td>
                 <td>${escapeHtml(own?.name || "-")}</td>
                 <td>${buildRefText(own, adm)}</td>
-                <td>${inv.date_iso}</td>
+                <td dir="ltr">${formatInvDateTime(inv)}</td>
               </tr>`;
             })
             .join("");
@@ -4196,9 +4451,9 @@
             </div>
             <table class="pdf-table">
               <thead><tr>
-                <th style="width:5%;">م</th><th style="width:10%;">رقم الدعوة</th><th style="width:14%;">المعرض</th>
-                <th style="width:24%;">اسم العميل</th><th style="width:14%;">التليفون</th>
-                <th style="width:14%;">المسوق</th><th style="width:10%;">REF</th><th style="width:9%;">التاريخ</th>
+                <th style="width:4%;">م</th><th style="width:9%;">رقم الدعوة</th><th style="width:13%;">المعرض</th>
+                <th style="width:22%;">اسم العميل</th><th style="width:13%;">التليفون</th>
+                <th style="width:13%;">المسوق</th><th style="width:11%;">REF</th><th style="width:15%;">التاريخ والوقت</th>
               </tr></thead>
               <tbody>${rows}</tbody>
             </table>
@@ -4224,7 +4479,7 @@
           globalReportMode === "DATE"
             ? state.invitations.filter((i) => i.date_iso === globalReportDate)
             : state.invitations;
-        buildAndOpenPDF(list, "التقرير الشامل لكل المعارض");
+        buildAndOpenPDF(sortInvitationsSmart(list, false), "التقرير الشامل لكل المعارض");
       }
 
       async function saveDeveloperSignupPassword() {
@@ -4436,7 +4691,7 @@
         const exh = getActiveExhibition();
         if (!file || !exh) return;
         try {
-          setSyncBadge("syncing", "⏳ رفع القالب...");
+          setSyncBadge("syncing", "⏳ Uploading...");
           const url = await uploadImageToStorage(file, "exhibitions");
           const { error } = await sb
             .from("exhibitions")
