@@ -2797,7 +2797,7 @@
                   </div>
                 </div>
                 <div class="kpi-card">
-                  <div class="label">إجمالي الدعوات المحملة</div>
+                  <div class="label">الدعوات (المحمّل / السيرفر)</div>
                   <div class="val" id="devCountInv" style="color: #34d399">
                     0
                   </div>
@@ -2845,7 +2845,7 @@
                       margin-bottom: 10px;
                     "
                   >
-                    يتم تصدير جميع المعارض والحسابات والدعوات والإعدادات مباشرة من الذاكرة بدون أي استعلام إضافي على Supabase.
+                    يتم تصدير جميع المعارض والحسابات والدعوات (منظّفة بدون حقول الكاش المؤقتة) والإعدادات مباشرة من الذاكرة بدون أي استعلام إضافي على Supabase.
                   </p>
                   <button
                     type="button"
@@ -2867,7 +2867,7 @@
                       margin-bottom: 10px;
                     "
                   >
-                    ارفع ملف نسخة جديدة (<code>Balmetr_Backup_*.json</code>) أو قديمة (<code>system23_11.json</code>) ليتم دمج الداتا الناقصة بدون تكرار.
+                    ارفع ملف نسخة جديدة (<code>Balmetr_Backup_*.json</code>) أو قديمة (<code>system23_11.json</code>) ليتم دمج الداتا الناقصة بدون تكرار مع تقرير تفصيلي كامل.
                   </p>
                   <input
                     type="file"
@@ -3283,6 +3283,7 @@
         accounts: [],
         invitations: [],
         invitationsScope: "NONE", // NONE | USER | ADMIN_BROKER | ALL
+        serverTotalInvitations: 0,
         activeExhibitionId: null,
         developerSignupPass: "",
         designDimensions: "1080 × 1350 px",
@@ -3408,6 +3409,7 @@
           state.accounts = accRes.data || [];
           state.invitations = [];
           state.invitationsScope = "NONE";
+          state.serverTotalInvitations = 0;
 
           (setRes.data || []).forEach((row) => {
             if (row.key === "design_dimensions") state.designDimensions = row.value;
@@ -3451,6 +3453,7 @@
                 .from("invitations")
                 .select("*", { count: "exact" })
                 .order("created_at", { ascending: false })
+                .order("id", { ascending: false })
                 .range(0, 999),
             ]);
             if (exhRes.error) throw exhRes.error;
@@ -3461,6 +3464,7 @@
             state.accounts = accRes.data || [];
             const firstBatch = firstInvRes.data || [];
             const totalCount = firstInvRes.count || firstBatch.length;
+            state.serverTotalInvitations = totalCount;
 
             (setRes.data || []).forEach((row) => {
               if (row.key === "developer_signup_pass") state.developerSignupPass = row.value;
@@ -3483,22 +3487,35 @@
             renderActiveViewOnly();
             if (showSplash) setSplashLoading(false);
 
-            // Fetch remaining pages IN PARALLEL in background
+            // Fetch remaining pages IN PARALLEL in background (with deterministic id order + retry)
             if (totalCount > 1000) {
-              const promises = [];
-              for (let from = 1000; from < totalCount; from += 1000) {
-                promises.push(
-                  sb
+              const fetchPage = async (from) => {
+                let res = await sb
+                  .from("invitations")
+                  .select("*")
+                  .order("created_at", { ascending: false })
+                  .order("id", { ascending: false })
+                  .range(from, from + 999);
+                if (res.error) {
+                  res = await sb
                     .from("invitations")
                     .select("*")
                     .order("created_at", { ascending: false })
-                    .range(from, from + 999)
-                );
+                    .order("id", { ascending: false })
+                    .range(from, from + 999);
+                }
+                return res;
+              };
+
+              const promises = [];
+              for (let from = 1000; from < totalCount; from += 1000) {
+                promises.push(fetchPage(from));
               }
               const results = await Promise.all(promises);
               const allRows = [...firstBatch];
               const seen = new Set(allRows.map((r) => r.id));
               results.forEach((res) => {
+                if (res.error) console.error("Page fetch error:", res.error);
                 (res.data || []).forEach((row) => {
                   if (!seen.has(row.id)) {
                     seen.add(row.id);
@@ -3544,6 +3561,7 @@
               .from("invitations")
               .select("*")
               .order("created_at", { ascending: false })
+              .order("id", { ascending: false })
               .limit(1000);
 
             if (partnerIds.length > 0) {
@@ -3558,6 +3576,7 @@
 
             state.invitations = invRes.data || [];
             state.invitationsScope = "ADMIN_BROKER";
+            state.serverTotalInvitations = state.invitations.length;
             rebuildDerivedCaches();
             ensureActiveExhibition();
             setSyncBadge(true);
@@ -3574,6 +3593,7 @@
               .select("*")
               .eq("owner_account_id", u.id)
               .order("created_at", { ascending: false })
+              .order("id", { ascending: false })
               .limit(1000),
             sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions", "design_guide_pdf_url"]),
           ]);
@@ -3583,6 +3603,7 @@
           state.exhibitions = exhRes.data || [];
           state.invitations = invRes.data || [];
           state.invitationsScope = "USER";
+          state.serverTotalInvitations = state.invitations.length;
           (setRes.data || []).forEach((row) => {
             if (row.key === "design_dimensions") state.designDimensions = row.value;
             if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
@@ -3611,7 +3632,7 @@
         }
       }
 
-      // ==================== SCOPED REALTIME (ZERO CONNECTIONS FOR AD VISITORS) ====================
+      // ==================== SCOPED REALTIME (ZERO CONNECTIONS FOR AD VISITORS + SANDBOX SAFE) ====================
       function scheduleActiveViewRender() {
         clearTimeout(renderDebounceTimer);
         renderDebounceTimer = setTimeout(() => {
@@ -3623,7 +3644,9 @@
 
       function setupScopedRealtime() {
         if (realtimeChannel) {
-          sb.removeChannel(realtimeChannel);
+          try {
+            sb.removeChannel(realtimeChannel);
+          } catch (e) {}
           realtimeChannel = null;
         }
 
@@ -3632,102 +3655,125 @@
           return;
         }
 
-        const ch = sb.channel("balmetr-scoped-sync");
+        // Skip Realtime WebSockets in sandboxed preview environments (e.g. Canvas) where WebSockets are blocked
+        const isRestrictedPreview =
+          typeof window.WebSocket === "undefined" ||
+          window.location.protocol === "blob:" ||
+          window.location.hostname.endsWith(".scf.usercontent.goog") ||
+          window.location.hostname.endsWith(".googleusercontent.com");
 
-        // Always sync lightweight metadata (exhibitions, accounts, settings) for Sales & Logged-in users
-        ch.on("postgres_changes", { event: "*", schema: "public", table: "exhibitions" }, (payload) => {
-          if (isImportingLegacy) return;
-          const { eventType, new: newRow, old: oldRow } = payload;
-          if (eventType === "INSERT" && newRow) {
-            if (!state.exhibitions.some((e) => e.id === newRow.id)) state.exhibitions.push(newRow);
-          } else if (eventType === "UPDATE" && newRow) {
-            const idx = state.exhibitions.findIndex((e) => e.id === newRow.id);
-            if (idx >= 0) state.exhibitions[idx] = newRow;
-            if (state.activeExhibitionId === newRow.id) loadActiveTemplateImage();
-          } else if (eventType === "DELETE" && oldRow) {
-            state.exhibitions = state.exhibitions.filter((e) => e.id !== oldRow.id);
-          }
-          scheduleActiveViewRender();
-        });
-
-        ch.on("postgres_changes", { event: "*", schema: "public", table: "accounts" }, (payload) => {
-          if (isImportingLegacy) return;
-          const { eventType, new: newRow, old: oldRow } = payload;
-          const isMgr = state.currentUser?.role === "manager";
-          const safeRow =
-            newRow && !isMgr && newRow.id !== state.currentUser?.id && newRow.parent_admin_id !== state.currentUser?.id
-              ? { ...newRow, password: undefined }
-              : newRow;
-
-          if (eventType === "INSERT" && safeRow) {
-            if (!state.accounts.some((a) => a.id === safeRow.id)) state.accounts.push(safeRow);
-          } else if (eventType === "UPDATE" && safeRow) {
-            const idx = state.accounts.findIndex((a) => a.id === safeRow.id);
-            if (idx >= 0) state.accounts[idx] = { ...state.accounts[idx], ...safeRow };
-            if (state.currentUser?.id === safeRow.id) {
-              state.currentUser = { ...state.currentUser, ...safeRow };
-            }
-          } else if (eventType === "DELETE" && oldRow) {
-            state.accounts = state.accounts.filter((a) => a.id !== oldRow.id);
-          }
-          scheduleActiveViewRender();
-        });
-
-        ch.on("postgres_changes", { event: "*", schema: "public", table: "system_settings" }, (payload) => {
-          if (isImportingLegacy) return;
-          const newRow = payload.new;
-          if (!newRow) return;
-          if (newRow.key === "design_dimensions") state.designDimensions = newRow.value;
-          if (newRow.key === "design_guide_pdf_url") state.designGuidePdfUrl = newRow.value || "";
-          if (newRow.key === "developer_signup_pass" && state.currentUser?.role === "manager") {
-            state.developerSignupPass = newRow.value;
-          }
-          if (newRow.key === "teams_list") {
-            try {
-              const parsed = JSON.parse(newRow.value);
-              if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
-            } catch (e) {}
-          }
-          scheduleActiveViewRender();
-        });
-
-        // ONLY listen to invitations stream when logged into a portal / manager dashboard
-        if (state.currentUser) {
-          ch.on("postgres_changes", { event: "*", schema: "public", table: "invitations" }, (payload) => {
-            if (isImportingLegacy) return;
-            const { eventType, new: newRow, old: oldRow } = payload;
-            const u = state.currentUser;
-            const isRelevant = (row) => {
-              if (!row) return false;
-              if (u.role === "manager") return true;
-              if (u.role === "admin_broker") {
-                if (row.admin_broker_id === u.id) return true;
-                const own = cache.accountsById.get(row.owner_account_id);
-                return own?.parent_admin_id === u.id;
-              }
-              return row.owner_account_id === u.id;
-            };
-
-            if (eventType === "INSERT" && isRelevant(newRow)) {
-              if (!state.invitations.some((i) => i.id === newRow.id)) {
-                state.invitations.unshift(newRow);
-              }
-              scheduleActiveViewRender();
-            } else if (eventType === "UPDATE" && isRelevant(newRow)) {
-              const idx = state.invitations.findIndex((i) => i.id === newRow.id);
-              if (idx >= 0) state.invitations[idx] = newRow;
-              scheduleActiveViewRender();
-            } else if (eventType === "DELETE" && oldRow) {
-              const prevLen = state.invitations.length;
-              state.invitations = state.invitations.filter((i) => i.id !== oldRow.id);
-              if (state.invitations.length !== prevLen) scheduleActiveViewRender();
-            }
-          });
+        if (isRestrictedPreview) {
+          return;
         }
 
-        realtimeChannel = ch.subscribe((status) => {
-          if (status === "SUBSCRIBED") setSyncBadge(true);
-        });
+        try {
+          const ch = sb.channel("balmetr-scoped-sync");
+
+          // Always sync lightweight metadata (exhibitions, accounts, settings) for Sales & Logged-in users
+          ch.on("postgres_changes", { event: "*", schema: "public", table: "exhibitions" }, (payload) => {
+            if (isImportingLegacy) return;
+            const { eventType, new: newRow, old: oldRow } = payload;
+            if (eventType === "INSERT" && newRow) {
+              if (!state.exhibitions.some((e) => e.id === newRow.id)) state.exhibitions.push(newRow);
+            } else if (eventType === "UPDATE" && newRow) {
+              const idx = state.exhibitions.findIndex((e) => e.id === newRow.id);
+              if (idx >= 0) state.exhibitions[idx] = newRow;
+              if (state.activeExhibitionId === newRow.id) loadActiveTemplateImage();
+            } else if (eventType === "DELETE" && oldRow) {
+              state.exhibitions = state.exhibitions.filter((e) => e.id !== oldRow.id);
+            }
+            scheduleActiveViewRender();
+          });
+
+          ch.on("postgres_changes", { event: "*", schema: "public", table: "accounts" }, (payload) => {
+            if (isImportingLegacy) return;
+            const { eventType, new: newRow, old: oldRow } = payload;
+            const isMgr = state.currentUser?.role === "manager";
+            const safeRow =
+              newRow && !isMgr && newRow.id !== state.currentUser?.id && newRow.parent_admin_id !== state.currentUser?.id
+                ? { ...newRow, password: undefined }
+                : newRow;
+
+            if (eventType === "INSERT" && safeRow) {
+              if (!state.accounts.some((a) => a.id === safeRow.id)) state.accounts.push(safeRow);
+            } else if (eventType === "UPDATE" && safeRow) {
+              const idx = state.accounts.findIndex((a) => a.id === safeRow.id);
+              if (idx >= 0) state.accounts[idx] = { ...state.accounts[idx], ...safeRow };
+              if (state.currentUser?.id === safeRow.id) {
+                state.currentUser = { ...state.currentUser, ...safeRow };
+              }
+            } else if (eventType === "DELETE" && oldRow) {
+              state.accounts = state.accounts.filter((a) => a.id !== oldRow.id);
+            }
+            scheduleActiveViewRender();
+          });
+
+          ch.on("postgres_changes", { event: "*", schema: "public", table: "system_settings" }, (payload) => {
+            if (isImportingLegacy) return;
+            const newRow = payload.new;
+            if (!newRow) return;
+            if (newRow.key === "design_dimensions") state.designDimensions = newRow.value;
+            if (newRow.key === "design_guide_pdf_url") state.designGuidePdfUrl = newRow.value || "";
+            if (newRow.key === "developer_signup_pass" && state.currentUser?.role === "manager") {
+              state.developerSignupPass = newRow.value;
+            }
+            if (newRow.key === "teams_list") {
+              try {
+                const parsed = JSON.parse(newRow.value);
+                if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
+              } catch (e) {}
+            }
+            scheduleActiveViewRender();
+          });
+
+          // ONLY listen to invitations stream when logged into a portal / manager dashboard
+          if (state.currentUser) {
+            ch.on("postgres_changes", { event: "*", schema: "public", table: "invitations" }, (payload) => {
+              if (isImportingLegacy) return;
+              const { eventType, new: newRow, old: oldRow } = payload;
+              const u = state.currentUser;
+              const isRelevant = (row) => {
+                if (!row) return false;
+                if (u.role === "manager") return true;
+                if (u.role === "admin_broker") {
+                  if (row.admin_broker_id === u.id) return true;
+                  const own = cache.accountsById.get(row.owner_account_id);
+                  return own?.parent_admin_id === u.id;
+                }
+                return row.owner_account_id === u.id;
+              };
+
+              if (eventType === "INSERT" && isRelevant(newRow)) {
+                if (!state.invitations.some((i) => i.id === newRow.id)) {
+                  state.invitations.unshift(newRow);
+                  if (state.invitationsScope === "ALL") state.serverTotalInvitations++;
+                }
+                scheduleActiveViewRender();
+              } else if (eventType === "UPDATE" && isRelevant(newRow)) {
+                const idx = state.invitations.findIndex((i) => i.id === newRow.id);
+                if (idx >= 0) state.invitations[idx] = newRow;
+                scheduleActiveViewRender();
+              } else if (eventType === "DELETE" && oldRow) {
+                const prevLen = state.invitations.length;
+                state.invitations = state.invitations.filter((i) => i.id !== oldRow.id);
+                const removed = prevLen - state.invitations.length;
+                if (removed > 0) {
+                  if (state.invitationsScope === "ALL") {
+                    state.serverTotalInvitations = Math.max(0, state.serverTotalInvitations - removed);
+                  }
+                  scheduleActiveViewRender();
+                }
+              }
+            });
+          }
+
+          realtimeChannel = ch.subscribe((status) => {
+            if (status === "SUBSCRIBED") setSyncBadge(true);
+          });
+        } catch (err) {
+          console.warn("Realtime WebSocket unavailable, continuing in HTTP mode:", err);
+          realtimeChannel = null;
+        }
       }
 
       // ==================== SINGLE-PASS CACHE & CLEAN TIMESTAMPS ====================
@@ -4265,6 +4311,7 @@
             devPanelUnlocked = false;
             state.invitations = [];
             state.invitationsScope = "NONE";
+            state.serverTotalInvitations = 0;
             state.developerSignupPass = "";
             // Strip passwords from memory on logout
             state.accounts = state.accounts.map((a) => ({ ...a, password: undefined }));
@@ -4810,6 +4857,7 @@
             ) {
               if (!state.invitations.some((i) => i.id === inv.id)) {
                 state.invitations.unshift(inv);
+                if (state.invitationsScope === "ALL") state.serverTotalInvitations++;
               }
               rebuildDerivedCaches();
             }
@@ -5257,7 +5305,12 @@
         if (!confirm("هل أنت متأكد من مسح هذه الدعوة؟")) return;
         const { error } = await sb.from("invitations").delete().eq("id", invId);
         if (error) return alert("❌ تعذر المسح!");
+        const prevLen = state.invitations.length;
         state.invitations = state.invitations.filter((i) => i.id !== invId);
+        const removed = prevLen - state.invitations.length;
+        if (removed > 0 && state.invitationsScope === "ALL") {
+          state.serverTotalInvitations = Math.max(0, state.serverTotalInvitations - removed);
+        }
         rebuildDerivedCaches();
         renderActiveViewOnly();
       }
@@ -5817,7 +5870,6 @@
                   const actC = activeExh
                     ? cache.ownerExhCount.get(`${d.id}|${activeExh.id}`) || 0
                     : 0;
-                  const link = buildShareLink(d);
                   return `
                   <tr>
                     <td><span class="badge badge-gold">${escapeHtml(d.code)}</span></td>
@@ -6354,8 +6406,13 @@
         if (!confirm("حذف المعرض سيحذف جميع دعواته! هل أنت متأكد؟")) return;
         const { error } = await sb.from("exhibitions").delete().eq("id", exhId);
         if (error) return alert("❌ تعذر الحذف!");
+        const prevLen = state.invitations.length;
         state.exhibitions = state.exhibitions.filter((e) => e.id !== exhId);
         state.invitations = state.invitations.filter((i) => i.exhibition_id !== exhId);
+        const removed = prevLen - state.invitations.length;
+        if (removed > 0 && state.invitationsScope === "ALL") {
+          state.serverTotalInvitations = Math.max(0, state.serverTotalInvitations - removed);
+        }
         rebuildDerivedCaches();
         ensureActiveExhibition();
         renderActiveViewOnly();
@@ -6589,7 +6646,13 @@
         const invCnt = document.getElementById("devCountInv");
         if (exhCnt) exhCnt.textContent = state.exhibitions.length;
         if (accCnt) accCnt.textContent = state.accounts.length;
-        if (invCnt) invCnt.textContent = state.invitations.length;
+        if (invCnt) {
+          const srv = state.serverTotalInvitations || state.invitations.length;
+          invCnt.innerHTML =
+            state.invitations.length === srv
+              ? `${state.invitations.length} <span style="font-size:0.74rem; color:#94a3b8;">/ ${srv} سيرفر</span>`
+              : `<span style="color:#fcd34d;">${state.invitations.length}</span> <span style="font-size:0.74rem; color:#fda4af;">/ ${srv} سيرفر</span>`;
+        }
 
         const devPassInp = document.getElementById("mgrDevSignupPassInput");
         if (devPassInp) devPassInp.value = state.developerSignupPass;
@@ -6687,7 +6750,7 @@
         alert("✅ تم إزالة رابط دليل التصميم.");
       }
 
-      // ---- Full JSON Backup (Zero Server Load) ----
+      // ---- Full JSON Backup (Zero Server Load + Clean without temporary '_' keys) ----
       function downloadFullBackupJSON() {
         const payload = {
           format: "balmetr_v2_backup",
@@ -6700,7 +6763,13 @@
           },
           exhibitions: state.exhibitions,
           accounts: state.accounts,
-          invitations: state.invitations,
+          invitations: state.invitations.map((inv) => {
+            const clean = {};
+            Object.keys(inv).forEach((k) => {
+              if (!k.startsWith("_")) clean[k] = inv[k];
+            });
+            return clean;
+          }),
         };
         const jsonStr = JSON.stringify(payload, null, 2);
         const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8;" });
@@ -6968,7 +7037,7 @@
             // 4. Merge missing invitations
             const existingSigs = new Set(
               state.invitations.map(
-                (i) => `${i.exhibition_id}|${i.seq_number}|${i._normPhone}`
+                (i) => `${i.exhibition_id}|${i.seq_number}|${i._normPhone || normalizePhone(i.client_phone)}`
               )
             );
             const toInsert = [];
@@ -7018,8 +7087,8 @@
             isImportingLegacy = false;
             event.target.value = "";
             await loadScopedDataForLoggedInUser(false, false);
-            progress.textContent = `✅ اكتمل دمج النسخة الجديدة! تمت إضافة ${insertedCount} دعوة — الإجمالي الآن: ${state.invitations.length} دعوة.`;
-            alert(`✅ تم الدمج بنجاح! الإجمالي الآن: ${state.invitations.length} دعوة.`);
+            progress.textContent = `✅ اكتمل دمج النسخة الجديدة! تمت إضافة ${insertedCount} دعوة — الإجمالي الآن: ${state.invitations.length} / ${state.serverTotalInvitations} دعوة.`;
+            alert(`✅ تم الدمج بنجاح! الإجمالي الآن: ${state.invitations.length} / ${state.serverTotalInvitations} دعوة.`);
             return;
           }
 
@@ -7096,7 +7165,7 @@
 
           const existingSigs = new Set(
             state.invitations.map(
-              (i) => `${i.exhibition_id}|${i.seq_number}|${i._normPhone}`
+              (i) => `${i.exhibition_id}|${i.seq_number}|${i._normPhone || normalizePhone(i.client_phone)}`
             )
           );
 
@@ -7104,16 +7173,34 @@
             ? src.invitations
             : Object.values(src.invitations || {});
           const toInsert = [];
+          const fileSigs = new Set();
+
+          let skippedNoPhone = 0;
+          let skippedAlreadyOnServer = 0;
+          let skippedDupInsideFile = 0;
 
           for (const oi of oldInvs) {
-            if (!oi || !oi.clientPhone) continue;
+            if (!oi) continue;
+            const rawPhone = String(oi.clientPhone || oi.client_phone || "").trim();
+            if (!rawPhone) {
+              skippedNoPhone++;
+              continue;
+            }
             const targetExhId = exhIdMap[oi.exhibitionId] || state.exhibitions[0]?.id;
             if (!targetExhId) continue;
-            const normP = normalizePhone(oi.clientPhone);
+            const normP = normalizePhone(rawPhone);
             const seq = Number(oi.seqNumber) || 131;
             const sig = `${targetExhId}|${seq}|${normP}`;
-            if (existingSigs.has(sig)) continue;
-            existingSigs.add(sig);
+
+            if (existingSigs.has(sig)) {
+              skippedAlreadyOnServer++;
+              continue;
+            }
+            if (fileSigs.has(sig)) {
+              skippedDupInsideFile++;
+              continue;
+            }
+            fileSigs.add(sig);
 
             const sCode = String(oi.salesCode || "").trim().toUpperCase();
             toInsert.push({
@@ -7127,8 +7214,11 @@
             });
           }
 
-          progress.textContent = `⏳ جاري استكمال رفع ${toInsert.length} دعوة ناقصة...`;
+          progress.textContent = `⏳ جاري استكمال رفع ${toInsert.length} دعوة ناقصة (من أصل ${oldInvs.length} في الملف)...`;
           let insertedCount = 0;
+          let failedCount = 0;
+          let sampleError = "";
+
           for (let i = 0; i < toInsert.length; i += 100) {
             const batch = toInsert.slice(i, i + 100);
             const { error } = await sb.from("invitations").insert(batch);
@@ -7138,6 +7228,10 @@
               for (const row of batch) {
                 const { error: rowErr } = await sb.from("invitations").insert(row);
                 if (!rowErr) insertedCount++;
+                else {
+                  failedCount++;
+                  if (!sampleError) sampleError = rowErr.message || String(rowErr.code || "");
+                }
               }
             }
             progress.textContent = `⏳ تم رفع ${insertedCount} من ${toInsert.length}...`;
@@ -7146,8 +7240,20 @@
           isImportingLegacy = false;
           event.target.value = "";
           await loadScopedDataForLoggedInUser(false, false);
-          progress.textContent = `✅ اكتمل الدمج! تمت إضافة ${insertedCount} دعوة — الإجمالي الآن: ${state.invitations.length} دعوة.`;
-          alert(`✅ تم الدمج بنجاح! الإجمالي الآن: ${state.invitations.length} دعوة.`);
+
+          const reportMsg =
+            `📊 تقرير الدمج:\n` +
+            `• إجمالي الصفوف في الملف: ${oldInvs.length}\n` +
+            `• تمت إضافتها الآن: ${insertedCount}\n` +
+            `• موجودة بالفعل على السيرفر: ${skippedAlreadyOnServer}\n` +
+            `• متكررة داخل نفس الملف: ${skippedDupInsideFile}\n` +
+            `• بدون رقم تليفون: ${skippedNoPhone}\n` +
+            `• فشل رفعها: ${failedCount}` +
+            (sampleError ? `\n• سبب الفشل: ${sampleError}` : "") +
+            `\n\n✅ الإجمالي الآن على السيرفر: ${state.invitations.length} / ${state.serverTotalInvitations}`;
+
+          progress.innerHTML = escapeHtml(reportMsg).replace(/\n/g, "<br>");
+          alert(reportMsg);
         } catch (err) {
           console.error(err);
           isImportingLegacy = false;
