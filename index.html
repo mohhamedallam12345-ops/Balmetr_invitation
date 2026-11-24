@@ -659,6 +659,44 @@
         margin-bottom: 10px;
       }
 
+      .exclusion-panel {
+        background: rgba(244, 63, 94, 0.07);
+        border: 1px dashed rgba(244, 63, 94, 0.4);
+        border-radius: 12px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+      }
+
+      .exclusion-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(244, 63, 94, 0.16);
+        border: 1px solid rgba(244, 63, 94, 0.42);
+        color: #fda4af;
+        font-size: 0.76rem;
+        font-weight: 800;
+      }
+
+      .exclusion-chip button {
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 900;
+        font-size: 0.82rem;
+        padding: 0 2px;
+      }
+
+      .order-btn {
+        padding: 4px 8px;
+        font-size: 0.82rem;
+        border-radius: 8px;
+        min-width: 34px;
+      }
+
       @media (max-width: 900px) {
         .dev-tools-grid {
           grid-template-columns: minmax(0, 1fr);
@@ -1407,10 +1445,18 @@
             class="control-section-box"
             style="display: none"
           >
-            <div class="control-section-title">
-              🖼️ تصميم الدعوة الخاص بشركتك (يُضغط أوتوماتيك والأماكن ثابتة)
+            <div class="control-section-title" id="portalTemplateTitle">
+              🖼️ تصميم الدعوة الخاص بك لكل معرض (يُضغط أوتوماتيك والأماكن ثابتة)
             </div>
             <div class="dim-notice-box" id="portalDevDimNotice"></div>
+            <div class="form-group" style="margin-bottom: 10px">
+              <label class="form-label">1️⃣ اختر المعرض أولاً:</label>
+              <select
+                id="portalTemplateExhSelect"
+                class="form-control"
+                onchange="updatePortalTemplateStatusUI()"
+              ></select>
+            </div>
             <div
               style="
                 display: flex;
@@ -1425,16 +1471,82 @@
                 accept="image/*"
                 class="form-control"
                 style="flex: 1; min-width: 220px"
-                onchange="handleDeveloperPortalTemplateUpload(event)"
+                onchange="handlePortalTemplateUpload(event)"
               />
-              <span
-                id="portalDevTplStatus"
-                style="
-                  font-size: 0.8rem;
-                  font-weight: 800;
-                  color: var(--primary-bright);
-                "
-              ></span>
+              <button
+                type="button"
+                id="portalRemoveExhTplBtn"
+                class="btn btn-danger"
+                style="display: none; padding: 8px 12px; font-size: 0.78rem"
+                onclick="removePortalExhTemplate()"
+              >
+                🗑️ العودة للقالب الأساسي
+              </button>
+            </div>
+            <div
+              id="portalDevTplStatus"
+              style="
+                font-size: 0.8rem;
+                font-weight: 800;
+                color: var(--primary-bright);
+                margin-top: 8px;
+              "
+            ></div>
+            <div
+              id="portalUploadedExhBadges"
+              class="chips-grid"
+              style="margin-top: 8px"
+            ></div>
+          </div>
+
+          <!-- Developer Sales Team Management (Shown ONLY for Developer role) -->
+          <div
+            id="portalDevSalesWrap"
+            class="control-section-box"
+            style="display: none"
+          >
+            <div class="control-section-title">
+              <span>🧑‍💼 سيلز الشركة المطورة (كود تلقائي مربوط بشركتك)</span>
+              <span id="portalDevSalesCountBadge" class="badge badge-mint">0 سيلز</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-bottom: 12px;
+              "
+            >
+              <input
+                type="text"
+                id="devNewSalesNameInput"
+                class="form-control"
+                style="flex: 1; min-width: 200px"
+                placeholder="اكتب اسم السيلز (مثال: أحمد علي)..."
+                onkeydown="if (event.key === 'Enter') addDeveloperSalesRep();"
+              />
+              <button
+                type="button"
+                id="devAddSalesBtn"
+                class="btn btn-primary"
+                onclick="addDeveloperSalesRep()"
+              >
+                ➕ إضافة سيلز
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table style="min-width: 440px">
+                <thead>
+                  <tr>
+                    <th>الكود</th>
+                    <th>اسم السيلز</th>
+                    <th>المعرض النشط</th>
+                    <th>إجمالي الدعوات</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="portalDevSalesTbody"></tbody>
+              </table>
             </div>
           </div>
 
@@ -1596,8 +1708,13 @@
             </div>
             <div class="form-group">
               <label class="form-label"
-                >صورة تصميم الدعوة له (تُضغط أوتوماتيك — اختياري):</label
+                >المعرض الخاص بالتصميم (اختر المعرض ثم ارفع التصميم — اختياري):</label
               >
+              <select
+                id="abNewDesignExhSelect"
+                class="form-control"
+                style="margin-bottom: 7px"
+              ></select>
               <input
                 type="file"
                 id="abNewDesignFile"
@@ -1691,7 +1808,7 @@
                       <th>الاسم والكود</th>
                       <th>الباسورد</th>
                       <th>الدعوات حسب المعرض</th>
-                      <th>الرابط</th>
+                      <th>التصاميم والرابط</th>
                     </tr>
                   </thead>
                   <tbody id="abPartnersTbody"></tbody>
@@ -1831,9 +1948,14 @@
 
           <div class="form-group">
             <label class="form-label"
-              >5. صورة تصميم الدعوة الخاصة بشركتكم (اختياري — تُضغط أوتوماتيك):</label
+              >5. صورة تصميم الدعوة الخاصة بشركتكم لمعرض محدد (اختياري — تُضغط أوتوماتيك):</label
             >
             <div class="dim-notice-box" id="devSignupDimNotice"></div>
+            <select
+              id="devRegTemplateExhSelect"
+              class="form-control"
+              style="margin-bottom: 8px"
+            ></select>
             <input
               type="file"
               id="devRegTemplateFile"
@@ -1863,6 +1985,166 @@
           >
             ✅ Create & إصدار كود ورابط الشركة
           </button>
+        </div>
+      </section>
+
+      <!-- ==================== 4B. TEAM LEADER DASHBOARD ==================== -->
+      <section id="teamLeaderView" style="display: none">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="tlHeaderTitle">🎖️ لوحة التيم ليدر</div>
+            <button
+              type="button"
+              class="btn btn-outline"
+              onclick="returnToWorkspace()"
+            >
+              🎫 شاشة إصدار الدعوات
+            </button>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="label">اسم التيم</div>
+              <div class="val" id="tlKpiTeamName" style="font-size: 1.15rem">-</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">دعوات التيم (المعرض النشط)</div>
+              <div class="val" id="tlKpiActive">0</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">إجمالي دعوات التيم (الكل)</div>
+              <div class="val" id="tlKpiAll" style="color: #fcd34d">0</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">عدد السيلز في التيم</div>
+              <div class="val" id="tlKpiSalesCount" style="color: #34d399">0</div>
+            </div>
+          </div>
+
+          <div class="control-section-box">
+            <div class="control-section-title">
+              <span>📊 سيلز التيم وترتيبهم يدوياً (من الأشطر للأضعف)</span>
+              <span
+                id="tlOrderSaveStatus"
+                style="font-size: 0.76rem; color: var(--primary-bright)"
+              ></span>
+            </div>
+            <div class="table-responsive">
+              <table style="min-width: 500px">
+                <thead>
+                  <tr>
+                    <th>الترتيب</th>
+                    <th>الكود</th>
+                    <th>اسم السيلز</th>
+                    <th>المعرض النشط</th>
+                    <th>إجمالي كل المعارض</th>
+                    <th>ترتيب يدوي (⬆️ / ⬇️)</th>
+                  </tr>
+                </thead>
+                <tbody id="tlSalesOrderTbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Team Leader Password Settings -->
+          <div class="control-section-box">
+            <div class="control-section-title">🔐 إعدادات كلمة السر الخاصة بك</div>
+            <div class="pass-settings-row">
+              <div>
+                <label class="form-label">كلمة السر الحالية:</label>
+                <div class="pass-input-group">
+                  <input
+                    type="password"
+                    id="tlCurrPassDisplay"
+                    class="form-control"
+                    dir="ltr"
+                    readonly
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    onclick="togglePasswordReveal('tlCurrPassDisplay', this)"
+                  >
+                    👁️
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="form-label">تغيير لكلمة سر جديدة:</label>
+                <div class="pass-input-group">
+                  <input
+                    type="text"
+                    id="tlNewPassInput"
+                    class="form-control"
+                    dir="ltr"
+                    placeholder="اكتب الباسورد الجديد..."
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-gold"
+                    onclick="changeOwnPasswordFromInput('tlNewPassInput', 'tlCurrPassDisplay')"
+                  >
+                    💾 حفظ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              🔍 بحث وفلترة عملاء التيم فقط (<span id="tlClientsCountBadge">0</span>)
+            </div>
+          </div>
+          <div class="filter-bar-grid">
+            <input
+              type="text"
+              id="tlClientSearchInput"
+              class="form-control"
+              placeholder="🔍 بحث باسم العميل أو التليفون أو رقم الدعوة..."
+              oninput="renderTeamLeaderClientsTable()"
+            />
+            <select
+              id="tlClientSalesFilter"
+              class="form-control"
+              onchange="renderTeamLeaderClientsTable()"
+            ></select>
+            <select
+              id="tlClientExhFilter"
+              class="form-control"
+              onchange="renderTeamLeaderClientsTable()"
+            ></select>
+            <input
+              type="date"
+              id="tlClientDateFilter"
+              class="form-control"
+              onchange="renderTeamLeaderClientsTable()"
+            />
+            <button
+              type="button"
+              class="btn btn-outline"
+              onclick="clearTeamLeaderClientFilters()"
+            >
+              مسح الفلاتر
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>رقم الدعوة</th>
+                  <th>المعرض</th>
+                  <th>اسم العميل</th>
+                  <th>التليفون</th>
+                  <th>السيلز</th>
+                  <th>التاريخ والوقت</th>
+                </tr>
+              </thead>
+              <tbody id="tlClientsTbody"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -2100,46 +2382,18 @@
           <div id="achSales" class="sub-page active">
             <div class="card">
               <div class="card-header">
-                <div class="card-title">💼 إنجاز فريق السيلز (مرتب بالكود)</div>
+                <div class="card-title">💼 إنجاز السيلز (مقسم حسب التيمات وترتيب التيم ليدر)</div>
               </div>
-              <div class="table-responsive">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>الكود</th>
-                      <th>الاسم</th>
-                      <th>التيم</th>
-                      <th>دعوات المعرض النشط</th>
-                      <th>إجمالي كل المعارض</th>
-                      <th>ظهوره في قعدة المعرض</th>
-                    </tr>
-                  </thead>
-                  <tbody id="mgrSalesAchTbody"></tbody>
-                </table>
-              </div>
+              <div id="mgrSalesAchContainer"></div>
             </div>
           </div>
 
           <div id="achDevelopers" class="sub-page">
             <div class="card">
               <div class="card-header">
-                <div class="card-title">🏗️ الشركات المطورة المسجلة</div>
+                <div class="card-title">🏗️ إنجاز الديفولبر وسيلز كل شركة (مرتبة بالأعلى إنجازاً)</div>
               </div>
-              <div class="table-responsive">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>الكود</th>
-                      <th>الشركة</th>
-                      <th>النشاط / المناطق / المقدم</th>
-                      <th>الدعوات (النشط / الكل)</th>
-                      <th>باسورد المطور</th>
-                      <th>الرابط</th>
-                    </tr>
-                  </thead>
-                  <tbody id="mgrDevsAchTbody"></tbody>
-                </table>
-              </div>
+              <div id="mgrDevsAchContainer"></div>
             </div>
           </div>
 
@@ -2211,7 +2465,74 @@
                 class="form-control"
                 onchange="currentLogsPage = 1; renderClientLogsTable()"
               />
+              <button
+                type="button"
+                id="toggleExclusionBoxBtn"
+                class="btn btn-danger"
+                onclick="toggleLogExclusionPanel()"
+              >
+                🚫 استثناء من التقرير
+              </button>
             </div>
+
+            <div
+              id="logExclusionPanel"
+              class="exclusion-panel"
+              style="display: none"
+            >
+              <div
+                style="
+                  font-size: 0.8rem;
+                  font-weight: 800;
+                  color: #fda4af;
+                  margin-bottom: 8px;
+                "
+              >
+                🚫 اختر أي شخص أو شركة أو تيم لاستبعاده فوراً من الجدول وملفات PDF و Excel وواتساب:
+              </div>
+              <div
+                style="
+                  display: flex;
+                  gap: 8px;
+                  flex-wrap: wrap;
+                  align-items: center;
+                "
+              >
+                <input
+                  type="text"
+                  id="logExclusionSearchInput"
+                  class="form-control"
+                  style="flex: 1; min-width: 160px"
+                  placeholder="🔍 بحث سريع في القائمة..."
+                  oninput="populateLogExclusionSelect()"
+                />
+                <select
+                  id="logExclusionSelect"
+                  class="form-control"
+                  style="flex: 1.4; min-width: 200px"
+                ></select>
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  onclick="addLogExclusion()"
+                >
+                  ➕ استثناء
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  onclick="clearLogExclusions()"
+                >
+                  مسح الكل
+                </button>
+              </div>
+            </div>
+
+            <div
+              id="activeExclusionsChips"
+              class="chips-grid"
+              style="display: none; margin-bottom: 12px"
+            ></div>
 
             <div class="table-responsive">
               <table>
@@ -2352,6 +2673,7 @@
               >
                 <select id="mgrAddRole" class="form-control">
                   <option value="sales">💼 سيلز عادي</option>
+                  <option value="team_leader">🎖️ تيم ليدر (team_leader)</option>
                   <option value="admin_broker">🤝 أدمن بروكر (Admin_Broker)</option>
                   <option value="broker">🏢 بروكر مباشر</option>
                   <option value="influencer">🌟 إنفلونسر مباشر</option>
@@ -2420,10 +2742,12 @@
                 >
                   <option value="ALL">الكل</option>
                   <option value="sales">السيلز</option>
+                  <option value="team_leader">التيم ليدر</option>
                   <option value="admin_broker">الأدمن بروكر</option>
                   <option value="broker">البروكر</option>
                   <option value="influencer">الإنفلونسر</option>
                   <option value="developer">الديفولبر</option>
+                  <option value="dev_sales">سيلز المطورين</option>
                   <option value="company">الشركة (BM)</option>
                   <option value="manager">المانجر</option>
                 </select>
@@ -3196,6 +3520,71 @@
       </div>
     </div>
 
+    <!-- Partner Per-Exhibition Template Modal (Admin Broker) -->
+    <div id="partnerTemplateModal" class="modal-overlay">
+      <div class="modal-box" style="max-width: 460px">
+        <h3
+          id="partnerTplModalTitle"
+          style="color: var(--primary-bright); margin-bottom: 10px"
+        >
+          🎨 تصاميم الشريك لكل معرض
+        </h3>
+        <input type="hidden" id="partnerTplAccountId" />
+        <div class="dim-notice-box" id="partnerTplDimNotice"></div>
+        <div class="form-group">
+          <label class="form-label">1️⃣ اختر المعرض:</label>
+          <select
+            id="partnerTplExhSelect"
+            class="form-control"
+            onchange="updatePartnerTemplateModalUI()"
+          ></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">2️⃣ ارفع تصميم هذا المعرض:</label>
+          <input
+            type="file"
+            id="partnerTplFileInput"
+            accept="image/*"
+            class="form-control"
+            onchange="handleAdminBrokerPartnerTemplateUpload(event)"
+          />
+        </div>
+        <div
+          id="partnerTplStatusText"
+          style="
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--primary-bright);
+            margin-bottom: 10px;
+          "
+        ></div>
+        <div
+          id="partnerTplBadges"
+          class="chips-grid"
+          style="margin-bottom: 12px"
+        ></div>
+        <div style="display: flex; gap: 8px">
+          <button
+            type="button"
+            id="partnerTplRemoveBtn"
+            class="btn btn-danger"
+            style="display: none; flex: 1"
+            onclick="removeAdminBrokerPartnerExhTemplate()"
+          >
+            🗑️ العودة للأساسي
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline"
+            style="flex: 1"
+            onclick="closeModal('partnerTemplateModal')"
+          >
+            إغلاق
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- PDF Print Container -->
     <div id="pdfPrintWrapper">
       <div class="pdf-preview-toolbar">
@@ -3282,13 +3671,14 @@
         exhibitions: [],
         accounts: [],
         invitations: [],
-        invitationsScope: "NONE", // NONE | USER | ADMIN_BROKER | ALL
+        invitationsScope: "NONE", // NONE | USER | TEAM_LEADER | ADMIN_BROKER | ALL
         serverTotalInvitations: 0,
         activeExhibitionId: null,
         developerSignupPass: "",
         designDimensions: "1080 × 1350 px",
         designGuidePdfUrl: "",
         teamsList: ["المعرض", "الجمعية", "الوديعة", "القاهرة"],
+        teamSalesOrder: {},
         currentUser: null,
         publicHostAccount: null,
         publicLockedExhId: null,
@@ -3296,9 +3686,18 @@
         devSignupTempPass: "",
       };
 
+      let logExclusions = [];
+
+      function getSavedSalesStorageKey() {
+        if (state.publicHostAccount?.role === "developer") {
+          return `balmetr_saved_dev_sales_${state.publicHostAccount.id}`;
+        }
+        return SAVED_SALES_KEY;
+      }
+
       function getSavedSalesId() {
         try {
-          return localStorage.getItem(SAVED_SALES_KEY) || "";
+          return localStorage.getItem(getSavedSalesStorageKey()) || "";
         } catch (e) {
           return "";
         }
@@ -3306,15 +3705,89 @@
 
       function setSavedSalesId(id) {
         try {
-          if (id) localStorage.setItem(SAVED_SALES_KEY, id);
-          else localStorage.removeItem(SAVED_SALES_KEY);
+          const k = getSavedSalesStorageKey();
+          if (id) localStorage.setItem(k, id);
+          else localStorage.removeItem(k);
         } catch (e) {}
       }
 
       function clearSavedSalesId() {
         try {
-          localStorage.removeItem(SAVED_SALES_KEY);
+          localStorage.removeItem(getSavedSalesStorageKey());
         } catch (e) {}
+      }
+
+      // ==================== PER-EXHIBITION CUSTOM TEMPLATE HELPERS ====================
+      function parseCustomTemplateMap(raw) {
+        const res = { legacyDefault: "", byExh: {} };
+        if (!raw || typeof raw !== "string") return res;
+        const trimmed = raw.trim();
+        if (!trimmed) return res;
+        if (trimmed.startsWith("{")) {
+          try {
+            const parsed = JSON.parse(trimmed);
+            if (parsed && typeof parsed === "object") {
+              if (parsed.by_exh && typeof parsed.by_exh === "object") {
+                Object.keys(parsed.by_exh).forEach((k) => {
+                  if (parsed.by_exh[k]) res.byExh[k] = String(parsed.by_exh[k]);
+                });
+                res.legacyDefault =
+                  typeof parsed.default === "string" ? parsed.default : "";
+              } else {
+                Object.keys(parsed).forEach((k) => {
+                  if (k === "default") res.legacyDefault = String(parsed[k] || "");
+                  else if (parsed[k]) res.byExh[k] = String(parsed[k]);
+                });
+              }
+              return res;
+            }
+          } catch (e) {}
+        }
+        res.legacyDefault = trimmed;
+        return res;
+      }
+
+      function serializeCustomTemplateMap(mapObj) {
+        const byExh = {};
+        Object.keys(mapObj.byExh || {}).forEach((k) => {
+          if (mapObj.byExh[k]) byExh[k] = mapObj.byExh[k];
+        });
+        const legacyDefault = (mapObj.legacyDefault || "").trim();
+        if (Object.keys(byExh).length === 0) return legacyDefault;
+        return JSON.stringify({ default: legacyDefault, by_exh: byExh });
+      }
+
+      function getAccountTemplateForExh(acc, exhId) {
+        if (!acc || !acc.custom_template_url) return "";
+        const parsed = parseCustomTemplateMap(acc.custom_template_url);
+        if (exhId && parsed.byExh[exhId]) return parsed.byExh[exhId];
+        if (parsed.legacyDefault) return parsed.legacyDefault;
+        return "";
+      }
+
+      function getVisibleExhibitionsPool() {
+        const vis = state.exhibitions.filter((e) => !e.hide_in_sales);
+        return vis.length > 0 ? vis : state.exhibitions;
+      }
+
+      function getOrderedTeamSales(teamName) {
+        const teamSales = state.accounts.filter(
+          (a) => a.role === "sales" && (a.team || "المعرض") === teamName
+        );
+        const savedOrder = Array.isArray(state.teamSalesOrder?.[teamName])
+          ? state.teamSalesOrder[teamName]
+          : [];
+        const orderIndex = new Map();
+        savedOrder.forEach((id, idx) => orderIndex.set(id, idx));
+
+        const ordered = [];
+        const unordered = [];
+        teamSales.forEach((s) => {
+          if (orderIndex.has(s.id)) ordered.push(s);
+          else unordered.push(s);
+        });
+        ordered.sort((a, b) => orderIndex.get(a.id) - orderIndex.get(b.id));
+        return [...ordered, ...sortAccountsByCode(unordered)];
       }
 
       let cache = {
@@ -3399,7 +3872,7 @@
           const [exhRes, accRes, setRes] = await Promise.all([
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
             sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions", "design_guide_pdf_url"]),
+            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url"]),
           ]);
 
           if (exhRes.error) throw exhRes.error;
@@ -3418,6 +3891,12 @@
               try {
                 const parsed = JSON.parse(row.value);
                 if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
+              } catch (e) {}
+            }
+            if (row.key === "team_sales_order") {
+              try {
+                const parsed = JSON.parse(row.value);
+                if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
               } catch (e) {}
             }
           });
@@ -3474,6 +3953,12 @@
                 try {
                   const parsed = JSON.parse(row.value);
                   if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
+                } catch (e) {}
+              }
+              if (row.key === "team_sales_order") {
+                try {
+                  const parsed = JSON.parse(row.value);
+                  if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
                 } catch (e) {}
               }
             });
@@ -3585,28 +4070,113 @@
             return;
           }
 
-          // Tier 2B: Sales / Broker / Influencer / Developer (ONLY their own invitations)
-          const [exhRes, invRes, setRes] = await Promise.all([
-            sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
-            sb
+          // Tier 2A-2: Team Leader (Team's sales accounts + ONLY their team's invitations)
+          if (u.role === "team_leader") {
+            const [exhRes, accRes, setRes] = await Promise.all([
+              sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
+              sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
+              sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url"]),
+            ]);
+            if (exhRes.error) throw exhRes.error;
+            if (accRes.error) throw accRes.error;
+
+            state.exhibitions = exhRes.data || [];
+            // Preserve own password while refreshing public accounts
+            const ownPass = u.password;
+            state.accounts = (accRes.data || []).map((a) =>
+              a.id === u.id ? { ...a, password: ownPass } : a
+            );
+            state.currentUser = state.accounts.find((a) => a.id === u.id) || u;
+
+            (setRes.data || []).forEach((row) => {
+              if (row.key === "design_dimensions") state.designDimensions = row.value;
+              if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
+              if (row.key === "teams_list") {
+                try {
+                  const parsed = JSON.parse(row.value);
+                  if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
+                } catch (e) {}
+              }
+              if (row.key === "team_sales_order") {
+                try {
+                  const parsed = JSON.parse(row.value);
+                  if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
+                } catch (e) {}
+              }
+            });
+
+            const myTeamName = state.currentUser.team || "المعرض";
+            const teamOwnerIds = [
+              u.id,
+              ...state.accounts
+                .filter((a) => a.role === "sales" && (a.team || "المعرض") === myTeamName)
+                .map((a) => a.id),
+            ];
+
+            const invRes = await sb
               .from("invitations")
               .select("*")
-              .eq("owner_account_id", u.id)
+              .in("owner_account_id", teamOwnerIds)
               .order("created_at", { ascending: false })
               .order("id", { ascending: false })
-              .limit(1000),
-            sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions", "design_guide_pdf_url"]),
+              .limit(2000);
+            if (invRes.error) throw invRes.error;
+
+            state.invitations = invRes.data || [];
+            state.invitationsScope = "TEAM_LEADER";
+            state.serverTotalInvitations = state.invitations.length;
+            rebuildDerivedCaches();
+            ensureActiveExhibition();
+            setSyncBadge(true);
+            renderActiveViewOnly();
+            if (showToast) alert("✅ تم التحديث بنجاح!");
+            return;
+          }
+
+          // Tier 2B: Sales / Broker / Influencer / Developer (Developer includes own + dev_sales invitations)
+          const [exhRes, accRes, setRes] = await Promise.all([
+            sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
+            sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
+            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url"]),
           ]);
           if (exhRes.error) throw exhRes.error;
-          if (invRes.error) throw invRes.error;
+          if (accRes.error) throw accRes.error;
 
           state.exhibitions = exhRes.data || [];
+          const ownPass = u.password;
+          state.accounts = (accRes.data || []).map((a) =>
+            a.id === u.id ? { ...a, password: ownPass } : a
+          );
+          state.currentUser = state.accounts.find((a) => a.id === u.id) || u;
+
+          const ownerIdsToFetch = [u.id];
+          if (u.role === "developer") {
+            state.accounts
+              .filter((a) => a.role === "dev_sales" && a.parent_admin_id === u.id)
+              .forEach((ds) => ownerIdsToFetch.push(ds.id));
+          }
+
+          const invRes = await sb
+            .from("invitations")
+            .select("*")
+            .in("owner_account_id", ownerIdsToFetch)
+            .order("created_at", { ascending: false })
+            .order("id", { ascending: false })
+            .limit(1500);
+          if (invRes.error) throw invRes.error;
+
           state.invitations = invRes.data || [];
           state.invitationsScope = "USER";
           state.serverTotalInvitations = state.invitations.length;
           (setRes.data || []).forEach((row) => {
             if (row.key === "design_dimensions") state.designDimensions = row.value;
             if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
+            if (row.key === "team_sales_order") {
+              try {
+                const parsed = JSON.parse(row.value);
+                if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
+              } catch (e) {}
+            }
           });
 
           rebuildDerivedCaches();
@@ -3723,6 +4293,12 @@
                 if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
               } catch (e) {}
             }
+            if (newRow.key === "team_sales_order") {
+              try {
+                const parsed = JSON.parse(newRow.value);
+                if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
+              } catch (e) {}
+            }
             scheduleActiveViewRender();
           });
 
@@ -3739,6 +4315,16 @@
                   if (row.admin_broker_id === u.id) return true;
                   const own = cache.accountsById.get(row.owner_account_id);
                   return own?.parent_admin_id === u.id;
+                }
+                if (u.role === "team_leader") {
+                  if (row.owner_account_id === u.id) return true;
+                  const own = cache.accountsById.get(row.owner_account_id);
+                  return own?.role === "sales" && (own.team || "المعرض") === (u.team || "المعرض");
+                }
+                if (u.role === "developer") {
+                  if (row.owner_account_id === u.id) return true;
+                  const own = cache.accountsById.get(row.owner_account_id);
+                  return own?.role === "dev_sales" && own?.parent_admin_id === u.id;
                 }
                 return row.owner_account_id === u.id;
               };
@@ -3940,7 +4526,7 @@
           }
         }
 
-        // Restore pinned sales rep on device when not in public host link mode
+        // Restore pinned sales rep on device (either B.almetr sales or Developer's dev_sales)
         if (!state.publicHostAccount && !selectedSalesId) {
           const savedId = getSavedSalesId();
           if (
@@ -3948,6 +4534,18 @@
             state.accounts.some((a) => a.id === savedId && a.role === "sales")
           ) {
             selectedSalesId = savedId;
+          }
+        } else if (state.publicHostAccount?.role === "developer") {
+          const devSales = state.accounts.filter(
+            (a) => a.role === "dev_sales" && a.parent_admin_id === state.publicHostAccount.id
+          );
+          if (devSales.length > 0) {
+            const savedId = getSavedSalesId();
+            if (savedId && devSales.some((a) => a.id === savedId)) {
+              selectedSalesId = savedId;
+            } else {
+              selectedSalesId = "";
+            }
           }
         }
       }
@@ -4156,6 +4754,7 @@
 
       function buildRefText(ownerAcc, adminAcc) {
         if (!ownerAcc) return "REF: BM";
+        if (ownerAcc.role === "dev_sales") return `REF: ${ownerAcc.code}`;
         if (adminAcc && adminAcc.code) return `REF: ${adminAcc.code}-${ownerAcc.code}`;
         return `REF: ${ownerAcc.code}`;
       }
@@ -4164,10 +4763,12 @@
         const map = {
           manager: "👑 مانجر",
           sales: "💼 سيلز",
+          team_leader: "🎖️ تيم ليدر",
           admin_broker: "🤝 أدمن بروكر",
           broker: "🏢 بروكر",
           influencer: "🌟 إنفلونسر",
           developer: "🏗️ ديفولبر",
+          dev_sales: "🧑‍💼 سيلز مطور",
           company: "📢 الشركة (BM)",
         };
         return map[role] || role;
@@ -4255,10 +4856,12 @@
       function generateNextCodeForRole(role) {
         const prefixMap = {
           sales: "S",
+          team_leader: "TL",
           admin_broker: "A",
           broker: "B",
           influencer: "I",
           developer: "D",
+          dev_sales: "DS",
         };
         const pfx = prefixMap[role] || "U";
         let maxNum = role === "developer" ? 100 : role === "sales" ? 10 : 0;
@@ -4296,11 +4899,29 @@
         return { ...DEFAULT_LAYOUT, ...(exh?.layout_config || {}) };
       }
 
-      function getActiveTemplateUrl() {
-        if (state.publicHostAccount?.custom_template_url) {
-          return state.publicHostAccount.custom_template_url;
+      function getActiveTemplateUrl(customTicket = null) {
+        const targetExhId = customTicket?.exhibition_id || state.activeExhibitionId;
+        const targetExh =
+          (targetExhId ? getExhibitionById(targetExhId) : null) ||
+          getActiveExhibition();
+
+        let tplOwner = null;
+        if (customTicket?.owner_account_id) {
+          const ticketOwner = getAccountById(customTicket.owner_account_id);
+          if (ticketOwner?.role === "dev_sales" && ticketOwner.parent_admin_id) {
+            tplOwner = getAccountById(ticketOwner.parent_admin_id) || ticketOwner;
+          } else {
+            tplOwner = ticketOwner;
+          }
+        } else if (state.publicHostAccount) {
+          tplOwner = state.publicHostAccount;
         }
-        return getActiveExhibition()?.template_url || "";
+
+        if (tplOwner) {
+          const customUrl = getAccountTemplateForExh(tplOwner, targetExh?.id);
+          if (customUrl) return customUrl;
+        }
+        return targetExh?.template_url || "";
       }
 
       // ==================== SECURE SMART LOGIN ====================
@@ -4346,6 +4967,16 @@
             document.body.classList.remove("clean-header-mode", "public-client-mode");
             document.getElementById("devSignupDimNotice").innerHTML =
               buildDimensionsNoticeHtml("الأماكن (الاسم، الرقم، QR) ثابتة أوتوماتيك.");
+            const exhSel = document.getElementById("devRegTemplateExhSelect");
+            if (exhSel) {
+              const pool = getVisibleExhibitionsPool();
+              exhSel.innerHTML = pool
+                .map(
+                  (e) =>
+                    `<option value="${e.id}" ${e.id === state.activeExhibitionId ? "selected" : ""}>📍 ${escapeHtml(e.name)}</option>`
+                )
+                .join("");
+            }
             showOnlyView("devSignupView");
             return;
           }
@@ -4377,6 +5008,7 @@
           "personalPortalView",
           "adminBrokerView",
           "devSignupView",
+          "teamLeaderView",
           "managerView",
         ].forEach((id) => {
           const el = document.getElementById(id);
@@ -4402,6 +5034,7 @@
         const role = state.currentUser.role;
         if (role === "manager") showOnlyView("managerView");
         else if (role === "admin_broker") showOnlyView("adminBrokerView");
+        else if (role === "team_leader") showOnlyView("teamLeaderView");
         else showOnlyView("personalPortalView");
         renderActiveViewOnly();
       }
@@ -4429,6 +5062,8 @@
           renderActiveManagerTab();
         } else if (activeView === "adminBrokerView") {
           renderAdminBrokerPanel();
+        } else if (activeView === "teamLeaderView") {
+          renderTeamLeaderDashboard();
         } else if (activeView === "personalPortalView") {
           renderPersonalPortal();
         }
@@ -4500,12 +5135,29 @@
           exhWrap.style.display = "none";
         }
 
+        const devSalesPool = getDevSalesForPublicHost();
+
         if (state.publicHostAccount) {
           publicBanner.style.display = "block";
-          salesBox.style.display = "none";
           document.getElementById("publicHostName").textContent =
             state.publicHostAccount.name;
-          selectedSalesId = state.publicHostAccount.id;
+
+          if (state.publicHostAccount.role === "developer" && devSalesPool.length > 0) {
+            salesBox.style.display = "block";
+            if (!selectedSalesId || !devSalesPool.some((s) => s.id === selectedSalesId)) {
+              const savedId = getSavedSalesId();
+              if (savedId && devSalesPool.some((s) => s.id === savedId)) {
+                selectedSalesId = savedId;
+              } else {
+                selectedSalesId = "";
+              }
+            }
+            renderSalesDropdown();
+            renderSalesPinnedUI();
+          } else {
+            salesBox.style.display = "none";
+            selectedSalesId = state.publicHostAccount.id;
+          }
         } else {
           publicBanner.style.display = "none";
           salesBox.style.display = "block";
@@ -4524,6 +5176,17 @@
         updateWorkspaceLockUI();
       }
 
+      function getDevSalesForPublicHost() {
+        if (state.publicHostAccount?.role !== "developer") return [];
+        return sortAccountsByCode(
+          state.accounts.filter(
+            (a) =>
+              a.role === "dev_sales" &&
+              a.parent_admin_id === state.publicHostAccount.id
+          )
+        );
+      }
+
       function renderSalesPinnedUI() {
         const pinnedBar = document.getElementById("salesPinnedBar");
         const selectorWrap = document.getElementById("salesSelectorWrap");
@@ -4531,7 +5194,16 @@
         if (!pinnedBar || !selectorWrap) return;
 
         const salesAcc = selectedSalesId ? getAccountById(selectedSalesId) : null;
-        if (salesAcc && salesAcc.role === "sales") {
+        const isDevSalesMode =
+          state.publicHostAccount?.role === "developer" &&
+          getDevSalesForPublicHost().length > 0;
+        const isValidPinned = isDevSalesMode
+          ? salesAcc &&
+            salesAcc.role === "dev_sales" &&
+            salesAcc.parent_admin_id === state.publicHostAccount.id
+          : salesAcc && salesAcc.role === "sales";
+
+        if (isValidPinned) {
           pinnedBar.style.display = "flex";
           selectorWrap.style.display = "none";
           if (pinnedText) {
@@ -4570,9 +5242,11 @@
           .trim()
           .toLowerCase();
 
-        const salesList = sortAccountsByCode(
-          state.accounts.filter((a) => a.role === "sales")
-        );
+        const devSalesPool = getDevSalesForPublicHost();
+        const salesList =
+          state.publicHostAccount?.role === "developer" && devSalesPool.length > 0
+            ? devSalesPool
+            : sortAccountsByCode(state.accounts.filter((a) => a.role === "sales"));
         const filtered = q
           ? salesList.filter(
               (s) =>
@@ -4634,7 +5308,16 @@
       }
 
       function getActiveOwnerAccount() {
-        if (state.publicHostAccount) return state.publicHostAccount;
+        if (state.publicHostAccount) {
+          const devSalesPool = getDevSalesForPublicHost();
+          if (state.publicHostAccount.role === "developer" && devSalesPool.length > 0) {
+            const ds = getAccountById(selectedSalesId);
+            return ds && ds.role === "dev_sales" && ds.parent_admin_id === state.publicHostAccount.id
+              ? ds
+              : null;
+          }
+          return state.publicHostAccount;
+        }
         return getAccountById(selectedSalesId);
       }
 
@@ -4650,9 +5333,10 @@
           nameInp.disabled = false;
           phoneInp.disabled = false;
           issueBtn.disabled = false;
-          issueBtn.textContent = state.publicHostAccount
-            ? "✨ إصدار وتحميل الدعوة الآن"
-            : `✨ إصدار الدعوة (${owner.code} - ${owner.name})`;
+          issueBtn.textContent =
+            state.publicHostAccount && owner.role !== "dev_sales"
+              ? "✨ إصدار وتحميل الدعوة الآن"
+              : `✨ إصدار الدعوة (${owner.code} - ${owner.name})`;
         } else {
           lockWrap.classList.add("locked");
           nameInp.disabled = true;
@@ -4873,7 +5557,9 @@
               `✅ تم إصدار الدعوة رقم <strong>${formatSeqDisplay(inv.seq_number)}</strong> باسم <strong>${escapeHtml(inv.client_name)}</strong> بنجاح!`;
             const waBtn = document.getElementById("openClientWhatsappBtn");
             if (waBtn) {
-              waBtn.style.display = state.publicHostAccount ? "none" : "inline-flex";
+              const showWa =
+                !state.publicHostAccount || owner.role === "dev_sales";
+              waBtn.style.display = showWa ? "inline-flex" : "none";
             }
             document.getElementById("previewTopActions").style.display = "flex";
 
@@ -4915,8 +5601,8 @@
         });
       }
 
-      function loadActiveTemplateImage(callback = null) {
-        const url = getActiveTemplateUrl();
+      function loadActiveTemplateImage(callback = null, customTicket = null) {
+        const url = getActiveTemplateUrl(customTicket);
         if (!url) {
           loadedTemplateImg = null;
           lastTemplateSrc = "";
@@ -5193,23 +5879,68 @@
           linkWrap.style.display = "none";
         }
 
-        if (u.role === "developer") {
+        const devSalesWrap = document.getElementById("portalDevSalesWrap");
+
+        if (["developer", "broker", "influencer"].includes(u.role)) {
           devTplWrap.style.display = "block";
+          const titleEl = document.getElementById("portalTemplateTitle");
+          if (titleEl) {
+            titleEl.textContent =
+              u.role === "developer"
+                ? "🖼️ تصميم الدعوة الخاص بشركتك لكل معرض (يُضغط أوتوماتيك والأماكن ثابتة)"
+                : "🖼️ تصميم الدعوة الخاص بك لكل معرض (يُضغط أوتوماتيك والأماكن ثابتة)";
+          }
           document.getElementById("portalDevDimNotice").innerHTML =
-            buildDimensionsNoticeHtml("ارفع الصورة فقط وستنزل عليها البيانات أوتوماتيك.");
-          document.getElementById("portalDevTplStatus").textContent = u.custom_template_url
-            ? "✅ تم رفع تصميم خاص بشركتك"
-            : "ℹ️ يستخدم القالب الافتراضي حالياً";
+            buildDimensionsNoticeHtml("اختر المعرض أولاً ثم ارفع الصورة، ولو لم ترفع لمعرض معين يرجع تلقائياً للقالب الأساسي.");
+
+          const tplExhSel = document.getElementById("portalTemplateExhSelect");
+          if (tplExhSel) {
+            const prevExhVal = tplExhSel.value || state.activeExhibitionId;
+            const pool = getVisibleExhibitionsPool();
+            tplExhSel.innerHTML = pool
+              .map((e) => `<option value="${e.id}">📍 ${escapeHtml(e.name)}</option>`)
+              .join("");
+            if (prevExhVal && pool.some((e) => e.id === prevExhVal)) {
+              tplExhSel.value = prevExhVal;
+            }
+          }
+          updatePortalTemplateStatusUI();
         } else {
           devTplWrap.style.display = "none";
         }
 
+        const myDevSales =
+          u.role === "developer"
+            ? sortAccountsByCode(
+                state.accounts.filter(
+                  (a) => a.role === "dev_sales" && a.parent_admin_id === u.id
+                )
+              )
+            : [];
+
+        if (devSalesWrap) {
+          if (u.role === "developer") {
+            devSalesWrap.style.display = "block";
+            renderPortalDevSalesTable(myDevSales);
+          } else {
+            devSalesWrap.style.display = "none";
+          }
+        }
+
         const activeExh = getActiveExhibition();
-        document.getElementById("portalKpiActive").textContent = activeExh
-          ? cache.ownerExhCount.get(`${u.id}|${activeExh.id}`) || 0
+        const ownerIds = [u.id, ...myDevSales.map((s) => s.id)];
+        const activeCount = activeExh
+          ? ownerIds.reduce(
+              (sum, id) => sum + (cache.ownerExhCount.get(`${id}|${activeExh.id}`) || 0),
+              0
+            )
           : 0;
-        document.getElementById("portalKpiAll").textContent =
-          cache.ownerTotalCount.get(u.id) || 0;
+        const allCount = ownerIds.reduce(
+          (sum, id) => sum + (cache.ownerTotalCount.get(id) || 0),
+          0
+        );
+        document.getElementById("portalKpiActive").textContent = activeCount;
+        document.getElementById("portalKpiAll").textContent = allCount;
 
         const exhSel = document.getElementById("portalExhFilter");
         const prevExh = exhSel.value || "ALL";
@@ -5239,12 +5970,26 @@
         const exhId = document.getElementById("portalExhFilter")?.value || "ALL";
         const dateVal = (document.getElementById("portalDateFilter")?.value || "").trim();
 
+        const allowedOwnerIds = new Set([u.id]);
+        if (u.role === "developer") {
+          state.accounts
+            .filter((a) => a.role === "dev_sales" && a.parent_admin_id === u.id)
+            .forEach((ds) => allowedOwnerIds.add(ds.id));
+        }
+
         let list = state.invitations.filter((i) => {
-          if (i.owner_account_id !== u.id) return false;
+          if (!allowedOwnerIds.has(i.owner_account_id)) return false;
           if (exhId !== "ALL" && i.exhibition_id !== exhId) return false;
           if (dateVal && i._dateStr !== dateVal) return false;
-          if (q && !`${i.seq_number} ${i.client_name} ${i.client_phone}`.toLowerCase().includes(q)) {
-            return false;
+          if (q) {
+            const own = getAccountById(i.owner_account_id);
+            if (
+              !` ${i.seq_number} ${i.client_name} ${i.client_phone} ${own?.name || ""} ${own?.code || ""}`
+                .toLowerCase()
+                .includes(q)
+            ) {
+              return false;
+            }
           }
           return true;
         });
@@ -5264,11 +6009,16 @@
           .slice(0, 300)
           .map((inv) => {
             const exhName = getExhibitionById(inv.exhibition_id)?.name || "-";
+            const own = getAccountById(inv.owner_account_id);
+            const salesBadge =
+              u.role === "developer" && own && own.role === "dev_sales"
+                ? `<div style="margin-top:3px;"><span class="badge badge-gold">🧑‍💼 ${escapeHtml(own.name)} (${escapeHtml(own.code)})</span></div>`
+                : "";
             return `
             <tr>
               <td><strong style="color:var(--primary-bright);">${formatSeqDisplay(inv.seq_number)}</strong></td>
               <td>${escapeHtml(exhName)}</td>
-              <td style="font-weight:800;">${escapeHtml(inv.client_name)}</td>
+              <td style="font-weight:800;">${escapeHtml(inv.client_name)}${salesBadge}</td>
               <td dir="ltr" style="text-align:right;">${escapeHtml(inv.client_phone)}</td>
               <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv._displayDt}</td>
               <td>
@@ -5279,26 +6029,193 @@
           .join("");
       }
 
-      async function handleDeveloperPortalTemplateUpload(e) {
+      function updatePortalTemplateStatusUI() {
+        const u = state.currentUser;
+        if (!u) return;
+        const exhId = document.getElementById("portalTemplateExhSelect")?.value || "";
+        const exhName = getExhibitionById(exhId)?.name || "-";
+        const parsed = parseCustomTemplateMap(u.custom_template_url);
+        const hasSpecific = Boolean(exhId && parsed.byExh[exhId]);
+        const hasLegacy = Boolean(parsed.legacyDefault);
+
+        const st = document.getElementById("portalDevTplStatus");
+        const remBtn = document.getElementById("portalRemoveExhTplBtn");
+        if (st) {
+          if (hasSpecific) {
+            st.innerHTML = `✅ مرفوع تصميم خاص لمعرض «${escapeHtml(exhName)}» — <a href="${escapeHtml(parsed.byExh[exhId])}" target="_blank" rel="noopener noreferrer" style="color:#fcd34d; text-decoration:underline;">معاينة ↗</a>`;
+          } else if (hasLegacy) {
+            st.innerHTML = `ℹ️ لا يوجد تصميم مخصص لمعرض «${escapeHtml(exhName)}» (يستخدم التصميم القديم العام حالياً)`;
+          } else {
+            st.textContent = `ℹ️ لا يوجد تصميم مخصص لمعرض «${exhName}» (يرجع أوتوماتيك للقالب الأساسي للمعرض)`;
+          }
+        }
+        if (remBtn) {
+          remBtn.style.display = hasSpecific || hasLegacy ? "inline-flex" : "none";
+        }
+
+        const badgesWrap = document.getElementById("portalUploadedExhBadges");
+        if (badgesWrap) {
+          const items = Object.keys(parsed.byExh).map((eid) => {
+            const ename = getExhibitionById(eid)?.name || "معرض";
+            return `<span class="badge badge-success">🎨 ${escapeHtml(ename)}</span>`;
+          });
+          if (hasLegacy) {
+            items.push(`<span class="badge badge-gold">🖼️ تصميم عام قديم</span>`);
+          }
+          badgesWrap.innerHTML = items.join("");
+        }
+      }
+
+      async function handlePortalTemplateUpload(e) {
         const file = e.target.files[0];
         const u = state.currentUser;
-        if (!file || !u) return;
+        const exhId = document.getElementById("portalTemplateExhSelect")?.value || "";
+        if (!file || !u || !exhId) return;
+        const exhName = getExhibitionById(exhId)?.name || "";
         const st = document.getElementById("portalDevTplStatus");
         st.textContent = "⏳ جاري ضغط ورفع التصميم...";
         try {
-          const { url, origKB, finalKB } = await uploadCompressedImageToStorage(file, "developers");
+          const folder = u.role === "developer" ? "developers" : "partners";
+          const { url, origKB, finalKB } = await uploadCompressedImageToStorage(file, folder);
+          const parsed = parseCustomTemplateMap(u.custom_template_url);
+          parsed.byExh[exhId] = url;
+          const serialized = serializeCustomTemplateMap(parsed);
+
           const { error } = await sb
             .from("accounts")
-            .update({ custom_template_url: url })
+            .update({ custom_template_url: serialized })
             .eq("id", u.id);
           if (error) throw error;
-          u.custom_template_url = url;
-          st.textContent = `✅ تم الحفظ (${finalKB}KB بعد الضغط)`;
-          alert(`✅ تم ضغط التصميم من ${origKB}KB إلى ${finalKB}KB وتفعيله بنجاح!`);
+          u.custom_template_url = serialized;
+          const acc = cache.accountsById.get(u.id);
+          if (acc) acc.custom_template_url = serialized;
+          e.target.value = "";
+          updatePortalTemplateStatusUI();
+          alert(`✅ تم ضغط التصميم من ${origKB}KB إلى ${finalKB}KB وحفظه لمعرض «${exhName}» بنجاح!`);
         } catch (err) {
           console.error(err);
           st.textContent = "❌ فشل الرفع";
         }
+      }
+
+      async function removePortalExhTemplate() {
+        const u = state.currentUser;
+        const exhId = document.getElementById("portalTemplateExhSelect")?.value || "";
+        if (!u || !exhId) return;
+        const exhName = getExhibitionById(exhId)?.name || "";
+        if (!confirm(`هل تريد إزالة التصميم الخاص لمعرض «${exhName}» والعودة للقالب الأساسي؟`)) return;
+        const parsed = parseCustomTemplateMap(u.custom_template_url);
+        if (parsed.byExh[exhId]) {
+          delete parsed.byExh[exhId];
+        } else if (parsed.legacyDefault) {
+          parsed.legacyDefault = "";
+        }
+        const serialized = serializeCustomTemplateMap(parsed);
+        const { error } = await sb
+          .from("accounts")
+          .update({ custom_template_url: serialized })
+          .eq("id", u.id);
+        if (error) return alert("❌ تعذر التحديث!");
+        u.custom_template_url = serialized;
+        const acc = cache.accountsById.get(u.id);
+        if (acc) acc.custom_template_url = serialized;
+        updatePortalTemplateStatusUI();
+      }
+
+      function renderPortalDevSalesTable(myDevSales) {
+        const badge = document.getElementById("portalDevSalesCountBadge");
+        const tbody = document.getElementById("portalDevSalesTbody");
+        if (badge) badge.textContent = `${myDevSales.length} سيلز`;
+        if (!tbody) return;
+        if (myDevSales.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:14px;">لم تضف أي سيلز بعد. أضف أسماء السيلز ليختار كل واحد اسمه من لينك شركتك.</td></tr>`;
+          return;
+        }
+        const activeExh = getActiveExhibition();
+        tbody.innerHTML = myDevSales
+          .map((s) => {
+            const actC = activeExh
+              ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0
+              : 0;
+            const allC = cache.ownerTotalCount.get(s.id) || 0;
+            return `
+            <tr>
+              <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
+              <td style="font-weight:800;">${escapeHtml(s.name)}</td>
+              <td><span class="badge badge-success">${actC}</span></td>
+              <td><strong>${allC}</strong></td>
+              <td>
+                <button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:0.74rem;" onclick="deleteDeveloperSalesRep('${s.id}')">🗑️ حذف</button>
+              </td>
+            </tr>`;
+          })
+          .join("");
+      }
+
+      async function addDeveloperSalesRep() {
+        const u = state.currentUser;
+        if (!u || u.role !== "developer") return;
+        const inp = document.getElementById("devNewSalesNameInput");
+        const name = (inp?.value || "").trim();
+        if (!name) return alert("⚠️ اكتب اسم السيلز أولاً!");
+
+        const existing = state.accounts.filter(
+          (a) => a.role === "dev_sales" && a.parent_admin_id === u.id
+        );
+        let maxNum = 0;
+        const prefix = `${String(u.code || "D").toUpperCase()}-`;
+        existing.forEach((s) => {
+          const codeStr = String(s.code || "").toUpperCase();
+          if (codeStr.startsWith(prefix)) {
+            const n = parseInt(codeStr.slice(prefix.length), 10);
+            if (!isNaN(n) && n > maxNum) maxNum = n;
+          }
+        });
+        const newCode = `${prefix}${maxNum + 1}`;
+        const pass = generateUniquePassword(newCode.replace("-", ""));
+
+        const btn = document.getElementById("devAddSalesBtn");
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "⏳ جاري الإضافة...";
+        }
+        try {
+          const { data, error } = await sb
+            .from("accounts")
+            .insert({
+              role: "dev_sales",
+              name,
+              code: newCode,
+              password: pass,
+              team: u.name,
+              parent_admin_id: u.id,
+            })
+            .select()
+            .single();
+          if (error) throw error;
+          if (!cache.accountsById.has(data.id)) state.accounts.push(data);
+          rebuildDerivedCaches();
+          inp.value = "";
+          renderPersonalPortal();
+          alert(`✅ تم إضافة السيلز (${data.name}) بكود (${data.code}) بنجاح!`);
+        } catch (err) {
+          console.error(err);
+          alert("❌ تعذر إضافة السيلز: " + (err.message || "تأكد من تشغيل سطر SQL للأدوار الجديدة في Supabase"));
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "➕ إضافة سيلز";
+          }
+        }
+      }
+
+      async function deleteDeveloperSalesRep(salesId) {
+        if (!confirm("هل أنت متأكد من حذف هذا السيلز من قائمة شركتك؟")) return;
+        const { error } = await sb.from("accounts").delete().eq("id", salesId);
+        if (error) return alert("❌ تعذر الحذف!");
+        state.accounts = state.accounts.filter((a) => a.id !== salesId);
+        rebuildDerivedCaches();
+        renderPersonalPortal();
       }
 
       async function deleteInvitationById(invId) {
@@ -5330,11 +6247,14 @@
         const btn = document.getElementById("abCreateBtn");
         btn.disabled = true;
         btn.textContent = "⏳ جاري الإنشاء...";
+        const designExhId = document.getElementById("abNewDesignExhSelect")?.value || state.activeExhibitionId;
         try {
           let customUrl = "";
           if (file) {
             const up = await uploadCompressedImageToStorage(file, "partners");
-            customUrl = up.url;
+            customUrl = designExhId
+              ? serializeCustomTemplateMap({ legacyDefault: "", byExh: { [designExhId]: up.url } })
+              : up.url;
           }
           const code = generateNextCodeForRole(role);
           const { data, error } = await sb
@@ -5402,6 +6322,16 @@
         const currPassEl = document.getElementById("abCurrPassDisplay");
         if (currPassEl) currPassEl.value = u.password || "";
 
+        const abExhSel = document.getElementById("abNewDesignExhSelect");
+        if (abExhSel) {
+          const prevExh = abExhSel.value || state.activeExhibitionId;
+          const pool = getVisibleExhibitionsPool();
+          abExhSel.innerHTML = pool
+            .map((e) => `<option value="${e.id}">📍 ${escapeHtml(e.name)}</option>`)
+            .join("");
+          if (prevExh && pool.some((e) => e.id === prevExh)) abExhSel.value = prevExh;
+        }
+
         const myPartners = sortAccountsByCode(
           state.accounts.filter((a) => a.parent_admin_id === u.id)
         );
@@ -5428,12 +6358,19 @@
                 })
                 .filter(Boolean)
                 .join("");
+              const tplMap = parseCustomTemplateMap(p.custom_template_url);
+              const tplCnt = Object.keys(tplMap.byExh).length + (tplMap.legacyDefault ? 1 : 0);
               return `
               <tr>
                 <td><strong>${escapeHtml(p.name)}</strong><br><span class="badge badge-gold">${p.code}</span></td>
                 <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(p.password || "-")}</td>
                 <td>${byExh || '<span style="color:var(--text-muted);">0 دعوات</span>'}</td>
-                <td>${renderDualLinkButtonsHtml(p.id)}</td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap; align-items:center;">
+                    <button type="button" class="btn btn-outline" style="padding:4px 8px; font-size:0.73rem;" onclick="openPartnerTemplateModal('${p.id}')">🎨 تصميم${tplCnt > 0 ? ` (${tplCnt})` : ""}</button>
+                    ${renderDualLinkButtonsHtml(p.id)}
+                  </div>
+                </td>
               </tr>`;
             })
             .join("");
@@ -5514,6 +6451,291 @@
           .join("");
       }
 
+      function openPartnerTemplateModal(accId) {
+        const acc = getAccountById(accId);
+        if (!acc) return;
+        document.getElementById("partnerTplAccountId").value = acc.id;
+        document.getElementById("partnerTplModalTitle").textContent =
+          `🎨 تصاميم ${acc.name} (${acc.code}) لكل معرض`;
+        document.getElementById("partnerTplDimNotice").innerHTML =
+          buildDimensionsNoticeHtml("اختر المعرض ثم ارفع التصميم الخاص به.");
+
+        const sel = document.getElementById("partnerTplExhSelect");
+        const pool = getVisibleExhibitionsPool();
+        sel.innerHTML = pool
+          .map(
+            (e) =>
+              `<option value="${e.id}" ${e.id === state.activeExhibitionId ? "selected" : ""}>📍 ${escapeHtml(e.name)}</option>`
+          )
+          .join("");
+        document.getElementById("partnerTplFileInput").value = "";
+        updatePartnerTemplateModalUI();
+        document.getElementById("partnerTemplateModal").style.display = "flex";
+      }
+
+      function updatePartnerTemplateModalUI() {
+        const accId = document.getElementById("partnerTplAccountId")?.value;
+        const exhId = document.getElementById("partnerTplExhSelect")?.value;
+        const acc = getAccountById(accId);
+        if (!acc) return;
+        const exhName = getExhibitionById(exhId)?.name || "-";
+        const parsed = parseCustomTemplateMap(acc.custom_template_url);
+        const hasSpecific = Boolean(exhId && parsed.byExh[exhId]);
+        const hasLegacy = Boolean(parsed.legacyDefault);
+
+        const st = document.getElementById("partnerTplStatusText");
+        const remBtn = document.getElementById("partnerTplRemoveBtn");
+        if (st) {
+          if (hasSpecific) {
+            st.innerHTML = `✅ يوجد تصميم مخصص لمعرض «${escapeHtml(exhName)}» — <a href="${escapeHtml(parsed.byExh[exhId])}" target="_blank" rel="noopener noreferrer" style="color:#fcd34d; text-decoration:underline;">معاينة ↗</a>`;
+          } else if (hasLegacy) {
+            st.textContent = `ℹ️ لا يوجد تصميم مخصص لمعرض «${exhName}» (يستخدم التصميم القديم العام)`;
+          } else {
+            st.textContent = `ℹ️ يرجع أوتوماتيك للقالب الأساسي لمعرض «${exhName}»`;
+          }
+        }
+        if (remBtn) {
+          remBtn.style.display = hasSpecific || hasLegacy ? "inline-flex" : "none";
+        }
+        const badges = document.getElementById("partnerTplBadges");
+        if (badges) {
+          const arr = Object.keys(parsed.byExh).map((eid) => {
+            const ename = getExhibitionById(eid)?.name || "معرض";
+            return `<span class="badge badge-success">🎨 ${escapeHtml(ename)}</span>`;
+          });
+          if (hasLegacy) arr.push(`<span class="badge badge-gold">🖼️ تصميم عام قديم</span>`);
+          badges.innerHTML = arr.join("");
+        }
+      }
+
+      async function handleAdminBrokerPartnerTemplateUpload(e) {
+        const file = e.target.files[0];
+        const accId = document.getElementById("partnerTplAccountId")?.value;
+        const exhId = document.getElementById("partnerTplExhSelect")?.value;
+        const acc = getAccountById(accId);
+        if (!file || !acc || !exhId) return;
+        const st = document.getElementById("partnerTplStatusText");
+        st.textContent = "⏳ جاري ضغط ورفع التصميم...";
+        try {
+          const { url, origKB, finalKB } = await uploadCompressedImageToStorage(file, "partners");
+          const parsed = parseCustomTemplateMap(acc.custom_template_url);
+          parsed.byExh[exhId] = url;
+          const serialized = serializeCustomTemplateMap(parsed);
+          const { error } = await sb
+            .from("accounts")
+            .update({ custom_template_url: serialized })
+            .eq("id", acc.id);
+          if (error) throw error;
+          acc.custom_template_url = serialized;
+          e.target.value = "";
+          updatePartnerTemplateModalUI();
+          renderAdminBrokerPanel();
+          alert(`✅ تم ضغط التصميم (${origKB}KB → ${finalKB}KB) وحفظه بنجاح!`);
+        } catch (err) {
+          console.error(err);
+          st.textContent = "❌ فشل الرفع";
+        }
+      }
+
+      async function removeAdminBrokerPartnerExhTemplate() {
+        const accId = document.getElementById("partnerTplAccountId")?.value;
+        const exhId = document.getElementById("partnerTplExhSelect")?.value;
+        const acc = getAccountById(accId);
+        if (!acc || !exhId) return;
+        const parsed = parseCustomTemplateMap(acc.custom_template_url);
+        if (parsed.byExh[exhId]) delete parsed.byExh[exhId];
+        else if (parsed.legacyDefault) parsed.legacyDefault = "";
+        const serialized = serializeCustomTemplateMap(parsed);
+        const { error } = await sb
+          .from("accounts")
+          .update({ custom_template_url: serialized })
+          .eq("id", acc.id);
+        if (error) return alert("❌ تعذر التحديث!");
+        acc.custom_template_url = serialized;
+        updatePartnerTemplateModalUI();
+        renderAdminBrokerPanel();
+      }
+
+      // ==================== TEAM LEADER DASHBOARD ====================
+      function renderTeamLeaderDashboard() {
+        const u = state.currentUser;
+        if (!u || u.role !== "team_leader") return;
+        const teamName = u.team || "المعرض";
+        const activeExh = getActiveExhibition();
+
+        document.getElementById("tlHeaderTitle").textContent =
+          `🎖️ لوحة التيم ليدر: ${u.name} (${u.code})`;
+        document.getElementById("tlKpiTeamName").textContent = teamName;
+
+        const currPassEl = document.getElementById("tlCurrPassDisplay");
+        if (currPassEl) currPassEl.value = u.password || "";
+
+        const teamSales = getOrderedTeamSales(teamName);
+        const activeTotal = activeExh
+          ? teamSales.reduce(
+              (sum, s) => sum + (cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0),
+              0
+            )
+          : 0;
+        const allTotal = teamSales.reduce(
+          (sum, s) => sum + (cache.ownerTotalCount.get(s.id) || 0),
+          0
+        );
+
+        document.getElementById("tlKpiActive").textContent = activeTotal;
+        document.getElementById("tlKpiAll").textContent = allTotal;
+        document.getElementById("tlKpiSalesCount").textContent = teamSales.length;
+
+        const tbody = document.getElementById("tlSalesOrderTbody");
+        if (teamSales.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:18px;">لا يوجد سيلز مسجلين في تيم «${escapeHtml(teamName)}» بعد.</td></tr>`;
+        } else {
+          tbody.innerHTML = teamSales
+            .map((s, idx) => {
+              const actC = activeExh
+                ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0
+                : 0;
+              const allC = cache.ownerTotalCount.get(s.id) || 0;
+              return `
+              <tr>
+                <td><strong style="color:#fcd34d;">#${idx + 1}</strong></td>
+                <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
+                <td style="font-weight:800;">${escapeHtml(s.name)}</td>
+                <td><span class="badge badge-success">${actC}</span></td>
+                <td><strong>${allC}</strong></td>
+                <td style="white-space:nowrap;">
+                  <button type="button" class="btn btn-outline order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\'")}', '${s.id}', -1)" title="رفع للأعلى">⬆️</button>
+                  <button type="button" class="btn btn-outline order-btn" ${idx === teamSales.length - 1 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\'")}', '${s.id}', 1)" title="إنزال للأسفل">⬇️</button>
+                </td>
+              </tr>`;
+            })
+            .join("");
+        }
+
+        const sSel = document.getElementById("tlClientSalesFilter");
+        const eSel = document.getElementById("tlClientExhFilter");
+        const prevS = sSel.value || "ALL";
+        const prevE = eSel.value || "ALL";
+
+        sSel.innerHTML = `<option value="ALL">👥 كل سيلز التيم</option>`;
+        teamSales.forEach((s) => {
+          sSel.innerHTML += `<option value="${s.id}">${escapeHtml(s.code)} — ${escapeHtml(s.name)}</option>`;
+        });
+        sSel.value = prevS;
+
+        eSel.innerHTML = `<option value="ALL">🌍 كل المعارض</option>`;
+        state.exhibitions.forEach((ex) => {
+          eSel.innerHTML += `<option value="${ex.id}">📍 ${escapeHtml(ex.name)}</option>`;
+        });
+        eSel.value = prevE;
+
+        renderTeamLeaderClientsTable();
+      }
+
+      async function moveTeamSalesOrder(teamName, salesId, direction) {
+        const ordered = getOrderedTeamSales(teamName);
+        const ids = ordered.map((s) => s.id);
+        const idx = ids.indexOf(salesId);
+        const targetIdx = idx + direction;
+        if (idx < 0 || targetIdx < 0 || targetIdx >= ids.length) return;
+
+        const tmp = ids[idx];
+        ids[idx] = ids[targetIdx];
+        ids[targetIdx] = tmp;
+
+        state.teamSalesOrder = {
+          ...(state.teamSalesOrder || {}),
+          [teamName]: ids,
+        };
+
+        const stEl = document.getElementById("tlOrderSaveStatus");
+        if (stEl) stEl.textContent = "⏳ جاري الحفظ...";
+        renderTeamLeaderDashboard();
+
+        try {
+          const { error } = await sb.from("system_settings").upsert({
+            key: "team_sales_order",
+            value: JSON.stringify(state.teamSalesOrder),
+          });
+          if (error) throw error;
+          const stAfter = document.getElementById("tlOrderSaveStatus");
+          if (stAfter) stAfter.textContent = "✅ تم حفظ الترتيب تلقائياً";
+        } catch (err) {
+          console.error(err);
+          const stErr = document.getElementById("tlOrderSaveStatus");
+          if (stErr) stErr.textContent = "❌ تعذر الحفظ في Supabase";
+        }
+      }
+
+      function clearTeamLeaderClientFilters() {
+        document.getElementById("tlClientSearchInput").value = "";
+        document.getElementById("tlClientSalesFilter").value = "ALL";
+        document.getElementById("tlClientExhFilter").value = "ALL";
+        document.getElementById("tlClientDateFilter").value = "";
+        renderTeamLeaderClientsTable();
+      }
+
+      function renderTeamLeaderClientsTable() {
+        const u = state.currentUser;
+        if (!u || u.role !== "team_leader") return;
+        const teamName = u.team || "المعرض";
+        const teamSalesIds = new Set(
+          state.accounts
+            .filter((a) => a.role === "sales" && (a.team || "المعرض") === teamName)
+            .map((a) => a.id)
+        );
+        teamSalesIds.add(u.id);
+
+        const q = toEnglishDigits(
+          document.getElementById("tlClientSearchInput")?.value || ""
+        )
+          .trim()
+          .toLowerCase();
+        const salesId = document.getElementById("tlClientSalesFilter")?.value || "ALL";
+        const exhId = document.getElementById("tlClientExhFilter")?.value || "ALL";
+        const dateVal = (document.getElementById("tlClientDateFilter")?.value || "").trim();
+
+        let list = state.invitations.filter((i) => {
+          if (!teamSalesIds.has(i.owner_account_id)) return false;
+          if (salesId !== "ALL" && i.owner_account_id !== salesId) return false;
+          if (exhId !== "ALL" && i.exhibition_id !== exhId) return false;
+          if (dateVal && i._dateStr !== dateVal) return false;
+          if (q) {
+            const own = getAccountById(i.owner_account_id);
+            return `${i.seq_number} ${i.client_name} ${i.client_phone} ${own?.name || ""} ${own?.code || ""}`
+              .toLowerCase()
+              .includes(q);
+          }
+          return true;
+        });
+
+        if (exhId !== "ALL") list = sortInvitationsFast(list, true);
+        document.getElementById("tlClientsCountBadge").textContent = list.length;
+
+        const tbody = document.getElementById("tlClientsTbody");
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">لا يوجد عملاء مطابقين للبحث.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list
+          .slice(0, 300)
+          .map((inv) => {
+            const exhName = getExhibitionById(inv.exhibition_id)?.name || "-";
+            const own = getAccountById(inv.owner_account_id);
+            return `
+            <tr>
+              <td><strong style="color:var(--primary-bright);">${formatSeqDisplay(inv.seq_number)}</strong></td>
+              <td>${escapeHtml(exhName)}</td>
+              <td style="font-weight:800;">${escapeHtml(inv.client_name)}</td>
+              <td dir="ltr" style="text-align:right;">${escapeHtml(inv.client_phone)}</td>
+              <td><span class="badge badge-mint">${escapeHtml(own?.name || "-")} (${escapeHtml(own?.code || "-")})</span></td>
+              <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv._displayDt}</td>
+            </tr>`;
+          })
+          .join("");
+      }
+
       // ==================== DEVELOPER SELF-REGISTRATION ====================
       function toggleDevChip(el, type, val) {
         const arr = type === "activity" ? devRegActivities : devRegAreas;
@@ -5570,11 +6792,14 @@
         const btn = document.getElementById("devRegSubmitBtn");
         btn.disabled = true;
         btn.textContent = "⏳ جاري إنشاء حساب الشركة...";
+        const regExhId = document.getElementById("devRegTemplateExhSelect")?.value || state.activeExhibitionId;
         try {
           let tplUrl = "";
           if (tplFile) {
             const up = await uploadCompressedImageToStorage(tplFile, "developers");
-            tplUrl = up.url;
+            tplUrl = regExhId
+              ? serializeCustomTemplateMap({ legacyDefault: "", byExh: { [regExhId]: up.url } })
+              : up.url;
           }
 
           const { data, error } = await sb.rpc("register_developer_self", {
@@ -5831,60 +7056,208 @@
       function renderMgrAchievements() {
         const activeExh = getActiveExhibition();
 
-        const salesTbody = document.getElementById("mgrSalesAchTbody");
-        const sales = sortAccountsByCode(
-          state.accounts.filter((a) => a.role === "sales")
-        );
-        salesTbody.innerHTML = sales
-          .map((s) => {
-            const allC = cache.ownerTotalCount.get(s.id) || 0;
-            const actC = activeExh
-              ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0
+        // 1. Sales Achievements: Grouped by Teams + Team Leader + Manual Order (Strongest to Weakest)
+        const salesContainer = document.getElementById("mgrSalesAchContainer");
+        const allTeamNames = [...state.teamsList];
+        state.accounts.forEach((a) => {
+          if (a.role === "sales" || a.role === "team_leader") {
+            const t = a.team || "المعرض";
+            if (!allTeamNames.includes(t)) allTeamNames.push(t);
+          }
+        });
+
+        const teamBlocksHtml = allTeamNames
+          .map((teamName) => {
+            const leaders = state.accounts.filter(
+              (a) => a.role === "team_leader" && (a.team || "المعرض") === teamName
+            );
+            const teamSales = getOrderedTeamSales(teamName);
+            if (teamSales.length === 0 && leaders.length === 0) return "";
+
+            const teamActTotal = activeExh
+              ? teamSales.reduce(
+                  (sum, s) => sum + (cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0),
+                  0
+                )
               : 0;
+            const teamAllTotal = teamSales.reduce(
+              (sum, s) => sum + (cache.ownerTotalCount.get(s.id) || 0),
+              0
+            );
+            const leaderText =
+              leaders.length > 0
+                ? leaders.map((l) => `${l.name} (${l.code})`).join(" ، ")
+                : "بدون تيم ليدر";
+
+            const rows = teamSales
+              .map((s, idx) => {
+                const allC = cache.ownerTotalCount.get(s.id) || 0;
+                const actC = activeExh
+                  ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0
+                  : 0;
+                return `
+                <tr>
+                  <td><strong style="color:#fcd34d;">#${idx + 1}</strong></td>
+                  <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
+                  <td style="font-weight:800;">${escapeHtml(s.name)}</td>
+                  <td><span class="badge badge-success">${actC}</span></td>
+                  <td><strong>${allC}</strong></td>
+                  <td>
+                    <button type="button" class="btn ${s.hide_in_sitting ? "btn-danger" : "btn-success"}" style="padding:4px 9px; font-size:0.74rem;" onclick="toggleHideInSitting('${s.id}', ${!s.hide_in_sitting})">
+                      ${s.hide_in_sitting ? "🚫 مخفي" : "🟢 ظاهر"}
+                    </button>
+                  </td>
+                </tr>`;
+              })
+              .join("");
+
             return `
-            <tr>
-              <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
-              <td style="font-weight:800;">${escapeHtml(s.name)}</td>
-              <td><span class="badge badge-gold">${escapeHtml(s.team || "المعرض")}</span></td>
-              <td><span class="badge badge-success">${actC}</span></td>
-              <td><strong>${allC}</strong></td>
-              <td>
-                <button type="button" class="btn ${s.hide_in_sitting ? "btn-danger" : "btn-success"}" style="padding:4px 9px; font-size:0.74rem;" onclick="toggleHideInSitting('${s.id}', ${!s.hide_in_sitting})">
-                  ${s.hide_in_sitting ? "🚫 مخفي" : "🟢 ظاهر"}
-                </button>
-              </td>
-            </tr>`;
+            <div class="control-section-box">
+              <div class="control-section-title" style="flex-wrap:wrap; gap:8px;">
+                <div>
+                  <span>🏷️ تيم: ${escapeHtml(teamName)}</span>
+                  <span class="badge badge-gold" style="margin-right:6px;">🎖️ ${escapeHtml(leaderText)}</span>
+                </div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <span class="badge badge-success">النشط: ${teamActTotal}</span>
+                  <span class="badge badge-mint">إجمالي التيم: ${teamAllTotal}</span>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table style="min-width:500px;">
+                  <thead>
+                    <tr>
+                      <th>الترتيب</th>
+                      <th>الكود</th>
+                      <th>الاسم</th>
+                      <th>دعوات المعرض النشط</th>
+                      <th>إجمالي كل المعارض</th>
+                      <th>ظهوره في قعدة المعرض</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rows || `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">لا يوجد سيلز في هذا التيم بعد</td></tr>`}</tbody>
+                </table>
+              </div>
+            </div>`;
           })
+          .filter(Boolean)
           .join("");
 
-        const devTbody = document.getElementById("mgrDevsAchTbody");
-        const devs = sortAccountsByCode(
-          state.accounts.filter((a) => a.role === "developer")
-        );
-        devTbody.innerHTML =
-          devs.length === 0
-            ? `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:18px;">لا توجد شركات مطورة مسجلة بعد.</td></tr>`
-            : devs
-                .map((d) => {
-                  const allC = cache.ownerTotalCount.get(d.id) || 0;
-                  const actC = activeExh
-                    ? cache.ownerExhCount.get(`${d.id}|${activeExh.id}`) || 0
+        salesContainer.innerHTML =
+          teamBlocksHtml ||
+          `<div style="text-align:center; color:var(--text-muted); padding:18px;">لا يوجد سيلز مسجلين بعد.</div>`;
+
+        // 2. Developers Achievements: Independent Block per Company (sorted by total desc) + Dev Sales Breakdown Table
+        const devContainer = document.getElementById("mgrDevsAchContainer");
+        const devsWithTotals = state.accounts
+          .filter((a) => a.role === "developer")
+          .map((d) => {
+            const devSales = sortAccountsByCode(
+              state.accounts.filter(
+                (s) => s.role === "dev_sales" && s.parent_admin_id === d.id
+              )
+            );
+            const directAll = cache.ownerTotalCount.get(d.id) || 0;
+            const directAct = activeExh
+              ? cache.ownerExhCount.get(`${d.id}|${activeExh.id}`) || 0
+              : 0;
+            const salesAll = devSales.reduce(
+              (sum, s) => sum + (cache.ownerTotalCount.get(s.id) || 0),
+              0
+            );
+            const salesAct = activeExh
+              ? devSales.reduce(
+                  (sum, s) => sum + (cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0),
+                  0
+                )
+              : 0;
+            return {
+              dev: d,
+              devSales,
+              directAll,
+              directAct,
+              totalAll: directAll + salesAll,
+              totalAct: directAct + salesAct,
+            };
+          })
+          .sort((a, b) => b.totalAll - a.totalAll || b.totalAct - a.totalAct);
+
+        if (devsWithTotals.length === 0) {
+          devContainer.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:18px;">لا توجد شركات مطورة مسجلة بعد.</div>`;
+        } else {
+          devContainer.innerHTML = devsWithTotals
+            .map(({ dev: d, devSales, directAll, directAct, totalAll, totalAct }) => {
+              const sortedSales = [...devSales].sort(
+                (a, b) =>
+                  (cache.ownerTotalCount.get(b.id) || 0) -
+                  (cache.ownerTotalCount.get(a.id) || 0)
+              );
+
+              let rows = sortedSales
+                .map((s) => {
+                  const sAct = activeExh
+                    ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0
                     : 0;
+                  const sAll = cache.ownerTotalCount.get(s.id) || 0;
                   return `
                   <tr>
-                    <td><span class="badge badge-gold">${escapeHtml(d.code)}</span></td>
-                    <td style="font-weight:900;">${escapeHtml(d.name)}</td>
-                    <td style="font-size:0.76rem; line-height:1.5;">
-                      <div>🏢 <strong>النشاط:</strong> ${(d.dev_activities || []).join("، ") || "-"}</div>
-                      <div>📍 <strong>المناطق:</strong> ${(d.dev_areas || []).join("، ") || "-"}</div>
-                      <div>💰 <strong>أقل مقدم:</strong> ${escapeHtml(d.dev_min_downpayment || "-")}</div>
-                    </td>
-                    <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
-                    <td dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(d.password || "-")}</td>
-                    <td>${renderDualLinkButtonsHtml(d.id)}</td>
+                    <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
+                    <td style="font-weight:800;">🧑‍💼 ${escapeHtml(s.name)}</td>
+                    <td><span class="badge badge-success">${sAct}</span></td>
+                    <td><strong>${sAll}</strong></td>
                   </tr>`;
                 })
                 .join("");
+
+              if (directAll > 0 || sortedSales.length === 0) {
+                rows += `
+                <tr>
+                  <td><span class="badge badge-gold">${escapeHtml(d.code)}</span></td>
+                  <td style="font-weight:800; color:var(--text-muted);">🏢 مباشر (لينك الشركة بدون سيلز)</td>
+                  <td><span class="badge badge-success">${directAct}</span></td>
+                  <td><strong>${directAll}</strong></td>
+                </tr>`;
+              }
+
+              return `
+              <div class="control-section-box">
+                <div class="control-section-title" style="flex-wrap:wrap; gap:8px;">
+                  <div>
+                    <span>🏗️ ${escapeHtml(d.name)}</span>
+                    <span class="badge badge-gold" style="margin-right:6px;">${escapeHtml(d.code)}</span>
+                    <span class="badge badge-mint" style="margin-right:4px;">${devSales.length} سيلز</span>
+                  </div>
+                  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <span class="badge badge-success">النشط: ${totalAct}</span>
+                    <span class="badge badge-gold" style="font-size:0.8rem;">التوتال الكلي للشركة: ${totalAll}</span>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; font-size:0.76rem; color:var(--text-muted);">
+                  <div>
+                    🏢 ${(d.dev_activities || []).join("، ") || "-"} &nbsp;|&nbsp;
+                    📍 ${(d.dev_areas || []).join("، ") || "-"} &nbsp;|&nbsp;
+                    💰 ${escapeHtml(d.dev_min_downpayment || "-")} &nbsp;|&nbsp;
+                    🔑 <span dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(d.password || "-")}</span>
+                  </div>
+                  <div>${renderDualLinkButtonsHtml(d.id)}</div>
+                </div>
+                <div class="table-responsive">
+                  <table style="min-width:420px;">
+                    <thead>
+                      <tr>
+                        <th>الكود</th>
+                        <th>اسم السيلز</th>
+                        <th>دعوات المعرض النشط</th>
+                        <th>إجمالي الدعوات</th>
+                      </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                  </table>
+                </div>
+              </div>`;
+            })
+            .join("");
+        }
 
         const abContainer = document.getElementById("mgrAdminBrokersAchContainer");
         const adminBrokers = sortAccountsByCode(
@@ -5990,6 +7363,135 @@
           }
         );
         ownSel.value = prevOwn;
+        populateLogExclusionSelect();
+        renderActiveExclusionsUI();
+      }
+
+      function toggleLogExclusionPanel() {
+        const panel = document.getElementById("logExclusionPanel");
+        if (!panel) return;
+        const isOpen = panel.style.display !== "none";
+        panel.style.display = isOpen ? "none" : "block";
+        if (!isOpen) populateLogExclusionSelect();
+      }
+
+      function populateLogExclusionSelect() {
+        const sel = document.getElementById("logExclusionSelect");
+        if (!sel) return;
+        const q = (document.getElementById("logExclusionSearchInput")?.value || "")
+          .trim()
+          .toLowerCase();
+
+        const match = (txt) => !q || String(txt).toLowerCase().includes(q);
+        let html = `<option value="">-- اختر للاستثناء --</option>`;
+
+        // 1. Teams
+        const teamOpts = state.teamsList
+          .filter((t) => match(`تيم ${t}`))
+          .map((t) => `<option value="team::${escapeHtml(t)}">🏷️ تيم: ${escapeHtml(t)}</option>`)
+          .join("");
+        if (teamOpts) html += `<optgroup label="🏷️ التيمات (يستثني كل سيلز التيم)">${teamOpts}</optgroup>`;
+
+        // 2. Developer Companies
+        const devOpts = sortAccountsByCode(state.accounts.filter((a) => a.role === "developer"))
+          .filter((d) => match(`${d.name} ${d.code}`))
+          .map((d) => `<option value="developer::${d.id}">🏗️ شركة: ${escapeHtml(d.name)} (${escapeHtml(d.code)})</option>`)
+          .join("");
+        if (devOpts) html += `<optgroup label="🏗️ الشركات المطورة (مع سيلز الشركة)">${devOpts}</optgroup>`;
+
+        // 3. Admin Brokers
+        const abOpts = sortAccountsByCode(state.accounts.filter((a) => a.role === "admin_broker"))
+          .filter((a) => match(`${a.name} ${a.code}`))
+          .map((a) => `<option value="admin_broker::${a.id}">🤝 أدمن بروكر: ${escapeHtml(a.name)} (${escapeHtml(a.code)})</option>`)
+          .join("");
+        if (abOpts) html += `<optgroup label="🤝 الأدمن بروكر (مع فريقه)">${abOpts}</optgroup>`;
+
+        // 4. Individual Accounts
+        const accOpts = sortAccountsByCode(
+          state.accounts.filter((a) => a.role !== "manager" && a.role !== "team_leader")
+        )
+          .filter((a) => match(`${a.name} ${a.code}`))
+          .map((a) => `<option value="account::${a.id}">👤 ${escapeHtml(a.code)} — ${escapeHtml(a.name)}</option>`)
+          .join("");
+        if (accOpts) html += `<optgroup label="👤 أشخاص / حسابات محددة">${accOpts}</optgroup>`;
+
+        sel.innerHTML = html;
+      }
+
+      function addLogExclusion() {
+        const sel = document.getElementById("logExclusionSelect");
+        const val = sel?.value || "";
+        if (!val) return;
+        const sepIdx = val.indexOf("::");
+        if (sepIdx < 0) return;
+        const type = val.slice(0, sepIdx);
+        const value = val.slice(sepIdx + 2);
+        const label = sel.options[sel.selectedIndex]?.textContent || value;
+
+        if (logExclusions.some((e) => e.type === type && e.value === value)) return;
+        logExclusions.push({ type, value, label });
+        sel.value = "";
+        currentLogsPage = 1;
+        renderActiveExclusionsUI();
+        renderClientLogsTable();
+      }
+
+      function removeLogExclusion(idx) {
+        logExclusions.splice(idx, 1);
+        currentLogsPage = 1;
+        renderActiveExclusionsUI();
+        renderClientLogsTable();
+      }
+
+      function clearLogExclusions() {
+        logExclusions = [];
+        currentLogsPage = 1;
+        renderActiveExclusionsUI();
+        renderClientLogsTable();
+      }
+
+      function renderActiveExclusionsUI() {
+        const btn = document.getElementById("toggleExclusionBoxBtn");
+        if (btn) {
+          btn.textContent =
+            logExclusions.length > 0
+              ? `🚫 استثناء من التقرير (${logExclusions.length})`
+              : "🚫 استثناء من التقرير";
+        }
+        const wrap = document.getElementById("activeExclusionsChips");
+        if (!wrap) return;
+        if (logExclusions.length === 0) {
+          wrap.style.display = "none";
+          wrap.innerHTML = "";
+          return;
+        }
+        wrap.style.display = "flex";
+        wrap.innerHTML = logExclusions
+          .map(
+            (ex, idx) =>
+              `<span class="exclusion-chip"><span>🚫 ${escapeHtml(ex.label)}</span><button type="button" onclick="removeLogExclusion(${idx})" title="إلغاء الاستثناء">✕</button></span>`
+          )
+          .join("");
+      }
+
+      function isInvitationExcluded(inv) {
+        if (logExclusions.length === 0) return false;
+        const own = getAccountById(inv.owner_account_id);
+        for (let i = 0; i < logExclusions.length; i++) {
+          const ex = logExclusions[i];
+          if (ex.type === "team") {
+            if (own && own.role === "sales" && (own.team || "المعرض") === ex.value) return true;
+          } else if (ex.type === "developer") {
+            if (inv.owner_account_id === ex.value) return true;
+            if (own && own.parent_admin_id === ex.value) return true;
+          } else if (ex.type === "admin_broker") {
+            if (inv.owner_account_id === ex.value || inv.admin_broker_id === ex.value) return true;
+            if (own && own.parent_admin_id === ex.value) return true;
+          } else if (ex.type === "account") {
+            if (inv.owner_account_id === ex.value) return true;
+          }
+        }
+        return false;
       }
 
       function getFilteredClientLogs() {
@@ -6004,10 +7506,18 @@
           exhId !== "ALL" ? cache.invByExh.get(exhId) || [] : state.invitations;
 
         const filtered = basePool.filter((inv) => {
-          if (ownId !== "ALL" && inv.owner_account_id !== ownId && inv.admin_broker_id !== ownId) return false;
+          if (isInvitationExcluded(inv)) return false;
+          const own = getAccountById(inv.owner_account_id);
+          if (
+            ownId !== "ALL" &&
+            inv.owner_account_id !== ownId &&
+            inv.admin_broker_id !== ownId &&
+            own?.parent_admin_id !== ownId
+          ) {
+            return false;
+          }
           if (dateVal && inv._dateStr !== dateVal) return false;
           if (q) {
-            const own = getAccountById(inv.owner_account_id);
             const hay = `${inv.seq_number} ${inv.client_name} ${inv.client_phone} ${own?.name || ""} ${own?.code || ""}`.toLowerCase();
             if (!hay.includes(q)) return false;
           }
@@ -6068,7 +7578,7 @@
         const inv = state.invitations.find((i) => i.id === invId);
         if (!inv) return;
         state.activeExhibitionId = inv.exhibition_id;
-        loadActiveTemplateImage(() => downloadCurrentCanvas(inv));
+        loadActiveTemplateImage(() => downloadCurrentCanvas(inv), inv);
       }
 
       function copyFilteredLogsWhatsApp() {
@@ -6760,6 +8270,7 @@
             design_dimensions: state.designDimensions,
             design_guide_pdf_url: state.designGuidePdfUrl,
             teams_list: state.teamsList,
+            team_sales_order: state.teamSalesOrder,
           },
           exhibitions: state.exhibitions,
           accounts: state.accounts,
@@ -6959,6 +8470,12 @@
                 await sb.from("system_settings").upsert({
                   key: "teams_list",
                   value: JSON.stringify(s.teams_list),
+                });
+              }
+              if (s.team_sales_order && typeof s.team_sales_order === "object") {
+                await sb.from("system_settings").upsert({
+                  key: "team_sales_order",
+                  value: JSON.stringify(s.team_sales_order),
                 });
               }
             }
