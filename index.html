@@ -19,7 +19,7 @@
     <style>
       :root {
         --bg-main: #051224;
-        --bg-elevated: rgba(11, 29, 56, 0.85);
+        --bg-elevated: rgba(11, 29, 56, 0.88);
         --bg-input: #07162b;
         --border: rgba(45, 212, 191, 0.16);
         --border-strong: rgba(45, 212, 191, 0.38);
@@ -157,7 +157,7 @@
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 10px 16px;
+        padding: 10px 14px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -250,8 +250,9 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: 9px 14px;
-        border-radius: 11px;
+        padding: 10px 14px;
+        min-height: 40px;
+        border-radius: 12px;
         font-size: 0.84rem;
         font-weight: 800;
         border: 1px solid transparent;
@@ -262,7 +263,7 @@
       }
 
       .btn:active:not(:disabled) {
-        transform: scale(0.98);
+        transform: scale(0.97);
       }
 
       .btn:disabled {
@@ -301,6 +302,7 @@
       .btn-block {
         width: 100%;
         padding: 12px;
+        min-height: 46px;
         font-size: 0.95rem;
       }
 
@@ -323,19 +325,29 @@
       .exh-pills {
         display: flex;
         gap: 7px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
         flex: 1;
+        scrollbar-width: none;
+      }
+
+      .exh-pills::-webkit-scrollbar {
+        display: none;
       }
 
       .exh-pill {
-        padding: 6px 13px;
-        border-radius: 9px;
+        padding: 7px 14px;
+        border-radius: 10px;
         font-size: 0.82rem;
         font-weight: 800;
         background: var(--bg-input);
         color: var(--text-muted);
         border: 1px solid var(--border);
         cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
 
       .exh-pill.active {
@@ -410,12 +422,12 @@
       .form-control {
         width: 100%;
         padding: 10px 13px;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 700;
         color: var(--text-main);
         background-color: var(--bg-input);
         border: 1.5px solid var(--border);
-        border-radius: 11px;
+        border-radius: 12px;
         outline: none;
         transition: border-color 0.2s, box-shadow 0.2s;
       }
@@ -458,7 +470,7 @@
       }
 
       .chip-btn {
-        padding: 7px 12px;
+        padding: 8px 12px;
         border-radius: 10px;
         background: var(--bg-input);
         border: 1.5px solid var(--border);
@@ -467,12 +479,42 @@
         font-weight: 800;
         cursor: pointer;
         user-select: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
       }
 
       .chip-btn.selected {
         background: var(--primary-soft);
         border-color: var(--primary-bright);
         color: var(--primary-bright);
+      }
+
+      .role-check-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+        gap: 7px;
+      }
+
+      .role-check-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        font-size: 0.8rem;
+        font-weight: 800;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .role-check-item input[type="checkbox"] {
+        width: 17px;
+        height: 17px;
+        accent-color: var(--primary-bright);
+        flex-shrink: 0;
       }
 
       .sales-quick-pills {
@@ -485,9 +527,9 @@
       }
 
       .sales-quick-pill {
-        padding: 5px 11px;
-        border-radius: 8px;
-        font-size: 0.78rem;
+        padding: 6px 12px;
+        border-radius: 9px;
+        font-size: 0.8rem;
         font-weight: 800;
         background: var(--bg-input);
         color: var(--text-main);
@@ -691,16 +733,11 @@
       }
 
       .order-btn {
-        padding: 4px 8px;
-        font-size: 0.82rem;
-        border-radius: 8px;
-        min-width: 34px;
-      }
-
-      @media (max-width: 900px) {
-        .dev-tools-grid {
-          grid-template-columns: minmax(0, 1fr);
-        }
+        padding: 6px 10px;
+        min-height: 36px;
+        font-size: 0.85rem;
+        border-radius: 9px;
+        min-width: 38px;
       }
 
       .admin-nav-btn {
@@ -715,7 +752,7 @@
         color: var(--text-muted);
         border: 1.5px solid var(--border);
         font-weight: 800;
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         cursor: pointer;
       }
 
@@ -744,7 +781,7 @@
 
       .kpi-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 10px;
         margin-bottom: 14px;
       }
@@ -773,6 +810,7 @@
       .table-responsive {
         width: 100%;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         border: 1px solid var(--border);
         border-radius: 12px;
         background: var(--bg-input);
@@ -866,6 +904,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
       }
 
       .range-row {
@@ -905,16 +945,16 @@
         align-items: center;
         justify-content: center;
         z-index: 9999;
-        padding: 14px;
+        padding: 12px;
       }
 
       .modal-box {
         background: #0a1d38;
         border: 1.5px solid var(--border-strong);
         border-radius: 16px;
-        padding: 20px;
+        padding: 18px;
         width: 100%;
-        max-width: 420px;
+        max-width: 460px;
         max-height: 90vh;
         overflow-y: auto;
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
@@ -1048,11 +1088,61 @@
 
       @media (max-width: 900px) {
         .workspace-grid,
-        .studio-grid {
+        .studio-grid,
+        .dev-tools-grid {
           grid-template-columns: minmax(0, 1fr);
         }
         .admin-nav-grid {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          gap: 7px;
+          padding-bottom: 4px;
+          scrollbar-width: none;
+        }
+        .admin-nav-grid::-webkit-scrollbar {
+          display: none;
+        }
+        .admin-nav-btn {
+          flex: 0 0 auto;
+          min-width: 108px;
+          padding: 10px 10px;
+          font-size: 0.78rem;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .app-container {
+          padding: 8px;
+        }
+        .card {
+          padding: 13px 12px;
+          border-radius: 14px;
+        }
+        .top-header {
+          padding: 9px 12px;
+        }
+        .brand-logo-img {
+          height: 30px;
+        }
+        .kpi-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+        .kpi-card {
+          padding: 10px 8px;
+        }
+        .kpi-card .val {
+          font-size: 1.25rem;
+        }
+        .filter-bar-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .sub-tabs-row .btn {
+          flex: 1 1 auto;
+          font-size: 0.78rem;
+          padding: 9px 10px;
         }
       }
     </style>
@@ -1199,7 +1289,7 @@
               <button
                 type="button"
                 class="btn btn-outline"
-                style="padding: 5px 11px; font-size: 0.76rem"
+                style="padding: 5px 11px; min-height: 34px; font-size: 0.76rem"
                 onclick="changePinnedSalesRep()"
               >
                 🔄 تغيير
@@ -1339,7 +1429,7 @@
               <button
                 type="button"
                 class="btn btn-success"
-                style="padding: 5px 10px; font-size: 0.76rem"
+                style="padding: 5px 10px; min-height: 34px; font-size: 0.76rem"
                 onclick="shareCurrentCanvas()"
               >
                 📲 شير
@@ -1347,7 +1437,7 @@
               <button
                 type="button"
                 class="btn btn-outline"
-                style="padding: 5px 10px; font-size: 0.76rem"
+                style="padding: 5px 10px; min-height: 34px; font-size: 0.76rem"
                 onclick="downloadCurrentCanvas()"
               >
                 ⬇️ تنزيل
@@ -1404,7 +1494,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    style="padding: 5px 11px; font-size: 0.75rem"
+                    style="padding: 5px 11px; min-height: 34px; font-size: 0.75rem"
                     onclick="copyText(document.getElementById('portalShareLinkText').textContent, '✅ تم نسخ الرابط العام لكل المعارض!')"
                   >
                     📋 نسخ
@@ -1430,7 +1520,7 @@
                   <button
                     type="button"
                     class="btn btn-gold"
-                    style="padding: 5px 11px; font-size: 0.75rem"
+                    style="padding: 5px 11px; min-height: 34px; font-size: 0.75rem"
                     onclick="copyText(document.getElementById('portalActiveExhLinkText').textContent, '✅ تم نسخ رابط المعرض النشط فقط!')"
                   >
                     📋 نسخ
@@ -2141,7 +2231,7 @@
         </div>
       </section>
 
-      <!-- ==================== 4B. TEAM LEADER DASHBOARD ==================== -->
+      <!-- ==================== 4B. TEAM LEADER DASHBOARD (SUPPORTS MULTI-TEAM) ==================== -->
       <section id="teamLeaderView" style="display: none">
         <div class="card">
           <div class="card-header">
@@ -2155,9 +2245,28 @@
             </button>
           </div>
 
+          <!-- Multi-Team Switcher (Shown when managing 2+ teams) -->
+          <div
+            id="tlTeamSwitcherWrap"
+            class="control-section-box"
+            style="display: none; padding: 10px 12px"
+          >
+            <div
+              style="
+                font-size: 0.78rem;
+                color: #fcd34d;
+                font-weight: 800;
+                margin-bottom: 7px;
+              "
+            >
+              🏷️ اختر التيم لإدارة سيلزه وترتيبهم:
+            </div>
+            <div id="tlTeamSwitcherPills" class="chips-grid"></div>
+          </div>
+
           <div class="kpi-grid">
             <div class="kpi-card">
-              <div class="label">اسم التيم</div>
+              <div class="label">التيم المعروض</div>
               <div class="val" id="tlKpiTeamName" style="font-size: 1.15rem">-</div>
             </div>
             <div class="kpi-card">
@@ -2176,7 +2285,7 @@
 
           <div class="control-section-box">
             <div class="control-section-title">
-              <span>📊 سيلز التيم وترتيبهم يدوياً (من الأشطر للأضعف)</span>
+              <span>📊 سيلز التيم وترتيبهم يدوياً (من الأقوى للأضعف)</span>
               <span
                 id="tlOrderSaveStatus"
                 style="font-size: 0.76rem; color: var(--primary-bright)"
@@ -2409,7 +2518,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    style="padding: 4px 10px; font-size: 0.75rem"
+                    style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem"
                     onclick="copyText(document.getElementById('companyGeneralLinkText').textContent)"
                   >
                     📋 نسخ
@@ -2435,7 +2544,7 @@
                   <button
                     type="button"
                     class="btn btn-gold"
-                    style="padding: 4px 10px; font-size: 0.75rem"
+                    style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem"
                     onclick="copyText(document.getElementById('companyActiveExhLinkText').textContent)"
                   >
                     📋 نسخ
@@ -2737,6 +2846,8 @@
                 justify-content: space-between;
                 align-items: center;
                 margin-top: 12px;
+                flex-wrap: wrap;
+                gap: 8px;
               "
             >
               <div
@@ -2851,7 +2962,7 @@
                   margin-bottom: 8px;
                 "
               >
-                <select id="mgrAddRole" class="form-control">
+                <select id="mgrAddRole" class="form-control" onchange="syncAddAccountManagedTeamsVisibility()">
                   <option value="sales">💼 سيلز عادي</option>
                   <option value="team_leader">🎖️ تيم ليدر (team_leader)</option>
                   <option value="reception">🛎️ ريسبشن (reception)</option>
@@ -2915,6 +3026,32 @@
                   إظهار بالتقرير
                 </label>
               </div>
+
+              <!-- Expo Permissions (Add Account) -->
+              <div class="control-section-box" style="padding: 10px; margin-bottom: 10px">
+                <div style="font-size: 0.78rem; font-weight: 900; color: #fcd34d; margin-bottom: 7px">
+                  🎛️ صلاحيات وأدوار إضافية يوم المعرض (اختياري):
+                </div>
+                <div id="mgrAddExpoRolesGrid" class="role-check-grid" style="margin-bottom: 8px">
+                  <label class="role-check-item"><input type="checkbox" value="usher" /> 🚶 أشرز</label>
+                  <label class="role-check-item"><input type="checkbox" value="reception" /> 🛎️ ريسبشن</label>
+                  <label class="role-check-item"><input type="checkbox" value="sales" /> 💼 سيلز قعدة</label>
+                  <label class="role-check-item"><input type="checkbox" value="broker" /> 🏢 بروكر</label>
+                  <label class="role-check-item"><input type="checkbox" value="team_leader" onchange="syncAddAccountManagedTeamsVisibility()" /> 🎖️ تيم ليدر</label>
+                  <label class="role-check-item"><input type="checkbox" value="exh_manager" /> 🎯 مدير معرض</label>
+                </div>
+                <div id="mgrAddManagedTeamsBox" style="display: none; margin-bottom: 8px; padding-top: 7px; border-top: 1px dashed var(--border)">
+                  <div style="font-size: 0.76rem; font-weight: 800; color: var(--primary-bright); margin-bottom: 5px">
+                    🏷️ التيمات اللي بيديرها (اختر تيم أو أكثر):
+                  </div>
+                  <div id="mgrAddManagedTeamsGrid" class="role-check-grid"></div>
+                </div>
+                <label class="role-check-item" style="border-color: rgba(45, 212, 191, 0.35); background: rgba(0, 184, 172, 0.08)">
+                  <input type="checkbox" id="mgrAddCanEditReq" />
+                  <span>✏️ صلاحية تعديل ريكويست العميل يوم المعرض</span>
+                </label>
+              </div>
+
               <button
                 type="button"
                 class="btn btn-primary btn-block"
@@ -2966,7 +3103,7 @@
               <table>
                 <thead>
                   <tr>
-                    <th>النوع (البوزشن)</th>
+                    <th>النوع وصلاحيات المعرض</th>
                     <th>الكود</th>
                     <th>الاسم</th>
                     <th>التليفون</th>
@@ -3180,7 +3317,7 @@
                     <button
                       type="button"
                       class="btn btn-outline"
-                      style="padding: 3px 8px; font-size: 0.72rem"
+                      style="padding: 3px 8px; min-height: 30px; font-size: 0.72rem"
                       onclick="insertWhatsappToken('{الاسم}')"
                     >
                       + {الاسم}
@@ -3188,7 +3325,7 @@
                     <button
                       type="button"
                       class="btn btn-outline"
-                      style="padding: 3px 8px; font-size: 0.72rem"
+                      style="padding: 3px 8px; min-height: 30px; font-size: 0.72rem"
                       onclick="insertWhatsappToken('{الرقم}')"
                     >
                       + {الرقم}
@@ -3929,7 +4066,7 @@
             margin-bottom: 14px;
           "
         >
-          أدخل كلمة السر الخاصة بك (إدارة، أدمن بروكر، سيلز، بروكر، أو مطور):
+          أدخل كلمة السر الخاصة بك (إدارة، أدمن بروكر، سيلز، بروكر، تيم ليدر، أو مطور):
         </p>
         <input
           type="password"
@@ -3966,12 +4103,12 @@
     <div id="editAccountModal" class="modal-overlay">
       <div class="modal-box">
         <h3 style="color: var(--primary-bright); margin-bottom: 12px">
-          ✏️ تعديل بيانات الحساب والبوزشن
+          ✏️ تعديل بيانات الحساب وصلاحيات المعرض
         </h3>
         <input type="hidden" id="editAccId" />
         <div class="form-group">
           <label class="form-label" style="color: #fcd34d">النوع (البوزشن الأساسي):</label>
-          <select id="editAccRole" class="form-control">
+          <select id="editAccRole" class="form-control" onchange="syncEditAccountManagedTeamsVisibility()">
             <option value="sales">💼 سيلز</option>
             <option value="team_leader">🎖️ تيم ليدر</option>
             <option value="reception">🛎️ ريسبشن</option>
@@ -3986,21 +4123,25 @@
             <option value="manager">👑 مانجر</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">الاسم:</label>
-          <input type="text" id="editAccName" class="form-control" />
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+          <div class="form-group">
+            <label class="form-label">الاسم:</label>
+            <input type="text" id="editAccName" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">الكود:</label>
+            <input type="text" id="editAccCode" class="form-control" dir="ltr" />
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">الكود:</label>
-          <input type="text" id="editAccCode" class="form-control" dir="ltr" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">الباسورد:</label>
-          <input type="text" id="editAccPass" class="form-control" dir="ltr" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">رقم التليفون:</label>
-          <input type="tel" id="editAccPhone" class="form-control" dir="ltr" style="text-align: right" placeholder="01012345678" />
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+          <div class="form-group">
+            <label class="form-label">الباسورد:</label>
+            <input type="text" id="editAccPass" class="form-control" dir="ltr" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم التليفون:</label>
+            <input type="tel" id="editAccPhone" class="form-control" dir="ltr" style="text-align: right" placeholder="01012345678" />
+          </div>
         </div>
         <div class="form-group">
           <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer">
@@ -4009,9 +4150,35 @@
           </label>
         </div>
         <div class="form-group">
-          <label class="form-label">التيم:</label>
+          <label class="form-label">التيم الأساسي:</label>
           <select id="editAccTeam" class="form-control"></select>
         </div>
+
+        <!-- Expo Extra Roles, Managed Teams & Request Edit Permission -->
+        <div class="control-section-box" style="padding: 10px; margin-bottom: 12px">
+          <div style="font-size: 0.8rem; font-weight: 900; color: #fcd34d; margin-bottom: 7px">
+            🎛️ أدوار إضافية يوم المعرض (بنفس الباسورد):
+          </div>
+          <div id="editAccExpoRolesGrid" class="role-check-grid" style="margin-bottom: 8px">
+            <label class="role-check-item"><input type="checkbox" value="usher" /> 🚶 أشرز</label>
+            <label class="role-check-item"><input type="checkbox" value="reception" /> 🛎️ ريسبشن</label>
+            <label class="role-check-item"><input type="checkbox" value="sales" /> 💼 سيلز قعدة</label>
+            <label class="role-check-item"><input type="checkbox" value="broker" /> 🏢 بروكر</label>
+            <label class="role-check-item"><input type="checkbox" value="team_leader" onchange="syncEditAccountManagedTeamsVisibility()" /> 🎖️ تيم ليدر</label>
+            <label class="role-check-item"><input type="checkbox" value="exh_manager" /> 🎯 مدير معرض</label>
+          </div>
+          <div id="editAccManagedTeamsBox" style="display: none; margin-bottom: 8px; padding-top: 7px; border-top: 1px dashed var(--border)">
+            <div style="font-size: 0.78rem; font-weight: 800; color: var(--primary-bright); margin-bottom: 5px">
+              🏷️ التيمات اللي بيديرها (اختر تيم أو أكثر):
+            </div>
+            <div id="editAccManagedTeamsGrid" class="role-check-grid"></div>
+          </div>
+          <label class="role-check-item" style="border-color: rgba(45, 212, 191, 0.35); background: rgba(0, 184, 172, 0.08)">
+            <input type="checkbox" id="editAccCanEditReq" />
+            <span>✏️ صلاحية تعديل ريكويست العميل يوم المعرض</span>
+          </label>
+        </div>
+
         <div style="display: flex; gap: 8px; margin-top: 12px">
           <button
             type="button"
@@ -4137,7 +4304,7 @@
 
       // Safe public columns (NO passwords exposed on public load)
       const PUBLIC_ACCOUNT_COLS =
-        "id,role,name,code,team,phone,show_phone_in_report,active_exhibition_ids,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
+        "id,role,name,code,team,phone,show_phone_in_report,active_exhibition_ids,expo_roles,managed_teams,can_edit_request,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
 
       const CAIRO_DATE_FMT = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Africa/Cairo",
@@ -4187,6 +4354,7 @@
         invitationsScope: "NONE", // NONE | USER | TEAM_LEADER | ADMIN_BROKER | ALL
         serverTotalInvitations: 0,
         activeExhibitionId: null,
+        activeLeaderTeam: null,
         developerSignupPass: "",
         designDimensions: "1080 × 1350 px",
         designGuidePdfUrl: "",
@@ -4243,6 +4411,77 @@
         try {
           localStorage.removeItem(getSavedSalesStorageKey());
         } catch (e) {}
+      }
+
+      // ==================== MULTI-ROLE & MULTI-TEAM HELPERS ====================
+      function getAccountExpoRoles(acc) {
+        if (!acc || !Array.isArray(acc.expo_roles)) return [];
+        return acc.expo_roles.filter((r) => r && r !== acc.role);
+      }
+
+      function getLeaderManagedTeams(acc) {
+        if (!acc) return [];
+        const list = Array.isArray(acc.managed_teams)
+          ? acc.managed_teams.filter(Boolean)
+          : [];
+        if (list.length > 0) return [...new Set(list)];
+        return [acc.team || "المعرض"];
+      }
+
+      function accountHasRole(acc, roleName) {
+        if (!acc) return false;
+        if (acc.role === roleName) return true;
+        return Array.isArray(acc.expo_roles) && acc.expo_roles.includes(roleName);
+      }
+
+      function readCheckedValues(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return [];
+        return [...container.querySelectorAll('input[type="checkbox"]:checked')].map(
+          (cb) => cb.value
+        );
+      }
+
+      function populateManagedTeamsGrid(gridId, selectedTeams = []) {
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+        const selectedSet = new Set(Array.isArray(selectedTeams) ? selectedTeams : []);
+        const allTeams = [...new Set([...state.teamsList, ...selectedSet])];
+        grid.innerHTML = allTeams
+          .map(
+            (t) => `
+          <label class="role-check-item">
+            <input type="checkbox" value="${escapeHtml(t)}" ${selectedSet.has(t) ? "checked" : ""} />
+            <span>🏷️ ${escapeHtml(t)}</span>
+          </label>`
+          )
+          .join("");
+      }
+
+      function syncAddAccountManagedTeamsVisibility() {
+        const role = document.getElementById("mgrAddRole")?.value || "";
+        const extra = readCheckedValues("mgrAddExpoRolesGrid");
+        const box = document.getElementById("mgrAddManagedTeamsBox");
+        if (!box) return;
+        const show = role === "team_leader" || extra.includes("team_leader");
+        box.style.display = show ? "block" : "none";
+        if (show) {
+          const prev = readCheckedValues("mgrAddManagedTeamsGrid");
+          const fallbackTeam = document.getElementById("mgrAddTeam")?.value;
+          populateManagedTeamsGrid(
+            "mgrAddManagedTeamsGrid",
+            prev.length > 0 ? prev : fallbackTeam ? [fallbackTeam] : []
+          );
+        }
+      }
+
+      function syncEditAccountManagedTeamsVisibility() {
+        const role = document.getElementById("editAccRole")?.value || "";
+        const extra = readCheckedValues("editAccExpoRolesGrid");
+        const box = document.getElementById("editAccManagedTeamsBox");
+        if (!box) return;
+        const show = role === "team_leader" || extra.includes("team_leader");
+        box.style.display = show ? "block" : "none";
       }
 
       // ==================== PER-EXHIBITION CUSTOM TEMPLATE HELPERS ====================
@@ -4392,7 +4631,7 @@
         }
       }
 
-      // Unified clean settings parser (replaces all duplicated loops)
+      // Unified clean settings parser
       function applySettingsRows(rows) {
         (rows || []).forEach((row) => {
           if (!row || !row.key) return;
@@ -4438,7 +4677,6 @@
           if (exhRes.error) throw exhRes.error;
 
           if (urlCode) {
-            // Public Ad Link: fetch ONLY the host account (and its dev_sales if developer) -> ~85% less Egress!
             const hostRes = await sb
               .from("accounts")
               .select(PUBLIC_ACCOUNT_COLS)
@@ -4458,7 +4696,6 @@
               }
             }
           } else {
-            // Sales Workspace: fetch ONLY sales accounts (not admins/ushers/etc.)
             const accRes = await sb
               .from("accounts")
               .select(PUBLIC_ACCOUNT_COLS)
@@ -4495,7 +4732,6 @@
         setSyncBadge("syncing");
 
         try {
-          // Tier 3: Manager (Full accounts with passwords + all invitations in parallel)
           if (u.role === "manager") {
             const [exhRes, accRes, setRes, firstInvRes] = await Promise.all([
               sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
@@ -4529,7 +4765,6 @@
             renderActiveViewOnly();
             if (showSplash) setSplashLoading(false);
 
-            // Fetch remaining pages IN PARALLEL in background (with deterministic id order + retry)
             if (totalCount > 1000) {
               const fetchPage = async (from) => {
                 let res = await sb
@@ -4575,7 +4810,6 @@
             return;
           }
 
-          // Tier 2A: Admin Broker (Own partners with passwords + ONLY their team's invitations)
           if (u.role === "admin_broker") {
             const [exhRes, partnersRes, setRes] = await Promise.all([
               sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
@@ -4585,7 +4819,6 @@
             if (exhRes.error) throw exhRes.error;
             state.exhibitions = exhRes.data || [];
 
-            // Merge partner passwords into accounts cache
             const partners = partnersRes.data || [];
             partners.forEach((p) => {
               const idx = state.accounts.findIndex((a) => a.id === p.id);
@@ -4624,8 +4857,7 @@
             return;
           }
 
-          // Tier 2A-2: Team Leader (Team's sales accounts + ONLY their team's invitations)
-          if (u.role === "team_leader") {
+          if (u.role === "team_leader" || accountHasRole(u, "team_leader")) {
             const [exhRes, accRes, setRes] = await Promise.all([
               sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
               sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
@@ -4635,7 +4867,6 @@
             if (accRes.error) throw accRes.error;
 
             state.exhibitions = exhRes.data || [];
-            // Preserve own password while refreshing public accounts
             const ownPass = u.password;
             state.accounts = (accRes.data || []).map((a) =>
               a.id === u.id ? { ...a, password: ownPass } : a
@@ -4644,11 +4875,16 @@
 
             applySettingsRows(setRes.data || []);
 
-            const myTeamName = state.currentUser.team || "المعرض";
+            const managedTeams = getLeaderManagedTeams(state.currentUser);
+            if (!state.activeLeaderTeam || !managedTeams.includes(state.activeLeaderTeam)) {
+              state.activeLeaderTeam = managedTeams[0];
+            }
+
+            const managedSet = new Set(managedTeams);
             const teamOwnerIds = [
               u.id,
               ...state.accounts
-                .filter((a) => a.role === "sales" && (a.team || "المعرض") === myTeamName)
+                .filter((a) => a.role === "sales" && managedSet.has(a.team || "المعرض"))
                 .map((a) => a.id),
             ];
 
@@ -4737,7 +4973,7 @@
         }
       }
 
-      // ==================== SCOPED REALTIME (ZERO CONNECTIONS FOR AD VISITORS + SANDBOX SAFE) ====================
+      // ==================== SCOPED REALTIME ====================
       function scheduleActiveViewRender() {
         clearTimeout(renderDebounceTimer);
         renderDebounceTimer = setTimeout(() => {
@@ -4755,12 +4991,10 @@
           realtimeChannel = null;
         }
 
-        // Public ad/client links (?c=BM, ?d=, ?b=) DO NOT open Realtime sockets -> saves concurrent limit!
         if (state.publicHostAccount && !state.currentUser) {
           return;
         }
 
-        // Skip Realtime WebSockets in sandboxed preview environments (e.g. Canvas) where WebSockets are blocked
         const isRestrictedPreview =
           typeof window.WebSocket === "undefined" ||
           window.location.protocol === "blob:" ||
@@ -4774,7 +5008,6 @@
         try {
           const ch = sb.channel("balmetr-scoped-sync");
 
-          // Always sync lightweight metadata (exhibitions, accounts, settings) for Sales & Logged-in users
           ch.on("postgres_changes", { event: "*", schema: "public", table: "exhibitions" }, (payload) => {
             if (isImportingLegacy) return;
             const { eventType, new: newRow, old: oldRow } = payload;
@@ -4821,7 +5054,6 @@
             }
           });
 
-          // ONLY listen to invitations stream when logged into a portal / manager dashboard
           if (state.currentUser) {
             ch.on("postgres_changes", { event: "*", schema: "public", table: "invitations" }, (payload) => {
               if (isImportingLegacy) return;
@@ -4835,10 +5067,11 @@
                   const own = cache.accountsById.get(row.owner_account_id);
                   return own?.parent_admin_id === u.id;
                 }
-                if (u.role === "team_leader") {
+                if (u.role === "team_leader" || accountHasRole(u, "team_leader")) {
                   if (row.owner_account_id === u.id) return true;
                   const own = cache.accountsById.get(row.owner_account_id);
-                  return own?.role === "sales" && (own.team || "المعرض") === (u.team || "المعرض");
+                  const managedSet = new Set(getLeaderManagedTeams(u));
+                  return own?.role === "sales" && managedSet.has(own.team || "المعرض");
                 }
                 if (u.role === "developer") {
                   if (row.owner_account_id === u.id) return true;
@@ -4994,7 +5227,7 @@
         });
       }
 
-      // ==================== URL PARAMS (SHORT 6-CHAR EXHIBITION CODE + EXPIRED LINK GUARD) ====================
+      // ==================== URL PARAMS ====================
       function checkPublicUrlParams() {
         const params = new URLSearchParams(window.location.search);
         const codeParam = (
@@ -5045,7 +5278,6 @@
           }
         }
 
-        // Restore pinned sales rep on device (either B.almetr sales or Developer's dev_sales)
         if (!state.publicHostAccount && !selectedSalesId) {
           const savedId = getSavedSalesId();
           if (
@@ -5100,7 +5332,6 @@
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0, w, h);
 
-            // Try WebP first (best quality/size ratio), fallback to JPEG
             canvas.toBlob(
               (webpBlob) => {
                 if (webpBlob && webpBlob.type === "image/webp") {
@@ -5142,7 +5373,7 @@
         const finalKB = Math.round(compressed.blob.size / 1024);
         const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${compressed.ext}`;
         const { error } = await sb.storage.from("templates").upload(path, compressed.blob, {
-          cacheControl: "31536000", // 1 Year CDN + Browser Cache
+          cacheControl: "31536000",
           contentType: compressed.contentType,
           upsert: true,
         });
@@ -5332,11 +5563,11 @@
               <td>
                 <div style="display:flex; gap:5px; align-items:center;">
                   <input type="tel" id="rptPhoneInp_${a.id}" class="form-control" dir="ltr" style="width:140px; padding:5px 8px; font-size:0.8rem;" value="${escapeHtml(c.phone)}" placeholder="010..." />
-                  <button type="button" class="btn btn-outline" style="padding:5px 8px; font-size:0.74rem;" onclick="saveSingleReportPhone('${a.id}')">💾</button>
+                  <button type="button" class="btn btn-outline" style="padding:5px 8px; min-height:34px; font-size:0.74rem;" onclick="saveSingleReportPhone('${a.id}')">💾</button>
                 </div>
               </td>
               <td>
-                <button type="button" class="btn ${c.showInReport ? "btn-success" : "btn-danger"}" style="padding:5px 10px; font-size:0.76rem;" onclick="toggleReportPhoneVisibility('${a.id}', ${!c.showInReport})">
+                <button type="button" class="btn ${c.showInReport ? "btn-success" : "btn-danger"}" style="padding:5px 10px; min-height:34px; font-size:0.76rem;" onclick="toggleReportPhoneVisibility('${a.id}', ${!c.showInReport})">
                   ${c.showInReport ? "🟢 يظهر بالتقرير" : "🚫 مخفي بالتقرير"}
                 </button>
               </td>
@@ -5570,8 +5801,8 @@
         const activeExh = getActiveExhibition();
         const exhTitle = activeExh ? `نسخ رابط معرض ${escapeHtml(activeExh.name)} فقط` : "نسخ رابط المعرض النشط فقط";
         return `<span style="display:inline-flex; gap:4px; flex-wrap:wrap; vertical-align:middle;">
-          <button type="button" class="btn btn-gold" style="padding:4px 8px; font-size:0.73rem;" title="${exhTitle}" onclick="copyAccountClientLink('${accId}', true)">📍 المعرض ده</button>
-          <button type="button" class="btn btn-primary" style="padding:4px 8px; font-size:0.73rem;" title="نسخ رابط عام لكل المعارض" onclick="copyAccountClientLink('${accId}', false)">🌍 كل المعارض</button>
+          <button type="button" class="btn btn-gold" style="padding:4px 8px; min-height:32px; font-size:0.73rem;" title="${exhTitle}" onclick="copyAccountClientLink('${accId}', true)">📍 المعرض ده</button>
+          <button type="button" class="btn btn-primary" style="padding:4px 8px; min-height:32px; font-size:0.73rem;" title="نسخ رابط عام لكل المعارض" onclick="copyAccountClientLink('${accId}', false)">🌍 كل المعارض</button>
         </span>`;
       }
 
@@ -5673,12 +5904,12 @@
         if (state.currentUser) {
           if (confirm("هل تريد تسجيل الخروج من حسابك الحالي؟")) {
             state.currentUser = null;
+            state.activeLeaderTeam = null;
             devPanelUnlocked = false;
             state.invitations = [];
             state.invitationsScope = "NONE";
             state.serverTotalInvitations = 0;
             state.developerSignupPass = "";
-            // Strip passwords from memory on logout
             state.accounts = state.accounts.map((a) => ({ ...a, password: undefined }));
             rebuildDerivedCaches();
             returnToWorkspace();
@@ -5783,7 +6014,7 @@
         const role = state.currentUser.role;
         if (role === "manager") showOnlyView("managerView");
         else if (role === "admin_broker") showOnlyView("adminBrokerView");
-        else if (role === "team_leader") showOnlyView("teamLeaderView");
+        else if (role === "team_leader" || accountHasRole(state.currentUser, "team_leader")) showOnlyView("teamLeaderView");
         else showOnlyView("personalPortalView");
         renderActiveViewOnly();
       }
@@ -6125,16 +6356,13 @@
         scheduleCanvasRender();
       }
 
-      // Rock-solid Duplicate Phone Check (Local Cache + Session Cache + RPC + Direct Table Fallback)
       async function fetchDuplicateIssuers(exhId, normPhone) {
         const foundLabels = new Set();
         const epKey = `${exhId}|${normPhone}`;
 
-        // 1. Check in-memory session cache (instant for recently issued tickets)
         const sessList = sessionIssuedByExhPhone.get(epKey) || [];
         sessList.forEach((lbl) => foundLabels.add(lbl));
 
-        // 2. Check full local cache if loaded (Manager / loaded user records)
         const localPrev = cache.invByExhPhone.get(epKey) || [];
         localPrev.forEach((inv) => {
           const own = getAccountById(inv.owner_account_id);
@@ -6144,7 +6372,6 @@
           return [...foundLabels];
         }
 
-        // 3. Query Supabase RPC first
         let rpcWorked = false;
         try {
           const { data, error } = await sb.rpc("check_phone_duplicate", {
@@ -6162,7 +6389,6 @@
           }
         } catch (e) {}
 
-        // 4. Direct lightweight table fallback if RPC errored or returned nothing
         if (!rpcWorked || foundLabels.size === 0) {
           try {
             const { data: rows, error: qErr } = await sb
@@ -6211,7 +6437,6 @@
           return;
         }
 
-        // Instant local/session preview before async check completes
         const epKey = `${activeExh.id}|${norm}`;
         const quickSet = new Set(sessionIssuedByExhPhone.get(epKey) || []);
         (cache.invByExhPhone.get(epKey) || []).forEach((inv) => {
@@ -6250,7 +6475,6 @@
         btn.textContent = "⏳ جاري التحقق من الرقم...";
 
         try {
-          // Verify duplicate phone right before issuing so it NEVER slips through silently
           const existingIssuers = await fetchDuplicateIssuers(exh.id, pCheck.normalized);
           if (existingIssuers.length > 0) {
             renderDuplicateNotice(existingIssuers, exh.name);
@@ -6277,7 +6501,6 @@
             lastIssuedTicket = inv;
             exh.next_seq = Number(inv.seq_number) + 1;
 
-            // Record in session duplicate cache immediately
             const epKey = `${exh.id}|${pCheck.normalized}`;
             const curSess = sessionIssuedByExhPhone.get(epKey) || [];
             const ownerLbl = `${owner.name} (${owner.code})`;
@@ -6782,7 +7005,7 @@
               <td dir="ltr" style="text-align:right;">${escapeHtml(inv.client_phone)}</td>
               <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv._displayDt}</td>
               <td>
-                <button type="button" class="btn btn-danger" style="padding:4px 10px; font-size:0.76rem;" onclick="deleteInvitationById('${inv.id}')">🗑️ مسح</button>
+                <button type="button" class="btn btn-danger" style="padding:4px 10px; min-height:32px; font-size:0.76rem;" onclick="deleteInvitationById('${inv.id}')">🗑️ مسح</button>
               </td>
             </tr>`;
           })
@@ -6806,7 +7029,7 @@
           } else if (hasLegacy) {
             st.innerHTML = `ℹ️ لا يوجد تصميم مخصص لمعرض «${escapeHtml(exhName)}» (يستخدم التصميم القديم العام حالياً)`;
           } else {
-            st.textContent = `ℹ️ لا يوجد تصميم مخصص لمعرض «${exhName}» (يرجع أوتوماتيك للقالب الأساسي للمعرض)`;
+            st.textContent = `ℹ️ لا يوجد تصميم مخصص لمعرض «${escapeHtml(exhName)}» (يرجع أوتوماتيك للقالب الأساسي للمعرض)`;
           }
         }
         if (remBtn) {
@@ -6913,7 +7136,7 @@
               <td><div class="chips-grid">${exhChips}</div></td>
               <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
               <td>
-                <button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:0.74rem;" onclick="deleteDeveloperSalesRep('${s.id}')">🗑️ حذف</button>
+                <button type="button" class="btn btn-danger" style="padding:4px 9px; min-height:32px; font-size:0.74rem;" onclick="deleteDeveloperSalesRep('${s.id}')">🗑️ حذف</button>
               </td>
             </tr>`;
           })
@@ -7048,7 +7271,6 @@
             return;
           }
 
-          // Phone already inserted with account
           state.accounts.push(data);
           rebuildDerivedCaches();
           document.getElementById("abNewName").value = "";
@@ -7066,12 +7288,12 @@
             <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">📍 رابط معرض (${escapeHtml(activeExh?.name || "-")}):</div>
             <div class="link-copy-box" style="margin-top:4px;">
               <span style="flex:1; overflow:hidden; text-overflow:ellipsis;">${exhLink}</span>
-              <button type="button" class="btn btn-gold" style="padding:4px 9px; font-size:0.75rem;" onclick="copyAccountClientLink('${data.id}', true)">📋 نسخ</button>
+              <button type="button" class="btn btn-gold" style="padding:4px 9px; min-height:32px; font-size:0.75rem;" onclick="copyAccountClientLink('${data.id}', true)">📋 نسخ</button>
             </div>
             <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">🌍 رابط لكل المعارض:</div>
             <div class="link-copy-box" style="margin-top:4px;">
               <span style="flex:1; overflow:hidden; text-overflow:ellipsis;">${genLink}</span>
-              <button type="button" class="btn btn-primary" style="padding:4px 9px; font-size:0.75rem;" onclick="copyAccountClientLink('${data.id}', false)">📋 نسخ</button>
+              <button type="button" class="btn btn-primary" style="padding:4px 9px; min-height:32px; font-size:0.75rem;" onclick="copyAccountClientLink('${data.id}', false)">📋 نسخ</button>
             </div>
           `;
           renderAdminBrokerPanel();
@@ -7142,7 +7364,7 @@
                 <td>${byExh || '<span style="color:var(--text-muted);">0 دعوات</span>'}</td>
                 <td>
                   <div style="display:flex; gap:4px; flex-wrap:wrap; align-items:center;">
-                    <button type="button" class="btn btn-outline" style="padding:4px 8px; font-size:0.73rem;" onclick="openPartnerTemplateModal('${p.id}')">🎨 تصميم${tplCnt > 0 ? ` (${tplCnt})` : ""}</button>
+                    <button type="button" class="btn btn-outline" style="padding:4px 8px; min-height:32px; font-size:0.73rem;" onclick="openPartnerTemplateModal('${p.id}')">🎨 تصميم${tplCnt > 0 ? ` (${tplCnt})` : ""}</button>
                     ${renderDualLinkButtonsHtml(p.id)}
                   </div>
                 </td>
@@ -7264,9 +7486,9 @@
           if (hasSpecific) {
             st.innerHTML = `✅ يوجد تصميم مخصص لمعرض «${escapeHtml(exhName)}» — <a href="${escapeHtml(parsed.byExh[exhId])}" target="_blank" rel="noopener noreferrer" style="color:#fcd34d; text-decoration:underline;">معاينة ↗</a>`;
           } else if (hasLegacy) {
-            st.textContent = `ℹ️ لا يوجد تصميم مخصص لمعرض «${exhName}» (يستخدم التصميم القديم العام)`;
+            st.textContent = `ℹ️ لا يوجد تصميم مخصص لمعرض «${escapeHtml(exhName)}» (يستخدم التصميم القديم العام)`;
           } else {
-            st.textContent = `ℹ️ يرجع أوتوماتيك للقالب الأساسي لمعرض «${exhName}»`;
+            st.textContent = `ℹ️ يرجع أوتوماتيك للقالب الأساسي لمعرض «${escapeHtml(exhName)}»`;
           }
         }
         if (remBtn) {
@@ -7331,15 +7553,42 @@
         renderAdminBrokerPanel();
       }
 
-      // ==================== TEAM LEADER DASHBOARD ====================
+      // ==================== TEAM LEADER DASHBOARD (MULTI-TEAM) ====================
+      function selectLeaderManagedTeam(teamName) {
+        state.activeLeaderTeam = teamName;
+        renderTeamLeaderDashboard();
+      }
+
       function renderTeamLeaderDashboard() {
         const u = state.currentUser;
-        if (!u || u.role !== "team_leader") return;
-        const teamName = u.team || "المعرض";
+        if (!u || !accountHasRole(u, "team_leader")) return;
+
+        const managedTeams = getLeaderManagedTeams(u);
+        if (!state.activeLeaderTeam || !managedTeams.includes(state.activeLeaderTeam)) {
+          state.activeLeaderTeam = managedTeams[0];
+        }
+        const teamName = state.activeLeaderTeam;
         const activeExh = getActiveExhibition();
 
         document.getElementById("tlHeaderTitle").textContent =
           `🎖️ لوحة التيم ليدر: ${u.name} (${u.code})`;
+
+        const switcherWrap = document.getElementById("tlTeamSwitcherWrap");
+        const switcherPills = document.getElementById("tlTeamSwitcherPills");
+        if (switcherWrap && switcherPills) {
+          if (managedTeams.length > 1) {
+            switcherWrap.style.display = "block";
+            switcherPills.innerHTML = managedTeams
+              .map(
+                (t) =>
+                  `<button type="button" class="chip-btn ${t === teamName ? "selected" : ""}" onclick="selectLeaderManagedTeam('${escapeHtml(t).replace(/'/g, "\\'")}')">🏷️ ${escapeHtml(t)}</button>`
+              )
+              .join("");
+          } else {
+            switcherWrap.style.display = "none";
+          }
+        }
+
         document.getElementById("tlKpiTeamName").textContent = teamName;
 
         const currPassEl = document.getElementById("tlCurrPassDisplay");
@@ -7381,8 +7630,8 @@
                 <td><span class="badge badge-success">${actC}</span></td>
                 <td><strong>${allC}</strong></td>
                 <td style="white-space:nowrap;">
-                  <button type="button" class="btn btn-outline order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\'")}', '${s.id}', -1)" title="رفع للأعلى">⬆️</button>
-                  <button type="button" class="btn btn-outline order-btn" ${idx === teamSales.length - 1 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\'")}', '${s.id}', 1)" title="إنزال للأسفل">⬇️</button>
+                  <button type="button" class="btn btn-outline order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\\'")}', '${s.id}', -1)" title="رفع للأعلى">⬆️</button>
+                  <button type="button" class="btn btn-outline order-btn" ${idx === teamSales.length - 1 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\\'")}', '${s.id}', 1)" title="إنزال للأسفل">⬇️</button>
                 </td>
               </tr>`;
             })
@@ -7394,11 +7643,11 @@
         const prevS = sSel.value || "ALL";
         const prevE = eSel.value || "ALL";
 
-        sSel.innerHTML = `<option value="ALL">👥 كل سيلز التيم</option>`;
+        sSel.innerHTML = `<option value="ALL">👥 كل سيلز التيم (${escapeHtml(teamName)})</option>`;
         teamSales.forEach((s) => {
           sSel.innerHTML += `<option value="${s.id}">${escapeHtml(s.code)} — ${escapeHtml(s.name)}</option>`;
         });
-        sSel.value = prevS;
+        sSel.value = teamSales.some((s) => s.id === prevS) ? prevS : "ALL";
 
         eSel.innerHTML = `<option value="ALL">🌍 كل المعارض</option>`;
         state.exhibitions.forEach((ex) => {
@@ -7454,8 +7703,8 @@
 
       function renderTeamLeaderClientsTable() {
         const u = state.currentUser;
-        if (!u || u.role !== "team_leader") return;
-        const teamName = u.team || "المعرض";
+        if (!u || !accountHasRole(u, "team_leader")) return;
+        const teamName = state.activeLeaderTeam || getLeaderManagedTeams(u)[0];
         const teamSalesIds = new Set(
           state.accounts
             .filter((a) => a.role === "sales" && (a.team || "المعرض") === teamName)
@@ -7645,6 +7894,8 @@
             )
             .join("");
         }
+
+        syncAddAccountManagedTeamsVisibility();
       }
 
       async function saveTeamsListToSupabase() {
@@ -7680,7 +7931,7 @@
         await saveTeamsListToSupabase();
       }
 
-      // ==================== MANAGER DASHBOARD (LAZY TAB RENDERING) ====================
+      // ==================== MANAGER DASHBOARD ====================
       function switchManagerTab(tabId, btnEl) {
         activeManagerTab = tabId;
         document.querySelectorAll(".admin-page").forEach((p) => p.classList.remove("active"));
@@ -7839,20 +8090,26 @@
       function renderMgrAchievements() {
         const activeExh = getActiveExhibition();
 
-        // 1. Sales Achievements: Grouped by Teams + Team Leader + Manual Order (Strongest to Weakest)
         const salesContainer = document.getElementById("mgrSalesAchContainer");
         const allTeamNames = [...state.teamsList];
         state.accounts.forEach((a) => {
-          if (a.role === "sales" || a.role === "team_leader") {
+          if (a.role === "sales" || accountHasRole(a, "team_leader")) {
             const t = a.team || "المعرض";
             if (!allTeamNames.includes(t)) allTeamNames.push(t);
+            if (Array.isArray(a.managed_teams)) {
+              a.managed_teams.forEach((mt) => {
+                if (mt && !allTeamNames.includes(mt)) allTeamNames.push(mt);
+              });
+            }
           }
         });
 
         const teamBlocksHtml = allTeamNames
           .map((teamName) => {
             const leaders = state.accounts.filter(
-              (a) => a.role === "team_leader" && (a.team || "المعرض") === teamName
+              (a) =>
+                accountHasRole(a, "team_leader") &&
+                getLeaderManagedTeams(a).includes(teamName)
             );
             const teamSales = getOrderedTeamSales(teamName);
             if (teamSales.length === 0 && leaders.length === 0) return "";
@@ -7886,7 +8143,7 @@
                   <td><span class="badge badge-success">${actC}</span></td>
                   <td><strong>${allC}</strong></td>
                   <td>
-                    <button type="button" class="btn ${s.hide_in_sitting ? "btn-danger" : "btn-success"}" style="padding:4px 9px; font-size:0.74rem;" onclick="toggleHideInSitting('${s.id}', ${!s.hide_in_sitting})">
+                    <button type="button" class="btn ${s.hide_in_sitting ? "btn-danger" : "btn-success"}" style="padding:4px 9px; min-height:32px; font-size:0.74rem;" onclick="toggleHideInSitting('${s.id}', ${!s.hide_in_sitting})">
                       ${s.hide_in_sitting ? "🚫 مخفي" : "🟢 ظاهر"}
                     </button>
                   </td>
@@ -7930,7 +8187,6 @@
           teamBlocksHtml ||
           `<div style="text-align:center; color:var(--text-muted); padding:18px;">لا يوجد سيلز مسجلين بعد.</div>`;
 
-        // 2. Developers Achievements: Independent Block per Company (sorted by total desc) + Dev Sales Breakdown Table
         const devContainer = document.getElementById("mgrDevsAchContainer");
         const devsWithTotals = state.accounts
           .filter((a) => a.role === "developer")
@@ -8168,28 +8424,24 @@
         const match = (txt) => !q || String(txt).toLowerCase().includes(q);
         let html = `<option value="">-- اختر للاستثناء --</option>`;
 
-        // 1. Teams
         const teamOpts = state.teamsList
           .filter((t) => match(`تيم ${t}`))
           .map((t) => `<option value="team::${escapeHtml(t)}">🏷️ تيم: ${escapeHtml(t)}</option>`)
           .join("");
         if (teamOpts) html += `<optgroup label="🏷️ التيمات (يستثني كل سيلز التيم)">${teamOpts}</optgroup>`;
 
-        // 2. Developer Companies
         const devOpts = sortAccountsByCode(state.accounts.filter((a) => a.role === "developer"))
           .filter((d) => match(`${d.name} ${d.code}`))
           .map((d) => `<option value="developer::${d.id}">🏗️ شركة: ${escapeHtml(d.name)} (${escapeHtml(d.code)})</option>`)
           .join("");
         if (devOpts) html += `<optgroup label="🏗️ الشركات المطورة (مع سيلز الشركة)">${devOpts}</optgroup>`;
 
-        // 3. Admin Brokers
         const abOpts = sortAccountsByCode(state.accounts.filter((a) => a.role === "admin_broker"))
           .filter((a) => match(`${a.name} ${a.code}`))
           .map((a) => `<option value="admin_broker::${a.id}">🤝 أدمن بروكر: ${escapeHtml(a.name)} (${escapeHtml(a.code)})</option>`)
           .join("");
         if (abOpts) html += `<optgroup label="🤝 الأدمن بروكر (مع فريقه)">${abOpts}</optgroup>`;
 
-        // 4. Individual Accounts
         const accOpts = sortAccountsByCode(
           state.accounts.filter((a) => a.role !== "manager" && a.role !== "team_leader")
         )
@@ -8349,8 +8601,8 @@
               </td>
               <td dir="ltr" style="text-align:right; font-size:0.76rem;">${inv._displayDt}</td>
               <td>
-                <button type="button" class="btn btn-outline" style="padding:4px 8px; font-size:0.74rem;" onclick="downloadOldInvitation('${inv.id}')">⬇️</button>
-                <button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteInvitationById('${inv.id}')">🗑️</button>
+                <button type="button" class="btn btn-outline" style="padding:4px 8px; min-height:32px; font-size:0.74rem;" onclick="downloadOldInvitation('${inv.id}')">⬇️</button>
+                <button type="button" class="btn btn-danger" style="padding:4px 8px; min-height:32px; font-size:0.74rem;" onclick="deleteInvitationById('${inv.id}')">🗑️</button>
               </td>
             </tr>`;
           })
@@ -8521,6 +8773,11 @@
 
         const addPhone = normalizePhone(document.getElementById("mgrAddPhone")?.value || "");
         const addShowPhone = document.getElementById("mgrAddShowPhone")?.checked !== false;
+        const expoRoles = readCheckedValues("mgrAddExpoRolesGrid").filter((r) => r !== role);
+        const isLeader = role === "team_leader" || expoRoles.includes("team_leader");
+        let managedTeams = isLeader ? readCheckedValues("mgrAddManagedTeamsGrid") : [];
+        if (isLeader && managedTeams.length === 0) managedTeams = [team];
+        const canEditRequest = Boolean(document.getElementById("mgrAddCanEditReq")?.checked);
 
         const { data, error } = await sb
           .from("accounts")
@@ -8532,13 +8789,16 @@
             team,
             phone: addPhone,
             show_phone_in_report: addShowPhone,
+            expo_roles: expoRoles,
+            managed_teams: managedTeams,
+            can_edit_request: canEditRequest,
           })
           .select()
           .single();
 
         if (error) {
           if (error.code === "23505") return alert("❌ الكود أو الباسورد موجود بالفعل!");
-          return alert("❌ خطأ أثناء الإضافة!");
+          return alert("❌ خطأ أثناء الإضافة: " + (error.message || "تأكد من تشغيل سطر SQL للأعمدة الجديدة في Supabase"));
         }
         if (!cache.accountsById.has(data.id)) state.accounts.push(data);
         rebuildDerivedCaches();
@@ -8546,6 +8806,11 @@
         document.getElementById("mgrAddCode").value = "";
         document.getElementById("mgrAddPass").value = "";
         if (document.getElementById("mgrAddPhone")) document.getElementById("mgrAddPhone").value = "";
+        if (document.getElementById("mgrAddCanEditReq")) document.getElementById("mgrAddCanEditReq").checked = false;
+        document.querySelectorAll('#mgrAddExpoRolesGrid input[type="checkbox"]').forEach((cb) => {
+          cb.checked = false;
+        });
+        syncAddAccountManagedTeamsVisibility();
         renderActiveViewOnly();
         alert(`✅ تم إضافة (${data.name}) — الكود: ${data.code} | الباسورد: ${data.password}`);
       }
@@ -8555,7 +8820,7 @@
         const q = (document.getElementById("mgrAccSearch")?.value || "").trim().toLowerCase();
         const list = sortAccountsByCode(
           state.accounts.filter((a) => {
-            if (roleF !== "ALL" && a.role !== roleF) return false;
+            if (roleF !== "ALL" && a.role !== roleF && !accountHasRole(a, roleF)) return false;
             if (q && !`${a.name} ${a.code} ${a.password || ""}`.toLowerCase().includes(q)) return false;
             return true;
           })
@@ -8565,29 +8830,40 @@
         tbody.innerHTML = list
           .map((a) => {
             const parent = getAccountById(a.parent_admin_id);
-            const meta = parent ? `تبع: ${parent.name} (${parent.code})` : a.team || "-";
+            const managed = accountHasRole(a, "team_leader") ? getLeaderManagedTeams(a) : [];
+            const meta = parent
+              ? `تبع: ${parent.name} (${parent.code})`
+              : managed.length > 0
+              ? `يدير: ${managed.join(" + ")}`
+              : a.team || "-";
+            const extraRoles = getAccountExpoRoles(a);
+            const extraBadges = extraRoles
+              .map((r) => `<span class="badge badge-gold" style="font-size:0.68rem; margin:2px 0 0 3px;">+ ${getRoleLabel(r)}</span>`)
+              .join("");
+            const editReqBadge = a.can_edit_request
+              ? `<span class="badge badge-mint" style="font-size:0.68rem; margin:2px 0 0 3px;">✏️ تعديل ريكويست</span>`
+              : "";
             const contact = getAccountContact(a.id);
             const phoneCell = contact.phone
               ? `<div dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(contact.phone)}</div><span class="badge ${contact.showInReport ? "badge-success" : "badge-danger"}" style="font-size:0.68rem;">${contact.showInReport ? "📱 بالتقرير" : "🚫 مخفي"}</span>`
               : `<span style="color:var(--text-muted); font-size:0.75rem;">-</span>`;
             return `
             <tr>
-              <td>${getRoleLabel(a.role)}</td>
+              <td>
+                <div>${getRoleLabel(a.role)}</div>
+                ${extraBadges || editReqBadge ? `<div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:2px;">${extraBadges}${editReqBadge}</div>` : ""}
+              </td>
               <td><span class="badge badge-mint">${escapeHtml(a.code)}</span></td>
               <td style="font-weight:800;">${escapeHtml(a.name)}</td>
               <td>${phoneCell}</td>
               <td dir="ltr" style="font-family:monospace; color:#fcd34d;">${escapeHtml(a.password || "-")}</td>
               <td style="font-size:0.78rem;">${escapeHtml(meta)}</td>
               <td style="white-space:nowrap;">
-                ${
-                  hasClientLink(a)
-                    ? `${renderDualLinkButtonsHtml(a.id)} `
-                    : ""
-                }
-                <button type="button" class="btn btn-outline" style="padding:4px 9px; font-size:0.75rem;" onclick="openEditAccountModal('${a.id}')">✏️ تعديل</button>
+                ${hasClientLink(a) ? `${renderDualLinkButtonsHtml(a.id)} ` : ""}
+                <button type="button" class="btn btn-outline" style="padding:4px 9px; min-height:32px; font-size:0.75rem;" onclick="openEditAccountModal('${a.id}')">✏️ تعديل</button>
                 ${
                   a.role !== "manager" && a.role !== "company"
-                    ? `<button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:0.75rem;" onclick="deleteAccountById('${a.id}')">🗑️</button>`
+                    ? `<button type="button" class="btn btn-danger" style="padding:4px 9px; min-height:32px; font-size:0.75rem;" onclick="deleteAccountById('${a.id}')">🗑️</button>`
                     : ""
                 }
               </td>
@@ -8613,6 +8889,23 @@
             `<option value="${escapeHtml(a.team)}">${escapeHtml(a.team)}</option>`;
         }
         document.getElementById("editAccTeam").value = a.team || state.teamsList[0];
+
+        const extraRoles = new Set(getAccountExpoRoles(a));
+        document
+          .querySelectorAll('#editAccExpoRolesGrid input[type="checkbox"]')
+          .forEach((cb) => {
+            cb.checked = extraRoles.has(cb.value);
+          });
+
+        const managedTeams = Array.isArray(a.managed_teams) && a.managed_teams.length > 0
+          ? a.managed_teams
+          : [a.team || state.teamsList[0]];
+        populateManagedTeamsGrid("editAccManagedTeamsGrid", managedTeams);
+        syncEditAccountManagedTeamsVisibility();
+
+        const canEditEl = document.getElementById("editAccCanEditReq");
+        if (canEditEl) canEditEl.checked = Boolean(a.can_edit_request);
+
         document.getElementById("editAccountModal").style.display = "flex";
       }
 
@@ -8625,6 +8918,12 @@
         const phone = normalizePhone(document.getElementById("editAccPhone").value || "");
         const showPhone = document.getElementById("editAccShowPhone").checked;
         const team = document.getElementById("editAccTeam").value;
+
+        const expoRoles = readCheckedValues("editAccExpoRolesGrid").filter((r) => r !== role);
+        const isLeader = role === "team_leader" || expoRoles.includes("team_leader");
+        let managedTeams = isLeader ? readCheckedValues("editAccManagedTeamsGrid") : [];
+        if (isLeader && managedTeams.length === 0) managedTeams = [team];
+        const canEditRequest = Boolean(document.getElementById("editAccCanEditReq")?.checked);
 
         if (!name || !code || !password) return alert("⚠️ الاسم والكود والباسورد مطلوبة!");
         if (password === state.developerSignupPass)
@@ -8640,6 +8939,9 @@
             team,
             phone,
             show_phone_in_report: showPhone,
+            expo_roles: expoRoles,
+            managed_teams: managedTeams,
+            can_edit_request: canEditRequest,
           })
           .eq("id", id)
           .select()
@@ -8647,7 +8949,7 @@
 
         if (error) {
           if (error.code === "23505") return alert("❌ الكود أو الباسورد محجوز لحساب تاني!");
-          return alert("❌ تعذر التعديل!");
+          return alert("❌ تعذر التعديل: " + (error.message || "تأكد من تشغيل سطر SQL للأعمدة الجديدة في Supabase"));
         }
         const idx = state.accounts.findIndex((a) => a.id === id);
         if (idx >= 0) state.accounts[idx] = data;
@@ -8738,7 +9040,7 @@
             <td style="font-size:0.78rem;">💰 ${escapeHtml(o.totalPrice || "-")}<br>🔑 مقدم: ${escapeHtml(o.downpayment || "-")}</td>
             <td style="font-size:0.78rem;">📅 ${escapeHtml(o.installment || "-")}<br>⏳ ${escapeHtml(o.years || "-")}</td>
             <td><span class="badge badge-gold">${escapeHtml(o.expectedRoi || "-")}</span></td>
-            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('${u.id}', '${o.id}', 'DEV')">🗑️</button></td>
+            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; min-height:32px; font-size:0.74rem;" onclick="deleteOfferFromBank('${u.id}', '${o.id}', 'DEV')">🗑️</button></td>
           </tr>`
           )
           .join("");
@@ -8771,7 +9073,7 @@
             <td><strong>${escapeHtml(o.projectName)}</strong> <span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span></td>
             <td style="font-size:0.78rem;">${escapeHtml(o.area || "-")} | ${escapeHtml(o.totalPrice || "-")}</td>
             <td style="font-size:0.78rem;">مقدم: ${escapeHtml(o.downpayment || "-")} | ${escapeHtml(o.years || "-")}</td>
-            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('${escapeHtml(ownerKey).replace(/'/g, "\'")}', '${o.id}', 'MGR')">🗑️</button></td>
+            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; min-height:32px; font-size:0.74rem;" onclick="deleteOfferFromBank('${escapeHtml(ownerKey).replace(/'/g, "\\'")}', '${o.id}', 'MGR')">🗑️</button></td>
           </tr>`
           )
           .join("");
@@ -8855,7 +9157,7 @@
         }
       }
 
-      // ==================== STAFF EXHIBITION ASSIGNMENT (MULTI-EXH) ====================
+      // ==================== STAFF EXHIBITION ASSIGNMENT (MULTI-EXH & EXTRA ROLES) ====================
       function getAccountActiveExhs(acc) {
         if (!acc || !Array.isArray(acc.active_exhibition_ids)) return [];
         return acc.active_exhibition_ids;
@@ -8913,7 +9215,7 @@
         container.innerHTML = groups
           .map((g) => {
             const members = sortAccountsByCode(
-              state.accounts.filter((a) => a.role === g.role)
+              state.accounts.filter((a) => accountHasRole(a, g.role))
             );
             if (members.length === 0) return "";
             const assignedCount = members.filter((m) =>
@@ -8930,8 +9232,9 @@
                 const conflictBadge = otherActive
                   ? ` <span class="badge badge-gold" style="font-size:0.66rem; padding:1px 5px;">⚠️ في: ${escapeHtml(otherActive.name)}</span>`
                   : "";
+                const extraTag = m.role !== g.role ? ` <span style="opacity:0.75; font-size:0.7rem;">(إضافي)</span>` : "";
                 return `<button type="button" class="chip-btn ${isHere ? "selected" : ""}" onclick="toggleAccountExhibitionAssignment('${m.id}', '${exh.id}')">
-                  ${isHere ? "✅" : "⬜"} ${escapeHtml(m.code)} — ${escapeHtml(m.name)}${conflictBadge}
+                  ${isHere ? "✅" : "⬜"} ${escapeHtml(m.code)} — ${escapeHtml(m.name)}${extraTag}${conflictBadge}
                 </button>`;
               })
               .join("");
@@ -9012,11 +9315,11 @@
           <tr>
             <td style="font-weight:800;">📍 ${escapeHtml(e.name)} (#${e.next_seq})</td>
             <td>
-              <button type="button" class="btn ${e.hide_in_sales ? "btn-danger" : "btn-success"}" style="padding:4px 9px; font-size:0.74rem;" onclick="toggleExhibitionVisibility('${e.id}', ${!e.hide_in_sales})">
+              <button type="button" class="btn ${e.hide_in_sales ? "btn-danger" : "btn-success"}" style="padding:4px 9px; min-height:32px; font-size:0.74rem;" onclick="toggleExhibitionVisibility('${e.id}', ${!e.hide_in_sales})">
                 ${e.hide_in_sales ? "🚫 مخفي" : "🟢 ظاهر"}
               </button>
             </td>
-            <td><button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:0.74rem;" onclick="deleteExhibitionById('${e.id}')">🗑️</button></td>
+            <td><button type="button" class="btn btn-danger" style="padding:4px 9px; min-height:32px; font-size:0.74rem;" onclick="deleteExhibitionById('${e.id}')">🗑️</button></td>
           </tr>`
           )
           .join("");
@@ -9341,7 +9644,6 @@
         if (activeManagerTab === "mgrTabDevOnly") renderDevOnlyPanel();
       }
 
-      // ---- Design Guide PDF Upload / Link ----
       async function handleDesignGuidePdfUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -9399,7 +9701,6 @@
         alert("✅ تم إزالة رابط دليل التصميم.");
       }
 
-      // ---- Full JSON Backup (Zero Server Load + Clean without temporary '_' keys) ----
       function downloadFullBackupJSON() {
         const payload = {
           format: "balmetr_v2_backup",
@@ -9434,7 +9735,6 @@
         setTimeout(() => URL.revokeObjectURL(url), 4000);
       }
 
-      // ---- Duplicate Phone Detector (Same Exhibition) ----
       function scanDuplicatePhonesInExh() {
         const exhFilter = document.getElementById("devDupExhFilter")?.value || "ALL";
         const box = document.getElementById("devDupResultsBox");
@@ -9474,7 +9774,7 @@
                     <span class="badge badge-gold" style="margin-right:4px;">${escapeHtml(own?.name || "-")} (${escapeHtml(own?.code || "-")})</span>
                     <span dir="ltr" style="color:var(--text-muted); margin-right:4px;">${inv._displayDt}</span>
                   </div>
-                  <button type="button" class="btn btn-danger" style="padding:2px 8px; font-size:0.72rem;" onclick="deleteDuplicateInvAndRescan('${inv.id}')">🗑️</button>
+                  <button type="button" class="btn btn-danger" style="padding:2px 8px; min-height:28px; font-size:0.72rem;" onclick="deleteDuplicateInvAndRescan('${inv.id}')">🗑️</button>
                 </div>`;
               })
               .join("");
@@ -9499,7 +9799,6 @@
         scanDuplicatePhonesInExh();
       }
 
-      // ---- Marketing Phones Extractor (WhatsApp Campaigns) ----
       function getMarketingPhonesList() {
         const exhFilter = document.getElementById("devPhonesExhFilter")?.value || "ALL";
         const uniqueOnly = document.getElementById("devPhonesUniqueCheck")?.checked !== false;
@@ -9591,7 +9890,6 @@
           }
 
           if (isNewV2) {
-            // 1. Merge system settings if present
             if (parsed.system_settings) {
               const s = parsed.system_settings;
               if (s.design_dimensions) {
@@ -9618,7 +9916,6 @@
                   value: JSON.stringify(s.team_sales_order),
                 });
               }
-              // account_contacts migrated to accounts.phone & accounts.show_phone_in_report
               if (s.journey_report_config && typeof s.journey_report_config === "object") {
                 await sb.from("system_settings").upsert({
                   key: "journey_report_config",
@@ -9627,7 +9924,6 @@
               }
             }
 
-            // 2. Merge exhibitions (match by id or name)
             const exhIdMap = {};
             for (const oe of parsed.exhibitions || []) {
               const existing = state.exhibitions.find(
@@ -9656,7 +9952,6 @@
               }
             }
 
-            // 3. Merge accounts (match by id or code)
             const accIdMap = {};
             for (const oa of parsed.accounts || []) {
               const codeUp = String(oa.code || "").trim().toUpperCase();
@@ -9698,7 +9993,6 @@
               }
             }
 
-            // 4. Merge missing invitations
             const existingSigs = new Set(
               state.invitations.map(
                 (i) => `${i.exhibition_id}|${i.seq_number}|${i._normPhone || normalizePhone(i.client_phone)}`
@@ -9756,7 +10050,6 @@
             return;
           }
 
-          // ---- Legacy Format (system23_11.json / balmeter_vip_system) ----
           const src = parsed.balmeter_vip_system || parsed;
 
           const exhIdMap = {};
