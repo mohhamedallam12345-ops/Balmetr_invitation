@@ -1550,6 +1550,107 @@
             </div>
           </div>
 
+          <!-- Developer Offers Bank (Shown ONLY for Developer role) -->
+          <div
+            id="portalDevOffersWrap"
+            class="control-section-box"
+            style="display: none"
+          >
+            <div class="control-section-title">
+              <span>🏢 بنك عروض شركتك (يظهر لسيلز شركتك في المعرض — حتى 20 عرض)</span>
+              <span id="portalDevOffersCountBadge" class="badge badge-gold">0 / 20 عرض</span>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 8px;
+                margin-bottom: 10px;
+              "
+            >
+              <input
+                type="text"
+                id="devOfferProject"
+                class="form-control"
+                maxlength="40"
+                placeholder="اسم المشروع *"
+              />
+              <select id="devOfferUnitType" class="form-control">
+                <option value="سكني">🏠 سكني</option>
+                <option value="تجاري">🛍️ تجاري</option>
+                <option value="إداري">🏢 إداري</option>
+                <option value="فندقي">🏨 فندقي</option>
+                <option value="طبي">➕ طبي</option>
+              </select>
+              <input
+                type="text"
+                id="devOfferArea"
+                class="form-control"
+                maxlength="20"
+                placeholder="المساحة (مثال: 75 م²)"
+              />
+              <input
+                type="text"
+                id="devOfferTotal"
+                class="form-control"
+                maxlength="25"
+                placeholder="إجمالي السعر"
+              />
+              <input
+                type="text"
+                id="devOfferDown"
+                class="form-control"
+                maxlength="25"
+                placeholder="المقدم (مثال: 10%)"
+              />
+              <input
+                type="text"
+                id="devOfferInstallment"
+                class="form-control"
+                maxlength="25"
+                placeholder="القسط / الدفعة"
+              />
+              <input
+                type="text"
+                id="devOfferYears"
+                class="form-control"
+                maxlength="20"
+                placeholder="عدد السنوات (مثال: 7 سنين)"
+              />
+              <input
+                type="text"
+                id="devOfferRoi"
+                class="form-control"
+                maxlength="25"
+                placeholder="العائد المتوقع (اختياري)"
+              />
+            </div>
+            <button
+              type="button"
+              id="devAddOfferBtn"
+              class="btn btn-gold"
+              style="margin-bottom: 12px"
+              onclick="addOfferToBank('DEV')"
+            >
+              ➕ إضافة العرض لبنك العروض
+            </button>
+            <div class="table-responsive">
+              <table style="min-width: 580px">
+                <thead>
+                  <tr>
+                    <th>المشروع والنوع</th>
+                    <th>المساحة</th>
+                    <th>الإجمالي / المقدم</th>
+                    <th>القسط والسنوات</th>
+                    <th>العائد</th>
+                    <th>حذف</th>
+                  </tr>
+                </thead>
+                <tbody id="portalDevOffersTbody"></tbody>
+              </table>
+            </div>
+          </div>
+
           <!-- Self-Service Password Settings Card -->
           <div class="control-section-box">
             <div class="control-section-title">🔐 إعدادات كلمة السر الخاصة بك</div>
@@ -1925,6 +2026,7 @@
               <div class="chip-btn" onclick="toggleDevChip(this, 'area', '6 أكتوبر')">6 أكتوبر</div>
               <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'الساحل الشمالي')">الساحل الشمالي</div>
               <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'مدينة نصر والقاهرة')">مدينة نصر والقاهرة</div>
+              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'بلد المعرض (المدن الجديدة)')">🏙️ بلد المعرض (المدن الجديدة)</div>
               <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'أخرى')">✨ أخرى</div>
             </div>
             <input
@@ -2674,6 +2776,9 @@
                 <select id="mgrAddRole" class="form-control">
                   <option value="sales">💼 سيلز عادي</option>
                   <option value="team_leader">🎖️ تيم ليدر (team_leader)</option>
+                  <option value="reception">🛎️ ريسبشن (reception)</option>
+                  <option value="usher">🚶 أشرز / موصلاتية (usher)</option>
+                  <option value="exh_manager">🎯 مدير معرض (exh_manager)</option>
                   <option value="admin_broker">🤝 أدمن بروكر (Admin_Broker)</option>
                   <option value="broker">🏢 بروكر مباشر</option>
                   <option value="influencer">🌟 إنفلونسر مباشر</option>
@@ -2743,6 +2848,9 @@
                   <option value="ALL">الكل</option>
                   <option value="sales">السيلز</option>
                   <option value="team_leader">التيم ليدر</option>
+                  <option value="reception">الريسبشن</option>
+                  <option value="usher">الأشرز</option>
+                  <option value="exh_manager">مدير المعرض</option>
                   <option value="admin_broker">الأدمن بروكر</option>
                   <option value="broker">البروكر</option>
                   <option value="influencer">الإنفلونسر</option>
@@ -2812,6 +2920,135 @@
                 </thead>
                 <tbody id="mgrExhibitionsTbody"></tbody>
               </table>
+            </div>
+          </div>
+
+          <!-- Team Distribution & B.almetr Team Offers for Active Exhibition -->
+          <div class="workspace-grid" style="margin-bottom: 14px">
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-header">
+                <div class="card-title">
+                  ⚖️ نسب وتوزيع التيمات في (<span id="distExhNameLabel">-</span>)
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-gold"
+                  style="padding: 6px 12px; font-size: 0.78rem"
+                  onclick="saveTeamDistributionSettings()"
+                >
+                  💾 حفظ التوزيع
+                </button>
+              </div>
+              <p
+                style="
+                  font-size: 0.78rem;
+                  color: var(--text-muted);
+                  margin-bottom: 10px;
+                "
+              >
+                حدّد التيمات النشطة في هذا المعرض ووزن التوزيع (مثلاً: 1 للجمعية، 0 للوديعة، 1 للبروكر) ليستخدمه السيستم الكبير تلقائياً:
+              </p>
+              <div id="mgrTeamDistList"></div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-header">
+                <div class="card-title">
+                  🏷️ بنك عروض تيمات بالمتر (للسيستم الكبير)
+                </div>
+                <select
+                  id="mgrTeamOffersSelect"
+                  class="form-control"
+                  style="width: auto; min-width: 140px"
+                  onchange="renderManagerTeamOffersTable()"
+                ></select>
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                  gap: 6px;
+                  margin-bottom: 8px;
+                "
+              >
+                <input
+                  type="text"
+                  id="mgrOfferProject"
+                  class="form-control"
+                  maxlength="40"
+                  placeholder="اسم المشروع *"
+                />
+                <select id="mgrOfferUnitType" class="form-control">
+                  <option value="سكني">🏠 سكني</option>
+                  <option value="تجاري">🛍️ تجاري</option>
+                  <option value="إداري">🏢 إداري</option>
+                  <option value="فندقي">🏨 فندقي</option>
+                  <option value="طبي">➕ طبي</option>
+                </select>
+                <input
+                  type="text"
+                  id="mgrOfferArea"
+                  class="form-control"
+                  maxlength="20"
+                  placeholder="المساحة"
+                />
+                <input
+                  type="text"
+                  id="mgrOfferTotal"
+                  class="form-control"
+                  maxlength="25"
+                  placeholder="الإجمالي"
+                />
+                <input
+                  type="text"
+                  id="mgrOfferDown"
+                  class="form-control"
+                  maxlength="25"
+                  placeholder="المقدم"
+                />
+                <input
+                  type="text"
+                  id="mgrOfferInstallment"
+                  class="form-control"
+                  maxlength="25"
+                  placeholder="القسط"
+                />
+                <input
+                  type="text"
+                  id="mgrOfferYears"
+                  class="form-control"
+                  maxlength="20"
+                  placeholder="السنوات"
+                />
+                <input
+                  type="text"
+                  id="mgrOfferRoi"
+                  class="form-control"
+                  maxlength="25"
+                  placeholder="العائد"
+                />
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary btn-block"
+                style="margin-bottom: 10px; padding: 9px"
+                onclick="addOfferToBank('MGR')"
+              >
+                ➕ إضافة عرض للتيم المحدد
+              </button>
+              <div class="table-responsive">
+                <table style="min-width: 440px">
+                  <thead>
+                    <tr>
+                      <th>المشروع</th>
+                      <th>المساحة / الإجمالي</th>
+                      <th>السداد</th>
+                      <th>حذف</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mgrTeamOffersTbody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -3679,6 +3916,7 @@
         designGuidePdfUrl: "",
         teamsList: ["المعرض", "الجمعية", "الوديعة", "القاهرة"],
         teamSalesOrder: {},
+        offersBank: {},
         currentUser: null,
         publicHostAccount: null,
         publicLockedExhId: null,
@@ -3947,6 +4185,12 @@
 
             (setRes.data || []).forEach((row) => {
               if (row.key === "developer_signup_pass") state.developerSignupPass = row.value;
+              if (row.key && row.key.startsWith("offers::")) {
+                try {
+                  const parsed = JSON.parse(row.value);
+                  if (Array.isArray(parsed)) state.offersBank[row.key] = parsed;
+                } catch (e) {}
+              }
               if (row.key === "design_dimensions") state.designDimensions = row.value;
               if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
               if (row.key === "teams_list") {
@@ -4137,7 +4381,7 @@
           const [exhRes, accRes, setRes] = await Promise.all([
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
             sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url"]),
+            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url", `offers::${u.id}`]),
           ]);
           if (exhRes.error) throw exhRes.error;
           if (accRes.error) throw accRes.error;
@@ -4175,6 +4419,12 @@
               try {
                 const parsed = JSON.parse(row.value);
                 if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
+              } catch (e) {}
+            }
+            if (row.key && row.key.startsWith("offers::")) {
+              try {
+                const parsed = JSON.parse(row.value);
+                if (Array.isArray(parsed)) state.offersBank[row.key] = parsed;
               } catch (e) {}
             }
           });
@@ -4297,6 +4547,12 @@
               try {
                 const parsed = JSON.parse(newRow.value);
                 if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
+              } catch (e) {}
+            }
+            if (newRow.key && newRow.key.startsWith("offers::")) {
+              try {
+                const parsed = JSON.parse(newRow.value);
+                if (Array.isArray(parsed)) state.offersBank[newRow.key] = parsed;
               } catch (e) {}
             }
             scheduleActiveViewRender();
@@ -4764,6 +5020,9 @@
           manager: "👑 مانجر",
           sales: "💼 سيلز",
           team_leader: "🎖️ تيم ليدر",
+          reception: "🛎️ ريسبشن",
+          usher: "🚶 أشرز",
+          exh_manager: "🎯 مدير معرض",
           admin_broker: "🤝 أدمن بروكر",
           broker: "🏢 بروكر",
           influencer: "🌟 إنفلونسر",
@@ -4857,6 +5116,9 @@
         const prefixMap = {
           sales: "S",
           team_leader: "TL",
+          reception: "REC",
+          usher: "USH",
+          exh_manager: "EM",
           admin_broker: "A",
           broker: "B",
           influencer: "I",
@@ -5777,7 +6039,7 @@
           const qrX = (layout.qrX / 100) * canvas.width;
           const qrY = (layout.qrY / 100) * canvas.height;
           const qrSize = Math.round((layout.qrSize / 1080) * canvas.width);
-          const qrPayload = `BM|SEQ:${ticket?.seq_number || exh?.next_seq || 131}|OWN:${ownerAcc?.code || ""}|ADM:${adminAcc?.code || ""}|PH:${ticket?.client_phone || ""}`;
+          const qrPayload = `BM|EXH:${exh?.id || ""}|SEQ:${ticket?.seq_number || exh?.next_seq || 131}|OWN:${ownerAcc?.code || ""}|ADM:${adminAcc?.code || ""}|PH:${ticket?.client_phone || ""}${ticket?.id ? `|INV:${ticket.id}` : ""}`;
           drawQrOnCanvas(ctx, qrPayload, qrX, qrY, qrSize);
         }
       }
@@ -5918,12 +6180,21 @@
               )
             : [];
 
+        const devOffersWrap = document.getElementById("portalDevOffersWrap");
         if (devSalesWrap) {
           if (u.role === "developer") {
             devSalesWrap.style.display = "block";
             renderPortalDevSalesTable(myDevSales);
           } else {
             devSalesWrap.style.display = "none";
+          }
+        }
+        if (devOffersWrap) {
+          if (u.role === "developer") {
+            devOffersWrap.style.display = "block";
+            renderPortalDevOffersTable();
+          } else {
+            devOffersWrap.style.display = "none";
           }
         }
 
@@ -6938,6 +7209,9 @@
           renderManagerAccountsTable();
         } else if (activeManagerTab === "mgrTabStudio") {
           renderMgrExhibitionsTable();
+          renderTeamDistributionUI();
+          populateManagerTeamOffersSelect();
+          renderManagerTeamOffersTable();
           syncStudioControls();
           loadActiveTemplateImage();
         } else if (activeManagerTab === "mgrTabDevOnly") {
@@ -7865,6 +8139,205 @@
         alert("✅ تم حفظ أبعاد التصميم!");
       }
 
+      // ==================== OFFERS BANK (DEVELOPERS & TEAMS) ====================
+      function getOffersForKey(offerKey) {
+        return Array.isArray(state.offersBank?.[offerKey]) ? state.offersBank[offerKey] : [];
+      }
+
+      async function saveOffersForKey(offerKey, list) {
+        const { error } = await sb.from("system_settings").upsert({
+          key: offerKey,
+          value: JSON.stringify(list),
+        });
+        if (error) throw error;
+        state.offersBank[offerKey] = list;
+      }
+
+      function renderPortalDevOffersTable() {
+        const u = state.currentUser;
+        if (!u || u.role !== "developer") return;
+        const list = getOffersForKey(`offers::${u.id}`);
+        const badge = document.getElementById("portalDevOffersCountBadge");
+        const tbody = document.getElementById("portalDevOffersTbody");
+        if (badge) badge.textContent = `${list.length} / 20 عرض`;
+        if (!tbody) return;
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:14px;">لا توجد عروض مضافة بعد. أضف عروض شركتك لتظهر لسيلز شركتك في المعرض.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = list
+          .map(
+            (o) => `
+          <tr>
+            <td><strong>${escapeHtml(o.projectName)}</strong><br><span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span></td>
+            <td>${escapeHtml(o.area || "-")}</td>
+            <td style="font-size:0.78rem;">💰 ${escapeHtml(o.totalPrice || "-")}<br>🔑 مقدم: ${escapeHtml(o.downpayment || "-")}</td>
+            <td style="font-size:0.78rem;">📅 ${escapeHtml(o.installment || "-")}<br>⏳ ${escapeHtml(o.years || "-")}</td>
+            <td><span class="badge badge-gold">${escapeHtml(o.expectedRoi || "-")}</span></td>
+            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('offers::${u.id}', '${o.id}', 'DEV')">🗑️</button></td>
+          </tr>`
+          )
+          .join("");
+      }
+
+      function populateManagerTeamOffersSelect() {
+        const sel = document.getElementById("mgrTeamOffersSelect");
+        if (!sel) return;
+        const prev = sel.value || state.teamsList[0];
+        sel.innerHTML = state.teamsList
+          .map((t) => `<option value="${escapeHtml(t)}">🏷️ ${escapeHtml(t)}</option>`)
+          .join("");
+        if (prev && state.teamsList.includes(prev)) sel.value = prev;
+      }
+
+      function renderManagerTeamOffersTable() {
+        const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
+        const offerKey = `offers::team_${teamName}`;
+        const list = getOffersForKey(offerKey);
+        const tbody = document.getElementById("mgrTeamOffersTbody");
+        if (!tbody) return;
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:14px;">لا توجد عروض مضافة لتيم «${escapeHtml(teamName)}» بعد.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = list
+          .map(
+            (o) => `
+          <tr>
+            <td><strong>${escapeHtml(o.projectName)}</strong> <span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span></td>
+            <td style="font-size:0.78rem;">${escapeHtml(o.area || "-")} | ${escapeHtml(o.totalPrice || "-")}</td>
+            <td style="font-size:0.78rem;">مقدم: ${escapeHtml(o.downpayment || "-")} | ${escapeHtml(o.years || "-")}</td>
+            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('${escapeHtml(offerKey).replace(/'/g, "\'")}', '${o.id}', 'MGR')">🗑️</button></td>
+          </tr>`
+          )
+          .join("");
+      }
+
+      async function addOfferToBank(source) {
+        const pfx = source === "DEV" ? "devOffer" : "mgrOffer";
+        const projectName = (document.getElementById(`${pfx}Project`)?.value || "").trim();
+        const unitType = document.getElementById(`${pfx}UnitType`)?.value || "سكني";
+        const area = (document.getElementById(`${pfx}Area`)?.value || "").trim();
+        const totalPrice = (document.getElementById(`${pfx}Total`)?.value || "").trim();
+        const downpayment = (document.getElementById(`${pfx}Down`)?.value || "").trim();
+        const installment = (document.getElementById(`${pfx}Installment`)?.value || "").trim();
+        const years = (document.getElementById(`${pfx}Years`)?.value || "").trim();
+        const expectedRoi = (document.getElementById(`${pfx}Roi`)?.value || "").trim();
+
+        if (!projectName) return alert("⚠️ اكتب اسم المشروع أولاً!");
+
+        let offerKey = "";
+        if (source === "DEV") {
+          const u = state.currentUser;
+          if (!u) return;
+          offerKey = `offers::${u.id}`;
+        } else {
+          const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
+          offerKey = `offers::team_${teamName}`;
+        }
+
+        const current = getOffersForKey(offerKey);
+        if (current.length >= 20) {
+          return alert("⚠️ الحد الأقصى لبنك العروض هو 20 عرض فقط!");
+        }
+
+        const newOffer = {
+          id: `off_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          projectName,
+          unitType,
+          area,
+          totalPrice,
+          downpayment,
+          installment,
+          years,
+          expectedRoi,
+        };
+
+        const updated = [...current, newOffer];
+        try {
+          await saveOffersForKey(offerKey, updated);
+          ["Project", "Area", "Total", "Down", "Installment", "Years", "Roi"].forEach((fld) => {
+            const el = document.getElementById(`${pfx}${fld}`);
+            if (el) el.value = "";
+          });
+          if (source === "DEV") renderPortalDevOffersTable();
+          else renderManagerTeamOffersTable();
+          alert("✅ تم إضافة العرض وحفظه في بنك العروض بنجاح!");
+        } catch (err) {
+          console.error(err);
+          alert("❌ تعذر حفظ العرض!");
+        }
+      }
+
+      async function deleteOfferFromBank(offerKey, offerId, source) {
+        if (!confirm("هل تريد حذف هذا العرض؟")) return;
+        const current = getOffersForKey(offerKey);
+        const updated = current.filter((o) => o.id !== offerId);
+        try {
+          await saveOffersForKey(offerKey, updated);
+          if (source === "DEV") renderPortalDevOffersTable();
+          else renderManagerTeamOffersTable();
+        } catch (err) {
+          console.error(err);
+          alert("❌ تعذر الحذف!");
+        }
+      }
+
+      // ==================== EXHIBITION TEAM DISTRIBUTION RULES ====================
+      function renderTeamDistributionUI() {
+        const exh = getActiveExhibition();
+        const lbl = document.getElementById("distExhNameLabel");
+        const container = document.getElementById("mgrTeamDistList");
+        if (!exh || !container) return;
+        if (lbl) lbl.textContent = exh.name;
+
+        const savedDist = exh.layout_config?.teamDistribution || {};
+        container.innerHTML = state.teamsList
+          .map((t, idx) => {
+            const cfg = savedDist[t] || { active: true, weight: 1 };
+            return `
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; margin-bottom:7px;">
+              <label style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:0.84rem; cursor:pointer;">
+                <input type="checkbox" id="distTeamActive_${idx}" data-team="${escapeHtml(t)}" ${cfg.active !== false ? "checked" : ""} />
+                <span>🏷️ ${escapeHtml(t)}</span>
+              </label>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">النسبة:</span>
+                <input type="number" id="distTeamWeight_${idx}" class="form-control" min="0" max="20" value="${Number(cfg.weight ?? 1)}" style="width:70px; padding:5px 8px; text-align:center;" />
+              </div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      async function saveTeamDistributionSettings() {
+        const exh = getActiveExhibition();
+        if (!exh) return;
+        const dist = {};
+        state.teamsList.forEach((t, idx) => {
+          const active = document.getElementById(`distTeamActive_${idx}`)?.checked !== false;
+          const weight = Math.max(
+            0,
+            parseInt(document.getElementById(`distTeamWeight_${idx}`)?.value || "0", 10) || 0
+          );
+          dist[t] = { active, weight };
+        });
+
+        const updatedLayout = {
+          ...DEFAULT_LAYOUT,
+          ...(exh.layout_config || {}),
+          teamDistribution: dist,
+        };
+        const { error } = await sb
+          .from("exhibitions")
+          .update({ layout_config: updatedLayout })
+          .eq("id", exh.id);
+        if (error) return alert("❌ تعذر حفظ توزيع التيمات!");
+        exh.layout_config = updatedLayout;
+        alert(`✅ تم حفظ نسب التوزيع لمعرض «${exh.name}» بنجاح!`);
+      }
+
       function renderMgrExhibitionsTable() {
         const tbody = document.getElementById("mgrExhibitionsTbody");
         if (!tbody) return;
@@ -8033,6 +8506,7 @@
           qrY: Number(document.getElementById("qrYRange").value),
           showQr: document.getElementById("showQrCheck").checked,
           whatsappMsg: document.getElementById("studioWhatsappMsgInput")?.value || "",
+          teamDistribution: exh.layout_config?.teamDistribution || {},
         };
         syncStudioControls();
         scheduleCanvasRender();
