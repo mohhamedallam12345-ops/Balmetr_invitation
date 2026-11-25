@@ -4124,7 +4124,7 @@
 
       // Safe public columns (NO passwords exposed on public load)
       const PUBLIC_ACCOUNT_COLS =
-        "id,role,name,code,team,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
+        "id,role,name,code,team,phone,show_phone_in_report,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
 
       const CAIRO_DATE_FMT = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Africa/Cairo",
@@ -4180,7 +4180,7 @@
         teamsList: ["المعرض", "الجمعية", "الوديعة", "القاهرة"],
         teamSalesOrder: {},
         offersBank: {},
-        accountContacts: {},
+        offersLoadedForMgr: false,
         journeyReportConfig: {
           brandTitle: "B.almetr VIP | تقرير رحلة العميل",
           hotline: "01014440000",
@@ -4379,56 +4379,87 @@
         }
       }
 
-      // Tier 1: Lightweight Boot (~15 KB total, ZERO invitations, ZERO passwords)
+      // Unified clean settings parser (replaces all duplicated loops)
+      function applySettingsRows(rows) {
+        (rows || []).forEach((row) => {
+          if (!row || !row.key) return;
+          if (row.key === "developer_signup_pass" && state.currentUser?.role === "manager") {
+            state.developerSignupPass = row.value;
+          } else if (row.key === "design_dimensions") {
+            state.designDimensions = row.value;
+          } else if (row.key === "design_guide_pdf_url") {
+            state.designGuidePdfUrl = row.value || "";
+          } else if (row.key === "teams_list") {
+            try {
+              const p = JSON.parse(row.value);
+              if (Array.isArray(p) && p.length > 0) state.teamsList = p;
+            } catch (e) {}
+          } else if (row.key === "team_sales_order") {
+            try {
+              const p = JSON.parse(row.value);
+              if (p && typeof p === "object") state.teamSalesOrder = p;
+            } catch (e) {}
+          } else if (row.key === "journey_report_config") {
+            try {
+              const p = JSON.parse(row.value);
+              if (p && typeof p === "object") {
+                state.journeyReportConfig = { ...state.journeyReportConfig, ...p };
+              }
+            } catch (e) {}
+          }
+        });
+      }
+
+      // Tier 1: Ultra-Lean Boot (Ad visitors fetch ONLY exhibitions + host account; 0 settings queries!)
       async function loadPublicCoreData(showSplash = false) {
         if (showSplash) setSplashLoading(true);
         setSyncBadge("syncing");
         try {
-          const [exhRes, accRes, setRes] = await Promise.all([
-            sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
-            sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "account_contacts", "journey_report_config", "design_dimensions", "design_guide_pdf_url"]),
-          ]);
+          const params = new URLSearchParams(window.location.search);
+          const urlCode = (params.get("b") || params.get("d") || params.get("c") || "")
+            .trim()
+            .toUpperCase();
 
+          let accData = [];
+          const exhRes = await sb.from("exhibitions").select("*").order("created_at", { ascending: true });
           if (exhRes.error) throw exhRes.error;
-          if (accRes.error) throw accRes.error;
+
+          if (urlCode) {
+            // Public Ad Link: fetch ONLY the host account (and its dev_sales if developer) -> ~85% less Egress!
+            const hostRes = await sb
+              .from("accounts")
+              .select(PUBLIC_ACCOUNT_COLS)
+              .ilike("code", urlCode)
+              .limit(1);
+            if (hostRes.error) throw hostRes.error;
+            const hostAcc = hostRes.data?.[0];
+            if (hostAcc) {
+              accData.push(hostAcc);
+              if (hostAcc.role === "developer") {
+                const dsRes = await sb
+                  .from("accounts")
+                  .select(PUBLIC_ACCOUNT_COLS)
+                  .eq("role", "dev_sales")
+                  .eq("parent_admin_id", hostAcc.id);
+                if (!dsRes.error && dsRes.data) accData.push(...dsRes.data);
+              }
+            }
+          } else {
+            // Sales Workspace: fetch ONLY sales accounts (not admins/ushers/etc.)
+            const accRes = await sb
+              .from("accounts")
+              .select(PUBLIC_ACCOUNT_COLS)
+              .eq("role", "sales")
+              .order("created_at", { ascending: true });
+            if (accRes.error) throw accRes.error;
+            accData = accRes.data || [];
+          }
 
           state.exhibitions = exhRes.data || [];
-          state.accounts = accRes.data || [];
+          state.accounts = accData;
           state.invitations = [];
           state.invitationsScope = "NONE";
           state.serverTotalInvitations = 0;
-
-          (setRes.data || []).forEach((row) => {
-            if (row.key === "design_dimensions") state.designDimensions = row.value;
-            if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
-            if (row.key === "teams_list") {
-              try {
-                const parsed = JSON.parse(row.value);
-                if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
-              } catch (e) {}
-            }
-            if (row.key === "team_sales_order") {
-              try {
-                const parsed = JSON.parse(row.value);
-                if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
-              } catch (e) {}
-            }
-            if (row.key === "account_contacts") {
-              try {
-                const parsed = JSON.parse(row.value);
-                if (parsed && typeof parsed === "object") state.accountContacts = parsed;
-              } catch (e) {}
-            }
-            if (row.key === "journey_report_config") {
-              try {
-                const parsed = JSON.parse(row.value);
-                if (parsed && typeof parsed === "object") {
-                  state.journeyReportConfig = { ...state.journeyReportConfig, ...parsed };
-                }
-              } catch (e) {}
-            }
-          });
 
           rebuildDerivedCaches();
           checkPublicUrlParams();
@@ -4474,43 +4505,7 @@
             const totalCount = firstInvRes.count || firstBatch.length;
             state.serverTotalInvitations = totalCount;
 
-            (setRes.data || []).forEach((row) => {
-              if (row.key === "developer_signup_pass") state.developerSignupPass = row.value;
-              if (row.key === "account_contacts") {
-                try {
-                  const parsed = JSON.parse(row.value);
-                  if (parsed && typeof parsed === "object") state.accountContacts = parsed;
-                } catch (e) {}
-              }
-              if (row.key === "journey_report_config") {
-                try {
-                  const parsed = JSON.parse(row.value);
-                  if (parsed && typeof parsed === "object") {
-                    state.journeyReportConfig = { ...state.journeyReportConfig, ...parsed };
-                  }
-                } catch (e) {}
-              }
-              if (row.key && row.key.startsWith("offers::")) {
-                try {
-                  const parsed = JSON.parse(row.value);
-                  if (Array.isArray(parsed)) state.offersBank[row.key] = parsed;
-                } catch (e) {}
-              }
-              if (row.key === "design_dimensions") state.designDimensions = row.value;
-              if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
-              if (row.key === "teams_list") {
-                try {
-                  const parsed = JSON.parse(row.value);
-                  if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
-                } catch (e) {}
-              }
-              if (row.key === "team_sales_order") {
-                try {
-                  const parsed = JSON.parse(row.value);
-                  if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
-                } catch (e) {}
-              }
-            });
+            applySettingsRows(setRes.data || []);
 
             state.currentUser =
               state.accounts.find((a) => a.id === u.id) || state.currentUser;
@@ -4585,10 +4580,7 @@
               else state.accounts.push(p);
             });
 
-            (setRes.data || []).forEach((row) => {
-              if (row.key === "design_dimensions") state.designDimensions = row.value;
-              if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
-            });
+            applySettingsRows(setRes.data || []);
 
             const partnerIds = partners.map((p) => p.id);
             let invQuery = sb
@@ -4637,22 +4629,7 @@
             );
             state.currentUser = state.accounts.find((a) => a.id === u.id) || u;
 
-            (setRes.data || []).forEach((row) => {
-              if (row.key === "design_dimensions") state.designDimensions = row.value;
-              if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
-              if (row.key === "teams_list") {
-                try {
-                  const parsed = JSON.parse(row.value);
-                  if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
-                } catch (e) {}
-              }
-              if (row.key === "team_sales_order") {
-                try {
-                  const parsed = JSON.parse(row.value);
-                  if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
-                } catch (e) {}
-              }
-            });
+            applySettingsRows(setRes.data || []);
 
             const myTeamName = state.currentUser.team || "المعرض";
             const teamOwnerIds = [
@@ -4682,29 +4659,35 @@
             return;
           }
 
-          // Tier 2B: Sales / Broker / Influencer / Developer (Developer includes own + dev_sales invitations)
-          const [exhRes, accRes, setRes] = await Promise.all([
+          // Tier 2B: Sales / Broker / Influencer / Developer (Scoped queries only!)
+          const needSettings = u.role === "developer"
+            ? ["design_dimensions", "design_guide_pdf_url"]
+            : [];
+          const promises2B = [
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
-            sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "account_contacts", "journey_report_config", "design_dimensions", "design_guide_pdf_url", `offers::${u.id}`]),
-          ]);
+            u.role === "developer"
+              ? sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).eq("role", "dev_sales").eq("parent_admin_id", u.id)
+              : Promise.resolve({ data: [], error: null }),
+            needSettings.length > 0
+              ? sb.from("system_settings").select("*").in("key", needSettings)
+              : Promise.resolve({ data: [], error: null }),
+            u.role === "developer"
+              ? sb.from("offers").select("*").eq("owner_key", u.id).order("created_at", { ascending: true })
+              : Promise.resolve({ data: [], error: null }),
+          ];
+          const [exhRes, devSalesRes, setRes, offersRes] = await Promise.all(promises2B);
           if (exhRes.error) throw exhRes.error;
-          if (accRes.error) throw accRes.error;
 
           state.exhibitions = exhRes.data || [];
-          const ownPass = u.password;
-          state.accounts = (accRes.data || []).map((a) =>
-            a.id === u.id ? { ...a, password: ownPass } : a
-          );
-          state.currentUser = state.accounts.find((a) => a.id === u.id) || u;
-
-          const ownerIdsToFetch = [u.id];
-          if (u.role === "developer") {
-            state.accounts
-              .filter((a) => a.role === "dev_sales" && a.parent_admin_id === u.id)
-              .forEach((ds) => ownerIdsToFetch.push(ds.id));
+          const devSalesList = devSalesRes.data || [];
+          state.accounts = [u, ...devSalesList];
+          state.currentUser = u;
+          applySettingsRows(setRes.data || []);
+          if (u.role === "developer" && !offersRes.error) {
+            state.offersBank[u.id] = (offersRes.data || []).map(mapOfferRowToUI);
           }
 
+          const ownerIdsToFetch = [u.id, ...devSalesList.map((ds) => ds.id)];
           const invRes = await sb
             .from("invitations")
             .select("*")
@@ -4717,28 +4700,6 @@
           state.invitations = invRes.data || [];
           state.invitationsScope = "USER";
           state.serverTotalInvitations = state.invitations.length;
-          (setRes.data || []).forEach((row) => {
-            if (row.key === "design_dimensions") state.designDimensions = row.value;
-            if (row.key === "design_guide_pdf_url") state.designGuidePdfUrl = row.value || "";
-            if (row.key === "team_sales_order") {
-              try {
-                const parsed = JSON.parse(row.value);
-                if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
-              } catch (e) {}
-            }
-            if (row.key && row.key.startsWith("offers::")) {
-              try {
-                const parsed = JSON.parse(row.value);
-                if (Array.isArray(parsed)) state.offersBank[row.key] = parsed;
-              } catch (e) {}
-            }
-            if (row.key === "account_contacts") {
-              try {
-                const parsed = JSON.parse(row.value);
-                if (parsed && typeof parsed === "object") state.accountContacts = parsed;
-              } catch (e) {}
-            }
-          });
 
           rebuildDerivedCaches();
           ensureActiveExhibition();
@@ -4841,46 +4802,10 @@
 
           ch.on("postgres_changes", { event: "*", schema: "public", table: "system_settings" }, (payload) => {
             if (isImportingLegacy) return;
-            const newRow = payload.new;
-            if (!newRow) return;
-            if (newRow.key === "design_dimensions") state.designDimensions = newRow.value;
-            if (newRow.key === "design_guide_pdf_url") state.designGuidePdfUrl = newRow.value || "";
-            if (newRow.key === "developer_signup_pass" && state.currentUser?.role === "manager") {
-              state.developerSignupPass = newRow.value;
+            if (payload.new) {
+              applySettingsRows([payload.new]);
+              scheduleActiveViewRender();
             }
-            if (newRow.key === "teams_list") {
-              try {
-                const parsed = JSON.parse(newRow.value);
-                if (Array.isArray(parsed) && parsed.length > 0) state.teamsList = parsed;
-              } catch (e) {}
-            }
-            if (newRow.key === "team_sales_order") {
-              try {
-                const parsed = JSON.parse(newRow.value);
-                if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
-              } catch (e) {}
-            }
-            if (newRow.key && newRow.key.startsWith("offers::")) {
-              try {
-                const parsed = JSON.parse(newRow.value);
-                if (Array.isArray(parsed)) state.offersBank[newRow.key] = parsed;
-              } catch (e) {}
-            }
-            if (newRow.key === "account_contacts") {
-              try {
-                const parsed = JSON.parse(newRow.value);
-                if (parsed && typeof parsed === "object") state.accountContacts = parsed;
-              } catch (e) {}
-            }
-            if (newRow.key === "journey_report_config") {
-              try {
-                const parsed = JSON.parse(newRow.value);
-                if (parsed && typeof parsed === "object") {
-                  state.journeyReportConfig = { ...state.journeyReportConfig, ...parsed };
-                }
-              } catch (e) {}
-            }
-            scheduleActiveViewRender();
           });
 
           // ONLY listen to invitations stream when logged into a portal / manager dashboard
@@ -5215,24 +5140,34 @@
 
       // ==================== ACCOUNT CONTACTS & REPORT SETTINGS ====================
       function getAccountContact(accId) {
-        const c = state.accountContacts?.[accId];
-        if (!c || typeof c !== "object") return { phone: "", showInReport: false };
-        return { phone: c.phone || "", showInReport: Boolean(c.showInReport) };
+        const acc = getAccountById(accId) || (state.currentUser?.id === accId ? state.currentUser : null);
+        if (!acc) return { phone: "", showInReport: false };
+        return {
+          phone: acc.phone || "",
+          showInReport: Boolean(acc.show_phone_in_report),
+        };
       }
 
       async function setAccountContact(accId, phone, showInReport) {
         const cleanPhone = phone ? normalizePhone(phone) : "";
-        const nextMap = { ...(state.accountContacts || {}) };
-        if (!cleanPhone && !showInReport) {
-          delete nextMap[accId];
-        } else {
-          nextMap[accId] = { phone: cleanPhone, showInReport: Boolean(showInReport) };
-        }
-        const { error } = await sb
-          .from("system_settings")
-          .upsert({ key: "account_contacts", value: JSON.stringify(nextMap) });
+        const { data, error } = await sb
+          .from("accounts")
+          .update({
+            phone: cleanPhone,
+            show_phone_in_report: Boolean(showInReport),
+          })
+          .eq("id", accId)
+          .select()
+          .single();
         if (error) throw error;
-        state.accountContacts = nextMap;
+        if (data) {
+          const idx = state.accounts.findIndex((a) => a.id === accId);
+          if (idx >= 0) state.accounts[idx] = { ...state.accounts[idx], ...data };
+          if (state.currentUser?.id === accId) {
+            state.currentUser = { ...state.currentUser, ...data };
+          }
+          rebuildDerivedCaches();
+        }
       }
 
       async function saveOwnPhoneFromInput(inputId) {
@@ -5743,6 +5678,11 @@
           if (data.status === "DEV_SIGNUP") {
             state.devSignupTempPass = pass;
             closeModal("smartLoginModal");
+            const { data: dimRows } = await sb
+              .from("system_settings")
+              .select("*")
+              .in("key", ["design_dimensions", "design_guide_pdf_url"]);
+            applySettingsRows(dimRows || []);
             document.body.classList.remove("clean-header-mode", "public-client-mode");
             document.getElementById("devSignupDimNotice").innerHTML =
               buildDimensionsNoticeHtml("الأماكن (الاسم، الرقم، QR) ثابتة أوتوماتيك.");
@@ -7046,6 +6986,7 @@
               ? serializeCustomTemplateMap({ legacyDefault: "", byExh: { [designExhId]: up.url } })
               : up.url;
           }
+          const pPhone = normalizePhone(document.getElementById("abNewPhone")?.value || "");
           const code = generateNextCodeForRole(role);
           const { data, error } = await sb
             .from("accounts")
@@ -7054,6 +6995,8 @@
               name,
               code,
               password: pass,
+              phone: pPhone,
+              show_phone_in_report: false,
               parent_admin_id: u.id,
               custom_template_url: customUrl,
             })
@@ -7067,10 +7010,7 @@
             return;
           }
 
-          const pPhone = normalizePhone(document.getElementById("abNewPhone")?.value || "");
-          if (pPhone) {
-            await setAccountContact(data.id, pPhone, false);
-          }
+          // Phone already inserted with account
           state.accounts.push(data);
           rebuildDerivedCaches();
           document.getElementById("abNewName").value = "";
@@ -7739,7 +7679,7 @@
           renderMgrExhibitionsTable();
           renderTeamDistributionUI();
           populateManagerTeamOffersSelect();
-          renderManagerTeamOffersTable();
+          ensureManagerOffersLoaded();
           syncStudioControls();
           loadActiveTemplateImage();
         } else if (activeManagerTab === "mgrTabDevOnly") {
@@ -8540,21 +8480,26 @@
           return alert("❌ الباسورد ده هو نفسه باسورد تسجيل المطورين!");
         }
 
+        const addPhone = normalizePhone(document.getElementById("mgrAddPhone")?.value || "");
+        const addShowPhone = document.getElementById("mgrAddShowPhone")?.checked !== false;
+
         const { data, error } = await sb
           .from("accounts")
-          .insert({ role, name, code, password: pass, team })
+          .insert({
+            role,
+            name,
+            code,
+            password: pass,
+            team,
+            phone: addPhone,
+            show_phone_in_report: addShowPhone,
+          })
           .select()
           .single();
 
         if (error) {
           if (error.code === "23505") return alert("❌ الكود أو الباسورد موجود بالفعل!");
           return alert("❌ خطأ أثناء الإضافة!");
-        }
-
-        const addPhone = normalizePhone(document.getElementById("mgrAddPhone")?.value || "");
-        const addShowPhone = document.getElementById("mgrAddShowPhone")?.checked !== false;
-        if (addPhone) {
-          await setAccountContact(data.id, addPhone, addShowPhone);
         }
         if (!cache.accountsById.has(data.id)) state.accounts.push(data);
         rebuildDerivedCaches();
@@ -8648,7 +8593,15 @@
 
         const { data, error } = await sb
           .from("accounts")
-          .update({ role, name, code, password, team })
+          .update({
+            role,
+            name,
+            code,
+            password,
+            team,
+            phone,
+            show_phone_in_report: showPhone,
+          })
           .eq("id", id)
           .select()
           .single();
@@ -8657,8 +8610,6 @@
           if (error.code === "23505") return alert("❌ الكود أو الباسورد محجوز لحساب تاني!");
           return alert("❌ تعذر التعديل!");
         }
-
-        await setAccountContact(id, phone, showPhone);
         const idx = state.accounts.findIndex((a) => a.id === id);
         if (idx >= 0) state.accounts[idx] = data;
         if (state.currentUser?.id === id) state.currentUser = data;
@@ -8688,24 +8639,48 @@
         alert("✅ تم حفظ أبعاد التصميم!");
       }
 
-      // ==================== OFFERS BANK (DEVELOPERS & TEAMS) ====================
-      function getOffersForKey(offerKey) {
-        return Array.isArray(state.offersBank?.[offerKey]) ? state.offersBank[offerKey] : [];
+      // ==================== OFFERS BANK (REAL `offers` TABLE) ====================
+      function mapOfferRowToUI(row) {
+        return {
+          id: row.id,
+          ownerKey: row.owner_key,
+          projectName: row.project_name || "",
+          unitType: row.unit_type || "",
+          area: row.area || "",
+          totalPrice: row.total_price || "",
+          downpayment: row.downpayment || "",
+          installment: row.installment || "",
+          years: row.years || "",
+          expectedRoi: row.expected_roi || "",
+        };
       }
 
-      async function saveOffersForKey(offerKey, list) {
-        const { error } = await sb.from("system_settings").upsert({
-          key: offerKey,
-          value: JSON.stringify(list),
-        });
-        if (error) throw error;
-        state.offersBank[offerKey] = list;
+      function getOffersForKey(ownerKey) {
+        return Array.isArray(state.offersBank?.[ownerKey]) ? state.offersBank[ownerKey] : [];
+      }
+
+      async function ensureManagerOffersLoaded() {
+        if (!state.offersLoadedForMgr) {
+          const { data, error } = await sb
+            .from("offers")
+            .select("*")
+            .like("owner_key", "team_%")
+            .order("created_at", { ascending: true });
+          if (!error && data) {
+            data.forEach((row) => {
+              if (!state.offersBank[row.owner_key]) state.offersBank[row.owner_key] = [];
+              state.offersBank[row.owner_key].push(mapOfferRowToUI(row));
+            });
+            state.offersLoadedForMgr = true;
+          }
+        }
+        renderManagerTeamOffersTable();
       }
 
       function renderPortalDevOffersTable() {
         const u = state.currentUser;
         if (!u || u.role !== "developer") return;
-        const list = getOffersForKey(`offers::${u.id}`);
+        const list = getOffersForKey(u.id);
         const badge = document.getElementById("portalDevOffersCountBadge");
         const tbody = document.getElementById("portalDevOffersTbody");
         if (badge) badge.textContent = `${list.length} / 20 عرض`;
@@ -8724,7 +8699,7 @@
             <td style="font-size:0.78rem;">💰 ${escapeHtml(o.totalPrice || "-")}<br>🔑 مقدم: ${escapeHtml(o.downpayment || "-")}</td>
             <td style="font-size:0.78rem;">📅 ${escapeHtml(o.installment || "-")}<br>⏳ ${escapeHtml(o.years || "-")}</td>
             <td><span class="badge badge-gold">${escapeHtml(o.expectedRoi || "-")}</span></td>
-            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('offers::${u.id}', '${o.id}', 'DEV')">🗑️</button></td>
+            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('${u.id}', '${o.id}', 'DEV')">🗑️</button></td>
           </tr>`
           )
           .join("");
@@ -8742,8 +8717,8 @@
 
       function renderManagerTeamOffersTable() {
         const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
-        const offerKey = `offers::team_${teamName}`;
-        const list = getOffersForKey(offerKey);
+        const ownerKey = `team_${teamName}`;
+        const list = getOffersForKey(ownerKey);
         const tbody = document.getElementById("mgrTeamOffersTbody");
         if (!tbody) return;
         if (list.length === 0) {
@@ -8757,7 +8732,7 @@
             <td><strong>${escapeHtml(o.projectName)}</strong> <span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span></td>
             <td style="font-size:0.78rem;">${escapeHtml(o.area || "-")} | ${escapeHtml(o.totalPrice || "-")}</td>
             <td style="font-size:0.78rem;">مقدم: ${escapeHtml(o.downpayment || "-")} | ${escapeHtml(o.years || "-")}</td>
-            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('${escapeHtml(offerKey).replace(/'/g, "\'")}', '${o.id}', 'MGR')">🗑️</button></td>
+            <td><button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteOfferFromBank('${escapeHtml(ownerKey).replace(/'/g, "\'")}', '${o.id}', 'MGR')">🗑️</button></td>
           </tr>`
           )
           .join("");
@@ -8776,36 +8751,44 @@
 
         if (!projectName) return alert("⚠️ اكتب اسم المشروع أولاً!");
 
-        let offerKey = "";
+        let ownerKey = "";
         if (source === "DEV") {
           const u = state.currentUser;
           if (!u) return;
-          offerKey = `offers::${u.id}`;
+          ownerKey = u.id;
         } else {
           const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
-          offerKey = `offers::team_${teamName}`;
+          ownerKey = `team_${teamName}`;
         }
 
-        const current = getOffersForKey(offerKey);
+        const current = getOffersForKey(ownerKey);
         if (current.length >= 20) {
           return alert("⚠️ الحد الأقصى لبنك العروض هو 20 عرض فقط!");
         }
 
-        const newOffer = {
-          id: `off_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-          projectName,
-          unitType,
-          area,
-          totalPrice,
-          downpayment,
-          installment,
-          years,
-          expectedRoi,
-        };
-
-        const updated = [...current, newOffer];
+        const newId = `off_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
         try {
-          await saveOffersForKey(offerKey, updated);
+          const { data, error } = await sb
+            .from("offers")
+            .insert({
+              id: newId,
+              owner_key: ownerKey,
+              project_name: projectName,
+              unit_type: unitType,
+              area,
+              total_price: totalPrice,
+              downpayment,
+              installment,
+              years,
+              expected_roi: expectedRoi,
+            })
+            .select()
+            .single();
+          if (error) throw error;
+
+          if (!state.offersBank[ownerKey]) state.offersBank[ownerKey] = [];
+          state.offersBank[ownerKey].push(mapOfferRowToUI(data));
+
           ["Project", "Area", "Total", "Down", "Installment", "Years", "Roi"].forEach((fld) => {
             const el = document.getElementById(`${pfx}${fld}`);
             if (el) el.value = "";
@@ -8815,16 +8798,16 @@
           alert("✅ تم إضافة العرض وحفظه في بنك العروض بنجاح!");
         } catch (err) {
           console.error(err);
-          alert("❌ تعذر حفظ العرض!");
+          alert("❌ تعذر حفظ العرض (تأكد من تشغيل سطر SQL لجدول offers)!");
         }
       }
 
-      async function deleteOfferFromBank(offerKey, offerId, source) {
+      async function deleteOfferFromBank(ownerKey, offerId, source) {
         if (!confirm("هل تريد حذف هذا العرض؟")) return;
-        const current = getOffersForKey(offerKey);
-        const updated = current.filter((o) => o.id !== offerId);
         try {
-          await saveOffersForKey(offerKey, updated);
+          const { error } = await sb.from("offers").delete().eq("id", offerId);
+          if (error) throw error;
+          state.offersBank[ownerKey] = getOffersForKey(ownerKey).filter((o) => o.id !== offerId);
           if (source === "DEV") renderPortalDevOffersTable();
           else renderManagerTeamOffersTable();
         } catch (err) {
@@ -9294,7 +9277,6 @@
             design_guide_pdf_url: state.designGuidePdfUrl,
             teams_list: state.teamsList,
             team_sales_order: state.teamSalesOrder,
-            account_contacts: state.accountContacts,
             journey_report_config: state.journeyReportConfig,
           },
           exhibitions: state.exhibitions,
@@ -9503,12 +9485,7 @@
                   value: JSON.stringify(s.team_sales_order),
                 });
               }
-              if (s.account_contacts && typeof s.account_contacts === "object") {
-                await sb.from("system_settings").upsert({
-                  key: "account_contacts",
-                  value: JSON.stringify(s.account_contacts),
-                });
-              }
+              // account_contacts migrated to accounts.phone & accounts.show_phone_in_report
               if (s.journey_report_config && typeof s.journey_report_config === "object") {
                 await sb.from("system_settings").upsert({
                   key: "journey_report_config",
