@@ -643,7 +643,7 @@
 
       .admin-nav-grid {
         display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-columns: repeat(8, minmax(0, 1fr));
         gap: 8px;
         margin-bottom: 14px;
       }
@@ -1640,6 +1640,33 @@
             </div>
           </div>
 
+          <!-- Developer Specialized Projects & Systems (Shown ONLY for Developer role) -->
+          <div
+            id="portalDevSpecWrap"
+            class="control-section-box"
+            style="display: none"
+          >
+            <div class="control-section-title">
+              <span>🎯 تخصص مشاريع شركتك (النشاط والمناطق بدقة) + الأنظمة</span>
+              <button
+                type="button"
+                class="btn btn-gold"
+                style="padding: 5px 12px; min-height: 34px; font-size: 0.78rem"
+                onclick="savePortalDeveloperSpecialization()"
+              >
+                💾 حفظ التخصص
+              </button>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px">
+              حدّد لكل نشاط المناطق المتاحة لديكم بالظبط ليتم ترشيح شركتكم للعملاء المناسبين بدقة 100%:
+            </div>
+            <div id="portalDevInventoryMatrix" style="margin-bottom: 12px"></div>
+            <div style="font-size: 0.8rem; font-weight: 800; color: #fcd34d; margin-bottom: 6px">
+              ⚙️ الأنظمة المتاحة لديكم (تُطابق تلقائياً عملاء الوديعة والجمعية):
+            </div>
+            <div id="portalDevSystemsGrid" class="role-check-grid"></div>
+          </div>
+
           <!-- Developer Offers Bank (Shown ONLY for Developer role) -->
           <div
             id="portalDevOffersWrap"
@@ -2157,26 +2184,23 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label"
-              >3. المناطق المتاحة لديكم (يمكن اختيار أكثر من منطقة) *:</label
+            <label class="form-label" style="color: #fcd34d"
+              >3. حدّد المناطق المتاحة لكل نشاط اخترته بالظبط *:</label
             >
-            <div class="chips-grid" id="devAreaChips">
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'العاصمة الإدارية')">العاصمة الإدارية</div>
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'التجمع')">التجمع</div>
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'زايد')">زايد</div>
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', '6 أكتوبر')">6 أكتوبر</div>
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'الساحل الشمالي')">الساحل الشمالي</div>
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'مدينة نصر والقاهرة')">مدينة نصر والقاهرة</div>
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'بلد المعرض (المدن الجديدة)')">🏙️ بلد المعرض (المدن الجديدة)</div>
-              <div class="chip-btn" onclick="toggleDevChip(this, 'area', 'أخرى')">✨ أخرى</div>
+            <div id="devRegInventoryMatrix" style="font-size: 0.8rem; color: var(--text-muted)">
+              اختر نوع نشاط واحد على الأقل فوق لتحديد مناطقه بدقة.
             </div>
-            <input
-              type="text"
-              id="devAreaOther"
-              class="form-control"
-              style="display: none; margin-top: 8px"
-              placeholder="اكتب المنطقة الأخرى..."
-            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="color: var(--primary-bright)"
+              >3ب. الأنظمة المتاحة لديكم (اختياري — تُطابق تلقائياً الوديعة والجمعية):</label
+            >
+            <div class="chips-grid" id="devRegSystemChips">
+              <div class="chip-btn" onclick="toggleDevSystemChip(this, 'عائد بإيجار إلزامي')">🪙 عائد بإيجار إلزامي (= الوديعة)</div>
+              <div class="chip-btn" onclick="toggleDevSystemChip(this, 'حصص عقارية')">👥 حصص عقارية (= الجمعية)</div>
+              <div class="chip-btn" onclick="toggleDevSystemChip(this, 'استلام فوري')">🔑 استلام فوري</div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -2481,6 +2505,13 @@
             onclick="switchManagerTab('mgrTabReportSettings', this)"
           >
             <span>📄</span><span>7. إعدادات التقرير</span>
+          </button>
+          <button
+            type="button"
+            class="admin-nav-btn"
+            onclick="switchManagerTab('mgrTabBalmetrOffers', this)"
+          >
+            <span>🏢</span><span>8. عروض بالمتر</span>
           </button>
         </nav>
 
@@ -3052,6 +3083,17 @@
                 </label>
               </div>
 
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px">
+                <div>
+                  <label class="form-label" style="font-size: 0.74rem">نسبة الدعوة (النص الأول %):</label>
+                  <input type="number" step="0.1" min="0" max="20" id="mgrAddFirstPct" class="form-control" dir="ltr" value="0.5" />
+                </div>
+                <div>
+                  <label class="form-label" style="font-size: 0.74rem">نسبة الترابيزة (القعدة %):</label>
+                  <input type="number" step="0.1" min="0" max="20" id="mgrAddTablePct" class="form-control" dir="ltr" value="1.0" />
+                </div>
+              </div>
+
               <button
                 type="button"
                 class="btn btn-primary btn-block"
@@ -3197,100 +3239,17 @@
             <div class="card" style="margin-bottom: 0">
               <div class="card-header">
                 <div class="card-title">
-                  🏷️ بنك عروض تيمات بالمتر (للسيستم الكبير)
+                  📄 QR ورق الشارع («أوفلاين») لـ (<span id="offlineQrExhLabel">-</span>)
                 </div>
-                <select
-                  id="mgrTeamOffersSelect"
-                  class="form-control"
-                  style="width: auto; min-width: 140px"
-                  onchange="renderManagerTeamOffersTable()"
-                ></select>
               </div>
-              <div
-                style="
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                  gap: 6px;
-                  margin-bottom: 8px;
-                "
-              >
-                <input
-                  type="text"
-                  id="mgrOfferProject"
-                  class="form-control"
-                  maxlength="40"
-                  placeholder="اسم المشروع *"
-                />
-                <select id="mgrOfferUnitType" class="form-control">
-                  <option value="سكني">🏠 سكني</option>
-                  <option value="تجاري">🛍️ تجاري</option>
-                  <option value="إداري">🏢 إداري</option>
-                  <option value="فندقي">🏨 فندقي</option>
-                  <option value="طبي">➕ طبي</option>
-                </select>
-                <input
-                  type="text"
-                  id="mgrOfferArea"
-                  class="form-control"
-                  maxlength="20"
-                  placeholder="المساحة"
-                />
-                <input
-                  type="text"
-                  id="mgrOfferTotal"
-                  class="form-control"
-                  maxlength="25"
-                  placeholder="الإجمالي"
-                />
-                <input
-                  type="text"
-                  id="mgrOfferDown"
-                  class="form-control"
-                  maxlength="25"
-                  placeholder="المقدم"
-                />
-                <input
-                  type="text"
-                  id="mgrOfferInstallment"
-                  class="form-control"
-                  maxlength="25"
-                  placeholder="القسط"
-                />
-                <input
-                  type="text"
-                  id="mgrOfferYears"
-                  class="form-control"
-                  maxlength="20"
-                  placeholder="السنوات"
-                />
-                <input
-                  type="text"
-                  id="mgrOfferRoi"
-                  class="form-control"
-                  maxlength="25"
-                  placeholder="العائد"
-                />
-              </div>
-              <button
-                type="button"
-                class="btn btn-primary btn-block"
-                style="margin-bottom: 10px; padding: 9px"
-                onclick="addOfferToBank('MGR')"
-              >
-                ➕ إضافة عرض للتيم المحدد
-              </button>
-              <div class="table-responsive">
-                <table style="min-width: 440px">
-                  <thead>
-                    <tr>
-                      <th>المشروع</th>
-                      <th>المساحة / الإجمالي</th>
-                      <th>السداد</th>
-                      <th>حذف</th>
-                    </tr>
-                  </thead>
-                  <tbody id="mgrTeamOffersTbody"></tbody>
-                </table>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px">
+                اطبع الـ QR ده على ورق الشارع؛ لما عميل ييجي بالورقة للريسبشن ويعمل Scan يتسجل تلقائياً في خانة <strong>«أوفلاين»</strong> وتتحسب نسبته لوحدها (0.5%) ويمشي في المعرض عادي.
+              </p>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--bg-input); border: 1px dashed var(--border-strong); border-radius: 12px; padding: 14px">
+                <canvas id="offlineQrCanvas" width="420" height="500" style="max-width: 220px; height: auto; border-radius: 10px"></canvas>
+                <button type="button" class="btn btn-gold btn-block" onclick="downloadOfflineFlyerQR()">
+                  ⬇️ تنزيل صورة QR أوفلاين للطباعة (PNG)
+                </button>
               </div>
             </div>
           </div>
@@ -3660,6 +3619,91 @@
                 </thead>
                 <tbody id="rptPhonesTbody"></tbody>
               </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 8: INDEPENDENT B.ALMETR OFFERS & SPECIALIZATION PANEL -->
+        <div id="mgrTabBalmetrOffers" class="admin-page">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🏢 بانل عروض وخصائص شركة بالمتر (كأنها مطور مستقل)</div>
+              <select
+                id="mgrTeamOffersSelect"
+                class="form-control"
+                style="width: auto; min-width: 170px"
+                onchange="renderBalmetrOffersPanel()"
+              ></select>
+            </div>
+
+            <div class="control-section-box">
+              <div class="control-section-title">
+                <span>🎯 تخصص مشاريع هذا التيم (النشاط ← المناطق) والأنظمة</span>
+                <button
+                  type="button"
+                  class="btn btn-gold"
+                  style="padding: 5px 12px; min-height: 34px; font-size: 0.78rem"
+                  onclick="saveBalmetrTeamSpecialization()"
+                >
+                  💾 حفظ تخصص التيم
+                </button>
+              </div>
+              <div id="balmetrTeamInventoryMatrix" style="margin-bottom: 10px"></div>
+              <div style="font-size: 0.78rem; font-weight: 800; color: #fcd34d; margin-bottom: 6px">
+                ⚙️ الأنظمة التابعة لهذا التيم:
+              </div>
+              <div id="balmetrTeamSystemsGrid" class="role-check-grid"></div>
+            </div>
+
+            <div class="control-section-box" style="margin-bottom: 0">
+              <div class="control-section-title">
+                <span>🎁 بنك عروض هذا التيم (تظهر لسيلز التيم يوم المعرض — حتى 20 عرض)</span>
+                <span id="mgrTeamOffersCountBadge" class="badge badge-gold">0 / 20</span>
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                  gap: 7px;
+                  margin-bottom: 10px;
+                "
+              >
+                <input type="text" id="mgrOfferProject" class="form-control" maxlength="40" placeholder="اسم المشروع *" />
+                <select id="mgrOfferUnitType" class="form-control">
+                  <option value="سكني">🏠 سكني</option>
+                  <option value="تجاري">🛍️ تجاري</option>
+                  <option value="إداري">🏢 إداري</option>
+                  <option value="فندقي">🏨 فندقي</option>
+                  <option value="طبي">➕ طبي</option>
+                </select>
+                <input type="text" id="mgrOfferArea" class="form-control" maxlength="20" placeholder="المساحة" />
+                <input type="text" id="mgrOfferTotal" class="form-control" maxlength="25" placeholder="الإجمالي" />
+                <input type="text" id="mgrOfferDown" class="form-control" maxlength="25" placeholder="المقدم" />
+                <input type="text" id="mgrOfferInstallment" class="form-control" maxlength="25" placeholder="القسط" />
+                <input type="text" id="mgrOfferYears" class="form-control" maxlength="20" placeholder="السنوات" />
+                <input type="text" id="mgrOfferRoi" class="form-control" maxlength="25" placeholder="العائد المتوقع" />
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary btn-block"
+                style="margin-bottom: 12px"
+                onclick="addOfferToBank('MGR')"
+              >
+                ➕ إضافة عرض للتيم المحدد
+              </button>
+              <div class="table-responsive">
+                <table style="min-width: 480px">
+                  <thead>
+                    <tr>
+                      <th>المشروع</th>
+                      <th>المساحة / الإجمالي</th>
+                      <th>السداد</th>
+                      <th>حذف</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mgrTeamOffersTbody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -4179,6 +4223,17 @@
           </label>
         </div>
 
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px">
+          <div>
+            <label class="form-label" style="font-size: 0.76rem">نسبة الدعوة (النص الأول %):</label>
+            <input type="number" step="0.1" min="0" max="20" id="editAccFirstPct" class="form-control" dir="ltr" value="0.5" />
+          </div>
+          <div>
+            <label class="form-label" style="font-size: 0.76rem">نسبة الترابيزة (القعدة %):</label>
+            <input type="number" step="0.1" min="0" max="20" id="editAccTablePct" class="form-control" dir="ltr" value="1.0" />
+          </div>
+        </div>
+
         <div style="display: flex; gap: 8px; margin-top: 12px">
           <button
             type="button"
@@ -4304,7 +4359,7 @@
 
       // Safe public columns (NO passwords exposed on public load)
       const PUBLIC_ACCOUNT_COLS =
-        "id,role,name,code,team,phone,show_phone_in_report,active_exhibition_ids,expo_roles,managed_teams,can_edit_request,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
+        "id,role,name,code,team,phone,show_phone_in_report,active_exhibition_ids,expo_roles,managed_teams,can_edit_request,first_split_pct,table_split_pct,dev_inventory,dev_systems,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
 
       const CAIRO_DATE_FMT = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Africa/Cairo",
@@ -4362,6 +4417,7 @@
         teamSalesOrder: {},
         offersBank: {},
         offersLoadedForMgr: false,
+        balmetrTeamInventory: {},
         journeyReportConfig: {
           brandTitle: "B.almetr VIP | تقرير رحلة العميل",
           hotline: "0101 4444 227",
@@ -4583,8 +4639,25 @@
       let canvasRafId = null;
       let realtimeChannel = null;
 
+      const ALL_ACTIVITIES = ["سكني", "تجاري", "إداري", "فندقي", "طبي", "أخرى"];
+      const ALL_AREAS = [
+        "العاصمة الإدارية",
+        "التجمع",
+        "زايد",
+        "6 أكتوبر",
+        "الساحل الشمالي",
+        "مدينة نصر والقاهرة",
+        "بلد المعرض (المدن الجديدة)",
+      ];
+      const DEV_SYSTEM_OPTIONS = [
+        { val: "عائد بإيجار إلزامي", label: "🪙 عائد بإيجار إلزامي (= الوديعة)" },
+        { val: "حصص عقارية", label: "👥 حصص عقارية (= الجمعية)" },
+        { val: "استلام فوري", label: "🔑 استلام فوري" },
+      ];
+
       let devRegActivities = [];
-      let devRegAreas = [];
+      let devRegInventory = {};
+      let devRegSystems = [];
       let devRegDownpayment = "";
 
       let globalReportMode = "ALL_TIME";
@@ -4657,6 +4730,11 @@
               if (p && typeof p === "object") {
                 state.journeyReportConfig = { ...state.journeyReportConfig, ...p };
               }
+            } catch (e) {}
+          } else if (row.key === "balmetr_team_inventory") {
+            try {
+              const p = JSON.parse(row.value);
+              if (p && typeof p === "object") state.balmetrTeamInventory = p;
             } catch (e) {}
           }
         });
@@ -6901,6 +6979,15 @@
             devSalesWrap.style.display = "none";
           }
         }
+        const devSpecWrap = document.getElementById("portalDevSpecWrap");
+        if (devSpecWrap) {
+          if (u.role === "developer") {
+            devSpecWrap.style.display = "block";
+            renderPortalDevSpecialization();
+          } else {
+            devSpecWrap.style.display = "none";
+          }
+        }
         if (devOffersWrap) {
           if (u.role === "developer") {
             devOffersWrap.style.display = "block";
@@ -7762,26 +7849,64 @@
           .join("");
       }
 
-      // ==================== DEVELOPER SELF-REGISTRATION ====================
-      function toggleDevChip(el, type, val) {
-        const arr = type === "activity" ? devRegActivities : devRegAreas;
-        const idx = arr.indexOf(val);
+      // ==================== DEVELOPER SELF-REGISTRATION & SPECIALIZATION ====================
+      function renderDevRegInventoryMatrix() {
+        const box = document.getElementById("devRegInventoryMatrix");
+        if (!box) return;
+        if (devRegActivities.length === 0) {
+          box.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted);">اختر نوع نشاط واحد على الأقل فوق لتحديد مناطقه بدقة.</div>`;
+          return;
+        }
+        box.innerHTML = devRegActivities
+          .map((act) => {
+            const picked = Array.isArray(devRegInventory[act]) ? devRegInventory[act] : [];
+            const chips = ALL_AREAS.map(
+              (ar) =>
+                `<button type="button" class="chip-btn ${picked.includes(ar) ? "selected" : ""}" style="padding:5px 10px; font-size:0.76rem;" onclick="toggleDevRegInventoryArea('${escapeHtml(act).replace(/'/g, "\'")}', '${escapeHtml(ar).replace(/'/g, "\'")}')">${picked.includes(ar) ? "✅" : "➕"} ${escapeHtml(ar)}</button>`
+            ).join("");
+            return `<div class="control-section-box" style="padding:9px; margin-bottom:8px;">
+              <div style="font-size:0.8rem; font-weight:900; color:var(--primary-bright); margin-bottom:6px;">📍 مناطق نشاط «${escapeHtml(act)}»:</div>
+              <div class="chips-grid">${chips}</div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function toggleDevRegInventoryArea(act, area) {
+        if (!Array.isArray(devRegInventory[act])) devRegInventory[act] = [];
+        const idx = devRegInventory[act].indexOf(area);
+        if (idx >= 0) devRegInventory[act].splice(idx, 1);
+        else devRegInventory[act].push(area);
+        renderDevRegInventoryMatrix();
+      }
+
+      function toggleDevSystemChip(el, sysVal) {
+        const idx = devRegSystems.indexOf(sysVal);
         if (idx >= 0) {
-          arr.splice(idx, 1);
+          devRegSystems.splice(idx, 1);
           el.classList.remove("selected");
         } else {
-          arr.push(val);
+          devRegSystems.push(sysVal);
           el.classList.add("selected");
         }
-        if (type === "activity") {
-          document.getElementById("devActivityOther").style.display = arr.includes("أخرى")
-            ? "block"
-            : "none";
+      }
+
+      function toggleDevChip(el, type, val) {
+        if (type !== "activity") return;
+        const idx = devRegActivities.indexOf(val);
+        if (idx >= 0) {
+          devRegActivities.splice(idx, 1);
+          delete devRegInventory[val];
+          el.classList.remove("selected");
         } else {
-          document.getElementById("devAreaOther").style.display = arr.includes("أخرى")
-            ? "block"
-            : "none";
+          devRegActivities.push(val);
+          if (!devRegInventory[val]) devRegInventory[val] = [];
+          el.classList.add("selected");
         }
+        document.getElementById("devActivityOther").style.display = devRegActivities.includes("أخرى")
+          ? "block"
+          : "none";
+        renderDevRegInventoryMatrix();
       }
 
       function selectDevDownpayment(el, val) {
@@ -7799,7 +7924,8 @@
 
         if (!companyName) return alert("⚠️ اكتب اسم الشركة المطورة!");
         if (devRegActivities.length === 0) return alert("⚠️ اختر نوع نشاط واحد على الأقل!");
-        if (devRegAreas.length === 0) return alert("⚠️ اختر منطقة واحدة على الأقل!");
+        const allPickedAreas = [...new Set(Object.values(devRegInventory).flat())];
+        if (allPickedAreas.length === 0) return alert("⚠️ اختر منطقة واحدة على الأقل لأحد الأنشطة!");
         if (!devRegDownpayment) return alert("⚠️ اختر أقل مقدم!");
         if (!personalPass || personalPass.length < 4)
           return alert("⚠️ اختر كلمة سر خاصة بك (4 أحرف أو أرقام على الأقل)!");
@@ -7807,11 +7933,6 @@
         const finalActs = devRegActivities.map((a) =>
           a === "أخرى"
             ? `أخرى (${document.getElementById("devActivityOther").value.trim() || "-"})`
-            : a
-        );
-        const finalAreas = devRegAreas.map((a) =>
-          a === "أخرى"
-            ? `أخرى (${document.getElementById("devAreaOther").value.trim() || "-"})`
             : a
         );
 
@@ -7832,7 +7953,7 @@
             p_signup_pass: state.devSignupTempPass,
             p_company_name: companyName,
             p_activities: finalActs,
-            p_areas: finalAreas,
+            p_areas: allPickedAreas,
             p_min_downpayment: devRegDownpayment,
             p_personal_pass: personalPass,
             p_custom_template_url: tplUrl,
@@ -7848,6 +7969,12 @@
             return;
           }
           if (data.status === "CREATED" && data.developer) {
+            await sb
+              .from("accounts")
+              .update({ dev_inventory: devRegInventory, dev_systems: devRegSystems })
+              .eq("id", data.developer.id);
+            data.developer.dev_inventory = devRegInventory;
+            data.developer.dev_systems = devRegSystems;
             state.currentUser = data.developer;
             if (!cache.accountsById.has(data.developer.id)) {
               state.accounts.push(data.developer);
@@ -7867,6 +7994,159 @@
           btn.disabled = false;
           btn.textContent = "✅ Create & إصدار كود ورابط الشركة";
         }
+      }
+
+      // Reusable Activity->Areas Matrix renderer for Developer Portal & B.almetr Offers Panel
+      function renderInventoryMatrixInto(containerId, invObj, prefix) {
+        const box = document.getElementById(containerId);
+        if (!box) return;
+        const safeInv = invObj && typeof invObj === "object" ? invObj : {};
+        box.innerHTML = ALL_ACTIVITIES.filter((a) => a !== "أخرى")
+          .map((act) => {
+            const areas = Array.isArray(safeInv[act]) ? safeInv[act] : [];
+            const chips = ALL_AREAS.map(
+              (ar) => `
+              <label class="role-check-item" style="padding:5px 8px; font-size:0.74rem;">
+                <input type="checkbox" data-inv-prefix="${prefix}" data-act="${escapeHtml(act)}" value="${escapeHtml(ar)}" ${areas.includes(ar) ? "checked" : ""} />
+                <span>${escapeHtml(ar)}</span>
+              </label>`
+            ).join("");
+            return `<div style="padding:8px 10px; background:#040f20; border:1px solid var(--border); border-radius:10px; margin-bottom:7px;">
+              <div style="font-size:0.8rem; font-weight:900; color:var(--primary-bright); margin-bottom:6px;">🏗️ ${escapeHtml(act)} — اختر المناطق المتاحة:</div>
+              <div class="role-check-grid">${chips}</div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function collectInventoryMatrix(prefix) {
+        const inv = {};
+        document
+          .querySelectorAll(`input[data-inv-prefix="${prefix}"]:checked`)
+          .forEach((cb) => {
+            const act = cb.getAttribute("data-act");
+            if (!inv[act]) inv[act] = [];
+            inv[act].push(cb.value);
+          });
+        return inv;
+      }
+
+      function renderSystemsGridInto(containerId, selectedSys, prefix) {
+        const grid = document.getElementById(containerId);
+        if (!grid) return;
+        const set = new Set(Array.isArray(selectedSys) ? selectedSys : []);
+        grid.innerHTML = DEV_SYSTEM_OPTIONS.map(
+          (opt) => `
+          <label class="role-check-item">
+            <input type="checkbox" data-sys-prefix="${prefix}" value="${escapeHtml(opt.val)}" ${set.has(opt.val) ? "checked" : ""} />
+            <span>${escapeHtml(opt.label)}</span>
+          </label>`
+        ).join("");
+      }
+
+      function collectSystemsGrid(prefix) {
+        return [...document.querySelectorAll(`input[data-sys-prefix="${prefix}"]:checked`)].map(
+          (cb) => cb.value
+        );
+      }
+
+      function renderPortalDevSpecialization() {
+        const u = state.currentUser;
+        if (!u || u.role !== "developer") return;
+        renderInventoryMatrixInto("portalDevInventoryMatrix", u.dev_inventory || {}, "portalDev");
+        renderSystemsGridInto("portalDevSystemsGrid", u.dev_systems || [], "portalDev");
+      }
+
+      async function savePortalDeveloperSpecialization() {
+        const u = state.currentUser;
+        if (!u || u.role !== "developer") return;
+        const inv = collectInventoryMatrix("portalDev");
+        const sys = collectSystemsGrid("portalDev");
+        const flatActs = Object.keys(inv);
+        const flatAreas = [...new Set(Object.values(inv).flat())];
+        const { error } = await sb
+          .from("accounts")
+          .update({
+            dev_inventory: inv,
+            dev_systems: sys,
+            dev_activities: flatActs.length > 0 ? flatActs : u.dev_activities,
+            dev_areas: flatAreas.length > 0 ? flatAreas : u.dev_areas,
+          })
+          .eq("id", u.id);
+        if (error) return alert("❌ تعذر حفظ التخصص (تأكد من تشغيل سطر SQL للأعمدة الجديدة في Supabase)!");
+        u.dev_inventory = inv;
+        u.dev_systems = sys;
+        alert("✅ تم حفظ تخصص مشاريع شركتك والأنظمة بنجاح!");
+      }
+
+      function renderBalmetrOffersPanel() {
+        populateManagerTeamOffersSelect();
+        const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
+        const cfg = state.balmetrTeamInventory?.[teamName] || { inventory: {}, systems: [] };
+        renderInventoryMatrixInto("balmetrTeamInventoryMatrix", cfg.inventory || {}, "balmetrTeam");
+        renderSystemsGridInto("balmetrTeamSystemsGrid", cfg.systems || [], "balmetrTeam");
+        ensureManagerOffersLoaded();
+      }
+
+      async function saveBalmetrTeamSpecialization() {
+        const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
+        const inv = collectInventoryMatrix("balmetrTeam");
+        const sys = collectSystemsGrid("balmetrTeam");
+        state.balmetrTeamInventory = {
+          ...(state.balmetrTeamInventory || {}),
+          [teamName]: { inventory: inv, systems: sys },
+        };
+        const { error } = await sb.from("system_settings").upsert({
+          key: "balmetr_team_inventory",
+          value: JSON.stringify(state.balmetrTeamInventory),
+        });
+        if (error) return alert("❌ تعذر حفظ تخصص التيم!");
+        alert(`✅ تم حفظ تخصص تيم «${teamName}» بنجاح!`);
+      }
+
+      // ==================== OFFLINE STREET FLYER QR GENERATOR ====================
+      function renderOfflineFlyerQR() {
+        const exh = getActiveExhibition();
+        const lbl = document.getElementById("offlineQrExhLabel");
+        if (lbl) lbl.textContent = exh?.name || "-";
+        const canvas = document.getElementById("offlineQrCanvas");
+        if (!canvas || !exh || typeof qrcode === "undefined") return;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#051224";
+        ctx.fillRect(0, 0, canvas.width, 82);
+        ctx.fillStyle = "#2dd4bf";
+        ctx.textAlign = "center";
+        ctx.font = "900 28px 'Cairo', sans-serif";
+        ctx.fillText("B.almetr VIP", canvas.width / 2, 38);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 18px 'Cairo', sans-serif";
+        ctx.fillText(exh.name || "معرض بالمتر", canvas.width / 2, 68);
+
+        const payload = `BM|OFFLINE|EXH:${exh.id}`;
+        drawQrOnCanvas(ctx, payload, canvas.width / 2, 265, 290);
+
+        ctx.fillStyle = "#051224";
+        ctx.font = "900 20px 'Cairo', sans-serif";
+        ctx.fillText("دعوة أوفلاين (ورق الشارع)", canvas.width / 2, 445);
+        ctx.fillStyle = "#0f766e";
+        ctx.font = "700 14px 'Cairo', sans-serif";
+        ctx.fillText("امسح الكود عند الريسبشن — 0101 4444 227", canvas.width / 2, 476);
+      }
+
+      function downloadOfflineFlyerQR() {
+        const exh = getActiveExhibition();
+        const canvas = document.getElementById("offlineQrCanvas");
+        if (!canvas || !exh) return;
+        renderOfflineFlyerQR();
+        const a = document.createElement("a");
+        a.href = canvas.toDataURL("image/png");
+        a.download = `Balmetr_OFFLINE_QR_${exh.name || "exh"}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
 
       // ==================== DYNAMIC TEAMS ====================
@@ -7968,10 +8248,11 @@
           renderMgrExhibitionsTable();
           renderStaffAssignmentUI();
           renderTeamDistributionUI();
-          populateManagerTeamOffersSelect();
-          ensureManagerOffersLoaded();
+          renderOfflineFlyerQR();
           syncStudioControls();
           loadActiveTemplateImage();
+        } else if (activeManagerTab === "mgrTabBalmetrOffers") {
+          renderBalmetrOffersPanel();
         } else if (activeManagerTab === "mgrTabDevOnly") {
           renderDevOnlyPanel();
         } else if (activeManagerTab === "mgrTabReportSettings") {
@@ -8778,6 +9059,8 @@
         let managedTeams = isLeader ? readCheckedValues("mgrAddManagedTeamsGrid") : [];
         if (isLeader && managedTeams.length === 0) managedTeams = [team];
         const canEditRequest = Boolean(document.getElementById("mgrAddCanEditReq")?.checked);
+        const firstSplitPct = parseFloat(document.getElementById("mgrAddFirstPct")?.value ?? "0.5");
+        const tableSplitPct = parseFloat(document.getElementById("mgrAddTablePct")?.value ?? "1.0");
 
         const { data, error } = await sb
           .from("accounts")
@@ -8792,6 +9075,8 @@
             expo_roles: expoRoles,
             managed_teams: managedTeams,
             can_edit_request: canEditRequest,
+            first_split_pct: isNaN(firstSplitPct) ? 0.5 : firstSplitPct,
+            table_split_pct: isNaN(tableSplitPct) ? 1.0 : tableSplitPct,
           })
           .select()
           .single();
@@ -8905,6 +9190,10 @@
 
         const canEditEl = document.getElementById("editAccCanEditReq");
         if (canEditEl) canEditEl.checked = Boolean(a.can_edit_request);
+        const fPctEl = document.getElementById("editAccFirstPct");
+        if (fPctEl) fPctEl.value = a.first_split_pct ?? 0.5;
+        const tPctEl = document.getElementById("editAccTablePct");
+        if (tPctEl) tPctEl.value = a.table_split_pct ?? 1.0;
 
         document.getElementById("editAccountModal").style.display = "flex";
       }
@@ -8924,6 +9213,8 @@
         let managedTeams = isLeader ? readCheckedValues("editAccManagedTeamsGrid") : [];
         if (isLeader && managedTeams.length === 0) managedTeams = [team];
         const canEditRequest = Boolean(document.getElementById("editAccCanEditReq")?.checked);
+        const firstSplitPct = parseFloat(document.getElementById("editAccFirstPct")?.value ?? "0.5");
+        const tableSplitPct = parseFloat(document.getElementById("editAccTablePct")?.value ?? "1.0");
 
         if (!name || !code || !password) return alert("⚠️ الاسم والكود والباسورد مطلوبة!");
         if (password === state.developerSignupPass)
@@ -8942,6 +9233,8 @@
             expo_roles: expoRoles,
             managed_teams: managedTeams,
             can_edit_request: canEditRequest,
+            first_split_pct: isNaN(firstSplitPct) ? 0.5 : firstSplitPct,
+            table_split_pct: isNaN(tableSplitPct) ? 1.0 : tableSplitPct,
           })
           .eq("id", id)
           .select()
@@ -9060,6 +9353,8 @@
         const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
         const ownerKey = `team_${teamName}`;
         const list = getOffersForKey(ownerKey);
+        const badge = document.getElementById("mgrTeamOffersCountBadge");
+        if (badge) badge.textContent = `${list.length} / 20`;
         const tbody = document.getElementById("mgrTeamOffersTbody");
         if (!tbody) return;
         if (list.length === 0) {
