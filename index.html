@@ -1540,8 +1540,8 @@
                   <tr>
                     <th>الكود</th>
                     <th>اسم السيلز</th>
-                    <th>المعرض النشط</th>
-                    <th>إجمالي الدعوات</th>
+                    <th>توزيع المعارض (اضغط للتحديد)</th>
+                    <th>النشط / الكل</th>
                     <th>إجراءات</th>
                   </tr>
                 </thead>
@@ -3016,6 +3016,19 @@
             </div>
           </div>
 
+          <!-- Staff Exhibition Assignment (Multi-Exhibition Same-Day Support) -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                📍 توزيع طاقم المعرض لـ (<span id="assignExhNameLabel">-</span>)
+              </div>
+              <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 700">
+                حدّد الموظفين والشركات النازلين هذا المعرض (يُحفظ فوراً ويقفل شاشتهم على هذا المعرض فقط)
+              </span>
+            </div>
+            <div id="mgrStaffAssignmentContainer"></div>
+          </div>
+
           <!-- Team Distribution & B.almetr Team Offers for Active Exhibition -->
           <div class="workspace-grid" style="margin-bottom: 14px">
             <div class="card" style="margin-bottom: 0">
@@ -3406,7 +3419,7 @@
                     class="form-control"
                     dir="ltr"
                     style="text-align: right"
-                    placeholder="01014440000"
+                    placeholder="0101 4444 227"
                     oninput="renderReportPreviewBox()"
                   />
                 </div>
@@ -4124,7 +4137,7 @@
 
       // Safe public columns (NO passwords exposed on public load)
       const PUBLIC_ACCOUNT_COLS =
-        "id,role,name,code,team,phone,show_phone_in_report,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
+        "id,role,name,code,team,phone,show_phone_in_report,active_exhibition_ids,parent_admin_id,custom_template_url,hide_in_sitting,dev_activities,dev_areas,dev_min_downpayment,created_at";
 
       const CAIRO_DATE_FMT = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Africa/Cairo",
@@ -4183,7 +4196,7 @@
         offersLoadedForMgr: false,
         journeyReportConfig: {
           brandTitle: "B.almetr VIP | تقرير رحلة العميل",
-          hotline: "01014440000",
+          hotline: "0101 4444 227",
           footerMsg: "شكراً لحضورك معنا ✨ نتمنى لك استثماراً موفقاً",
           showEntryExit: true,
           showStopDuration: true,
@@ -5194,7 +5207,7 @@
         const cfg = state.journeyReportConfig || {};
         document.getElementById("rptBrandTitleInput").value =
           cfg.brandTitle || "B.almetr VIP | تقرير رحلة العميل";
-        document.getElementById("rptHotlineInput").value = cfg.hotline || "01014440000";
+        document.getElementById("rptHotlineInput").value = cfg.hotline || "0101 4444 227";
         document.getElementById("rptFooterMsgInput").value =
           cfg.footerMsg || "شكراً لحضورك معنا ✨ نتمنى لك استثماراً موفقاً";
 
@@ -5214,7 +5227,7 @@
       function collectReportConfigFromUI() {
         return {
           brandTitle: (document.getElementById("rptBrandTitleInput")?.value || "").trim() || "B.almetr VIP | تقرير رحلة العميل",
-          hotline: (document.getElementById("rptHotlineInput")?.value || "").trim() || "01014440000",
+          hotline: (document.getElementById("rptHotlineInput")?.value || "").trim() || "0101 4444 227",
           footerMsg: (document.getElementById("rptFooterMsgInput")?.value || "").trim() || "شكراً لحضورك معنا ✨",
           showEntryExit: document.getElementById("rptShowEntryExit")?.checked !== false,
           showStopDuration: document.getElementById("rptShowStopDuration")?.checked !== false,
@@ -5232,31 +5245,48 @@
         if (!box) return;
         const cfg = collectReportConfigFromUI();
         box.innerHTML = `
-          <div style="background:#051224; color:#fff; padding:10px 12px; border-radius:8px; border-bottom:3px solid #00b8ac; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <strong style="color:#2dd4bf;">${escapeHtml(cfg.brandTitle)}</strong>
-            <span style="color:#fcd34d; font-weight:900;">#0131</span>
-          </div>
-          ${cfg.showEntryExit ? `<div style="background:#f0fdfa; border:1px solid #00b8ac; padding:6px 10px; border-radius:6px; margin-bottom:8px; font-size:0.74rem;">👤 العميل: أ/ أحمد محمود &nbsp;|&nbsp; 🕒 دخول: 2:15 م &nbsp;|&nbsp; 🏁 خروج: 3:05 م (50 ق)</div>` : `<div style="background:#f0fdfa; border:1px solid #00b8ac; padding:6px 10px; border-radius:6px; margin-bottom:8px; font-size:0.74rem;">👤 العميل: أ/ أحمد محمود</div>`}
-          <div style="border:1px solid #cbd5e1; border-right:4px solid #00b8ac; border-radius:6px; padding:8px; margin-bottom:8px;">
-            <div style="display:flex; justify-content:space-between; font-weight:800;">
-              <span>1. تيم الجمعية (بالمتر)</span>
-              ${cfg.showStopDuration ? `<span style="color:#0f766e;">⏱️ 15 دقيقة</span>` : ""}
+          <div style="background:linear-gradient(135deg,#051224,#0d2a52); color:#fff; padding:12px 14px; border-radius:10px; border-bottom:4px solid #00b8ac; display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="Logo_White.png" alt="B.almetr" style="height:30px; width:auto; object-fit:contain;" onerror="this.style.display='none';" />
+              <div>
+                <div style="color:#2dd4bf; font-weight:900; font-size:0.86rem;">${escapeHtml(cfg.brandTitle)}</div>
+                <div style="color:#cbd5e1; font-size:0.7rem;">معرض بالمتر العقاري VIP</div>
+              </div>
             </div>
-            ${cfg.showRepName ? `<div style="font-size:0.73rem; color:#334155;">👤 المستشار: أ/ مريم (S16)</div>` : ""}
-            ${cfg.showOfferDetails ? `<div style="background:#fffbeb; border:1px solid #f59e0b; padding:5px 8px; border-radius:5px; margin-top:4px; font-size:0.72rem;">🎁 العرض المرشح: مشروع بيرلا — تجاري 45م² — مقدم 10%</div>` : ""}
+            <span style="background:rgba(245,176,65,0.2); border:1px solid #f5b041; color:#fcd34d; padding:3px 9px; border-radius:8px; font-weight:900; font-size:0.82rem;">#0131</span>
+          </div>
+
+          <div style="background:#f0fdfa; border:1.5px solid #00b8ac; padding:8px 10px; border-radius:8px; margin-bottom:10px; font-size:0.74rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+            <span><strong>👤 العميل:</strong> أ/ أحمد محمود</span>
+            ${cfg.showEntryExit ? `<span><strong>🕒 دخول:</strong> 2:15 م &nbsp;|&nbsp; <strong>🏁 خروج:</strong> 3:05 م (50 دقيقة)</span>` : ""}
+          </div>
+
+          <div style="border:1.5px solid #cbd5e1; border-right:5px solid #00b8ac; border-radius:8px; padding:9px 10px; margin-bottom:8px; background:#f8fafc;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:900; color:#051224;">
+              <span>1. تيم الجمعية — بالمتر</span>
+              ${cfg.showStopDuration ? `<span style="background:#ccfbf1; color:#0f766e; padding:2px 7px; border-radius:6px; font-size:0.7rem;">⏱️ 15 دقيقة</span>` : ""}
+            </div>
+            ${cfg.showRepName ? `<div style="font-size:0.73rem; color:#334155; margin-top:3px;">👤 المستشار العقاري: <strong>أ/ مريم (S16)</strong></div>` : ""}
+            ${cfg.showOfferDetails ? `<div style="background:#fffbeb; border:1px solid #f59e0b; padding:6px 8px; border-radius:6px; margin-top:5px; font-size:0.72rem; color:#78350f;">🎁 <strong>العرض المرشح:</strong> مشروع بيرلا — تجاري 45م² — مقدم 10% على 7 سنوات</div>` : ""}
             ${cfg.showNotes ? `<div style="font-size:0.71rem; color:#475569; margin-top:4px;">📝 ملاحظات: العميل مهتم بالاستلام الفوري</div>` : ""}
-            <div style="font-size:0.71rem; color:#0284c7; margin-top:4px; font-weight:800;">📞 للتواصل: ${cfg.showBalmetrPhones ? "01012345678 (رقم السيلز)" : escapeHtml(cfg.hotline)}</div>
+            ${cfg.showBalmetrPhones ? `<div style="display:inline-block; background:#e0f2fe; border:1px solid #0284c7; color:#0369a1; padding:2px 8px; border-radius:6px; font-size:0.71rem; margin-top:5px; font-weight:800;">📱 تواصل المستشار: <span dir="ltr">01012345678</span></div>` : ""}
           </div>
-          <div style="border:1px solid #cbd5e1; border-right:4px solid #f59e0b; border-radius:6px; padding:8px; margin-bottom:8px;">
-            <div style="display:flex; justify-content:space-between; font-weight:800;">
-              <span>2. شركة مطورة (مثال)</span>
-              ${cfg.showStopDuration ? `<span style="color:#0f766e;">⏱️ 20 دقيقة</span>` : ""}
+
+          <div style="border:1.5px solid #cbd5e1; border-right:5px solid #f59e0b; border-radius:8px; padding:9px 10px; margin-bottom:10px; background:#fffdf7;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:900; color:#051224;">
+              <span>2. شركة مطورة مشاركة</span>
+              ${cfg.showStopDuration ? `<span style="background:#fef3c7; color:#b45309; padding:2px 7px; border-radius:6px; font-size:0.7rem;">⏱️ 20 دقيقة</span>` : ""}
             </div>
-            <div style="font-size:0.71rem; color:#0284c7; margin-top:4px; font-weight:800;">📞 للتواصل: ${cfg.showDevPhones ? "01099999999 (رقم المطور)" : `${escapeHtml(cfg.hotline)} (الخط الساخن للمعرض)`}</div>
+            ${cfg.showOfferDetails ? `<div style="background:#fffbeb; border:1px solid #f59e0b; padding:6px 8px; border-radius:6px; margin-top:5px; font-size:0.72rem; color:#78350f;">🎁 <strong>العرض المرشح:</strong> شقة 120م² — مقدم 15%</div>` : ""}
+            ${cfg.showDevPhones ? `<div style="display:inline-block; background:#fef2f2; border:1px solid #ef4444; color:#b91c1c; padding:2px 8px; border-radius:6px; font-size:0.71rem; margin-top:5px; font-weight:800;">📱 تواصل المطور: <span dir="ltr">01099999999</span></div>` : ""}
           </div>
-          <div style="border-top:1.5px solid #051224; padding-top:6px; display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800;">
-            <span>${escapeHtml(cfg.footerMsg)}</span>
-            <span dir="ltr">📞 ${escapeHtml(cfg.hotline)}</span>
+
+          <div style="background:#051224; color:#fff; border-top:3px solid #f5b041; border-radius:8px; padding:9px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="Logo_White.png" alt="B.almetr" style="height:22px; width:auto; object-fit:contain;" onerror="this.style.display='none';" />
+              <span style="font-size:0.72rem; color:#e2e8f0; font-weight:700;">${escapeHtml(cfg.footerMsg)}</span>
+            </div>
+            <span dir="ltr" style="background:#00b8ac; color:#031a1f; padding:3px 10px; border-radius:999px; font-weight:900; font-size:0.76rem;">📞 ${escapeHtml(cfg.hotline)}</span>
           </div>
         `;
       }
@@ -6862,18 +6892,26 @@
           return;
         }
         const activeExh = getActiveExhibition();
+        const visibleExhs = getVisibleExhibitionsPool();
         tbody.innerHTML = myDevSales
           .map((s) => {
             const actC = activeExh
               ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0
               : 0;
             const allC = cache.ownerTotalCount.get(s.id) || 0;
+            const assignedIds = getAccountActiveExhs(s);
+            const exhChips = visibleExhs
+              .map((ex) => {
+                const isOn = assignedIds.includes(ex.id);
+                return `<button type="button" class="chip-btn ${isOn ? "selected" : ""}" style="padding:4px 9px; font-size:0.74rem;" onclick="toggleAccountExhibitionAssignment('${s.id}', '${ex.id}')">${isOn ? "✅" : "➕"} ${escapeHtml(ex.name)}</button>`;
+              })
+              .join("");
             return `
             <tr>
               <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
               <td style="font-weight:800;">${escapeHtml(s.name)}</td>
-              <td><span class="badge badge-success">${actC}</span></td>
-              <td><strong>${allC}</strong></td>
+              <td><div class="chips-grid">${exhChips}</div></td>
+              <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
               <td>
                 <button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:0.74rem;" onclick="deleteDeveloperSalesRep('${s.id}')">🗑️ حذف</button>
               </td>
@@ -7677,6 +7715,7 @@
           renderManagerAccountsTable();
         } else if (activeManagerTab === "mgrTabStudio") {
           renderMgrExhibitionsTable();
+          renderStaffAssignmentUI();
           renderTeamDistributionUI();
           populateManagerTeamOffersSelect();
           ensureManagerOffersLoaded();
@@ -8814,6 +8853,100 @@
           console.error(err);
           alert("❌ تعذر الحذف!");
         }
+      }
+
+      // ==================== STAFF EXHIBITION ASSIGNMENT (MULTI-EXH) ====================
+      function getAccountActiveExhs(acc) {
+        if (!acc || !Array.isArray(acc.active_exhibition_ids)) return [];
+        return acc.active_exhibition_ids;
+      }
+
+      async function toggleAccountExhibitionAssignment(accId, exhId) {
+        const acc = getAccountById(accId);
+        if (!acc) return;
+        const current = getAccountActiveExhs(acc);
+        const exists = current.includes(exhId);
+        const nextIds = exists
+          ? current.filter((id) => id !== exhId)
+          : [...current, exhId];
+
+        const { data, error } = await sb
+          .from("accounts")
+          .update({ active_exhibition_ids: nextIds })
+          .eq("id", accId)
+          .select()
+          .single();
+
+        if (error) {
+          console.error(error);
+          return alert("❌ تعذر التحديث (تأكد من تشغيل سطر SQL لعمود active_exhibition_ids)!");
+        }
+        acc.active_exhibition_ids = data?.active_exhibition_ids || nextIds;
+        if (activeView === "managerView" && activeManagerTab === "mgrTabStudio") {
+          renderStaffAssignmentUI();
+        } else if (activeView === "personalPortalView") {
+          renderPersonalPortal();
+        }
+      }
+
+      function renderStaffAssignmentUI() {
+        const exh = getActiveExhibition();
+        const lbl = document.getElementById("assignExhNameLabel");
+        const container = document.getElementById("mgrStaffAssignmentContainer");
+        if (!exh || !container) return;
+        if (lbl) lbl.textContent = exh.name;
+
+        const visibleOtherExhs = state.exhibitions.filter(
+          (e) => !e.hide_in_sales && e.id !== exh.id
+        );
+
+        const groups = [
+          { role: "exh_manager", title: "🎯 مديرو المعرض", warnMulti: true },
+          { role: "reception", title: "🛎️ الريسبشن", warnMulti: true },
+          { role: "usher", title: "🚶 الأشرز (الموصلاتية)", warnMulti: true },
+          { role: "team_leader", title: "🎖️ التيم ليدرز", warnMulti: false },
+          { role: "sales", title: "💼 سيلز بالمتر", warnMulti: true },
+          { role: "broker", title: "🏢 البروكرز", warnMulti: false },
+          { role: "developer", title: "🏗️ الشركات المطورة المشاركة", warnMulti: false },
+        ];
+
+        container.innerHTML = groups
+          .map((g) => {
+            const members = sortAccountsByCode(
+              state.accounts.filter((a) => a.role === g.role)
+            );
+            if (members.length === 0) return "";
+            const assignedCount = members.filter((m) =>
+              getAccountActiveExhs(m).includes(exh.id)
+            ).length;
+
+            const chips = members
+              .map((m) => {
+                const ids = getAccountActiveExhs(m);
+                const isHere = ids.includes(exh.id);
+                const otherActive = g.warnMulti
+                  ? visibleOtherExhs.find((oe) => ids.includes(oe.id))
+                  : null;
+                const conflictBadge = otherActive
+                  ? ` <span class="badge badge-gold" style="font-size:0.66rem; padding:1px 5px;">⚠️ في: ${escapeHtml(otherActive.name)}</span>`
+                  : "";
+                return `<button type="button" class="chip-btn ${isHere ? "selected" : ""}" onclick="toggleAccountExhibitionAssignment('${m.id}', '${exh.id}')">
+                  ${isHere ? "✅" : "⬜"} ${escapeHtml(m.code)} — ${escapeHtml(m.name)}${conflictBadge}
+                </button>`;
+              })
+              .join("");
+
+            return `
+            <div class="control-section-box" style="margin-bottom:10px;">
+              <div class="control-section-title">
+                <span>${g.title}</span>
+                <span class="badge badge-mint">${assignedCount} / ${members.length} نازلين</span>
+              </div>
+              <div class="chips-grid">${chips}</div>
+            </div>`;
+          })
+          .filter(Boolean)
+          .join("");
       }
 
       // ==================== EXHIBITION TEAM DISTRIBUTION RULES ====================
