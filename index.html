@@ -601,7 +601,7 @@
 
       .admin-nav-grid {
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         gap: 8px;
         margin-bottom: 14px;
       }
@@ -1651,9 +1651,29 @@
             </div>
           </div>
 
-          <!-- Self-Service Password Settings Card -->
+          <!-- Self-Service Phone & Password Settings Card -->
           <div class="control-section-box">
-            <div class="control-section-title">🔐 إعدادات كلمة السر الخاصة بك</div>
+            <div class="control-section-title">📱 رقم تليفونك وإعدادات كلمة السر</div>
+            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border)">
+              <label class="form-label">رقم تليفونك (للتواصل / التقرير حسب صلاحيات الإدارة):</label>
+              <div class="pass-input-group">
+                <input
+                  type="tel"
+                  id="portalOwnPhoneInput"
+                  class="form-control"
+                  dir="ltr"
+                  style="text-align: right"
+                  placeholder="01012345678"
+                />
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="saveOwnPhoneFromInput('portalOwnPhoneInput')"
+                >
+                  💾 حفظ الرقم
+                </button>
+              </div>
+            </div>
             <div class="pass-settings-row">
               <div>
                 <label class="form-label">كلمة السر الحالية:</label>
@@ -1796,6 +1816,17 @@
               />
             </div>
             <div class="form-group">
+              <label class="form-label">رقم التليفون (اختياري):</label>
+              <input
+                type="tel"
+                id="abNewPhone"
+                class="form-control"
+                dir="ltr"
+                style="text-align: right"
+                placeholder="01012345678"
+              />
+            </div>
+            <div class="form-group">
               <label class="form-label"
                 >باسورد متابعة خاص به (اختياري — يتولد تلقائي لو فاضي):</label
               >
@@ -1839,10 +1870,30 @@
           </div>
 
           <div>
-            <!-- Admin Broker Password Settings -->
+            <!-- Admin Broker Phone & Password Settings -->
             <div class="card">
               <div class="card-header">
-                <div class="card-title">🔐 إعدادات كلمة السر الخاصة بك</div>
+                <div class="card-title">📱 رقم تليفونك وإعدادات كلمة السر</div>
+              </div>
+              <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border)">
+                <label class="form-label">رقم تليفونك:</label>
+                <div class="pass-input-group">
+                  <input
+                    type="tel"
+                    id="abOwnPhoneInput"
+                    class="form-control"
+                    dir="ltr"
+                    style="text-align: right"
+                    placeholder="01012345678"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="saveOwnPhoneFromInput('abOwnPhoneInput')"
+                  >
+                    💾 حفظ الرقم
+                  </button>
+                </div>
               </div>
               <div class="pass-settings-row">
                 <div>
@@ -2148,9 +2199,29 @@
             </div>
           </div>
 
-          <!-- Team Leader Password Settings -->
+          <!-- Team Leader Phone & Password Settings -->
           <div class="control-section-box">
-            <div class="control-section-title">🔐 إعدادات كلمة السر الخاصة بك</div>
+            <div class="control-section-title">📱 رقم تليفونك وإعدادات كلمة السر</div>
+            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border)">
+              <label class="form-label">رقم تليفونك (للتواصل / التقرير):</label>
+              <div class="pass-input-group">
+                <input
+                  type="tel"
+                  id="tlOwnPhoneInput"
+                  class="form-control"
+                  dir="ltr"
+                  style="text-align: right"
+                  placeholder="01012345678"
+                />
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="saveOwnPhoneFromInput('tlOwnPhoneInput')"
+                >
+                  💾 حفظ الرقم
+                </button>
+              </div>
+            </div>
             <div class="pass-settings-row">
               <div>
                 <label class="form-label">كلمة السر الحالية:</label>
@@ -2294,6 +2365,13 @@
             onclick="switchManagerTab('mgrTabDevOnly', this)"
           >
             <span>🔒</span><span>6. Devolepor_only</span>
+          </button>
+          <button
+            type="button"
+            class="admin-nav-btn"
+            onclick="switchManagerTab('mgrTabReportSettings', this)"
+          >
+            <span>📄</span><span>7. إعدادات التقرير</span>
           </button>
         </nav>
 
@@ -2807,7 +2885,7 @@
                   placeholder="الكود (اختياري)"
                 />
               </div>
-              <div style="display: flex; gap: 8px; margin-bottom: 10px">
+              <div style="display: flex; gap: 8px; margin-bottom: 8px">
                 <input
                   type="text"
                   id="mgrAddPass"
@@ -2822,6 +2900,20 @@
                 >
                   🎲 عشوائي
                 </button>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; margin-bottom: 10px">
+                <input
+                  type="tel"
+                  id="mgrAddPhone"
+                  class="form-control"
+                  dir="ltr"
+                  style="text-align: right"
+                  placeholder="رقم التليفون (اختياري)"
+                />
+                <label style="font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap">
+                  <input type="checkbox" id="mgrAddShowPhone" checked />
+                  إظهار بالتقرير
+                </label>
               </div>
               <button
                 type="button"
@@ -2874,9 +2966,10 @@
               <table>
                 <thead>
                   <tr>
-                    <th>النوع</th>
+                    <th>النوع (البوزشن)</th>
                     <th>الكود</th>
                     <th>الاسم</th>
+                    <th>التليفون</th>
                     <th>الباسورد</th>
                     <th>التيم / التبعية</th>
                     <th>إجراءات</th>
@@ -3274,6 +3367,149 @@
                   height="1350"
                 ></canvas>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 7: REPORT SETTINGS PANEL -->
+        <div id="mgrTabReportSettings" class="admin-page">
+          <div class="workspace-grid">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📄 إعدادات تقرير رحلة العميل المطبوع</div>
+                <button
+                  type="button"
+                  class="btn btn-gold"
+                  onclick="saveJourneyReportConfig()"
+                >
+                  💾 حفظ الإعدادات
+                </button>
+              </div>
+
+              <div class="control-section-box">
+                <div class="control-section-title">🏢 بيانات الترويسة والتواصل العام</div>
+                <div class="form-group">
+                  <label class="form-label">اسم المنظومة / الترويسة:</label>
+                  <input
+                    type="text"
+                    id="rptBrandTitleInput"
+                    class="form-control"
+                    placeholder="B.almetr VIP | تقرير رحلة العميل"
+                    oninput="renderReportPreviewBox()"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">رقم الخط الساخن العام للشركة (يظهر في أسفل التقرير):</label>
+                  <input
+                    type="tel"
+                    id="rptHotlineInput"
+                    class="form-control"
+                    dir="ltr"
+                    style="text-align: right"
+                    placeholder="01014440000"
+                    oninput="renderReportPreviewBox()"
+                  />
+                </div>
+                <div class="form-group" style="margin-bottom: 0">
+                  <label class="form-label">رسالة الخاتمة أسفل التقرير:</label>
+                  <input
+                    type="text"
+                    id="rptFooterMsgInput"
+                    class="form-control"
+                    placeholder="شكراً لحضورك معنا ✨ نتمنى لك استثماراً موفقاً"
+                    oninput="renderReportPreviewBox()"
+                  />
+                </div>
+              </div>
+
+              <div class="control-section-box" style="margin-bottom: 0">
+                <div class="control-section-title">🎛️ التحكم في العناصر الظاهرة بالتقرير</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; font-size: 0.82rem; font-weight: 800">
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
+                    <input type="checkbox" id="rptShowEntryExit" onchange="renderReportPreviewBox()" />
+                    🕒 وقت الدخول والخروج والمدة الكلية
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
+                    <input type="checkbox" id="rptShowStopDuration" onchange="renderReportPreviewBox()" />
+                    ⏱️ مدة كل قعدة بالدقائق
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
+                    <input type="checkbox" id="rptShowRepName" onchange="renderReportPreviewBox()" />
+                    👤 اسم السيلز / المستشار في كل محطة
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
+                    <input type="checkbox" id="rptShowOfferDetails" onchange="renderReportPreviewBox()" />
+                    🎁 تفاصيل العرض المرشح (السعر/المقدم)
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
+                    <input type="checkbox" id="rptShowNotes" onchange="renderReportPreviewBox()" />
+                    📝 ملاحظات الجلسة
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; color:#34d399;">
+                    <input type="checkbox" id="rptShowBalmetrPhones" onchange="renderReportPreviewBox()" />
+                    📱 إظهار أرقام سيلز بالمتر (حسب تفعيل كل فرد)
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; color:#fcd34d;">
+                    <input type="checkbox" id="rptShowBrokerPhones" onchange="renderReportPreviewBox()" />
+                    🏢 السماح بإظهار أرقام البروكرز
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; color:#fda4af;">
+                    <input type="checkbox" id="rptShowDevPhones" onchange="renderReportPreviewBox()" />
+                    🔒 إظهار أرقام سيلز المطورين (يفضل إغلاقه)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">👁️ معاينة شكل التقرير المطبوع</div>
+                </div>
+                <div
+                  id="rptLivePreviewBox"
+                  style="
+                    background: #ffffff;
+                    color: #0f172a;
+                    border-radius: 12px;
+                    padding: 14px;
+                    font-size: 0.78rem;
+                    border: 2px solid var(--primary-bright);
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📱 إدارة أرقام التليفونات والظهور في التقرير (فردياً)</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <select id="rptPhoneRoleFilter" class="form-control" style="width: auto" onchange="renderReportPhonesTable()">
+                  <option value="ALL">الكل</option>
+                  <option value="sales">💼 سيلز بالمتر</option>
+                  <option value="team_leader">🎖️ تيم ليدر</option>
+                  <option value="broker">🏢 بروكر</option>
+                  <option value="admin_broker">🤝 أدمن بروكر</option>
+                  <option value="developer">🏗️ مطور</option>
+                  <option value="dev_sales">🧑‍💼 سيلز مطور</option>
+                </select>
+                <input type="text" id="rptPhoneSearch" class="form-control" style="width: 190px" placeholder="🔍 بحث بالاسم/الكود..." oninput="renderReportPhonesTable()" />
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>النوع</th>
+                    <th>الكود</th>
+                    <th>الاسم</th>
+                    <th>رقم التليفون</th>
+                    <th>الظهور في التقرير</th>
+                  </tr>
+                </thead>
+                <tbody id="rptPhonesTbody"></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -3717,9 +3953,26 @@
     <div id="editAccountModal" class="modal-overlay">
       <div class="modal-box">
         <h3 style="color: var(--primary-bright); margin-bottom: 12px">
-          ✏️ تعديل بيانات الحساب
+          ✏️ تعديل بيانات الحساب والبوزشن
         </h3>
         <input type="hidden" id="editAccId" />
+        <div class="form-group">
+          <label class="form-label" style="color: #fcd34d">النوع (البوزشن الأساسي):</label>
+          <select id="editAccRole" class="form-control">
+            <option value="sales">💼 سيلز</option>
+            <option value="team_leader">🎖️ تيم ليدر</option>
+            <option value="reception">🛎️ ريسبشن</option>
+            <option value="usher">🚶 أشرز (موصلاتية)</option>
+            <option value="exh_manager">🎯 مدير معرض</option>
+            <option value="admin_broker">🤝 أدمن بروكر</option>
+            <option value="broker">🏢 بروكر</option>
+            <option value="influencer">🌟 إنفلونسر</option>
+            <option value="developer">🏗️ ديفولبر</option>
+            <option value="dev_sales">🧑‍💼 سيلز مطور</option>
+            <option value="company">📢 الشركة (BM)</option>
+            <option value="manager">👑 مانجر</option>
+          </select>
+        </div>
         <div class="form-group">
           <label class="form-label">الاسم:</label>
           <input type="text" id="editAccName" class="form-control" />
@@ -3731,6 +3984,16 @@
         <div class="form-group">
           <label class="form-label">الباسورد:</label>
           <input type="text" id="editAccPass" class="form-control" dir="ltr" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">رقم التليفون:</label>
+          <input type="tel" id="editAccPhone" class="form-control" dir="ltr" style="text-align: right" placeholder="01012345678" />
+        </div>
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer">
+            <input type="checkbox" id="editAccShowPhone" />
+            📱 إظهار رقم التليفون في تقرير رحلة العميل
+          </label>
         </div>
         <div class="form-group">
           <label class="form-label">التيم:</label>
@@ -3917,6 +4180,20 @@
         teamsList: ["المعرض", "الجمعية", "الوديعة", "القاهرة"],
         teamSalesOrder: {},
         offersBank: {},
+        accountContacts: {},
+        journeyReportConfig: {
+          brandTitle: "B.almetr VIP | تقرير رحلة العميل",
+          hotline: "01014440000",
+          footerMsg: "شكراً لحضورك معنا ✨ نتمنى لك استثماراً موفقاً",
+          showEntryExit: true,
+          showStopDuration: true,
+          showRepName: true,
+          showOfferDetails: true,
+          showNotes: true,
+          showBalmetrPhones: true,
+          showBrokerPhones: false,
+          showDevPhones: false,
+        },
         currentUser: null,
         publicHostAccount: null,
         publicLockedExhId: null,
@@ -4110,7 +4387,7 @@
           const [exhRes, accRes, setRes] = await Promise.all([
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
             sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url"]),
+            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "account_contacts", "journey_report_config", "design_dimensions", "design_guide_pdf_url"]),
           ]);
 
           if (exhRes.error) throw exhRes.error;
@@ -4135,6 +4412,20 @@
               try {
                 const parsed = JSON.parse(row.value);
                 if (parsed && typeof parsed === "object") state.teamSalesOrder = parsed;
+              } catch (e) {}
+            }
+            if (row.key === "account_contacts") {
+              try {
+                const parsed = JSON.parse(row.value);
+                if (parsed && typeof parsed === "object") state.accountContacts = parsed;
+              } catch (e) {}
+            }
+            if (row.key === "journey_report_config") {
+              try {
+                const parsed = JSON.parse(row.value);
+                if (parsed && typeof parsed === "object") {
+                  state.journeyReportConfig = { ...state.journeyReportConfig, ...parsed };
+                }
               } catch (e) {}
             }
           });
@@ -4185,6 +4476,20 @@
 
             (setRes.data || []).forEach((row) => {
               if (row.key === "developer_signup_pass") state.developerSignupPass = row.value;
+              if (row.key === "account_contacts") {
+                try {
+                  const parsed = JSON.parse(row.value);
+                  if (parsed && typeof parsed === "object") state.accountContacts = parsed;
+                } catch (e) {}
+              }
+              if (row.key === "journey_report_config") {
+                try {
+                  const parsed = JSON.parse(row.value);
+                  if (parsed && typeof parsed === "object") {
+                    state.journeyReportConfig = { ...state.journeyReportConfig, ...parsed };
+                  }
+                } catch (e) {}
+              }
               if (row.key && row.key.startsWith("offers::")) {
                 try {
                   const parsed = JSON.parse(row.value);
@@ -4381,7 +4686,7 @@
           const [exhRes, accRes, setRes] = await Promise.all([
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
             sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url", `offers::${u.id}`]),
+            sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "account_contacts", "journey_report_config", "design_dimensions", "design_guide_pdf_url", `offers::${u.id}`]),
           ]);
           if (exhRes.error) throw exhRes.error;
           if (accRes.error) throw accRes.error;
@@ -4425,6 +4730,12 @@
               try {
                 const parsed = JSON.parse(row.value);
                 if (Array.isArray(parsed)) state.offersBank[row.key] = parsed;
+              } catch (e) {}
+            }
+            if (row.key === "account_contacts") {
+              try {
+                const parsed = JSON.parse(row.value);
+                if (parsed && typeof parsed === "object") state.accountContacts = parsed;
               } catch (e) {}
             }
           });
@@ -4553,6 +4864,20 @@
               try {
                 const parsed = JSON.parse(newRow.value);
                 if (Array.isArray(parsed)) state.offersBank[newRow.key] = parsed;
+              } catch (e) {}
+            }
+            if (newRow.key === "account_contacts") {
+              try {
+                const parsed = JSON.parse(newRow.value);
+                if (parsed && typeof parsed === "object") state.accountContacts = parsed;
+              } catch (e) {}
+            }
+            if (newRow.key === "journey_report_config") {
+              try {
+                const parsed = JSON.parse(newRow.value);
+                if (parsed && typeof parsed === "object") {
+                  state.journeyReportConfig = { ...state.journeyReportConfig, ...parsed };
+                }
               } catch (e) {}
             }
             scheduleActiveViewRender();
@@ -4886,6 +5211,198 @@
         if (error) throw error;
         const { data } = sb.storage.from("templates").getPublicUrl(path);
         return { url: data.publicUrl, origKB, finalKB };
+      }
+
+      // ==================== ACCOUNT CONTACTS & REPORT SETTINGS ====================
+      function getAccountContact(accId) {
+        const c = state.accountContacts?.[accId];
+        if (!c || typeof c !== "object") return { phone: "", showInReport: false };
+        return { phone: c.phone || "", showInReport: Boolean(c.showInReport) };
+      }
+
+      async function setAccountContact(accId, phone, showInReport) {
+        const cleanPhone = phone ? normalizePhone(phone) : "";
+        const nextMap = { ...(state.accountContacts || {}) };
+        if (!cleanPhone && !showInReport) {
+          delete nextMap[accId];
+        } else {
+          nextMap[accId] = { phone: cleanPhone, showInReport: Boolean(showInReport) };
+        }
+        const { error } = await sb
+          .from("system_settings")
+          .upsert({ key: "account_contacts", value: JSON.stringify(nextMap) });
+        if (error) throw error;
+        state.accountContacts = nextMap;
+      }
+
+      async function saveOwnPhoneFromInput(inputId) {
+        const u = state.currentUser;
+        if (!u) return;
+        const raw = (document.getElementById(inputId)?.value || "").trim();
+        if (!raw) return alert("⚠️ اكتب رقم التليفون أولاً!");
+        const chk = validatePhone(raw);
+        if (!chk.valid) return alert(chk.message);
+
+        const prev = getAccountContact(u.id);
+        const defaultShow = prev.phone ? prev.showInReport : u.role === "sales" || u.role === "team_leader";
+        try {
+          await setAccountContact(u.id, chk.normalized, defaultShow);
+          document.getElementById(inputId).value = chk.normalized;
+          alert("✅ تم حفظ رقم تليفونك بنجاح!");
+        } catch (err) {
+          console.error(err);
+          alert("❌ تعذر حفظ الرقم!");
+        }
+      }
+
+      function renderReportSettingsPanel() {
+        const cfg = state.journeyReportConfig || {};
+        document.getElementById("rptBrandTitleInput").value =
+          cfg.brandTitle || "B.almetr VIP | تقرير رحلة العميل";
+        document.getElementById("rptHotlineInput").value = cfg.hotline || "01014440000";
+        document.getElementById("rptFooterMsgInput").value =
+          cfg.footerMsg || "شكراً لحضورك معنا ✨ نتمنى لك استثماراً موفقاً";
+
+        document.getElementById("rptShowEntryExit").checked = cfg.showEntryExit !== false;
+        document.getElementById("rptShowStopDuration").checked = cfg.showStopDuration !== false;
+        document.getElementById("rptShowRepName").checked = cfg.showRepName !== false;
+        document.getElementById("rptShowOfferDetails").checked = cfg.showOfferDetails !== false;
+        document.getElementById("rptShowNotes").checked = cfg.showNotes !== false;
+        document.getElementById("rptShowBalmetrPhones").checked = cfg.showBalmetrPhones !== false;
+        document.getElementById("rptShowBrokerPhones").checked = Boolean(cfg.showBrokerPhones);
+        document.getElementById("rptShowDevPhones").checked = Boolean(cfg.showDevPhones);
+
+        renderReportPreviewBox();
+        renderReportPhonesTable();
+      }
+
+      function collectReportConfigFromUI() {
+        return {
+          brandTitle: (document.getElementById("rptBrandTitleInput")?.value || "").trim() || "B.almetr VIP | تقرير رحلة العميل",
+          hotline: (document.getElementById("rptHotlineInput")?.value || "").trim() || "01014440000",
+          footerMsg: (document.getElementById("rptFooterMsgInput")?.value || "").trim() || "شكراً لحضورك معنا ✨",
+          showEntryExit: document.getElementById("rptShowEntryExit")?.checked !== false,
+          showStopDuration: document.getElementById("rptShowStopDuration")?.checked !== false,
+          showRepName: document.getElementById("rptShowRepName")?.checked !== false,
+          showOfferDetails: document.getElementById("rptShowOfferDetails")?.checked !== false,
+          showNotes: document.getElementById("rptShowNotes")?.checked !== false,
+          showBalmetrPhones: document.getElementById("rptShowBalmetrPhones")?.checked !== false,
+          showBrokerPhones: Boolean(document.getElementById("rptShowBrokerPhones")?.checked),
+          showDevPhones: Boolean(document.getElementById("rptShowDevPhones")?.checked),
+        };
+      }
+
+      function renderReportPreviewBox() {
+        const box = document.getElementById("rptLivePreviewBox");
+        if (!box) return;
+        const cfg = collectReportConfigFromUI();
+        box.innerHTML = `
+          <div style="background:#051224; color:#fff; padding:10px 12px; border-radius:8px; border-bottom:3px solid #00b8ac; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong style="color:#2dd4bf;">${escapeHtml(cfg.brandTitle)}</strong>
+            <span style="color:#fcd34d; font-weight:900;">#0131</span>
+          </div>
+          ${cfg.showEntryExit ? `<div style="background:#f0fdfa; border:1px solid #00b8ac; padding:6px 10px; border-radius:6px; margin-bottom:8px; font-size:0.74rem;">👤 العميل: أ/ أحمد محمود &nbsp;|&nbsp; 🕒 دخول: 2:15 م &nbsp;|&nbsp; 🏁 خروج: 3:05 م (50 ق)</div>` : `<div style="background:#f0fdfa; border:1px solid #00b8ac; padding:6px 10px; border-radius:6px; margin-bottom:8px; font-size:0.74rem;">👤 العميل: أ/ أحمد محمود</div>`}
+          <div style="border:1px solid #cbd5e1; border-right:4px solid #00b8ac; border-radius:6px; padding:8px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>1. تيم الجمعية (بالمتر)</span>
+              ${cfg.showStopDuration ? `<span style="color:#0f766e;">⏱️ 15 دقيقة</span>` : ""}
+            </div>
+            ${cfg.showRepName ? `<div style="font-size:0.73rem; color:#334155;">👤 المستشار: أ/ مريم (S16)</div>` : ""}
+            ${cfg.showOfferDetails ? `<div style="background:#fffbeb; border:1px solid #f59e0b; padding:5px 8px; border-radius:5px; margin-top:4px; font-size:0.72rem;">🎁 العرض المرشح: مشروع بيرلا — تجاري 45م² — مقدم 10%</div>` : ""}
+            ${cfg.showNotes ? `<div style="font-size:0.71rem; color:#475569; margin-top:4px;">📝 ملاحظات: العميل مهتم بالاستلام الفوري</div>` : ""}
+            <div style="font-size:0.71rem; color:#0284c7; margin-top:4px; font-weight:800;">📞 للتواصل: ${cfg.showBalmetrPhones ? "01012345678 (رقم السيلز)" : escapeHtml(cfg.hotline)}</div>
+          </div>
+          <div style="border:1px solid #cbd5e1; border-right:4px solid #f59e0b; border-radius:6px; padding:8px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>2. شركة مطورة (مثال)</span>
+              ${cfg.showStopDuration ? `<span style="color:#0f766e;">⏱️ 20 دقيقة</span>` : ""}
+            </div>
+            <div style="font-size:0.71rem; color:#0284c7; margin-top:4px; font-weight:800;">📞 للتواصل: ${cfg.showDevPhones ? "01099999999 (رقم المطور)" : `${escapeHtml(cfg.hotline)} (الخط الساخن للمعرض)`}</div>
+          </div>
+          <div style="border-top:1.5px solid #051224; padding-top:6px; display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800;">
+            <span>${escapeHtml(cfg.footerMsg)}</span>
+            <span dir="ltr">📞 ${escapeHtml(cfg.hotline)}</span>
+          </div>
+        `;
+      }
+
+      async function saveJourneyReportConfig() {
+        const cfg = collectReportConfigFromUI();
+        const { error } = await sb
+          .from("system_settings")
+          .upsert({ key: "journey_report_config", value: JSON.stringify(cfg) });
+        if (error) return alert("❌ تعذر حفظ إعدادات التقرير!");
+        state.journeyReportConfig = cfg;
+        alert("✅ تم حفظ إعدادات التقرير وتفعيلها للسيستم الكبير بنجاح!");
+      }
+
+      function renderReportPhonesTable() {
+        const tbody = document.getElementById("rptPhonesTbody");
+        if (!tbody) return;
+        const roleF = document.getElementById("rptPhoneRoleFilter")?.value || "ALL";
+        const q = (document.getElementById("rptPhoneSearch")?.value || "").trim().toLowerCase();
+
+        const list = sortAccountsByCode(
+          state.accounts.filter((a) => {
+            if (["manager", "company", "reception", "usher", "exh_manager"].includes(a.role)) return false;
+            if (roleF !== "ALL" && a.role !== roleF) return false;
+            if (q && !`${a.name} ${a.code}`.toLowerCase().includes(q)) return false;
+            return true;
+          })
+        );
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:18px; color:var(--text-muted);">لا توجد حسابات مطابقة.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list
+          .map((a) => {
+            const c = getAccountContact(a.id);
+            return `
+            <tr>
+              <td>${getRoleLabel(a.role)}</td>
+              <td><span class="badge badge-mint">${escapeHtml(a.code)}</span></td>
+              <td style="font-weight:800;">${escapeHtml(a.name)}</td>
+              <td>
+                <div style="display:flex; gap:5px; align-items:center;">
+                  <input type="tel" id="rptPhoneInp_${a.id}" class="form-control" dir="ltr" style="width:140px; padding:5px 8px; font-size:0.8rem;" value="${escapeHtml(c.phone)}" placeholder="010..." />
+                  <button type="button" class="btn btn-outline" style="padding:5px 8px; font-size:0.74rem;" onclick="saveSingleReportPhone('${a.id}')">💾</button>
+                </div>
+              </td>
+              <td>
+                <button type="button" class="btn ${c.showInReport ? "btn-success" : "btn-danger"}" style="padding:5px 10px; font-size:0.76rem;" onclick="toggleReportPhoneVisibility('${a.id}', ${!c.showInReport})">
+                  ${c.showInReport ? "🟢 يظهر بالتقرير" : "🚫 مخفي بالتقرير"}
+                </button>
+              </td>
+            </tr>`;
+          })
+          .join("");
+      }
+
+      async function saveSingleReportPhone(accId) {
+        const raw = (document.getElementById(`rptPhoneInp_${accId}`)?.value || "").trim();
+        const prev = getAccountContact(accId);
+        try {
+          await setAccountContact(accId, raw, prev.showInReport);
+          renderReportPhonesTable();
+          if (activeManagerTab === "mgrTabAccounts") renderManagerAccountsTable();
+          alert("✅ تم حفظ الرقم!");
+        } catch (err) {
+          alert("❌ تعذر الحفظ!");
+        }
+      }
+
+      async function toggleReportPhoneVisibility(accId, newVal) {
+        const prev = getAccountContact(accId);
+        const inpVal = (document.getElementById(`rptPhoneInp_${accId}`)?.value || "").trim();
+        try {
+          await setAccountContact(accId, inpVal || prev.phone, newVal);
+          renderReportPhonesTable();
+          if (activeManagerTab === "mgrTabAccounts") renderManagerAccountsTable();
+        } catch (err) {
+          alert("❌ تعذر التحديث!");
+        }
       }
 
       // ==================== SELF-SERVICE PASSWORD SETTINGS ====================
@@ -6120,6 +6637,8 @@
 
         const currPassEl = document.getElementById("portalCurrPassDisplay");
         if (currPassEl) currPassEl.value = u.password || "";
+        const ownPhoneEl = document.getElementById("portalOwnPhoneInput");
+        if (ownPhoneEl) ownPhoneEl.value = getAccountContact(u.id).phone || "";
 
         const linkWrap = document.getElementById("portalLinkWrap");
         const devTplWrap = document.getElementById("portalDevTemplateWrap");
@@ -6548,9 +7067,14 @@
             return;
           }
 
+          const pPhone = normalizePhone(document.getElementById("abNewPhone")?.value || "");
+          if (pPhone) {
+            await setAccountContact(data.id, pPhone, false);
+          }
           state.accounts.push(data);
           rebuildDerivedCaches();
           document.getElementById("abNewName").value = "";
+          if (document.getElementById("abNewPhone")) document.getElementById("abNewPhone").value = "";
           document.getElementById("abNewPass").value = "";
           document.getElementById("abNewDesignFile").value = "";
 
@@ -6592,6 +7116,8 @@
 
         const currPassEl = document.getElementById("abCurrPassDisplay");
         if (currPassEl) currPassEl.value = u.password || "";
+        const ownPhoneEl = document.getElementById("abOwnPhoneInput");
+        if (ownPhoneEl) ownPhoneEl.value = getAccountContact(u.id).phone || "";
 
         const abExhSel = document.getElementById("abNewDesignExhSelect");
         if (abExhSel) {
@@ -6840,6 +7366,8 @@
 
         const currPassEl = document.getElementById("tlCurrPassDisplay");
         if (currPassEl) currPassEl.value = u.password || "";
+        const ownPhoneEl = document.getElementById("tlOwnPhoneInput");
+        if (ownPhoneEl) ownPhoneEl.value = getAccountContact(u.id).phone || "";
 
         const teamSales = getOrderedTeamSales(teamName);
         const activeTotal = activeExh
@@ -7216,6 +7744,8 @@
           loadActiveTemplateImage();
         } else if (activeManagerTab === "mgrTabDevOnly") {
           renderDevOnlyPanel();
+        } else if (activeManagerTab === "mgrTabReportSettings") {
+          renderReportSettingsPanel();
         }
       }
 
@@ -8021,11 +8551,17 @@
           return alert("❌ خطأ أثناء الإضافة!");
         }
 
+        const addPhone = normalizePhone(document.getElementById("mgrAddPhone")?.value || "");
+        const addShowPhone = document.getElementById("mgrAddShowPhone")?.checked !== false;
+        if (addPhone) {
+          await setAccountContact(data.id, addPhone, addShowPhone);
+        }
         if (!cache.accountsById.has(data.id)) state.accounts.push(data);
         rebuildDerivedCaches();
         document.getElementById("mgrAddName").value = "";
         document.getElementById("mgrAddCode").value = "";
         document.getElementById("mgrAddPass").value = "";
+        if (document.getElementById("mgrAddPhone")) document.getElementById("mgrAddPhone").value = "";
         renderActiveViewOnly();
         alert(`✅ تم إضافة (${data.name}) — الكود: ${data.code} | الباسورد: ${data.password}`);
       }
@@ -8046,11 +8582,16 @@
           .map((a) => {
             const parent = getAccountById(a.parent_admin_id);
             const meta = parent ? `تبع: ${parent.name} (${parent.code})` : a.team || "-";
+            const contact = getAccountContact(a.id);
+            const phoneCell = contact.phone
+              ? `<div dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(contact.phone)}</div><span class="badge ${contact.showInReport ? "badge-success" : "badge-danger"}" style="font-size:0.68rem;">${contact.showInReport ? "📱 بالتقرير" : "🚫 مخفي"}</span>`
+              : `<span style="color:var(--text-muted); font-size:0.75rem;">-</span>`;
             return `
             <tr>
               <td>${getRoleLabel(a.role)}</td>
               <td><span class="badge badge-mint">${escapeHtml(a.code)}</span></td>
               <td style="font-weight:800;">${escapeHtml(a.name)}</td>
+              <td>${phoneCell}</td>
               <td dir="ltr" style="font-family:monospace; color:#fcd34d;">${escapeHtml(a.password || "-")}</td>
               <td style="font-size:0.78rem;">${escapeHtml(meta)}</td>
               <td style="white-space:nowrap;">
@@ -8075,10 +8616,14 @@
         const a = getAccountById(accId);
         if (!a) return;
         populateTeamSelects();
+        const contact = getAccountContact(a.id);
         document.getElementById("editAccId").value = a.id;
+        document.getElementById("editAccRole").value = a.role || "sales";
         document.getElementById("editAccName").value = a.name;
         document.getElementById("editAccCode").value = a.code;
         document.getElementById("editAccPass").value = a.password || "";
+        document.getElementById("editAccPhone").value = contact.phone || "";
+        document.getElementById("editAccShowPhone").checked = Boolean(contact.showInReport);
         if (a.team && !state.teamsList.includes(a.team)) {
           document.getElementById("editAccTeam").innerHTML +=
             `<option value="${escapeHtml(a.team)}">${escapeHtml(a.team)}</option>`;
@@ -8089,18 +8634,21 @@
 
       async function saveEditedAccount() {
         const id = document.getElementById("editAccId").value;
+        const role = document.getElementById("editAccRole").value;
         const name = (document.getElementById("editAccName").value || "").trim();
         const code = (document.getElementById("editAccCode").value || "").trim().toUpperCase();
         const password = (document.getElementById("editAccPass").value || "").trim();
+        const phone = normalizePhone(document.getElementById("editAccPhone").value || "");
+        const showPhone = document.getElementById("editAccShowPhone").checked;
         const team = document.getElementById("editAccTeam").value;
 
-        if (!name || !code || !password) return alert("⚠️ كل الحقول مطلوبة!");
+        if (!name || !code || !password) return alert("⚠️ الاسم والكود والباسورد مطلوبة!");
         if (password === state.developerSignupPass)
           return alert("❌ الباسورد متعارض مع باسورد تسجيل المطورين!");
 
         const { data, error } = await sb
           .from("accounts")
-          .update({ name, code, password, team })
+          .update({ role, name, code, password, team })
           .eq("id", id)
           .select()
           .single();
@@ -8110,6 +8658,7 @@
           return alert("❌ تعذر التعديل!");
         }
 
+        await setAccountContact(id, phone, showPhone);
         const idx = state.accounts.findIndex((a) => a.id === id);
         if (idx >= 0) state.accounts[idx] = data;
         if (state.currentUser?.id === id) state.currentUser = data;
@@ -8745,6 +9294,8 @@
             design_guide_pdf_url: state.designGuidePdfUrl,
             teams_list: state.teamsList,
             team_sales_order: state.teamSalesOrder,
+            account_contacts: state.accountContacts,
+            journey_report_config: state.journeyReportConfig,
           },
           exhibitions: state.exhibitions,
           accounts: state.accounts,
@@ -8950,6 +9501,18 @@
                 await sb.from("system_settings").upsert({
                   key: "team_sales_order",
                   value: JSON.stringify(s.team_sales_order),
+                });
+              }
+              if (s.account_contacts && typeof s.account_contacts === "object") {
+                await sb.from("system_settings").upsert({
+                  key: "account_contacts",
+                  value: JSON.stringify(s.account_contacts),
+                });
+              }
+              if (s.journey_report_config && typeof s.journey_report_config === "object") {
+                await sb.from("system_settings").upsert({
+                  key: "journey_report_config",
+                  value: JSON.stringify(s.journey_report_config),
                 });
               }
             }
