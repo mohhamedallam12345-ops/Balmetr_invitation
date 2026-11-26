@@ -1611,8 +1611,17 @@
                 type="text"
                 id="devNewSalesNameInput"
                 class="form-control"
-                style="flex: 1; min-width: 200px"
-                placeholder="اكتب اسم السيلز (مثال: أحمد علي)..."
+                style="flex: 1.4; min-width: 170px"
+                placeholder="اسم السيلز (مثال: أحمد علي)..."
+                onkeydown="if (event.key === 'Enter') addDeveloperSalesRep();"
+              />
+              <input
+                type="text"
+                id="devNewSalesPassInput"
+                class="form-control"
+                style="flex: 1; min-width: 140px"
+                dir="ltr"
+                placeholder="🔑 باسورد القعدة (اختياري/تلقائي)"
                 onkeydown="if (event.key === 'Enter') addDeveloperSalesRep();"
               />
               <button
@@ -1625,12 +1634,13 @@
               </button>
             </div>
             <div class="table-responsive">
-              <table style="min-width: 440px">
+              <table style="min-width: 560px">
                 <thead>
                   <tr>
                     <th>الكود</th>
                     <th>اسم السيلز</th>
-                    <th>توزيع المعارض (اضغط للتحديد)</th>
+                    <th>🔑 باسورد القعدة</th>
+                    <th>المعرض (معرض واحد فقط)</th>
                     <th>النشط / الكل</th>
                     <th>إجراءات</th>
                   </tr>
@@ -1740,6 +1750,14 @@
                 class="form-control"
                 maxlength="25"
                 placeholder="العائد المتوقع (اختياري)"
+              />
+              <input
+                type="text"
+                id="devOfferDetails"
+                class="form-control"
+                style="grid-column: 1 / -1"
+                maxlength="220"
+                placeholder="📝 تفاصيل إضافية عن العرض (اختياري)..."
               />
             </div>
             <button
@@ -3682,6 +3700,7 @@
                 <input type="text" id="mgrOfferInstallment" class="form-control" maxlength="25" placeholder="القسط" />
                 <input type="text" id="mgrOfferYears" class="form-control" maxlength="20" placeholder="السنوات" />
                 <input type="text" id="mgrOfferRoi" class="form-control" maxlength="25" placeholder="العائد المتوقع" />
+                <input type="text" id="mgrOfferDetails" class="form-control" style="grid-column: 1 / -1" maxlength="220" placeholder="📝 تفاصيل إضافية عن العرض (اختياري)..." />
               </div>
               <button
                 type="button"
@@ -3692,12 +3711,13 @@
                 ➕ إضافة عرض للتيم المحدد
               </button>
               <div class="table-responsive">
-                <table style="min-width: 480px">
+                <table style="min-width: 560px">
                   <thead>
                     <tr>
-                      <th>المشروع</th>
+                      <th>المشروع والتفاصيل</th>
                       <th>المساحة / الإجمالي</th>
                       <th>السداد</th>
+                      <th>العائد المتوقع</th>
                       <th>حذف</th>
                     </tr>
                   </thead>
@@ -4993,7 +5013,7 @@
           const promises2B = [
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
             u.role === "developer"
-              ? sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).eq("role", "dev_sales").eq("parent_admin_id", u.id)
+              ? sb.from("accounts").select(PUBLIC_ACCOUNT_COLS + ", password").eq("role", "dev_sales").eq("parent_admin_id", u.id)
               : Promise.resolve({ data: [], error: null }),
             needSettings.length > 0
               ? sb.from("system_settings").select("*").in("key", needSettings)
@@ -7198,7 +7218,7 @@
         if (badge) badge.textContent = `${myDevSales.length} سيلز`;
         if (!tbody) return;
         if (myDevSales.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:14px;">لم تضف أي سيلز بعد. أضف أسماء السيلز ليختار كل واحد اسمه من لينك شركتك.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:14px;">لم تضف أي سيلز بعد. أضف أسماء السيلز ليختار كل واحد اسمه من لينك شركتك ويحصل على باسورد دخول المعرض.</td></tr>`;
           return;
         }
         const activeExh = getActiveExhibition();
@@ -7216,10 +7236,19 @@
                 return `<button type="button" class="chip-btn ${isOn ? "selected" : ""}" style="padding:4px 9px; font-size:0.74rem;" onclick="toggleAccountExhibitionAssignment('${s.id}', '${ex.id}')">${isOn ? "✅" : "➕"} ${escapeHtml(ex.name)}</button>`;
               })
               .join("");
+            const safePass = escapeHtml(s.password || "غير محدد");
+            const passForJs = String(s.password || "").replace(/'/g, "\\'");
             return `
             <tr>
               <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
               <td style="font-weight:800;">${escapeHtml(s.name)}</td>
+              <td>
+                <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+                  <code style="background:rgba(245,176,65,0.14); color:#fcd34d; padding:3px 7px; border-radius:7px; font-weight:800; font-size:0.78rem;" dir="ltr">${safePass}</code>
+                  <button type="button" class="btn btn-outline" style="padding:2px 7px; min-height:28px; font-size:0.72rem;" onclick="copyText('${passForJs}', 'تم نسخ الباسورد!')">📋</button>
+                  <button type="button" class="btn btn-outline" style="padding:2px 7px; min-height:28px; font-size:0.72rem;" onclick="editDeveloperSalesPassword('${s.id}')">✏️</button>
+                </div>
+              </td>
               <td><div class="chips-grid">${exhChips}</div></td>
               <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
               <td>
@@ -7250,7 +7279,9 @@
           }
         });
         const newCode = `${prefix}${maxNum + 1}`;
-        const pass = generateUniquePassword(newCode.replace("-", ""));
+        const passInp = document.getElementById("devNewSalesPassInput");
+        const customPass = (passInp?.value || "").trim();
+        const pass = customPass || generateUniquePassword(newCode.replace("-", ""));
 
         const btn = document.getElementById("devAddSalesBtn");
         if (btn) {
@@ -7274,8 +7305,9 @@
           if (!cache.accountsById.has(data.id)) state.accounts.push(data);
           rebuildDerivedCaches();
           inp.value = "";
+          if (passInp) passInp.value = "";
           renderPersonalPortal();
-          alert(`✅ تم إضافة السيلز (${data.name}) بكود (${data.code}) بنجاح!`);
+          alert(`✅ تم إضافة السيلز (${data.name}) بكود (${data.code}) وباسورد (${data.password}) بنجاح!`);
         } catch (err) {
           console.error(err);
           alert("❌ تعذر إضافة السيلز: " + (err.message || "تأكد من تشغيل سطر SQL للأدوار الجديدة في Supabase"));
@@ -7285,6 +7317,20 @@
             btn.textContent = "➕ إضافة سيلز";
           }
         }
+      }
+
+      async function editDeveloperSalesPassword(salesId) {
+        const s = getAccountById(salesId);
+        if (!s) return;
+        const newPass = prompt(`أدخل باسورد الدخول الجديد للسيلز (${s.name}):`, s.password || "");
+        if (newPass === null) return;
+        const trimmed = newPass.trim();
+        if (!trimmed) return alert("⚠️ الباسورد لا يمكن أن يكون فارغاً!");
+        const { error } = await sb.from("accounts").update({ password: trimmed }).eq("id", salesId);
+        if (error) return alert("❌ تعذر تحديث الباسورد (قد يكون مكرراً مع حساب آخر)!");
+        s.password = trimmed;
+        renderPersonalPortal();
+        alert(`✅ تم تحديث باسورد (${s.name}) إلى: ${trimmed}`);
       }
 
       async function deleteDeveloperSalesRep(salesId) {
@@ -9286,6 +9332,7 @@
           installment: row.installment || "",
           years: row.years || "",
           expectedRoi: row.expected_roi || "",
+          details: row.details || "",
         };
       }
 
@@ -9328,7 +9375,7 @@
           .map(
             (o) => `
           <tr>
-            <td><strong>${escapeHtml(o.projectName)}</strong><br><span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span></td>
+            <td><strong>${escapeHtml(o.projectName)}</strong> <span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span>${o.details ? `<div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">📝 ${escapeHtml(o.details)}</div>` : ""}</td>
             <td>${escapeHtml(o.area || "-")}</td>
             <td style="font-size:0.78rem;">💰 ${escapeHtml(o.totalPrice || "-")}<br>🔑 مقدم: ${escapeHtml(o.downpayment || "-")}</td>
             <td style="font-size:0.78rem;">📅 ${escapeHtml(o.installment || "-")}<br>⏳ ${escapeHtml(o.years || "-")}</td>
@@ -9358,16 +9405,17 @@
         const tbody = document.getElementById("mgrTeamOffersTbody");
         if (!tbody) return;
         if (list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:14px;">لا توجد عروض مضافة لتيم «${escapeHtml(teamName)}» بعد.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:14px;">لا توجد عروض مضافة لتيم «${escapeHtml(teamName)}» بعد.</td></tr>`;
           return;
         }
         tbody.innerHTML = list
           .map(
             (o) => `
           <tr>
-            <td><strong>${escapeHtml(o.projectName)}</strong> <span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span></td>
+            <td><strong>${escapeHtml(o.projectName)}</strong> <span class="badge badge-mint">${escapeHtml(o.unitType || "-")}</span>${o.details ? `<div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">📝 ${escapeHtml(o.details)}</div>` : ""}</td>
             <td style="font-size:0.78rem;">${escapeHtml(o.area || "-")} | ${escapeHtml(o.totalPrice || "-")}</td>
-            <td style="font-size:0.78rem;">مقدم: ${escapeHtml(o.downpayment || "-")} | ${escapeHtml(o.years || "-")}</td>
+            <td style="font-size:0.78rem;">مقدم: ${escapeHtml(o.downpayment || "-")} | قسط: ${escapeHtml(o.installment || "-")} | ${escapeHtml(o.years || "-")}</td>
+            <td><span class="badge badge-gold">${escapeHtml(o.expectedRoi || "-")}</span></td>
             <td><button type="button" class="btn btn-danger" style="padding:4px 8px; min-height:32px; font-size:0.74rem;" onclick="deleteOfferFromBank('${escapeHtml(ownerKey).replace(/'/g, "\\'")}', '${o.id}', 'MGR')">🗑️</button></td>
           </tr>`
           )
@@ -9384,6 +9432,7 @@
         const installment = (document.getElementById(`${pfx}Installment`)?.value || "").trim();
         const years = (document.getElementById(`${pfx}Years`)?.value || "").trim();
         const expectedRoi = (document.getElementById(`${pfx}Roi`)?.value || "").trim();
+        const details = (document.getElementById(`${pfx}Details`)?.value || "").trim();
 
         if (!projectName) return alert("⚠️ اكتب اسم المشروع أولاً!");
 
@@ -9404,28 +9453,38 @@
 
         const newId = `off_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
         try {
-          const { data, error } = await sb
+          const insertPayload = {
+            id: newId,
+            owner_key: ownerKey,
+            project_name: projectName,
+            unit_type: unitType,
+            area,
+            total_price: totalPrice,
+            downpayment,
+            installment,
+            years,
+            expected_roi: expectedRoi,
+          };
+          if (details) insertPayload.details = details;
+
+          let { data, error } = await sb
             .from("offers")
-            .insert({
-              id: newId,
-              owner_key: ownerKey,
-              project_name: projectName,
-              unit_type: unitType,
-              area,
-              total_price: totalPrice,
-              downpayment,
-              installment,
-              years,
-              expected_roi: expectedRoi,
-            })
+            .insert(insertPayload)
             .select()
             .single();
+          if (error && details && String(error.message || "").toLowerCase().includes("details")) {
+            delete insertPayload.details;
+            const retry = await sb.from("offers").insert(insertPayload).select().single();
+            data = retry.data;
+            error = retry.error;
+            if (!error) alert("⚠️ تم حفظ العرض بدون خانة التفاصيل — شغّل سطر SQL الخاص بعمود details في Supabase ليتم حفظ التفاصيل!");
+          }
           if (error) throw error;
 
           if (!state.offersBank[ownerKey]) state.offersBank[ownerKey] = [];
           state.offersBank[ownerKey].push(mapOfferRowToUI(data));
 
-          ["Project", "Area", "Total", "Down", "Installment", "Years", "Roi"].forEach((fld) => {
+          ["Project", "Area", "Total", "Down", "Installment", "Years", "Roi", "Details"].forEach((fld) => {
             const el = document.getElementById(`${pfx}${fld}`);
             if (el) el.value = "";
           });
@@ -9463,9 +9522,14 @@
         if (!acc) return;
         const current = getAccountActiveExhs(acc);
         const exists = current.includes(exhId);
-        const nextIds = exists
-          ? current.filter((id) => id !== exhId)
-          : [...current, exhId];
+        let nextIds;
+        if (acc.role === "dev_sales") {
+          nextIds = exists ? [] : [exhId];
+        } else {
+          nextIds = exists
+            ? current.filter((id) => id !== exhId)
+            : [...current, exhId];
+        }
 
         const { data, error } = await sb
           .from("accounts")
