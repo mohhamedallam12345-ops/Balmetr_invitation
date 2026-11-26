@@ -1145,6 +1145,103 @@
           padding: 9px 10px;
         }
       }
+
+      /* Organized Manager Dashboard Groups & Access Control */
+      .admin-nav-grouped {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 16px;
+        background: rgba(5, 18, 36, 0.72);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 12px;
+      }
+      .admin-nav-group-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .admin-nav-group-label {
+        font-size: 0.72rem;
+        font-weight: 900;
+        color: var(--primary-bright);
+        letter-spacing: 0.3px;
+        padding-right: 4px;
+        opacity: 0.9;
+      }
+      .admin-nav-group-btns {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+        gap: 7px;
+      }
+      .admin-nav-group-btns .admin-nav-btn {
+        padding: 9px 10px;
+        font-size: 0.8rem;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .delegated-banner {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        background: rgba(245, 176, 65, 0.12);
+        border: 1px solid rgba(245, 176, 65, 0.45);
+        color: #fcd34d;
+        border-radius: 13px;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        font-size: 0.82rem;
+        font-weight: 800;
+      }
+      .perm-chip-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .perm-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-input);
+        color: var(--text-muted);
+        font-family: inherit;
+        font-size: 0.75rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .perm-chip.granted {
+        background: rgba(20, 184, 166, 0.18);
+        border-color: rgba(45, 212, 191, 0.65);
+        color: #5eead4;
+      }
+      .access-user-card {
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      .access-user-card.has-access {
+        border-color: rgba(45, 212, 191, 0.5);
+        background: rgba(13, 45, 58, 0.45);
+      }
+      @media (max-width: 600px) {
+        .admin-nav-group-btns {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
     </style>
   </head>
   <body class="clean-header-mode is-loading">
@@ -1192,6 +1289,15 @@
         <div id="syncStatusBadge" class="sync-badge syncing">⏳ Syncing...</div>
 
         <div class="header-actions">
+          <button
+            type="button"
+            id="delegatedAccessBtn"
+            class="btn btn-gold"
+            style="display: none"
+            onclick="openDelegatedAdminView()"
+          >
+            🔑 صلاحيات الإدارة
+          </button>
           <button
             type="button"
             class="btn btn-outline"
@@ -2474,63 +2580,64 @@
 
       <!-- ==================== 5. MANAGER PANEL ==================== -->
       <section id="managerView" style="display: none">
-        <nav class="admin-nav-grid">
-          <button
-            type="button"
-            class="admin-nav-btn active"
-            onclick="switchManagerTab('mgrTabQuickReport', this)"
-          >
-            <span>📊</span><span>1. التقرير السريع</span>
+        <div id="delegatedModeBanner" class="delegated-banner">
+          <span>🔑 وضع الصلاحيات المفتوحة لك من الإدارة العامة — الأقسام المصرّح بها فقط</span>
+          <button type="button" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.78rem" onclick="exitDelegatedAdminView()">
+            ↩️ العودة للوحتي
           </button>
-          <button
-            type="button"
-            class="admin-nav-btn"
-            onclick="switchManagerTab('mgrTabAchievements', this)"
-          >
-            <span>🏆</span><span>2. بانل الإنجازات</span>
-          </button>
-          <button
-            type="button"
-            class="admin-nav-btn"
-            onclick="switchManagerTab('mgrTabClients', this)"
-          >
-            <span>📋</span><span>3. سجل العملاء</span>
-          </button>
-          <button
-            type="button"
-            class="admin-nav-btn"
-            onclick="switchManagerTab('mgrTabAccounts', this)"
-          >
-            <span>👥</span><span>4. الحسابات والتيمات</span>
-          </button>
-          <button
-            type="button"
-            class="admin-nav-btn"
-            onclick="switchManagerTab('mgrTabStudio', this)"
-          >
-            <span>🎨</span><span>5. المعارض والقوالب</span>
-          </button>
-          <button
-            type="button"
-            class="admin-nav-btn"
-            onclick="switchManagerTab('mgrTabDevOnly', this)"
-          >
-            <span>🔒</span><span>6. Devolepor_only</span>
-          </button>
-          <button
-            type="button"
-            class="admin-nav-btn"
-            onclick="switchManagerTab('mgrTabReportSettings', this)"
-          >
-            <span>📄</span><span>7. إعدادات التقرير</span>
-          </button>
-          <button
-            type="button"
-            class="admin-nav-btn"
-            onclick="switchManagerTab('mgrTabBalmetrOffers', this)"
-          >
-            <span>🏢</span><span>8. عروض بالمتر</span>
-          </button>
+        </div>
+
+        <nav class="admin-nav-grouped" id="managerGroupedNav">
+          <div class="admin-nav-group-row" data-nav-group="reports">
+            <div class="admin-nav-group-label">📊 التقارير والمتابعة</div>
+            <div class="admin-nav-group-btns">
+              <button type="button" class="admin-nav-btn active" data-tab-id="mgrTabQuickReport" onclick="switchManagerTab('mgrTabQuickReport', this)">
+                <span>📊</span><span>التقرير السريع</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabAchievements" onclick="switchManagerTab('mgrTabAchievements', this)">
+                <span>🏆</span><span>الإنجازات</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabClients" onclick="switchManagerTab('mgrTabClients', this)">
+                <span>📋</span><span>سجل العملاء</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-nav-group-row" data-nav-group="teams">
+            <div class="admin-nav-group-label">⚡ التيمات والتوزيع والعروض</div>
+            <div class="admin-nav-group-btns">
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabSalesPower" onclick="switchManagerTab('mgrTabSalesPower', this)">
+                <span>⚡</span><span>ترتيب قوة السيلز</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabStaffDist" onclick="switchManagerTab('mgrTabStaffDist', this)">
+                <span>🧭</span><span>الطاقم والنسب</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabBalmetrOffers" onclick="switchManagerTab('mgrTabBalmetrOffers', this)">
+                <span>🏢</span><span>عروض بالمتر</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-nav-group-row" data-nav-group="system">
+            <div class="admin-nav-group-label">⚙️ الإدارة والصلاحيات</div>
+            <div class="admin-nav-group-btns">
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabAccounts" onclick="switchManagerTab('mgrTabAccounts', this)">
+                <span>👥</span><span>الحسابات والتيمات</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabStudio" onclick="switchManagerTab('mgrTabStudio', this)">
+                <span>🎨</span><span>المعارض والقوالب</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabReportSettings" onclick="switchManagerTab('mgrTabReportSettings', this)">
+                <span>📄</span><span>إعدادات التقرير</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabAccessControl" data-manager-only="true" onclick="switchManagerTab('mgrTabAccessControl', this)">
+                <span>🔑</span><span>الصلاحيات والأكسس</span>
+              </button>
+              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabDevOnly" data-manager-only="true" onclick="switchManagerTab('mgrTabDevOnly', this)">
+                <span>🔒</span><span>Devolepor_only</span>
+              </button>
+            </div>
+          </div>
         </nav>
 
         <!-- TAB 1: QUICK REPORT -->
@@ -3213,65 +3320,6 @@
             </div>
           </div>
 
-          <!-- Staff Exhibition Assignment (Multi-Exhibition Same-Day Support) -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">
-                📍 توزيع طاقم المعرض لـ (<span id="assignExhNameLabel">-</span>)
-              </div>
-              <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 700">
-                حدّد الموظفين والشركات النازلين هذا المعرض (يُحفظ فوراً ويقفل شاشتهم على هذا المعرض فقط)
-              </span>
-            </div>
-            <div id="mgrStaffAssignmentContainer"></div>
-          </div>
-
-          <!-- Team Distribution & B.almetr Team Offers for Active Exhibition -->
-          <div class="workspace-grid" style="margin-bottom: 14px">
-            <div class="card" style="margin-bottom: 0">
-              <div class="card-header">
-                <div class="card-title">
-                  ⚖️ نسب وتوزيع التيمات في (<span id="distExhNameLabel">-</span>)
-                </div>
-                <button
-                  type="button"
-                  class="btn btn-gold"
-                  style="padding: 6px 12px; font-size: 0.78rem"
-                  onclick="saveTeamDistributionSettings()"
-                >
-                  💾 حفظ التوزيع
-                </button>
-              </div>
-              <p
-                style="
-                  font-size: 0.78rem;
-                  color: var(--text-muted);
-                  margin-bottom: 10px;
-                "
-              >
-                حدّد التيمات النشطة في هذا المعرض ووزن التوزيع (مثلاً: 1 للجمعية، 0 للوديعة، 1 للبروكر) ليستخدمه السيستم الكبير تلقائياً:
-              </p>
-              <div id="mgrTeamDistList"></div>
-            </div>
-
-            <div class="card" style="margin-bottom: 0">
-              <div class="card-header">
-                <div class="card-title">
-                  📄 QR ورق الشارع («أوفلاين») لـ (<span id="offlineQrExhLabel">-</span>)
-                </div>
-              </div>
-              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px">
-                اطبع الـ QR ده على ورق الشارع؛ لما عميل ييجي بالورقة للريسبشن ويعمل Scan يتسجل تلقائياً في خانة <strong>«أوفلاين»</strong> وتتحسب نسبته لوحدها (0.5%) ويمشي في المعرض عادي.
-              </p>
-              <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--bg-input); border: 1px dashed var(--border-strong); border-radius: 12px; padding: 14px">
-                <canvas id="offlineQrCanvas" width="420" height="500" style="max-width: 220px; height: auto; border-radius: 10px"></canvas>
-                <button type="button" class="btn btn-gold btn-block" onclick="downloadOfflineFlyerQR()">
-                  ⬇️ تنزيل صورة QR أوفلاين للطباعة (PNG)
-                </button>
-              </div>
-            </div>
-          </div>
-
           <div class="studio-grid">
             <div class="card">
               <div class="card-header">
@@ -3729,6 +3777,131 @@
         </div>
 
         <!-- TAB 6: DEVOLEPOR_ONLY (LOCKED) -->
+        <!-- NEW TAB: SALES POWER ORDERING (MANAGER EXCLUSIVE + DELEGATABLE) -->
+        <div id="mgrTabSalesPower" class="admin-page">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚡ ترتيب قوة السيلز (من الأقوى للأضعف)</div>
+              <span id="mgrPowerSaveStatus" style="font-size: 0.78rem; font-weight: 800; color: var(--primary-bright)"></span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px">
+              رتّب سيلز كل تيم من الأقوى (#1) للأضعف — السيستم الكبير بيوزع العملاء التلقائيين على أول سيلز فاضي حسب الترتيب ده بالظبط.
+            </p>
+            <div id="mgrPowerTeamPills" class="chips-grid" style="margin-bottom: 14px"></div>
+            <div class="table-responsive">
+              <table style="min-width: 520px">
+                <thead>
+                  <tr>
+                    <th>الترتيب</th>
+                    <th>الكود</th>
+                    <th>اسم السيلز</th>
+                    <th>حالة الترابيزة (المعرض النشط)</th>
+                    <th>دعوات (النشط / الكل)</th>
+                    <th>تحكم بالترتيب</th>
+                  </tr>
+                </thead>
+                <tbody id="mgrPowerSalesTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW TAB: STAFF ASSIGNMENT & TEAM DISTRIBUTION (SEPARATED FROM STUDIO) -->
+        <div id="mgrTabStaffDist" class="admin-page">
+          <!-- Staff Exhibition Assignment (Multi-Exhibition Same-Day Support) -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                📍 توزيع طاقم المعرض لـ (<span id="assignExhNameLabel">-</span>)
+              </div>
+              <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 700">
+                حدّد الموظفين والشركات النازلين هذا المعرض (يُحفظ فوراً ويقفل شاشتهم على هذا المعرض فقط)
+              </span>
+            </div>
+            <div id="mgrStaffAssignmentContainer"></div>
+          </div>
+
+          <!-- Team Distribution & B.almetr Team Offers for Active Exhibition -->
+          <div class="workspace-grid" style="margin-bottom: 14px">
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-header">
+                <div class="card-title">
+                  ⚖️ نسب وتوزيع التيمات في (<span id="distExhNameLabel">-</span>)
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-gold"
+                  style="padding: 6px 12px; font-size: 0.78rem"
+                  onclick="saveTeamDistributionSettings()"
+                >
+                  💾 حفظ التوزيع
+                </button>
+              </div>
+              <p
+                style="
+                  font-size: 0.78rem;
+                  color: var(--text-muted);
+                  margin-bottom: 10px;
+                "
+              >
+                حدّد التيمات النشطة في هذا المعرض ووزن التوزيع (مثلاً: 1 للجمعية، 0 للوديعة، 1 للبروكر) ليستخدمه السيستم الكبير تلقائياً:
+              </p>
+              <div id="mgrTeamDistList"></div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-header">
+                <div class="card-title">
+                  📄 QR ورق الشارع («أوفلاين») لـ (<span id="offlineQrExhLabel">-</span>)
+                </div>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px">
+                اطبع الـ QR ده على ورق الشارع؛ لما عميل ييجي بالورقة للريسبشن ويعمل Scan يتسجل تلقائياً في خانة <strong>«أوفلاين»</strong> وتتحسب نسبته لوحدها (0.5%) ويمشي في المعرض عادي.
+              </p>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--bg-input); border: 1px dashed var(--border-strong); border-radius: 12px; padding: 14px">
+                <canvas id="offlineQrCanvas" width="420" height="500" style="max-width: 220px; height: auto; border-radius: 10px"></canvas>
+                <button type="button" class="btn btn-gold btn-block" onclick="downloadOfflineFlyerQR()">
+                  ⬇️ تنزيل صورة QR أوفلاين للطباعة (PNG)
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- NEW TAB: ACCESS CONTROL & PERMISSIONS (GENERAL MANAGER ONLY) -->
+        <div id="mgrTabAccessControl" class="admin-page">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🔑 إدارة الصلاحيات والأكسس (حصري للمدير العام)</div>
+              <span id="mgrAccessSaveStatus" style="font-size: 0.78rem; font-weight: 800; color: var(--primary-bright)"></span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px">
+              افتراضياً كل الصلاحيات في إيد <strong>المدير العام فقط</strong>. من هنا تقدر تفتح أي بانل لشخص معين بضغطة واحدة فيظهرله فوراً زر <strong>«🔑 صلاحيات الإدارة»</strong> ويعدل فيه براحته، وتسحبها منه في أي وقت.
+            </p>
+            <div class="kpi-grid" id="mgrAccessKpiGrid" style="margin-bottom: 12px"></div>
+            <div class="filter-bar-grid" style="margin-bottom: 12px">
+              <input
+                type="text"
+                id="mgrAccessSearch"
+                class="form-control"
+                placeholder="🔍 ابحث بالاسم أو الكود..."
+                oninput="renderAccessControlPanel()"
+              />
+              <select id="mgrAccessRoleFilter" class="form-control" onchange="renderAccessControlPanel()">
+                <option value="ALL">👥 كل الأدوار</option>
+                <option value="HAS_ACCESS">🔑 اللي معاهم صلاحيات مفتوحة فقط</option>
+                <option value="team_leader">تيم ليدر</option>
+                <option value="exh_manager">مدير معرض</option>
+                <option value="sales">سيلز بالمتر</option>
+                <option value="broker">بروكر</option>
+                <option value="reception">ريسبشن</option>
+              </select>
+            </div>
+            <div id="mgrAccessUsersContainer"></div>
+          </div>
+        </div>
+
         <div id="mgrTabDevOnly" class="admin-page">
           <div id="devPanelLockScreen" class="card dev-lock-card">
             <div style="font-size: 2.3rem; margin-bottom: 8px">🔒</div>
@@ -4435,6 +4608,9 @@
         designGuidePdfUrl: "",
         teamsList: ["المعرض", "الجمعية", "الوديعة", "القاهرة"],
         teamSalesOrder: {},
+        userPermissions: {},
+        activeMgrPowerTeam: "",
+        delegatedMode: false,
         offersBank: {},
         offersLoadedForMgr: false,
         balmetrTeamInventory: {},
@@ -4756,6 +4932,11 @@
               const p = JSON.parse(row.value);
               if (p && typeof p === "object") state.balmetrTeamInventory = p;
             } catch (e) {}
+          } else if (row.key === "user_permissions") {
+            try {
+              const p = JSON.parse(row.value);
+              if (p && typeof p === "object") state.userPermissions = p;
+            } catch (e) {}
           }
         });
       }
@@ -4912,7 +5093,7 @@
             const [exhRes, partnersRes, setRes] = await Promise.all([
               sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
               sb.from("accounts").select("*").eq("parent_admin_id", u.id),
-              sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions", "design_guide_pdf_url"]),
+              sb.from("system_settings").select("*").in("key", ["teams_list", "design_dimensions", "design_guide_pdf_url", "user_permissions"]),
             ]);
             if (exhRes.error) throw exhRes.error;
             state.exhibitions = exhRes.data || [];
@@ -4959,7 +5140,7 @@
             const [exhRes, accRes, setRes] = await Promise.all([
               sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
               sb.from("accounts").select(PUBLIC_ACCOUNT_COLS).order("created_at", { ascending: true }),
-              sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url"]),
+              sb.from("system_settings").select("*").in("key", ["teams_list", "team_sales_order", "design_dimensions", "design_guide_pdf_url", "user_permissions"]),
             ]);
             if (exhRes.error) throw exhRes.error;
             if (accRes.error) throw accRes.error;
@@ -5008,8 +5189,8 @@
 
           // Tier 2B: Sales / Broker / Influencer / Developer (Scoped queries only!)
           const needSettings = u.role === "developer"
-            ? ["design_dimensions", "design_guide_pdf_url"]
-            : [];
+            ? ["design_dimensions", "design_guide_pdf_url", "user_permissions"]
+            : ["user_permissions"];
           const promises2B = [
             sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
             u.role === "developer"
@@ -6105,13 +6286,17 @@
       }
 
       function routeLoggedInUser() {
+        state.delegatedMode = false;
+        syncDelegatedAccessButton();
         if (!state.currentUser) {
           returnToWorkspace();
           return;
         }
         const role = state.currentUser.role;
-        if (role === "manager") showOnlyView("managerView");
-        else if (role === "admin_broker") showOnlyView("adminBrokerView");
+        if (role === "manager") {
+          applyManagerTabVisibilityForCurrentUser();
+          showOnlyView("managerView");
+        } else if (role === "admin_broker") showOnlyView("adminBrokerView");
         else if (role === "team_leader" || accountHasRole(state.currentUser, "team_leader")) showOnlyView("teamLeaderView");
         else showOnlyView("personalPortalView");
         renderActiveViewOnly();
@@ -6128,7 +6313,10 @@
       // ==================== LAZY VIEW RENDERER ====================
       function renderActiveViewOnly() {
         ensureActiveExhibition();
-        if (state.currentUser) renderExhibitionPills();
+        if (state.currentUser) {
+          renderExhibitionPills();
+          syncDelegatedAccessButton();
+        }
 
         if (activeView === "workspaceView") {
           const active = getActiveExhibition();
@@ -7763,8 +7951,12 @@
                 <td><span class="badge badge-success">${actC}</span></td>
                 <td><strong>${allC}</strong></td>
                 <td style="white-space:nowrap;">
-                  <button type="button" class="btn btn-outline order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\\'")}', '${s.id}', -1)" title="رفع للأعلى">⬆️</button>
-                  <button type="button" class="btn btn-outline order-btn" ${idx === teamSales.length - 1 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\\'")}', '${s.id}', 1)" title="إنزال للأسفل">⬇️</button>
+                  ${
+                    hasAdminPermission("mgrTabSalesPower")
+                      ? `<button type="button" class="btn btn-outline order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\\'")}', '${s.id}', -1)" title="رفع للأعلى">⬆️</button>
+                         <button type="button" class="btn btn-outline order-btn" ${idx === teamSales.length - 1 ? "disabled" : ""} onclick="moveTeamSalesOrder('${escapeHtml(teamName).replace(/'/g, "\\'")}', '${s.id}', 1)" title="إنزال للأسفل">⬇️</button>`
+                      : `<span class="badge" style="font-size:0.7rem; opacity:0.75;">🔒 للإدارة العامة</span>`
+                  }
                 </td>
               </tr>`;
             })
@@ -8276,7 +8468,370 @@
         if (btnEl) btnEl.className = "btn btn-primary ach-sub-btn";
       }
 
+      const DELEGATABLE_PERMS = [
+        { id: "mgrTabQuickReport", label: "📊 التقرير السريع" },
+        { id: "mgrTabAchievements", label: "🏆 الإنجازات" },
+        { id: "mgrTabClients", label: "📋 سجل العملاء" },
+        { id: "mgrTabSalesPower", label: "⚡ ترتيب قوة السيلز" },
+        { id: "mgrTabStaffDist", label: "🧭 الطاقم والنسب" },
+        { id: "mgrTabBalmetrOffers", label: "🏢 عروض بالمتر" },
+        { id: "mgrTabAccounts", label: "👥 الحسابات والتيمات" },
+        { id: "mgrTabStudio", label: "🎨 المعارض والقوالب" },
+        { id: "mgrTabReportSettings", label: "📄 إعدادات التقرير" },
+      ];
+
+      function getCurrentUserPermissions() {
+        const u = state.currentUser;
+        if (!u) return [];
+        if (u.role === "manager") {
+          return [...DELEGATABLE_PERMS.map((p) => p.id), "mgrTabAccessControl", "mgrTabDevOnly"];
+        }
+        const list = state.userPermissions?.[u.id];
+        return Array.isArray(list) ? list : [];
+      }
+
+      function hasAdminPermission(tabId) {
+        const u = state.currentUser;
+        if (!u) return false;
+        if (u.role === "manager") return true;
+        return getCurrentUserPermissions().includes(tabId);
+      }
+
+      function syncDelegatedAccessButton() {
+        const btn = document.getElementById("delegatedAccessBtn");
+        if (!btn) return;
+        const u = state.currentUser;
+        if (!u || u.role === "manager") {
+          btn.style.display = "none";
+          return;
+        }
+        const perms = getCurrentUserPermissions();
+        if (perms.length > 0) {
+          btn.style.display = "inline-flex";
+          btn.textContent = state.delegatedMode
+            ? "↩️ لوحتي الأساسية"
+            : `🔑 صلاحيات الإدارة (${perms.length})`;
+        } else {
+          btn.style.display = "none";
+        }
+      }
+
+      function applyManagerTabVisibilityForCurrentUser() {
+        const u = state.currentUser;
+        const isMgr = u?.role === "manager";
+        const perms = new Set(getCurrentUserPermissions());
+        const banner = document.getElementById("delegatedModeBanner");
+        if (banner) banner.style.display = !isMgr && state.delegatedMode ? "flex" : "none";
+
+        let firstAllowedTab = null;
+        let firstAllowedBtn = null;
+        document.querySelectorAll("#managerGroupedNav .admin-nav-btn").forEach((btn) => {
+          const tid = btn.getAttribute("data-tab-id");
+          const mgrOnly = btn.getAttribute("data-manager-only") === "true";
+          const allowed = isMgr || (!mgrOnly && perms.has(tid));
+          btn.style.display = allowed ? "flex" : "none";
+          if (allowed && !firstAllowedTab) {
+            firstAllowedTab = tid;
+            firstAllowedBtn = btn;
+          }
+        });
+
+        document.querySelectorAll("#managerGroupedNav .admin-nav-group-row").forEach((grp) => {
+          const hasAnyVisible = Array.from(grp.querySelectorAll(".admin-nav-btn")).some(
+            (b) => b.style.display !== "none"
+          );
+          grp.style.display = hasAnyVisible ? "flex" : "none";
+        });
+
+        if (!isMgr && !perms.has(activeManagerTab) && firstAllowedTab) {
+          activeManagerTab = firstAllowedTab;
+          document.querySelectorAll(".admin-page").forEach((p) => p.classList.remove("active"));
+          document.querySelectorAll(".admin-nav-btn").forEach((b) => b.classList.remove("active"));
+          document.getElementById(firstAllowedTab)?.classList.add("active");
+          firstAllowedBtn?.classList.add("active");
+        }
+      }
+
+      async function openDelegatedAdminView() {
+        const u = state.currentUser;
+        if (!u || u.role === "manager") return;
+        if (state.delegatedMode) {
+          exitDelegatedAdminView();
+          return;
+        }
+        const perms = getCurrentUserPermissions();
+        if (perms.length === 0) return;
+
+        setSyncBadge("syncing");
+        try {
+          // Ensure full accounts & settings are loaded for delegated editing
+          const [exhRes, accRes, setRes] = await Promise.all([
+            sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
+            sb.from("accounts").select("*").order("created_at", { ascending: true }),
+            sb.from("system_settings").select("*"),
+          ]);
+          if (!exhRes.error && exhRes.data) state.exhibitions = exhRes.data;
+          if (!accRes.error && accRes.data) {
+            state.accounts = accRes.data;
+            state.currentUser = state.accounts.find((a) => a.id === u.id) || state.currentUser;
+          }
+          if (!setRes.error && setRes.data) applySettingsRows(setRes.data);
+
+          const needsInvs = perms.some((p) =>
+            ["mgrTabQuickReport", "mgrTabAchievements", "mgrTabClients", "mgrTabSalesPower"].includes(p)
+          );
+          if (needsInvs && state.invitationsScope !== "ALL") {
+            const { data: invData } = await sb
+              .from("invitations")
+              .select("*")
+              .order("created_at", { ascending: false })
+              .limit(2000);
+            if (invData) {
+              state.invitations = invData;
+              state.serverTotalInvitations = invData.length;
+              state.invitationsScope = "ALL";
+            }
+          }
+          rebuildDerivedCaches();
+        } catch (err) {
+          console.error(err);
+        }
+        setSyncBadge(true);
+
+        state.delegatedMode = true;
+        applyManagerTabVisibilityForCurrentUser();
+        showOnlyView("managerView");
+        syncDelegatedAccessButton();
+        renderActiveManagerTab();
+      }
+
+      function exitDelegatedAdminView() {
+        state.delegatedMode = false;
+        routeLoggedInUser();
+      }
+
+      // ==================== MANAGER: SALES POWER ORDERING ====================
+      function renderMgrSalesPowerPanel() {
+        const teams = Array.isArray(state.teamsList) && state.teamsList.length > 0
+          ? state.teamsList
+          : ["المعرض"];
+        if (!state.activeMgrPowerTeam || !teams.includes(state.activeMgrPowerTeam)) {
+          state.activeMgrPowerTeam = teams[0];
+        }
+        const activeTeam = state.activeMgrPowerTeam;
+        const activeExh = getActiveExhibition();
+        const cache = state.derivedCache;
+
+        const pillsEl = document.getElementById("mgrPowerTeamPills");
+        if (pillsEl) {
+          pillsEl.innerHTML = teams
+            .map((t) => {
+              const cnt = state.accounts.filter(
+                (a) => accountHasRole(a, "sales") && (a.team || "المعرض") === t
+              ).length;
+              const isAct = t === activeTeam;
+              return `<button type="button" class="btn ${isAct ? "btn-primary" : "btn-outline"}" style="padding:7px 13px; font-size:0.8rem;" onclick="selectMgrPowerTeam('${escapeHtml(t).replace(/'/g, "\'")}')">🏷️ ${escapeHtml(t)} <span class="badge" style="margin-right:4px;">${cnt}</span></button>`;
+            })
+            .join("");
+        }
+
+        const tbody = document.getElementById("mgrPowerSalesTbody");
+        if (!tbody) return;
+        const teamSales = getOrderedTeamSales(activeTeam);
+        if (teamSales.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:18px; color:var(--text-muted);">لا يوجد سيلز مسجلين في تيم (${escapeHtml(activeTeam)}) بعد.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = teamSales
+          .map((s, idx) => {
+            const actC = activeExh ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0 : 0;
+            const allC = cache.ownerTotalCount.get(s.id) || 0;
+            const exhIds = Array.isArray(s.active_exhibition_ids) ? s.active_exhibition_ids : [];
+            const onTable = activeExh && exhIds.includes(activeExh.id);
+            const tEsc = escapeHtml(activeTeam).replace(/'/g, "\'");
+            return `
+            <tr>
+              <td>
+                <strong style="color:${idx === 0 ? "#fcd34d" : "#2dd4bf"}; font-size:0.92rem;">#${idx + 1}</strong>
+                ${idx === 0 ? `<span class="badge badge-gold" style="font-size:0.65rem; margin-right:4px;">الأقوى ⭐</span>` : ""}
+              </td>
+              <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
+              <td style="font-weight:800;">${escapeHtml(s.name)}</td>
+              <td>${onTable ? `<span class="badge badge-success">✅ على الترابيزة</span>` : `<span style="color:var(--text-muted); font-size:0.75rem;">غير مفعل</span>`}</td>
+              <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
+              <td style="white-space:nowrap;">
+                <button type="button" class="btn btn-gold order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveMgrTeamSalesOrder('${tEsc}', '${s.id}', 'TOP')" title="نقل للمركز الأول">⏫</button>
+                <button type="button" class="btn btn-outline order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveMgrTeamSalesOrder('${tEsc}', '${s.id}', -1)" title="رفع للأعلى">⬆️</button>
+                <button type="button" class="btn btn-outline order-btn" ${idx === teamSales.length - 1 ? "disabled" : ""} onclick="moveMgrTeamSalesOrder('${tEsc}', '${s.id}', 1)" title="إنزال للأسفل">⬇️</button>
+              </td>
+            </tr>`;
+          })
+          .join("");
+      }
+
+      function selectMgrPowerTeam(teamName) {
+        state.activeMgrPowerTeam = teamName;
+        renderMgrSalesPowerPanel();
+      }
+
+      async function moveMgrTeamSalesOrder(teamName, salesId, direction) {
+        const ordered = getOrderedTeamSales(teamName);
+        const ids = ordered.map((s) => s.id);
+        const idx = ids.indexOf(salesId);
+        if (idx < 0) return;
+
+        if (direction === "TOP") {
+          if (idx === 0) return;
+          ids.splice(idx, 1);
+          ids.unshift(salesId);
+        } else {
+          const targetIdx = idx + direction;
+          if (targetIdx < 0 || targetIdx >= ids.length) return;
+          const tmp = ids[idx];
+          ids[idx] = ids[targetIdx];
+          ids[targetIdx] = tmp;
+        }
+
+        state.teamSalesOrder = {
+          ...(state.teamSalesOrder || {}),
+          [teamName]: ids,
+        };
+
+        const stEl = document.getElementById("mgrPowerSaveStatus");
+        if (stEl) stEl.textContent = "⏳ جاري الحفظ...";
+        renderMgrSalesPowerPanel();
+
+        try {
+          const { error } = await sb.from("system_settings").upsert({
+            key: "team_sales_order",
+            value: JSON.stringify(state.teamSalesOrder),
+          });
+          if (error) throw error;
+          if (stEl) stEl.textContent = "✅ تم حفظ الترتيب وتحديث التوزيع التلقائي";
+        } catch (err) {
+          console.error(err);
+          if (stEl) stEl.textContent = "❌ تعذر الحفظ في Supabase";
+        }
+      }
+
+      // ==================== MANAGER: ACCESS CONTROL & PERMISSIONS ====================
+      function renderAccessControlPanel() {
+        const wrap = document.getElementById("mgrAccessUsersContainer");
+        const kpiEl = document.getElementById("mgrAccessKpiGrid");
+        if (!wrap) return;
+
+        const nonManagers = state.accounts.filter((a) => a.role !== "manager");
+        const grantedUsersCount = nonManagers.filter(
+          (a) => Array.isArray(state.userPermissions?.[a.id]) && state.userPermissions[a.id].length > 0
+        ).length;
+
+        if (kpiEl) {
+          kpiEl.innerHTML = `
+            <div class="kpi-card"><div class="label">إجمالي الحسابات</div><div class="val">${nonManagers.length}</div></div>
+            <div class="kpi-card"><div class="label">حسابات لها صلاحيات مفتوحة</div><div class="val" style="color:#34d399;">${grantedUsersCount}</div></div>`;
+        }
+
+        const q = (document.getElementById("mgrAccessSearch")?.value || "").trim().toLowerCase();
+        const rFilter = document.getElementById("mgrAccessRoleFilter")?.value || "ALL";
+
+        const filtered = nonManagers.filter((a) => {
+          const perms = Array.isArray(state.userPermissions?.[a.id]) ? state.userPermissions[a.id] : [];
+          if (rFilter === "HAS_ACCESS" && perms.length === 0) return false;
+          if (rFilter !== "ALL" && rFilter !== "HAS_ACCESS" && a.role !== rFilter && !accountHasRole(a, rFilter)) return false;
+          if (q && !`${a.name} ${a.code} ${a.team || ""}`.toLowerCase().includes(q)) return false;
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          wrap.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted);">لا توجد حسابات مطابقة للبحث.</div>`;
+          return;
+        }
+
+        wrap.innerHTML = filtered
+          .map((a) => {
+            const perms = Array.isArray(state.userPermissions?.[a.id]) ? state.userPermissions[a.id] : [];
+            const permSet = new Set(perms);
+            return `
+            <div class="access-user-card ${perms.length > 0 ? "has-access" : ""}">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <div>
+                  <span class="badge badge-mint">${escapeHtml(a.code)}</span>
+                  <strong style="margin-right:6px;">${escapeHtml(a.name)}</strong>
+                  <span style="font-size:0.75rem; color:var(--text-muted); margin-right:6px;">(${escapeHtml(a.role)}${a.team ? ` • ${escapeHtml(a.team)}` : ""})</span>
+                  ${perms.length > 0 ? `<span class="badge badge-gold" style="margin-right:6px;">🔑 ${perms.length} صلاحية</span>` : ""}
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="btn btn-outline" style="padding:4px 9px; font-size:0.73rem;" onclick="setAllUserPermissions('${a.id}', true)">✅ فتح الكل</button>
+                  <button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:0.73rem;" onclick="setAllUserPermissions('${a.id}', false)">🚫 سحب الكل</button>
+                </div>
+              </div>
+              <div class="perm-chip-grid">
+                ${DELEGATABLE_PERMS.map((p) => {
+                  const active = permSet.has(p.id);
+                  return `<button type="button" class="perm-chip ${active ? "granted" : ""}" onclick="toggleUserPermission('${a.id}', '${p.id}')">${active ? "✅" : "➕"} ${p.label}</button>`;
+                }).join("")}
+              </div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      async function saveUserPermissionsToDB() {
+        const stEl = document.getElementById("mgrAccessSaveStatus");
+        if (stEl) stEl.textContent = "⏳ جاري حفظ الصلاحيات...";
+        try {
+          const { error } = await sb.from("system_settings").upsert({
+            key: "user_permissions",
+            value: JSON.stringify(state.userPermissions || {}),
+          });
+          if (error) throw error;
+          if (stEl) stEl.textContent = "✅ تم حفظ الصلاحيات فوراً";
+        } catch (err) {
+          console.error(err);
+          if (stEl) stEl.textContent = "❌ تعذر حفظ الصلاحيات";
+        }
+      }
+
+      async function toggleUserPermission(accountId, permId) {
+        const curr = Array.isArray(state.userPermissions?.[accountId])
+          ? [...state.userPermissions[accountId]]
+          : [];
+        const idx = curr.indexOf(permId);
+        if (idx >= 0) curr.splice(idx, 1);
+        else curr.push(permId);
+
+        if (curr.length === 0) {
+          const next = { ...(state.userPermissions || {}) };
+          delete next[accountId];
+          state.userPermissions = next;
+        } else {
+          state.userPermissions = {
+            ...(state.userPermissions || {}),
+            [accountId]: curr,
+          };
+        }
+        renderAccessControlPanel();
+        await saveUserPermissionsToDB();
+      }
+
+      async function setAllUserPermissions(accountId, grantAll) {
+        if (grantAll) {
+          state.userPermissions = {
+            ...(state.userPermissions || {}),
+            [accountId]: DELEGATABLE_PERMS.map((p) => p.id),
+          };
+        } else {
+          const next = { ...(state.userPermissions || {}) };
+          delete next[accountId];
+          state.userPermissions = next;
+        }
+        renderAccessControlPanel();
+        await saveUserPermissionsToDB();
+      }
+
       function renderActiveManagerTab() {
+        applyManagerTabVisibilityForCurrentUser();
         if (activeManagerTab === "mgrTabQuickReport") {
           renderCompanyLinksCard();
           renderMgrQuickReport();
@@ -8285,6 +8840,12 @@
         } else if (activeManagerTab === "mgrTabClients") {
           populateLogsFilters();
           renderClientLogsTable();
+        } else if (activeManagerTab === "mgrTabSalesPower") {
+          renderMgrSalesPowerPanel();
+        } else if (activeManagerTab === "mgrTabStaffDist") {
+          renderStaffAssignmentUI();
+          renderTeamDistributionUI();
+          renderOfflineFlyerQR();
         } else if (activeManagerTab === "mgrTabAccounts") {
           const currPassEl = document.getElementById("mgrCurrPassDisplay");
           if (currPassEl) currPassEl.value = state.currentUser?.password || "";
@@ -8292,13 +8853,12 @@
           renderManagerAccountsTable();
         } else if (activeManagerTab === "mgrTabStudio") {
           renderMgrExhibitionsTable();
-          renderStaffAssignmentUI();
-          renderTeamDistributionUI();
-          renderOfflineFlyerQR();
           syncStudioControls();
           loadActiveTemplateImage();
         } else if (activeManagerTab === "mgrTabBalmetrOffers") {
           renderBalmetrOffersPanel();
+        } else if (activeManagerTab === "mgrTabAccessControl") {
+          renderAccessControlPanel();
         } else if (activeManagerTab === "mgrTabDevOnly") {
           renderDevOnlyPanel();
         } else if (activeManagerTab === "mgrTabReportSettings") {
@@ -10070,6 +10630,7 @@
             design_guide_pdf_url: state.designGuidePdfUrl,
             teams_list: state.teamsList,
             team_sales_order: state.teamSalesOrder,
+            user_permissions: state.userPermissions,
             journey_report_config: state.journeyReportConfig,
           },
           exhibitions: state.exhibitions,
@@ -10273,6 +10834,12 @@
                 await sb.from("system_settings").upsert({
                   key: "team_sales_order",
                   value: JSON.stringify(s.team_sales_order),
+                });
+              }
+              if (s.user_permissions && typeof s.user_permissions === "object") {
+                await sb.from("system_settings").upsert({
+                  key: "user_permissions",
+                  value: JSON.stringify(s.user_permissions),
                 });
               }
               if (s.journey_report_config && typeof s.journey_report_config === "object") {
