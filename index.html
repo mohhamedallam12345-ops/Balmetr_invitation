@@ -1,3 +1,8 @@
+
+
+
+رمز HTML
+invitations_v2
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
@@ -1267,8 +1272,8 @@
         .hover-sidebar:hover {
           width: 242px;
         }
-        body.has-hover-sidebar .app-container {
-          padding-right: 78px;
+        body.has-hover-sidebar {
+          padding-right: 76px;
         }
       }
       .hs-brand {
@@ -1459,15 +1464,6 @@
         <div id="syncStatusBadge" class="sync-badge syncing">⏳ Syncing...</div>
 
         <div class="header-actions">
-          <button
-            type="button"
-            id="delegatedAccessBtn"
-            class="btn btn-gold"
-            style="display: none"
-            onclick="openDelegatedAdminView()"
-          >
-            🔑 صلاحيات الإدارة
-          </button>
           <button
             type="button"
             class="btn btn-outline"
@@ -2777,66 +2773,6 @@
 
       <!-- ==================== 5. MANAGER PANEL ==================== -->
       <section id="managerView" style="display: none">
-        <div id="delegatedModeBanner" class="delegated-banner">
-          <span>🔑 وضع الصلاحيات المفتوحة لك من الإدارة العامة — الأقسام المصرّح بها فقط</span>
-          <button type="button" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.78rem" onclick="exitDelegatedAdminView()">
-            ↩️ العودة للوحتي
-          </button>
-        </div>
-
-        <nav class="admin-nav-grouped" id="managerGroupedNav" style="display:none !important;">
-          <div class="admin-nav-group-row" data-nav-group="reports">
-            <div class="admin-nav-group-label">📊 التقارير والمتابعة</div>
-            <div class="admin-nav-group-btns">
-              <button type="button" class="admin-nav-btn active" data-tab-id="mgrTabQuickReport" onclick="switchManagerTab('mgrTabQuickReport', this)">
-                <span>📊</span><span>التقرير السريع</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabAchievements" onclick="switchManagerTab('mgrTabAchievements', this)">
-                <span>🏆</span><span>الإنجازات</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabClients" onclick="switchManagerTab('mgrTabClients', this)">
-                <span>📋</span><span>سجل العملاء</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="admin-nav-group-row" data-nav-group="teams">
-            <div class="admin-nav-group-label">⚡ التيمات والتوزيع والعروض</div>
-            <div class="admin-nav-group-btns">
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabSalesPower" onclick="switchManagerTab('mgrTabSalesPower', this)">
-                <span>⚡</span><span>ترتيب قوة السيلز</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabStaffDist" onclick="switchManagerTab('mgrTabStaffDist', this)">
-                <span>🧭</span><span>الطاقم والنسب</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabBalmetrOffers" onclick="switchManagerTab('mgrTabBalmetrOffers', this)">
-                <span>🏢</span><span>عروض بالمتر</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="admin-nav-group-row" data-nav-group="system">
-            <div class="admin-nav-group-label">⚙️ الإدارة والصلاحيات</div>
-            <div class="admin-nav-group-btns">
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabAccounts" onclick="switchManagerTab('mgrTabAccounts', this)">
-                <span>👥</span><span>الحسابات والتيمات</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabStudio" onclick="switchManagerTab('mgrTabStudio', this)">
-                <span>🎨</span><span>المعارض والقوالب</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabReportSettings" onclick="switchManagerTab('mgrTabReportSettings', this)">
-                <span>📄</span><span>إعدادات التقرير</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabAccessControl" data-manager-only="true" onclick="switchManagerTab('mgrTabAccessControl', this)">
-                <span>🔑</span><span>الصلاحيات والأكسس</span>
-              </button>
-              <button type="button" class="admin-nav-btn" data-tab-id="mgrTabDevOnly" data-manager-only="true" onclick="switchManagerTab('mgrTabDevOnly', this)">
-                <span>🔒</span><span>Devolepor_only</span>
-              </button>
-            </div>
-          </div>
-        </nav>
-
         <!-- TAB 1: QUICK REPORT -->
         <div id="mgrTabQuickReport" class="admin-page active">
           <div class="card">
@@ -3230,259 +3166,6 @@
         </div>
 
         <!-- TAB 4: ACCOUNTS, PASSWORDS & TEAMS -->
-        <div id="mgrTabAccounts" class="admin-page">
-          <div class="workspace-grid">
-            <div>
-              <!-- Manager Own Password Card -->
-              <div class="card">
-                <div class="card-header">
-                  <div class="card-title">🔐 كلمة سر المدير العام</div>
-                </div>
-                <div class="pass-settings-row">
-                  <div>
-                    <label class="form-label">الحالية:</label>
-                    <div class="pass-input-group">
-                      <input
-                        type="password"
-                        id="mgrCurrPassDisplay"
-                        class="form-control"
-                        dir="ltr"
-                        readonly
-                      />
-                      <button
-                        type="button"
-                        class="btn btn-outline"
-                        onclick="togglePasswordReveal('mgrCurrPassDisplay', this)"
-                      >
-                        👁️
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <label class="form-label">تعديلها:</label>
-                    <div class="pass-input-group">
-                      <input
-                        type="text"
-                        id="mgrNewOwnPassInput"
-                        class="form-control"
-                        dir="ltr"
-                        placeholder="باسورد جديد..."
-                      />
-                      <button
-                        type="button"
-                        class="btn btn-gold"
-                        onclick="changeOwnPasswordFromInput('mgrNewOwnPassInput', 'mgrCurrPassDisplay')"
-                      >
-                        💾 حفظ
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="card-header">
-                  <div class="card-title">🏷️ إدارة أسماء التيمات</div>
-                </div>
-                <div style="display: flex; gap: 8px; margin-bottom: 10px">
-                  <input
-                    type="text"
-                    id="newTeamNameInput"
-                    class="form-control"
-                    placeholder="اسم التيم الجديد..."
-                  />
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    onclick="addTeamName()"
-                  >
-                    + إضافة
-                  </button>
-                </div>
-                <div id="teamsManageList" class="chips-grid"></div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">➕ إضافة حساب جديد</div>
-              </div>
-              <div
-                style="
-                  display: grid;
-                  grid-template-columns: 1fr 1fr;
-                  gap: 8px;
-                  margin-bottom: 8px;
-                "
-              >
-                <select id="mgrAddRole" class="form-control" onchange="syncAddAccountManagedTeamsVisibility()">
-                  <option value="sales">💼 سيلز عادي</option>
-                  <option value="team_leader">🎖️ تيم ليدر (team_leader)</option>
-                  <option value="reception">🛎️ ريسبشن (reception)</option>
-                  <option value="usher">🚶 أشرز / موصلاتية (usher)</option>
-                  <option value="exh_manager">🎯 مدير معرض (exh_manager)</option>
-                  <option value="admin_broker">🤝 أدمن بروكر (Admin_Broker)</option>
-                  <option value="broker">🏢 بروكر مباشر</option>
-                  <option value="influencer">🌟 إنفلونسر مباشر</option>
-                </select>
-                <select id="mgrAddTeam" class="form-control"></select>
-              </div>
-              <div
-                style="
-                  display: grid;
-                  grid-template-columns: 1fr 1fr;
-                  gap: 8px;
-                  margin-bottom: 8px;
-                "
-              >
-                <input
-                  type="text"
-                  id="mgrAddName"
-                  class="form-control"
-                  placeholder="الاسم *"
-                />
-                <input
-                  type="text"
-                  id="mgrAddCode"
-                  class="form-control"
-                  dir="ltr"
-                  placeholder="الكود (اختياري)"
-                />
-              </div>
-              <div style="display: flex; gap: 8px; margin-bottom: 8px">
-                <input
-                  type="text"
-                  id="mgrAddPass"
-                  class="form-control"
-                  dir="ltr"
-                  placeholder="الباسورد (اختياري)"
-                />
-                <button
-                  type="button"
-                  class="btn btn-outline"
-                  onclick="document.getElementById('mgrAddPass').value = generateUniquePassword()"
-                >
-                  🎲 عشوائي
-                </button>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; margin-bottom: 10px">
-                <input
-                  type="tel"
-                  id="mgrAddPhone"
-                  class="form-control"
-                  dir="ltr"
-                  style="text-align: right"
-                  placeholder="رقم التليفون (اختياري)"
-                />
-                <label style="font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap">
-                  <input type="checkbox" id="mgrAddShowPhone" checked />
-                  إظهار بالتقرير
-                </label>
-              </div>
-
-              <!-- Expo Permissions (Add Account) -->
-              <div class="control-section-box" style="padding: 10px; margin-bottom: 10px">
-                <div style="font-size: 0.78rem; font-weight: 900; color: #fcd34d; margin-bottom: 7px">
-                  🎛️ صلاحيات وأدوار إضافية يوم المعرض (اختياري):
-                </div>
-                <div id="mgrAddExpoRolesGrid" class="role-check-grid" style="margin-bottom: 8px">
-                  <label class="role-check-item"><input type="checkbox" value="usher" /> 🚶 أشرز</label>
-                  <label class="role-check-item"><input type="checkbox" value="reception" /> 🛎️ ريسبشن</label>
-                  <label class="role-check-item"><input type="checkbox" value="sales" /> 💼 سيلز قعدة</label>
-                  <label class="role-check-item"><input type="checkbox" value="broker" /> 🏢 بروكر</label>
-                  <label class="role-check-item"><input type="checkbox" value="team_leader" onchange="syncAddAccountManagedTeamsVisibility()" /> 🎖️ تيم ليدر</label>
-                  <label class="role-check-item"><input type="checkbox" value="exh_manager" /> 🎯 مدير معرض</label>
-                </div>
-                <div id="mgrAddManagedTeamsBox" style="display: none; margin-bottom: 8px; padding-top: 7px; border-top: 1px dashed var(--border)">
-                  <div style="font-size: 0.76rem; font-weight: 800; color: var(--primary-bright); margin-bottom: 5px">
-                    🏷️ التيمات اللي بيديرها (اختر تيم أو أكثر):
-                  </div>
-                  <div id="mgrAddManagedTeamsGrid" class="role-check-grid"></div>
-                </div>
-                <label class="role-check-item" style="border-color: rgba(45, 212, 191, 0.35); background: rgba(0, 184, 172, 0.08)">
-                  <input type="checkbox" id="mgrAddCanEditReq" />
-                  <span>✏️ صلاحية تعديل ريكويست العميل يوم المعرض</span>
-                </label>
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px">
-                <div>
-                  <label class="form-label" style="font-size: 0.74rem">نسبة الدعوة (النص الأول %):</label>
-                  <input type="number" step="0.1" min="0" max="20" id="mgrAddFirstPct" class="form-control" dir="ltr" value="0.5" />
-                </div>
-                <div>
-                  <label class="form-label" style="font-size: 0.74rem">نسبة الترابيزة (القعدة %):</label>
-                  <input type="number" step="0.1" min="0" max="20" id="mgrAddTablePct" class="form-control" dir="ltr" value="1.0" />
-                </div>
-              </div>
-
-              <button
-                type="button"
-                class="btn btn-primary btn-block"
-                onclick="managerAddAccount()"
-              >
-                + إضافة الحساب وحفظه
-              </button>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">
-                👥 إدارة جميع الحسابات (مرتبة بالكود)
-              </div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                <select
-                  id="mgrAccRoleFilter"
-                  class="form-control"
-                  style="width: auto"
-                  onchange="renderManagerAccountsTable()"
-                >
-                  <option value="ALL">الكل</option>
-                  <option value="sales">السيلز</option>
-                  <option value="team_leader">التيم ليدر</option>
-                  <option value="reception">الريسبشن</option>
-                  <option value="usher">الأشرز</option>
-                  <option value="exh_manager">مدير المعرض</option>
-                  <option value="admin_broker">الأدمن بروكر</option>
-                  <option value="broker">البروكر</option>
-                  <option value="influencer">الإنفلونسر</option>
-                  <option value="developer">الديفولبر</option>
-                  <option value="dev_sales">سيلز المطورين</option>
-                  <option value="company">الشركة (BM)</option>
-                  <option value="manager">المانجر</option>
-                </select>
-                <input
-                  type="text"
-                  id="mgrAccSearch"
-                  class="form-control"
-                  style="width: 190px"
-                  placeholder="🔍 بحث..."
-                  oninput="renderManagerAccountsTable()"
-                />
-              </div>
-            </div>
-
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>النوع وصلاحيات المعرض</th>
-                    <th>الكود</th>
-                    <th>الاسم</th>
-                    <th>التليفون</th>
-                    <th>الباسورد</th>
-                    <th>التيم / التبعية</th>
-                    <th>إجراءات</th>
-                  </tr>
-                </thead>
-                <tbody id="mgrAccountsTbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 5: EXHIBITIONS & STUDIO -->
         <div id="mgrTabStudio" class="admin-page">
           <div class="card">
             <div class="card-header">
@@ -3744,364 +3427,6 @@
         </div>
 
         <!-- TAB 7: REPORT SETTINGS PANEL -->
-        <div id="mgrTabReportSettings" class="admin-page">
-          <div class="workspace-grid">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">📄 إعدادات تقرير رحلة العميل المطبوع</div>
-                <button
-                  type="button"
-                  class="btn btn-gold"
-                  onclick="saveJourneyReportConfig()"
-                >
-                  💾 حفظ الإعدادات
-                </button>
-              </div>
-
-              <div class="control-section-box">
-                <div class="control-section-title">🏢 بيانات الترويسة والتواصل العام</div>
-                <div class="form-group">
-                  <label class="form-label">اسم المنظومة / الترويسة:</label>
-                  <input
-                    type="text"
-                    id="rptBrandTitleInput"
-                    class="form-control"
-                    placeholder="B.almetr VIP | تقرير رحلة العميل"
-                    oninput="renderReportPreviewBox()"
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label">رقم الخط الساخن العام للشركة (يظهر في أسفل التقرير):</label>
-                  <input
-                    type="tel"
-                    id="rptHotlineInput"
-                    class="form-control"
-                    dir="ltr"
-                    style="text-align: right"
-                    placeholder="0101 4444 227"
-                    oninput="renderReportPreviewBox()"
-                  />
-                </div>
-                <div class="form-group" style="margin-bottom: 0">
-                  <label class="form-label">رسالة الخاتمة أسفل التقرير:</label>
-                  <input
-                    type="text"
-                    id="rptFooterMsgInput"
-                    class="form-control"
-                    placeholder="شكراً لحضورك معنا ✨ نتمنى لك استثماراً موفقاً"
-                    oninput="renderReportPreviewBox()"
-                  />
-                </div>
-              </div>
-
-              <div class="control-section-box" style="margin-bottom: 0">
-                <div class="control-section-title">🎛️ التحكم في العناصر الظاهرة بالتقرير</div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; font-size: 0.82rem; font-weight: 800">
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
-                    <input type="checkbox" id="rptShowEntryExit" onchange="renderReportPreviewBox()" />
-                    🕒 وقت الدخول والخروج والمدة الكلية
-                  </label>
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
-                    <input type="checkbox" id="rptShowStopDuration" onchange="renderReportPreviewBox()" />
-                    ⏱️ مدة كل قعدة بالدقائق
-                  </label>
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
-                    <input type="checkbox" id="rptShowRepName" onchange="renderReportPreviewBox()" />
-                    👤 اسم السيلز / المستشار في كل محطة
-                  </label>
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
-                    <input type="checkbox" id="rptShowOfferDetails" onchange="renderReportPreviewBox()" />
-                    🎁 تفاصيل العرض المرشح (السعر/المقدم)
-                  </label>
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer;">
-                    <input type="checkbox" id="rptShowNotes" onchange="renderReportPreviewBox()" />
-                    📝 ملاحظات الجلسة
-                  </label>
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; color:#34d399;">
-                    <input type="checkbox" id="rptShowBalmetrPhones" onchange="renderReportPreviewBox()" />
-                    📱 إظهار أرقام سيلز بالمتر (حسب تفعيل كل فرد)
-                  </label>
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; color:#fcd34d;">
-                    <input type="checkbox" id="rptShowBrokerPhones" onchange="renderReportPreviewBox()" />
-                    🏢 السماح بإظهار أرقام البروكرز
-                  </label>
-                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; color:#fda4af;">
-                    <input type="checkbox" id="rptShowDevPhones" onchange="renderReportPreviewBox()" />
-                    🔒 إظهار أرقام سيلز المطورين (يفضل إغلاقه)
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div class="card">
-                <div class="card-header">
-                  <div class="card-title">👁️ معاينة شكل التقرير المطبوع</div>
-                </div>
-                <div
-                  id="rptLivePreviewBox"
-                  style="
-                    background: #ffffff;
-                    color: #0f172a;
-                    border-radius: 12px;
-                    padding: 14px;
-                    font-size: 0.78rem;
-                    border: 2px solid var(--primary-bright);
-                  "
-                ></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">📱 إدارة أرقام التليفونات والظهور في التقرير (فردياً)</div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                <select id="rptPhoneRoleFilter" class="form-control" style="width: auto" onchange="renderReportPhonesTable()">
-                  <option value="ALL">الكل</option>
-                  <option value="sales">💼 سيلز بالمتر</option>
-                  <option value="team_leader">🎖️ تيم ليدر</option>
-                  <option value="broker">🏢 بروكر</option>
-                  <option value="admin_broker">🤝 أدمن بروكر</option>
-                  <option value="developer">🏗️ مطور</option>
-                  <option value="dev_sales">🧑‍💼 سيلز مطور</option>
-                </select>
-                <input type="text" id="rptPhoneSearch" class="form-control" style="width: 190px" placeholder="🔍 بحث بالاسم/الكود..." oninput="renderReportPhonesTable()" />
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>النوع</th>
-                    <th>الكود</th>
-                    <th>الاسم</th>
-                    <th>رقم التليفون</th>
-                    <th>الظهور في التقرير</th>
-                  </tr>
-                </thead>
-                <tbody id="rptPhonesTbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 8: INDEPENDENT B.ALMETR OFFERS & SPECIALIZATION PANEL -->
-        <div id="mgrTabBalmetrOffers" class="admin-page">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">🏢 بانل عروض وخصائص شركة بالمتر (كأنها مطور مستقل)</div>
-              <select
-                id="mgrTeamOffersSelect"
-                class="form-control"
-                style="width: auto; min-width: 170px"
-                onchange="renderBalmetrOffersPanel()"
-              ></select>
-            </div>
-
-            <div class="control-section-box">
-              <div class="control-section-title">
-                <span>🎯 تخصص مشاريع هذا التيم (النشاط ← المناطق) والأنظمة</span>
-                <button
-                  type="button"
-                  class="btn btn-gold"
-                  style="padding: 5px 12px; min-height: 34px; font-size: 0.78rem"
-                  onclick="saveBalmetrTeamSpecialization()"
-                >
-                  💾 حفظ تخصص التيم
-                </button>
-              </div>
-              <div id="balmetrTeamInventoryMatrix" style="margin-bottom: 10px"></div>
-              <div style="font-size: 0.78rem; font-weight: 800; color: #fcd34d; margin-bottom: 6px">
-                ⚙️ الأنظمة التابعة لهذا التيم:
-              </div>
-              <div id="balmetrTeamSystemsGrid" class="role-check-grid"></div>
-            </div>
-
-            <div class="control-section-box" style="margin-bottom: 0">
-              <div class="control-section-title">
-                <span>🎁 بنك عروض هذا التيم (تظهر لسيلز التيم يوم المعرض — حتى 20 عرض)</span>
-                <span id="mgrTeamOffersCountBadge" class="badge badge-gold">0 / 20</span>
-              </div>
-            <div id="mgrTeamMissingOffersBanner" style="display: none; margin-bottom: 12px; background: rgba(239, 68, 68, 0.14); border: 1.5px solid rgba(251, 113, 133, 0.7); color: #fecdd3; border-radius: 12px; padding: 10px 13px; font-size: 0.82rem; font-weight: 800;">
-              🚨 <strong>تنبيه:</strong> التيم المحدد لسة ما تحطش ليه أي عروض حتى الآن — أضف العروض عشان تظهر للسيلز وقت القعدة!
-            </div>
-              <div
-                style="
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-                  gap: 7px;
-                  margin-bottom: 10px;
-                "
-              >
-                <input type="text" id="mgrOfferProject" class="form-control" maxlength="40" placeholder="اسم المشروع *" />
-                <select id="mgrOfferUnitType" class="form-control">
-                  <option value="سكني">🏠 سكني</option>
-                  <option value="تجاري">🛍️ تجاري</option>
-                  <option value="إداري">🏢 إداري</option>
-                  <option value="فندقي">🏨 فندقي</option>
-                  <option value="طبي">➕ طبي</option>
-                </select>
-                <input type="text" id="mgrOfferArea" class="form-control" maxlength="20" placeholder="المساحة" />
-                <input type="text" id="mgrOfferTotal" class="form-control" maxlength="25" placeholder="الإجمالي" />
-                <input type="text" id="mgrOfferDown" class="form-control" maxlength="25" placeholder="المقدم" />
-                <input type="text" id="mgrOfferInstallment" class="form-control" maxlength="25" placeholder="القسط" />
-                <input type="text" id="mgrOfferYears" class="form-control" maxlength="20" placeholder="السنوات" />
-                <input type="text" id="mgrOfferRoi" class="form-control" maxlength="25" placeholder="العائد المتوقع" />
-                <input type="text" id="mgrOfferDetails" class="form-control" style="grid-column: 1 / -1" maxlength="220" placeholder="📝 تفاصيل إضافية عن العرض (اختياري)..." />
-              </div>
-              <button
-                type="button"
-                class="btn btn-primary btn-block"
-                style="margin-bottom: 12px"
-                onclick="addOfferToBank('MGR')"
-              >
-                ➕ إضافة عرض للتيم المحدد
-              </button>
-              <div class="table-responsive">
-                <table style="min-width: 560px">
-                  <thead>
-                    <tr>
-                      <th>المشروع والتفاصيل</th>
-                      <th>المساحة / الإجمالي</th>
-                      <th>السداد</th>
-                      <th>العائد المتوقع</th>
-                      <th>حذف</th>
-                    </tr>
-                  </thead>
-                  <tbody id="mgrTeamOffersTbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 6: DEVOLEPOR_ONLY (LOCKED) -->
-        <!-- NEW TAB: SALES POWER ORDERING (MANAGER EXCLUSIVE + DELEGATABLE) -->
-        <div id="mgrTabSalesPower" class="admin-page">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">⚡ ترتيب قوة السيلز (من الأقوى للأضعف)</div>
-              <span id="mgrPowerSaveStatus" style="font-size: 0.78rem; font-weight: 800; color: var(--primary-bright)"></span>
-            </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px">
-              رتّب سيلز كل تيم من الأقوى (#1) للأضعف — السيستم الكبير بيوزع العملاء التلقائيين على أول سيلز فاضي حسب الترتيب ده بالظبط.
-            </p>
-            <div id="mgrPowerTeamPills" class="chips-grid" style="margin-bottom: 14px"></div>
-            <div class="table-responsive">
-              <table style="min-width: 520px">
-                <thead>
-                  <tr>
-                    <th>الترتيب</th>
-                    <th>الكود</th>
-                    <th>اسم السيلز</th>
-                    <th>حالة الترابيزة (المعرض النشط)</th>
-                    <th>دعوات (النشط / الكل)</th>
-                    <th>تحكم بالترتيب</th>
-                  </tr>
-                </thead>
-                <tbody id="mgrPowerSalesTbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- NEW TAB: STAFF ASSIGNMENT & TEAM DISTRIBUTION (SEPARATED FROM STUDIO) -->
-        <div id="mgrTabStaffDist" class="admin-page">
-          <!-- Staff Exhibition Assignment (Multi-Exhibition Same-Day Support) -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">
-                📍 توزيع طاقم المعرض لـ (<span id="assignExhNameLabel">-</span>)
-              </div>
-              <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 700">
-                حدّد الموظفين والشركات النازلين هذا المعرض (يُحفظ فوراً ويقفل شاشتهم على هذا المعرض فقط)
-              </span>
-            </div>
-            <div id="mgrStaffAssignmentContainer"></div>
-          </div>
-
-          <!-- Team Distribution & B.almetr Team Offers for Active Exhibition -->
-          <div class="workspace-grid" style="margin-bottom: 14px">
-            <div class="card" style="margin-bottom: 0">
-              <div class="card-header">
-                <div class="card-title">
-                  ⚖️ نسب وتوزيع التيمات في (<span id="distExhNameLabel">-</span>)
-                </div>
-                <button
-                  type="button"
-                  class="btn btn-gold"
-                  style="padding: 6px 12px; font-size: 0.78rem"
-                  onclick="saveTeamDistributionSettings()"
-                >
-                  💾 حفظ التوزيع
-                </button>
-              </div>
-              <p
-                style="
-                  font-size: 0.78rem;
-                  color: var(--text-muted);
-                  margin-bottom: 10px;
-                "
-              >
-                حدّد التيمات النشطة في هذا المعرض ووزن التوزيع (مثلاً: 1 للجمعية، 0 للوديعة، 1 للبروكر) ليستخدمه السيستم الكبير تلقائياً:
-              </p>
-              <div id="mgrTeamDistList"></div>
-            </div>
-
-            <div class="card" style="margin-bottom: 0">
-              <div class="card-header">
-                <div class="card-title">
-                  📄 QR ورق الشارع («أوفلاين») لـ (<span id="offlineQrExhLabel">-</span>)
-                </div>
-              </div>
-              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px">
-                اطبع الـ QR ده على ورق الشارع؛ لما عميل ييجي بالورقة للريسبشن ويعمل Scan يتسجل تلقائياً في خانة <strong>«أوفلاين»</strong> وتتحسب نسبته لوحدها (0.5%) ويمشي في المعرض عادي.
-              </p>
-              <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--bg-input); border: 1px dashed var(--border-strong); border-radius: 12px; padding: 14px">
-                <canvas id="offlineQrCanvas" width="420" height="500" style="max-width: 220px; height: auto; border-radius: 10px"></canvas>
-                <button type="button" class="btn btn-gold btn-block" onclick="downloadOfflineFlyerQR()">
-                  ⬇️ تنزيل صورة QR أوفلاين للطباعة (PNG)
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- NEW TAB: ACCESS CONTROL & PERMISSIONS (GENERAL MANAGER ONLY) -->
-        <div id="mgrTabAccessControl" class="admin-page">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">🔑 إدارة الصلاحيات والأكسس (حصري للمدير العام)</div>
-              <span id="mgrAccessSaveStatus" style="font-size: 0.78rem; font-weight: 800; color: var(--primary-bright)"></span>
-            </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px">
-              افتراضياً كل الصلاحيات في إيد <strong>المدير العام فقط</strong>. من هنا تقدر تفتح أي بانل لشخص معين بضغطة واحدة فيظهرله فوراً زر <strong>«🔑 صلاحيات الإدارة»</strong> ويعدل فيه براحته، وتسحبها منه في أي وقت.
-            </p>
-            <div class="kpi-grid" id="mgrAccessKpiGrid" style="margin-bottom: 12px"></div>
-            <div class="filter-bar-grid" style="margin-bottom: 12px">
-              <input
-                type="text"
-                id="mgrAccessSearch"
-                class="form-control"
-                placeholder="🔍 ابحث بالاسم أو الكود..."
-                oninput="renderAccessControlPanel()"
-              />
-              <select id="mgrAccessRoleFilter" class="form-control" onchange="renderAccessControlPanel()">
-                <option value="ALL">👥 كل الأدوار</option>
-                <option value="HAS_ACCESS">🔑 اللي معاهم صلاحيات مفتوحة فقط</option>
-                <option value="team_leader">تيم ليدر</option>
-                <option value="exh_manager">مدير معرض</option>
-                <option value="sales">سيلز بالمتر</option>
-                <option value="broker">بروكر</option>
-                <option value="reception">ريسبشن</option>
-              </select>
-            </div>
-            <div id="mgrAccessUsersContainer"></div>
-          </div>
-        </div>
-
         <div id="mgrTabDevOnly" class="admin-page">
           <div id="devPanelLockScreen" class="card dev-lock-card">
             <div style="font-size: 2.3rem; margin-bottom: 8px">🔒</div>
@@ -4537,117 +3862,6 @@
     </div>
 
     <!-- Edit Account Modal -->
-    <div id="editAccountModal" class="modal-overlay">
-      <div class="modal-box">
-        <h3 style="color: var(--primary-bright); margin-bottom: 12px">
-          ✏️ تعديل بيانات الحساب وصلاحيات المعرض
-        </h3>
-        <input type="hidden" id="editAccId" />
-        <div class="form-group">
-          <label class="form-label" style="color: #fcd34d">النوع (البوزشن الأساسي):</label>
-          <select id="editAccRole" class="form-control" onchange="syncEditAccountManagedTeamsVisibility()">
-            <option value="sales">💼 سيلز</option>
-            <option value="team_leader">🎖️ تيم ليدر</option>
-            <option value="reception">🛎️ ريسبشن</option>
-            <option value="usher">🚶 أشرز (موصلاتية)</option>
-            <option value="exh_manager">🎯 مدير معرض</option>
-            <option value="admin_broker">🤝 أدمن بروكر</option>
-            <option value="broker">🏢 بروكر</option>
-            <option value="influencer">🌟 إنفلونسر</option>
-            <option value="developer">🏗️ ديفولبر</option>
-            <option value="dev_sales">🧑‍💼 سيلز مطور</option>
-            <option value="company">📢 الشركة (BM)</option>
-            <option value="manager">👑 مانجر</option>
-          </select>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
-          <div class="form-group">
-            <label class="form-label">الاسم:</label>
-            <input type="text" id="editAccName" class="form-control" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">الكود:</label>
-            <input type="text" id="editAccCode" class="form-control" dir="ltr" />
-          </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
-          <div class="form-group">
-            <label class="form-label">الباسورد:</label>
-            <input type="text" id="editAccPass" class="form-control" dir="ltr" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">رقم التليفون:</label>
-            <input type="tel" id="editAccPhone" class="form-control" dir="ltr" style="text-align: right" placeholder="01012345678" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer">
-            <input type="checkbox" id="editAccShowPhone" />
-            📱 إظهار رقم التليفون في تقرير رحلة العميل
-          </label>
-        </div>
-        <div class="form-group">
-          <label class="form-label">التيم الأساسي:</label>
-          <select id="editAccTeam" class="form-control"></select>
-        </div>
-
-        <!-- Expo Extra Roles, Managed Teams & Request Edit Permission -->
-        <div class="control-section-box" style="padding: 10px; margin-bottom: 12px">
-          <div style="font-size: 0.8rem; font-weight: 900; color: #fcd34d; margin-bottom: 7px">
-            🎛️ أدوار إضافية يوم المعرض (بنفس الباسورد):
-          </div>
-          <div id="editAccExpoRolesGrid" class="role-check-grid" style="margin-bottom: 8px">
-            <label class="role-check-item"><input type="checkbox" value="usher" /> 🚶 أشرز</label>
-            <label class="role-check-item"><input type="checkbox" value="reception" /> 🛎️ ريسبشن</label>
-            <label class="role-check-item"><input type="checkbox" value="sales" /> 💼 سيلز قعدة</label>
-            <label class="role-check-item"><input type="checkbox" value="broker" /> 🏢 بروكر</label>
-            <label class="role-check-item"><input type="checkbox" value="team_leader" onchange="syncEditAccountManagedTeamsVisibility()" /> 🎖️ تيم ليدر</label>
-            <label class="role-check-item"><input type="checkbox" value="exh_manager" /> 🎯 مدير معرض</label>
-          </div>
-          <div id="editAccManagedTeamsBox" style="display: none; margin-bottom: 8px; padding-top: 7px; border-top: 1px dashed var(--border)">
-            <div style="font-size: 0.78rem; font-weight: 800; color: var(--primary-bright); margin-bottom: 5px">
-              🏷️ التيمات اللي بيديرها (اختر تيم أو أكثر):
-            </div>
-            <div id="editAccManagedTeamsGrid" class="role-check-grid"></div>
-          </div>
-          <label class="role-check-item" style="border-color: rgba(45, 212, 191, 0.35); background: rgba(0, 184, 172, 0.08)">
-            <input type="checkbox" id="editAccCanEditReq" />
-            <span>✏️ صلاحية تعديل ريكويست العميل يوم المعرض</span>
-          </label>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px">
-          <div>
-            <label class="form-label" style="font-size: 0.76rem">نسبة الدعوة (النص الأول %):</label>
-            <input type="number" step="0.1" min="0" max="20" id="editAccFirstPct" class="form-control" dir="ltr" value="0.5" />
-          </div>
-          <div>
-            <label class="form-label" style="font-size: 0.76rem">نسبة الترابيزة (القعدة %):</label>
-            <input type="number" step="0.1" min="0" max="20" id="editAccTablePct" class="form-control" dir="ltr" value="1.0" />
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-top: 12px">
-          <button
-            type="button"
-            class="btn btn-success"
-            style="flex: 1"
-            onclick="saveEditedAccount()"
-          >
-            💾 حفظ التعديل
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline"
-            style="flex: 1"
-            onclick="closeModal('editAccountModal')"
-          >
-            إلغاء
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- Partner Per-Exhibition Template Modal (Admin Broker) -->
     <div id="partnerTemplateModal" class="modal-overlay">
       <div class="modal-box" style="max-width: 460px">
@@ -4791,11 +4005,31 @@
       };
 
       const SAVED_SALES_KEY = "balmetr_saved_sales_id";
-      const DEV_PANEL_PASS = "M-A-L-L-A-M";
       let devPanelUnlocked = false;
       let lastSyncOk = true;
 
+      function getClientRateLimitKey() {
+        try {
+          let k = localStorage.getItem("balmetr_client_key");
+          if (!k) {
+            k = "inv_" + Math.random().toString(36).slice(2, 12) + "_" + Date.now().toString(36);
+            localStorage.setItem("balmetr_client_key", k);
+          }
+          return k;
+        } catch (e) {
+          return "web";
+        }
+      }
+
+      function sanitizeSafeUrl(url) {
+        const u = String(url || "").trim();
+        if (!u) return "";
+        if (/^https?:\/\//i.test(u) || /^[a-zA-Z0-9_\-./]+\.(png|jpg|jpeg|webp|pdf)$/i.test(u)) return u;
+        return "";
+      }
+
       let state = {
+        sessionToken: null,
         exhibitions: [],
         accounts: [],
         invitations: [],
@@ -5365,7 +4599,7 @@
             const teamOwnerIds = [
               u.id,
               ...state.accounts
-                .filter((a) => a.role === "sales" && managedSet.has(a.team || "المعرض"))
+                .filter((a) => accountHasRole(a, "sales") && managedSet.has(a.team || "المعرض"))
                 .map((a) => a.id),
             ];
 
@@ -5915,170 +5149,20 @@
         }
       }
 
-      function renderReportSettingsPanel() {
-        const cfg = state.journeyReportConfig || {};
-        document.getElementById("rptBrandTitleInput").value =
-          cfg.brandTitle || "B.almetr VIP | تقرير رحلة العميل";
-        document.getElementById("rptHotlineInput").value = cfg.hotline || "0101 4444 227";
-        document.getElementById("rptFooterMsgInput").value =
-          cfg.footerMsg || "شكراً لحضورك معنا ✨ نتمنى لك استثماراً موفقاً";
-
-        document.getElementById("rptShowEntryExit").checked = cfg.showEntryExit !== false;
-        document.getElementById("rptShowStopDuration").checked = cfg.showStopDuration !== false;
-        document.getElementById("rptShowRepName").checked = cfg.showRepName !== false;
-        document.getElementById("rptShowOfferDetails").checked = cfg.showOfferDetails !== false;
-        document.getElementById("rptShowNotes").checked = cfg.showNotes !== false;
-        document.getElementById("rptShowBalmetrPhones").checked = cfg.showBalmetrPhones !== false;
-        document.getElementById("rptShowBrokerPhones").checked = Boolean(cfg.showBrokerPhones);
-        document.getElementById("rptShowDevPhones").checked = Boolean(cfg.showDevPhones);
-
-        renderReportPreviewBox();
-        renderReportPhonesTable();
-      }
-
-      function collectReportConfigFromUI() {
-        return {
-          brandTitle: (document.getElementById("rptBrandTitleInput")?.value || "").trim() || "B.almetr VIP | تقرير رحلة العميل",
-          hotline: (document.getElementById("rptHotlineInput")?.value || "").trim() || "0101 4444 227",
-          footerMsg: (document.getElementById("rptFooterMsgInput")?.value || "").trim() || "شكراً لحضورك معنا ✨",
-          showEntryExit: document.getElementById("rptShowEntryExit")?.checked !== false,
-          showStopDuration: document.getElementById("rptShowStopDuration")?.checked !== false,
-          showRepName: document.getElementById("rptShowRepName")?.checked !== false,
-          showOfferDetails: document.getElementById("rptShowOfferDetails")?.checked !== false,
-          showNotes: document.getElementById("rptShowNotes")?.checked !== false,
-          showBalmetrPhones: document.getElementById("rptShowBalmetrPhones")?.checked !== false,
-          showBrokerPhones: Boolean(document.getElementById("rptShowBrokerPhones")?.checked),
-          showDevPhones: Boolean(document.getElementById("rptShowDevPhones")?.checked),
-        };
-      }
-
-      function renderReportPreviewBox() {
-        const box = document.getElementById("rptLivePreviewBox");
-        if (!box) return;
-        const cfg = collectReportConfigFromUI();
-        box.innerHTML = `
-          <div style="background:linear-gradient(135deg,#051224,#0d2a52); color:#fff; padding:12px 14px; border-radius:10px; border-bottom:4px solid #00b8ac; display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <img src="Logo_White.png" alt="B.almetr" style="height:30px; width:auto; object-fit:contain;" onerror="this.style.display='none';" />
-              <div>
-                <div style="color:#2dd4bf; font-weight:900; font-size:0.86rem;">${escapeHtml(cfg.brandTitle)}</div>
-                <div style="color:#cbd5e1; font-size:0.7rem;">معرض بالمتر العقاري VIP</div>
-              </div>
-            </div>
-            <span style="background:rgba(245,176,65,0.2); border:1px solid #f5b041; color:#fcd34d; padding:3px 9px; border-radius:8px; font-weight:900; font-size:0.82rem;">#0131</span>
-          </div>
-
-          <div style="background:#f0fdfa; border:1.5px solid #00b8ac; padding:8px 10px; border-radius:8px; margin-bottom:10px; font-size:0.74rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-            <span><strong>👤 العميل:</strong> أ/ أحمد محمود</span>
-            ${cfg.showEntryExit ? `<span><strong>🕒 دخول:</strong> 2:15 م &nbsp;|&nbsp; <strong>🏁 خروج:</strong> 3:05 م (50 دقيقة)</span>` : ""}
-          </div>
-
-          <div style="border:1.5px solid #cbd5e1; border-right:5px solid #00b8ac; border-radius:8px; padding:9px 10px; margin-bottom:8px; background:#f8fafc;">
-            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:900; color:#051224;">
-              <span>1. تيم الجمعية — بالمتر</span>
-              ${cfg.showStopDuration ? `<span style="background:#ccfbf1; color:#0f766e; padding:2px 7px; border-radius:6px; font-size:0.7rem;">⏱️ 15 دقيقة</span>` : ""}
-            </div>
-            ${cfg.showRepName ? `<div style="font-size:0.73rem; color:#334155; margin-top:3px;">👤 المستشار العقاري: <strong>أ/ مريم (S16)</strong></div>` : ""}
-            ${cfg.showOfferDetails ? `<div style="background:#fffbeb; border:1px solid #f59e0b; padding:6px 8px; border-radius:6px; margin-top:5px; font-size:0.72rem; color:#78350f;">🎁 <strong>العرض المرشح:</strong> مشروع بيرلا — تجاري 45م² — مقدم 10% على 7 سنوات</div>` : ""}
-            ${cfg.showNotes ? `<div style="font-size:0.71rem; color:#475569; margin-top:4px;">📝 ملاحظات: العميل مهتم بالاستلام الفوري</div>` : ""}
-            ${cfg.showBalmetrPhones ? `<div style="display:inline-block; background:#e0f2fe; border:1px solid #0284c7; color:#0369a1; padding:2px 8px; border-radius:6px; font-size:0.71rem; margin-top:5px; font-weight:800;">📱 تواصل المستشار: <span dir="ltr">01012345678</span></div>` : ""}
-          </div>
-
-          <div style="border:1.5px solid #cbd5e1; border-right:5px solid #f59e0b; border-radius:8px; padding:9px 10px; margin-bottom:10px; background:#fffdf7;">
-            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:900; color:#051224;">
-              <span>2. شركة مطورة مشاركة</span>
-              ${cfg.showStopDuration ? `<span style="background:#fef3c7; color:#b45309; padding:2px 7px; border-radius:6px; font-size:0.7rem;">⏱️ 20 دقيقة</span>` : ""}
-            </div>
-            ${cfg.showOfferDetails ? `<div style="background:#fffbeb; border:1px solid #f59e0b; padding:6px 8px; border-radius:6px; margin-top:5px; font-size:0.72rem; color:#78350f;">🎁 <strong>العرض المرشح:</strong> شقة 120م² — مقدم 15%</div>` : ""}
-            ${cfg.showDevPhones ? `<div style="display:inline-block; background:#fef2f2; border:1px solid #ef4444; color:#b91c1c; padding:2px 8px; border-radius:6px; font-size:0.71rem; margin-top:5px; font-weight:800;">📱 تواصل المطور: <span dir="ltr">01099999999</span></div>` : ""}
-          </div>
-
-          <div style="background:#051224; color:#fff; border-top:3px solid #f5b041; border-radius:8px; padding:9px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <img src="Logo_White.png" alt="B.almetr" style="height:22px; width:auto; object-fit:contain;" onerror="this.style.display='none';" />
-              <span style="font-size:0.72rem; color:#e2e8f0; font-weight:700;">${escapeHtml(cfg.footerMsg)}</span>
-            </div>
-            <span dir="ltr" style="background:#00b8ac; color:#031a1f; padding:3px 10px; border-radius:999px; font-weight:900; font-size:0.76rem;">📞 ${escapeHtml(cfg.hotline)}</span>
-          </div>
-        `;
-      }
-
-      async function saveJourneyReportConfig() {
-        const cfg = collectReportConfigFromUI();
-        const { error } = await sb
-          .from("system_settings")
-          .upsert({ key: "journey_report_config", value: JSON.stringify(cfg) });
-        if (error) return alert("❌ تعذر حفظ إعدادات التقرير!");
-        state.journeyReportConfig = cfg;
-        alert("✅ تم حفظ إعدادات التقرير وتفعيلها للسيستم الكبير بنجاح!");
-      }
-
-      function renderReportPhonesTable() {
-        const tbody = document.getElementById("rptPhonesTbody");
-        if (!tbody) return;
-        const roleF = document.getElementById("rptPhoneRoleFilter")?.value || "ALL";
-        const q = (document.getElementById("rptPhoneSearch")?.value || "").trim().toLowerCase();
-
-        const list = sortAccountsByCode(
-          state.accounts.filter((a) => {
-            if (["manager", "company", "reception", "usher", "exh_manager"].includes(a.role)) return false;
-            if (roleF !== "ALL" && a.role !== roleF) return false;
-            if (q && !`${a.name} ${a.code}`.toLowerCase().includes(q)) return false;
-            return true;
-          })
-        );
-
-        if (list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:18px; color:var(--text-muted);">لا توجد حسابات مطابقة.</td></tr>`;
-          return;
-        }
-
-        tbody.innerHTML = list
-          .map((a) => {
-            const c = getAccountContact(a.id);
-            return `
-            <tr>
-              <td>${getRoleLabel(a.role)}</td>
-              <td><span class="badge badge-mint">${escapeHtml(a.code)}</span></td>
-              <td style="font-weight:800;">${escapeHtml(a.name)}</td>
-              <td>
-                <div style="display:flex; gap:5px; align-items:center;">
-                  <input type="tel" id="rptPhoneInp_${a.id}" class="form-control" dir="ltr" style="width:140px; padding:5px 8px; font-size:0.8rem;" value="${escapeHtml(c.phone)}" placeholder="010..." />
-                  <button type="button" class="btn btn-outline" style="padding:5px 8px; min-height:34px; font-size:0.74rem;" onclick="saveSingleReportPhone('${a.id}')">💾</button>
-                </div>
-              </td>
-              <td>
-                <button type="button" class="btn ${c.showInReport ? "btn-success" : "btn-danger"}" style="padding:5px 10px; min-height:34px; font-size:0.76rem;" onclick="toggleReportPhoneVisibility('${a.id}', ${!c.showInReport})">
-                  ${c.showInReport ? "🟢 يظهر بالتقرير" : "🚫 مخفي بالتقرير"}
-                </button>
-              </td>
-            </tr>`;
-          })
-          .join("");
-      }
-
-      async function saveSingleReportPhone(accId) {
-        const raw = (document.getElementById(`rptPhoneInp_${accId}`)?.value || "").trim();
-        const prev = getAccountContact(accId);
+      async function saveDesignDimensions() {
+        const val = (document.getElementById("mgrDesignDimInput")?.value || "").trim();
+        if (!val) return alert("⚠️ اكتب أبعاد التصميم أولاً!");
         try {
-          await setAccountContact(accId, raw, prev.showInReport);
-          renderReportPhonesTable();
-          if (activeManagerTab === "mgrTabAccounts") renderManagerAccountsTable();
-          alert("✅ تم حفظ الرقم!");
+          const { error } = await sb.from("system_settings").upsert({
+            key: "design_dimensions",
+            value: val,
+          });
+          if (error) throw error;
+          state.designDimensions = val;
+          alert("✅ تم حفظ أبعاد التصميم بنجاح!");
         } catch (err) {
-          alert("❌ تعذر الحفظ!");
-        }
-      }
-
-      async function toggleReportPhoneVisibility(accId, newVal) {
-        const prev = getAccountContact(accId);
-        const inpVal = (document.getElementById(`rptPhoneInp_${accId}`)?.value || "").trim();
-        try {
-          await setAccountContact(accId, inpVal || prev.phone, newVal);
-          renderReportPhonesTable();
-          if (activeManagerTab === "mgrTabAccounts") renderManagerAccountsTable();
-        } catch (err) {
-          alert("❌ تعذر التحديث!");
+          console.error(err);
+          alert("❌ تعذر الحفظ في Supabase");
         }
       }
 
@@ -6097,31 +5181,36 @@
 
       async function changeOwnPasswordFromInput(newInputId, currDisplayId) {
         const u = state.currentUser;
-        if (!u) return;
+        if (!u || !state.sessionToken) return;
         const newInp = document.getElementById(newInputId);
         const newPass = (newInp?.value || "").trim();
         if (!newPass || newPass.length < 4) {
           return alert("⚠️ كلمة السر الجديدة يجب ألا تقل عن 4 أحرف أو أرقام!");
         }
-        if (newPass === u.password) {
+        let oldPass = (u.password || "").trim();
+        if (!oldPass) {
+          oldPass = (prompt("🔐 أدخل كلمة السر الحالية للتأكيد:") || "").trim();
+          if (!oldPass) return;
+        }
+        if (newPass === oldPass) {
           return alert("ℹ️ كلمة السر الجديدة مطابقة للحالية!");
         }
         try {
-          const { data, error } = await sb.rpc("update_own_password", {
-            p_account_id: u.id,
-            p_old_password: u.password,
+          const { data, error } = await sb.rpc("update_own_password_v2", {
+            p_token: state.sessionToken,
+            p_old_password: oldPass,
             p_new_password: newPass,
           });
           if (error) throw error;
-          if (data.status !== "UPDATED") {
-            return alert("❌ " + (data.message || "تعذر تغيير كلمة السر"));
+          if (data?.status !== "UPDATED") {
+            return alert("❌ " + (data?.message || "تعذر تغيير كلمة السر"));
           }
-          u.password = data.password;
+          u.password = newPass;
           const acc = cache.accountsById.get(u.id);
-          if (acc) acc.password = data.password;
+          if (acc) acc.password = newPass;
           if (currDisplayId) {
             const disp = document.getElementById(currDisplayId);
-            if (disp) disp.value = data.password;
+            if (disp) disp.value = newPass;
           }
           newInp.value = "";
           alert("✅ تم تحديث كلمة السر الخاصة بك بنجاح!");
@@ -6290,8 +5379,9 @@
       function buildDimensionsNoticeHtml(suffixText = "") {
         let htmlStr = `📐 الأبعاد المطلوبة للتصميم: <strong dir="ltr">${escapeHtml(state.designDimensions)}</strong>`;
         if (suffixText) htmlStr += ` — ${suffixText}`;
-        if (state.designGuidePdfUrl) {
-          htmlStr += `<div style="margin-top:8px;"><a href="${escapeHtml(state.designGuidePdfUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:6px 12px; font-size:0.78rem;">📄 تحميل دليل التصميم (PDF)</a></div>`;
+        const safePdfUrl = sanitizeSafeUrl(state.designGuidePdfUrl);
+        if (safePdfUrl) {
+          htmlStr += `<div style="margin-top:8px;"><a href="${escapeHtml(safePdfUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:6px 12px; font-size:0.78rem;">📄 تحميل دليل التصميم (PDF)</a></div>`;
         }
         return htmlStr;
       }
@@ -6384,6 +5474,9 @@
       function handleSmartAuthButton() {
         if (state.currentUser) {
           if (confirm("هل تريد تسجيل الخروج من حسابك الحالي؟")) {
+            const tok = state.sessionToken;
+            if (tok) sb.rpc("logout_session", { p_token: tok }).catch(() => {});
+            state.sessionToken = null;
             state.currentUser = null;
             state.activeLeaderTeam = null;
             devPanelUnlocked = false;
@@ -6414,8 +5507,16 @@
         btn.disabled = true;
         btn.textContent = "⏳ تحقق...";
         try {
-          const { data, error } = await sb.rpc("smart_login", { p_password: pass });
+          const { data, error } = await sb.rpc("smart_login", {
+            p_password: pass,
+            p_client_key: getClientRateLimitKey(),
+          });
           if (error) throw error;
+
+          if (data?.status === "RATE_LIMITED") {
+            alert("🚫 " + (data.message || "محاولات كثيرة خاطئة، انتظر دقيقة وحاول مجدداً."));
+            return;
+          }
 
           if (data.status === "DEV_SIGNUP") {
             state.devSignupTempPass = pass;
@@ -6443,6 +5544,7 @@
           }
 
           if (data.status === "ACCOUNT" && data.account) {
+            state.sessionToken = data.session_token || null;
             state.currentUser = data.account;
             closeModal("smartLoginModal");
             document.body.classList.remove("clean-header-mode", "public-client-mode");
@@ -6490,14 +5592,12 @@
 
       function routeLoggedInUser() {
         state.delegatedMode = false;
-        syncDelegatedAccessButton();
         if (!state.currentUser) {
           returnToWorkspace();
           return;
         }
         const role = state.currentUser.role;
         if (role === "manager") {
-          applyManagerTabVisibilityForCurrentUser();
           showOnlyView("managerView");
         } else if (role === "admin_broker") showOnlyView("adminBrokerView");
         else if (role === "team_leader" || accountHasRole(state.currentUser, "team_leader")) showOnlyView("teamLeaderView");
@@ -6518,8 +5618,7 @@
         ensureActiveExhibition();
         if (state.currentUser) {
           renderExhibitionPills();
-          syncDelegatedAccessButton();
-        }
+          }
 
         if (activeView === "workspaceView") {
           const active = getActiveExhibition();
@@ -7798,7 +6897,14 @@
               : up.url;
           }
           const pPhone = normalizePhone(document.getElementById("abNewPhone")?.value || "");
-          const code = generateNextCodeForRole(role);
+          let code = generateNextCodeForRole(role);
+          if (state.sessionToken) {
+            const { data: srvCode, error: cErr } = await sb.rpc("next_account_code", {
+              p_token: state.sessionToken,
+              p_role: role,
+            });
+            if (!cErr && srvCode) code = srvCode;
+          }
           const { data, error } = await sb
             .from("accounts")
             .insert({
@@ -8546,76 +7652,6 @@
         alert("✅ تم حفظ تخصص مشاريع شركتك والأنظمة بنجاح!");
       }
 
-      function renderBalmetrOffersPanel() {
-        populateManagerTeamOffersSelect();
-        const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
-        const cfg = state.balmetrTeamInventory?.[teamName] || { inventory: {}, systems: [] };
-        renderInventoryMatrixInto("balmetrTeamInventoryMatrix", cfg.inventory || {}, "balmetrTeam");
-        renderSystemsGridInto("balmetrTeamSystemsGrid", cfg.systems || [], "balmetrTeam");
-        ensureManagerOffersLoaded();
-      }
-
-      async function saveBalmetrTeamSpecialization() {
-        const teamName = document.getElementById("mgrTeamOffersSelect")?.value || state.teamsList[0];
-        const inv = collectInventoryMatrix("balmetrTeam");
-        const sys = collectSystemsGrid("balmetrTeam");
-        state.balmetrTeamInventory = {
-          ...(state.balmetrTeamInventory || {}),
-          [teamName]: { inventory: inv, systems: sys },
-        };
-        const { error } = await sb.from("system_settings").upsert({
-          key: "balmetr_team_inventory",
-          value: JSON.stringify(state.balmetrTeamInventory),
-        });
-        if (error) return alert("❌ تعذر حفظ تخصص التيم!");
-        alert(`✅ تم حفظ تخصص تيم «${teamName}» بنجاح!`);
-      }
-
-      // ==================== OFFLINE STREET FLYER QR GENERATOR ====================
-      function renderOfflineFlyerQR() {
-        const exh = getActiveExhibition();
-        const lbl = document.getElementById("offlineQrExhLabel");
-        if (lbl) lbl.textContent = exh?.name || "-";
-        const canvas = document.getElementById("offlineQrCanvas");
-        if (!canvas || !exh || typeof qrcode === "undefined") return;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = "#051224";
-        ctx.fillRect(0, 0, canvas.width, 82);
-        ctx.fillStyle = "#2dd4bf";
-        ctx.textAlign = "center";
-        ctx.font = "900 28px 'Cairo', sans-serif";
-        ctx.fillText("B.almetr VIP", canvas.width / 2, 38);
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "800 18px 'Cairo', sans-serif";
-        ctx.fillText(exh.name || "معرض بالمتر", canvas.width / 2, 68);
-
-        const payload = `BM|OFFLINE|EXH:${exh.id}`;
-        drawQrOnCanvas(ctx, payload, canvas.width / 2, 265, 290);
-
-        ctx.fillStyle = "#051224";
-        ctx.font = "900 20px 'Cairo', sans-serif";
-        ctx.fillText("دعوة أوفلاين (ورق الشارع)", canvas.width / 2, 445);
-        ctx.fillStyle = "#0f766e";
-        ctx.font = "700 14px 'Cairo', sans-serif";
-        ctx.fillText("امسح الكود عند الريسبشن — 0101 4444 227", canvas.width / 2, 476);
-      }
-
-      function downloadOfflineFlyerQR() {
-        const exh = getActiveExhibition();
-        const canvas = document.getElementById("offlineQrCanvas");
-        if (!canvas || !exh) return;
-        renderOfflineFlyerQR();
-        const a = document.createElement("a");
-        a.href = canvas.toDataURL("image/png");
-        a.download = `Balmetr_OFFLINE_QR_${exh.name || "exh"}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
-
       // ==================== DYNAMIC TEAMS ====================
       function populateTeamSelects() {
         ["mgrAddTeam", "editAccTeam"].forEach((id) => {
@@ -8709,371 +7745,11 @@
         if (btnEl) btnEl.className = "btn btn-primary ach-sub-btn";
       }
 
-      const DELEGATABLE_PERMS = [
-        { id: "mgrTabQuickReport", label: "📊 التقرير السريع" },
-        { id: "mgrTabAchievements", label: "🏆 الإنجازات" },
-        { id: "mgrTabClients", label: "📋 سجل العملاء" },
-        { id: "mgrTabSalesPower", label: "⚡ ترتيب قوة السيلز" },
-        { id: "mgrTabStaffDist", label: "🧭 الطاقم والنسب" },
-        { id: "mgrTabBalmetrOffers", label: "🏢 عروض بالمتر" },
-        { id: "mgrTabAccounts", label: "👥 الحسابات والتيمات" },
-        { id: "mgrTabStudio", label: "🎨 المعارض والقوالب" },
-        { id: "mgrTabReportSettings", label: "📄 إعدادات التقرير" },
-      ];
-
-      function getCurrentUserPermissions() {
-        const u = state.currentUser;
-        if (!u) return [];
-        if (u.role === "manager") {
-          return [...DELEGATABLE_PERMS.map((p) => p.id), "mgrTabAccessControl", "mgrTabDevOnly"];
-        }
-        const list = state.userPermissions?.[u.id];
-        return Array.isArray(list) ? list : [];
-      }
-
-      function hasAdminPermission(tabId) {
-        const u = state.currentUser;
-        if (!u) return false;
-        if (u.role === "manager") return true;
-        return getCurrentUserPermissions().includes(tabId);
-      }
-
-      function syncDelegatedAccessButton() {
-        const btn = document.getElementById("delegatedAccessBtn");
-        if (!btn) return;
-        const u = state.currentUser;
-        if (!u || u.role === "manager") {
-          btn.style.display = "none";
-          return;
-        }
-        const perms = getCurrentUserPermissions();
-        if (perms.length > 0) {
-          btn.style.display = "inline-flex";
-          btn.textContent = state.delegatedMode
-            ? "↩️ لوحتي الأساسية"
-            : `🔑 صلاحيات الإدارة (${perms.length})`;
-        } else {
-          btn.style.display = "none";
-        }
-      }
-
-      function applyManagerTabVisibilityForCurrentUser() {
-        const u = state.currentUser;
-        const isMgr = u?.role === "manager";
-        const perms = new Set(getCurrentUserPermissions());
-        const banner = document.getElementById("delegatedModeBanner");
-        if (banner) banner.style.display = !isMgr && state.delegatedMode ? "flex" : "none";
-
-        let firstAllowedTab = null;
-        let firstAllowedBtn = null;
-        document.querySelectorAll("#managerGroupedNav .admin-nav-btn").forEach((btn) => {
-          const tid = btn.getAttribute("data-tab-id");
-          const mgrOnly = btn.getAttribute("data-manager-only") === "true";
-          const allowed = isMgr || (!mgrOnly && perms.has(tid));
-          btn.style.display = allowed ? "flex" : "none";
-          if (allowed && !firstAllowedTab) {
-            firstAllowedTab = tid;
-            firstAllowedBtn = btn;
-          }
-        });
-
-        document.querySelectorAll("#managerGroupedNav .admin-nav-group-row").forEach((grp) => {
-          const hasAnyVisible = Array.from(grp.querySelectorAll(".admin-nav-btn")).some(
-            (b) => b.style.display !== "none"
-          );
-          grp.style.display = hasAnyVisible ? "flex" : "none";
-        });
-
-        if (!isMgr && !perms.has(activeManagerTab) && firstAllowedTab) {
-          activeManagerTab = firstAllowedTab;
-          document.querySelectorAll(".admin-page").forEach((p) => p.classList.remove("active"));
-          document.querySelectorAll(".admin-nav-btn").forEach((b) => b.classList.remove("active"));
-          document.getElementById(firstAllowedTab)?.classList.add("active");
-          firstAllowedBtn?.classList.add("active");
-        }
-      }
-
-      async function openDelegatedAdminView() {
-        const u = state.currentUser;
-        if (!u || u.role === "manager") return;
-        if (state.delegatedMode) {
-          exitDelegatedAdminView();
-          return;
-        }
-        const perms = getCurrentUserPermissions();
-        if (perms.length === 0) return;
-
-        setSyncBadge("syncing");
-        try {
-          // Ensure full accounts & settings are loaded for delegated editing
-          const [exhRes, accRes, setRes] = await Promise.all([
-            sb.from("exhibitions").select("*").order("created_at", { ascending: true }),
-            sb.from("accounts").select("*").order("created_at", { ascending: true }),
-            sb.from("system_settings").select("*"),
-          ]);
-          if (!exhRes.error && exhRes.data) state.exhibitions = exhRes.data;
-          if (!accRes.error && accRes.data) {
-            state.accounts = accRes.data;
-            state.currentUser = state.accounts.find((a) => a.id === u.id) || state.currentUser;
-          }
-          if (!setRes.error && setRes.data) applySettingsRows(setRes.data);
-
-          const needsInvs = perms.some((p) =>
-            ["mgrTabQuickReport", "mgrTabAchievements", "mgrTabClients", "mgrTabSalesPower"].includes(p)
-          );
-          if (needsInvs && state.invitationsScope !== "ALL") {
-            const { data: invData } = await sb
-              .from("invitations")
-              .select("*")
-              .order("created_at", { ascending: false })
-              .limit(2000);
-            if (invData) {
-              state.invitations = invData;
-              state.serverTotalInvitations = invData.length;
-              state.invitationsScope = "ALL";
-            }
-          }
-          rebuildDerivedCaches();
-        } catch (err) {
-          console.error(err);
-        }
-        setSyncBadge(true);
-
-        state.delegatedMode = true;
-        applyManagerTabVisibilityForCurrentUser();
-        showOnlyView("managerView");
-        syncDelegatedAccessButton();
-        renderActiveManagerTab();
-      }
-
-      function exitDelegatedAdminView() {
-        state.delegatedMode = false;
-        routeLoggedInUser();
-      }
-
-      // ==================== MANAGER: SALES POWER ORDERING ====================
-      function renderMgrSalesPowerPanel() {
-        const teams = Array.isArray(state.teamsList) && state.teamsList.length > 0
-          ? state.teamsList
-          : ["المعرض"];
-        if (!state.activeMgrPowerTeam || !teams.includes(state.activeMgrPowerTeam)) {
-          state.activeMgrPowerTeam = teams[0];
-        }
-        const activeTeam = state.activeMgrPowerTeam;
-        const activeExh = getActiveExhibition();
-
-        const pillsEl = document.getElementById("mgrPowerTeamPills");
-        if (pillsEl) {
-          pillsEl.innerHTML = teams
-            .map((t) => {
-              const cnt = state.accounts.filter(
-                (a) =>
-                  (accountHasRole(a, "sales") || (t === "بروكر" && accountHasRole(a, "broker"))) &&
-                  (a.team || "المعرض") === t
-              ).length;
-              const isAct = t === activeTeam;
-              return `<button type="button" class="btn ${isAct ? "btn-primary" : "btn-outline"}" style="padding:7px 13px; font-size:0.8rem;" onclick="selectMgrPowerTeam('${escapeHtml(t).replace(/'/g, "\'")}')">🏷️ ${escapeHtml(t)} <span class="badge" style="margin-right:4px;">${cnt}</span></button>`;
-            })
-            .join("");
-        }
-
-        const tbody = document.getElementById("mgrPowerSalesTbody");
-        if (!tbody) return;
-        const teamSales = getOrderedTeamSales(activeTeam);
-        if (teamSales.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:18px; color:var(--text-muted);">لا يوجد سيلز مسجلين في تيم (${escapeHtml(activeTeam)}) بعد.</td></tr>`;
-          return;
-        }
-
-        tbody.innerHTML = teamSales
-          .map((s, idx) => {
-            const actC = activeExh ? cache.ownerExhCount.get(`${s.id}|${activeExh.id}`) || 0 : 0;
-            const allC = cache.ownerTotalCount.get(s.id) || 0;
-            const exhIds = Array.isArray(s.active_exhibition_ids) ? s.active_exhibition_ids : [];
-            const onTable = activeExh && exhIds.includes(activeExh.id);
-            const tEsc = escapeHtml(activeTeam).replace(/'/g, "\'");
-            return `
-            <tr>
-              <td>
-                <strong style="color:${idx === 0 ? "#fcd34d" : "#2dd4bf"}; font-size:0.92rem;">#${idx + 1}</strong>
-                ${idx === 0 ? `<span class="badge badge-gold" style="font-size:0.65rem; margin-right:4px;">الأقوى ⭐</span>` : ""}
-              </td>
-              <td><span class="badge badge-mint">${escapeHtml(s.code)}</span></td>
-              <td style="font-weight:800;">${escapeHtml(s.name)}</td>
-              <td>${onTable ? `<span class="badge badge-success">✅ على الترابيزة</span>` : `<span style="color:var(--text-muted); font-size:0.75rem;">غير مفعل</span>`}</td>
-              <td><span class="badge badge-success">${actC}</span> / <strong>${allC}</strong></td>
-              <td style="white-space:nowrap;">
-                <button type="button" class="btn btn-gold order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveMgrTeamSalesOrder('${tEsc}', '${s.id}', 'TOP')" title="نقل للمركز الأول">⏫</button>
-                <button type="button" class="btn btn-outline order-btn" ${idx === 0 ? "disabled" : ""} onclick="moveMgrTeamSalesOrder('${tEsc}', '${s.id}', -1)" title="رفع للأعلى">⬆️</button>
-                <button type="button" class="btn btn-outline order-btn" ${idx === teamSales.length - 1 ? "disabled" : ""} onclick="moveMgrTeamSalesOrder('${tEsc}', '${s.id}', 1)" title="إنزال للأسفل">⬇️</button>
-              </td>
-            </tr>`;
-          })
-          .join("");
-      }
-
-      function selectMgrPowerTeam(teamName) {
-        state.activeMgrPowerTeam = teamName;
-        renderMgrSalesPowerPanel();
-      }
-
-      async function moveMgrTeamSalesOrder(teamName, salesId, direction) {
-        const ordered = getOrderedTeamSales(teamName);
-        const ids = ordered.map((s) => s.id);
-        const idx = ids.indexOf(salesId);
-        if (idx < 0) return;
-
-        if (direction === "TOP") {
-          if (idx === 0) return;
-          ids.splice(idx, 1);
-          ids.unshift(salesId);
-        } else {
-          const targetIdx = idx + direction;
-          if (targetIdx < 0 || targetIdx >= ids.length) return;
-          const tmp = ids[idx];
-          ids[idx] = ids[targetIdx];
-          ids[targetIdx] = tmp;
-        }
-
-        state.teamSalesOrder = {
-          ...(state.teamSalesOrder || {}),
-          [teamName]: ids,
-        };
-
-        const stEl = document.getElementById("mgrPowerSaveStatus");
-        if (stEl) stEl.textContent = "⏳ جاري الحفظ...";
-        renderMgrSalesPowerPanel();
-
-        try {
-          const { error } = await sb.from("system_settings").upsert({
-            key: "team_sales_order",
-            value: JSON.stringify(state.teamSalesOrder),
-          });
-          if (error) throw error;
-          if (stEl) stEl.textContent = "✅ تم حفظ الترتيب وتحديث التوزيع التلقائي";
-        } catch (err) {
-          console.error(err);
-          if (stEl) stEl.textContent = "❌ تعذر الحفظ في Supabase";
-        }
-      }
-
-      // ==================== MANAGER: ACCESS CONTROL & PERMISSIONS ====================
-      function renderAccessControlPanel() {
-        const wrap = document.getElementById("mgrAccessUsersContainer");
-        const kpiEl = document.getElementById("mgrAccessKpiGrid");
-        if (!wrap) return;
-
-        const nonManagers = state.accounts.filter((a) => a.role !== "manager");
-        const grantedUsersCount = nonManagers.filter(
-          (a) => Array.isArray(state.userPermissions?.[a.id]) && state.userPermissions[a.id].length > 0
-        ).length;
-
-        if (kpiEl) {
-          kpiEl.innerHTML = `
-            <div class="kpi-card"><div class="label">إجمالي الحسابات</div><div class="val">${nonManagers.length}</div></div>
-            <div class="kpi-card"><div class="label">حسابات لها صلاحيات مفتوحة</div><div class="val" style="color:#34d399;">${grantedUsersCount}</div></div>`;
-        }
-
-        const q = (document.getElementById("mgrAccessSearch")?.value || "").trim().toLowerCase();
-        const rFilter = document.getElementById("mgrAccessRoleFilter")?.value || "ALL";
-
-        const filtered = nonManagers.filter((a) => {
-          const perms = Array.isArray(state.userPermissions?.[a.id]) ? state.userPermissions[a.id] : [];
-          if (rFilter === "HAS_ACCESS" && perms.length === 0) return false;
-          if (rFilter !== "ALL" && rFilter !== "HAS_ACCESS" && a.role !== rFilter && !accountHasRole(a, rFilter)) return false;
-          if (q && !`${a.name} ${a.code} ${a.team || ""}`.toLowerCase().includes(q)) return false;
-          return true;
-        });
-
-        if (filtered.length === 0) {
-          wrap.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted);">لا توجد حسابات مطابقة للبحث.</div>`;
-          return;
-        }
-
-        wrap.innerHTML = filtered
-          .map((a) => {
-            const perms = Array.isArray(state.userPermissions?.[a.id]) ? state.userPermissions[a.id] : [];
-            const permSet = new Set(perms);
-            return `
-            <div class="access-user-card ${perms.length > 0 ? "has-access" : ""}">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                <div>
-                  <span class="badge badge-mint">${escapeHtml(a.code)}</span>
-                  <strong style="margin-right:6px;">${escapeHtml(a.name)}</strong>
-                  <span style="font-size:0.75rem; color:var(--text-muted); margin-right:6px;">(${escapeHtml(a.role)}${a.team ? ` • ${escapeHtml(a.team)}` : ""})</span>
-                  ${perms.length > 0 ? `<span class="badge badge-gold" style="margin-right:6px;">🔑 ${perms.length} صلاحية</span>` : ""}
-                </div>
-                <div style="display:flex; gap:6px;">
-                  <button type="button" class="btn btn-outline" style="padding:4px 9px; font-size:0.73rem;" onclick="setAllUserPermissions('${a.id}', true)">✅ فتح الكل</button>
-                  <button type="button" class="btn btn-danger" style="padding:4px 9px; font-size:0.73rem;" onclick="setAllUserPermissions('${a.id}', false)">🚫 سحب الكل</button>
-                </div>
-              </div>
-              <div class="perm-chip-grid">
-                ${DELEGATABLE_PERMS.map((p) => {
-                  const active = permSet.has(p.id);
-                  return `<button type="button" class="perm-chip ${active ? "granted" : ""}" onclick="toggleUserPermission('${a.id}', '${p.id}')">${active ? "✅" : "➕"} ${p.label}</button>`;
-                }).join("")}
-              </div>
-            </div>`;
-          })
-          .join("");
-      }
-
-      async function saveUserPermissionsToDB() {
-        const stEl = document.getElementById("mgrAccessSaveStatus");
-        if (stEl) stEl.textContent = "⏳ جاري حفظ الصلاحيات...";
-        try {
-          const { error } = await sb.from("system_settings").upsert({
-            key: "user_permissions",
-            value: JSON.stringify(state.userPermissions || {}),
-          });
-          if (error) throw error;
-          if (stEl) stEl.textContent = "✅ تم حفظ الصلاحيات فوراً";
-        } catch (err) {
-          console.error(err);
-          if (stEl) stEl.textContent = "❌ تعذر حفظ الصلاحيات";
-        }
-      }
-
-      async function toggleUserPermission(accountId, permId) {
-        const curr = Array.isArray(state.userPermissions?.[accountId])
-          ? [...state.userPermissions[accountId]]
-          : [];
-        const idx = curr.indexOf(permId);
-        if (idx >= 0) curr.splice(idx, 1);
-        else curr.push(permId);
-
-        if (curr.length === 0) {
-          const next = { ...(state.userPermissions || {}) };
-          delete next[accountId];
-          state.userPermissions = next;
-        } else {
-          state.userPermissions = {
-            ...(state.userPermissions || {}),
-            [accountId]: curr,
-          };
-        }
-        renderAccessControlPanel();
-        await saveUserPermissionsToDB();
-      }
-
-      async function setAllUserPermissions(accountId, grantAll) {
-        if (grantAll) {
-          state.userPermissions = {
-            ...(state.userPermissions || {}),
-            [accountId]: DELEGATABLE_PERMS.map((p) => p.id),
-          };
-        } else {
-          const next = { ...(state.userPermissions || {}) };
-          delete next[accountId];
-          state.userPermissions = next;
-        }
-        renderAccessControlPanel();
-        await saveUserPermissionsToDB();
+      function hasAdminPermission() {
+        return state.currentUser?.role === "manager";
       }
 
       function renderActiveManagerTab() {
-        applyManagerTabVisibilityForCurrentUser();
         if (activeManagerTab === "mgrTabQuickReport") {
           renderCompanyLinksCard();
           renderMgrQuickReport();
@@ -9082,29 +7758,12 @@
         } else if (activeManagerTab === "mgrTabClients") {
           populateLogsFilters();
           renderClientLogsTable();
-        } else if (activeManagerTab === "mgrTabSalesPower") {
-          renderMgrSalesPowerPanel();
-        } else if (activeManagerTab === "mgrTabStaffDist") {
-          renderStaffAssignmentUI();
-          renderTeamDistributionUI();
-          renderOfflineFlyerQR();
-        } else if (activeManagerTab === "mgrTabAccounts") {
-          const currPassEl = document.getElementById("mgrCurrPassDisplay");
-          if (currPassEl) currPassEl.value = state.currentUser?.password || "";
-          populateTeamSelects();
-          renderManagerAccountsTable();
         } else if (activeManagerTab === "mgrTabStudio") {
           renderMgrExhibitionsTable();
           syncStudioControls();
           loadActiveTemplateImage();
-        } else if (activeManagerTab === "mgrTabBalmetrOffers") {
-          renderBalmetrOffersPanel();
-        } else if (activeManagerTab === "mgrTabAccessControl") {
-          renderAccessControlPanel();
         } else if (activeManagerTab === "mgrTabDevOnly") {
           renderDevOnlyPanel();
-        } else if (activeManagerTab === "mgrTabReportSettings") {
-          renderReportSettingsPanel();
         }
       }
 
@@ -9885,242 +8544,6 @@
         alert("✅ تم تحديث باسورد تسجيل المطورين!");
       }
 
-      async function managerAddAccount() {
-        const role = document.getElementById("mgrAddRole").value;
-        const team = document.getElementById("mgrAddTeam").value || state.teamsList[0];
-        const name = (document.getElementById("mgrAddName").value || "").trim();
-        let code = (document.getElementById("mgrAddCode").value || "").trim().toUpperCase();
-        let pass = (document.getElementById("mgrAddPass").value || "").trim();
-
-        if (!name) return alert("⚠️ اكتب الاسم!");
-        if (!code) code = generateNextCodeForRole(role);
-        if (!pass) pass = generateUniquePassword(code);
-
-        if (pass === state.developerSignupPass) {
-          return alert("❌ الباسورد ده هو نفسه باسورد تسجيل المطورين!");
-        }
-
-        const addPhone = normalizePhone(document.getElementById("mgrAddPhone")?.value || "");
-        const addShowPhone = document.getElementById("mgrAddShowPhone")?.checked !== false;
-        const expoRoles = readCheckedValues("mgrAddExpoRolesGrid").filter((r) => r !== role);
-        const isLeader = role === "team_leader" || expoRoles.includes("team_leader");
-        let managedTeams = isLeader ? readCheckedValues("mgrAddManagedTeamsGrid") : [];
-        if (isLeader && managedTeams.length === 0) managedTeams = [team];
-        const canEditRequest = Boolean(document.getElementById("mgrAddCanEditReq")?.checked);
-        const firstSplitPct = parseFloat(document.getElementById("mgrAddFirstPct")?.value ?? "0.5");
-        const tableSplitPct = parseFloat(document.getElementById("mgrAddTablePct")?.value ?? "1.0");
-
-        const { data, error } = await sb
-          .from("accounts")
-          .insert({
-            role,
-            name,
-            code,
-            password: pass,
-            team,
-            phone: addPhone,
-            show_phone_in_report: addShowPhone,
-            expo_roles: expoRoles,
-            managed_teams: managedTeams,
-            can_edit_request: canEditRequest,
-            first_split_pct: isNaN(firstSplitPct) ? 0.5 : firstSplitPct,
-            table_split_pct: isNaN(tableSplitPct) ? 1.0 : tableSplitPct,
-          })
-          .select()
-          .single();
-
-        if (error) {
-          if (error.code === "23505") return alert("❌ الكود أو الباسورد موجود بالفعل!");
-          return alert("❌ خطأ أثناء الإضافة: " + (error.message || "تأكد من تشغيل سطر SQL للأعمدة الجديدة في Supabase"));
-        }
-        if (!cache.accountsById.has(data.id)) state.accounts.push(data);
-        rebuildDerivedCaches();
-        document.getElementById("mgrAddName").value = "";
-        document.getElementById("mgrAddCode").value = "";
-        document.getElementById("mgrAddPass").value = "";
-        if (document.getElementById("mgrAddPhone")) document.getElementById("mgrAddPhone").value = "";
-        if (document.getElementById("mgrAddCanEditReq")) document.getElementById("mgrAddCanEditReq").checked = false;
-        document.querySelectorAll('#mgrAddExpoRolesGrid input[type="checkbox"]').forEach((cb) => {
-          cb.checked = false;
-        });
-        syncAddAccountManagedTeamsVisibility();
-        renderActiveViewOnly();
-        alert(`✅ تم إضافة (${data.name}) — الكود: ${data.code} | الباسورد: ${data.password}`);
-      }
-
-      function renderManagerAccountsTable() {
-        const roleF = document.getElementById("mgrAccRoleFilter")?.value || "ALL";
-        const q = (document.getElementById("mgrAccSearch")?.value || "").trim().toLowerCase();
-        const list = sortAccountsByCode(
-          state.accounts.filter((a) => {
-            if (roleF !== "ALL" && a.role !== roleF && !accountHasRole(a, roleF)) return false;
-            if (q && !`${a.name} ${a.code} ${a.password || ""}`.toLowerCase().includes(q)) return false;
-            return true;
-          })
-        );
-
-        const tbody = document.getElementById("mgrAccountsTbody");
-        tbody.innerHTML = list
-          .map((a) => {
-            const parent = getAccountById(a.parent_admin_id);
-            const managed = accountHasRole(a, "team_leader") ? getLeaderManagedTeams(a) : [];
-            const meta = parent
-              ? `تبع: ${parent.name} (${parent.code})`
-              : managed.length > 0
-              ? `يدير: ${managed.join(" + ")}`
-              : a.team || "-";
-            const extraRoles = getAccountExpoRoles(a);
-            const extraBadges = extraRoles
-              .map((r) => `<span class="badge badge-gold" style="font-size:0.68rem; margin:2px 0 0 3px;">+ ${getRoleLabel(r)}</span>`)
-              .join("");
-            const editReqBadge = a.can_edit_request
-              ? `<span class="badge badge-mint" style="font-size:0.68rem; margin:2px 0 0 3px;">✏️ تعديل ريكويست</span>`
-              : "";
-            const contact = getAccountContact(a.id);
-            const phoneCell = contact.phone
-              ? `<div dir="ltr" style="font-family:monospace; color:var(--primary-bright);">${escapeHtml(contact.phone)}</div><span class="badge ${contact.showInReport ? "badge-success" : "badge-danger"}" style="font-size:0.68rem;">${contact.showInReport ? "📱 بالتقرير" : "🚫 مخفي"}</span>`
-              : `<span style="color:var(--text-muted); font-size:0.75rem;">-</span>`;
-            return `
-            <tr>
-              <td>
-                <div>${getRoleLabel(a.role)}</div>
-                ${extraBadges || editReqBadge ? `<div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:2px;">${extraBadges}${editReqBadge}</div>` : ""}
-              </td>
-              <td><span class="badge badge-mint">${escapeHtml(a.code)}</span></td>
-              <td style="font-weight:800;">${escapeHtml(a.name)}</td>
-              <td>${phoneCell}</td>
-              <td dir="ltr" style="font-family:monospace; color:#fcd34d;">${escapeHtml(a.password || "-")}</td>
-              <td style="font-size:0.78rem;">${escapeHtml(meta)}</td>
-              <td style="white-space:nowrap;">
-                ${hasClientLink(a) ? `${renderDualLinkButtonsHtml(a.id)} ` : ""}
-                <button type="button" class="btn btn-outline" style="padding:4px 9px; min-height:32px; font-size:0.75rem;" onclick="openEditAccountModal('${a.id}')">✏️ تعديل</button>
-                ${
-                  a.role !== "manager" && a.role !== "company"
-                    ? `<button type="button" class="btn btn-danger" style="padding:4px 9px; min-height:32px; font-size:0.75rem;" onclick="deleteAccountById('${a.id}')">🗑️</button>`
-                    : ""
-                }
-              </td>
-            </tr>`;
-          })
-          .join("");
-      }
-
-      function openEditAccountModal(accId) {
-        const a = getAccountById(accId);
-        if (!a) return;
-        populateTeamSelects();
-        const contact = getAccountContact(a.id);
-        document.getElementById("editAccId").value = a.id;
-        document.getElementById("editAccRole").value = a.role || "sales";
-        document.getElementById("editAccName").value = a.name;
-        document.getElementById("editAccCode").value = a.code;
-        document.getElementById("editAccPass").value = a.password || "";
-        document.getElementById("editAccPhone").value = contact.phone || "";
-        document.getElementById("editAccShowPhone").checked = Boolean(contact.showInReport);
-        if (a.team && !state.teamsList.includes(a.team)) {
-          document.getElementById("editAccTeam").innerHTML +=
-            `<option value="${escapeHtml(a.team)}">${escapeHtml(a.team)}</option>`;
-        }
-        document.getElementById("editAccTeam").value = a.team || state.teamsList[0];
-
-        const extraRoles = new Set(getAccountExpoRoles(a));
-        document
-          .querySelectorAll('#editAccExpoRolesGrid input[type="checkbox"]')
-          .forEach((cb) => {
-            cb.checked = extraRoles.has(cb.value);
-          });
-
-        const managedTeams = Array.isArray(a.managed_teams) && a.managed_teams.length > 0
-          ? a.managed_teams
-          : [a.team || state.teamsList[0]];
-        populateManagedTeamsGrid("editAccManagedTeamsGrid", managedTeams);
-        syncEditAccountManagedTeamsVisibility();
-
-        const canEditEl = document.getElementById("editAccCanEditReq");
-        if (canEditEl) canEditEl.checked = Boolean(a.can_edit_request);
-        const fPctEl = document.getElementById("editAccFirstPct");
-        if (fPctEl) fPctEl.value = a.first_split_pct ?? 0.5;
-        const tPctEl = document.getElementById("editAccTablePct");
-        if (tPctEl) tPctEl.value = a.table_split_pct ?? 1.0;
-
-        document.getElementById("editAccountModal").style.display = "flex";
-      }
-
-      async function saveEditedAccount() {
-        const id = document.getElementById("editAccId").value;
-        const role = document.getElementById("editAccRole").value;
-        const name = (document.getElementById("editAccName").value || "").trim();
-        const code = (document.getElementById("editAccCode").value || "").trim().toUpperCase();
-        const password = (document.getElementById("editAccPass").value || "").trim();
-        const phone = normalizePhone(document.getElementById("editAccPhone").value || "");
-        const showPhone = document.getElementById("editAccShowPhone").checked;
-        const team = document.getElementById("editAccTeam").value;
-
-        const expoRoles = readCheckedValues("editAccExpoRolesGrid").filter((r) => r !== role);
-        const isLeader = role === "team_leader" || expoRoles.includes("team_leader");
-        let managedTeams = isLeader ? readCheckedValues("editAccManagedTeamsGrid") : [];
-        if (isLeader && managedTeams.length === 0) managedTeams = [team];
-        const canEditRequest = Boolean(document.getElementById("editAccCanEditReq")?.checked);
-        const firstSplitPct = parseFloat(document.getElementById("editAccFirstPct")?.value ?? "0.5");
-        const tableSplitPct = parseFloat(document.getElementById("editAccTablePct")?.value ?? "1.0");
-
-        if (!name || !code || !password) return alert("⚠️ الاسم والكود والباسورد مطلوبة!");
-        if (password === state.developerSignupPass)
-          return alert("❌ الباسورد متعارض مع باسورد تسجيل المطورين!");
-
-        const { data, error } = await sb
-          .from("accounts")
-          .update({
-            role,
-            name,
-            code,
-            password,
-            team,
-            phone,
-            show_phone_in_report: showPhone,
-            expo_roles: expoRoles,
-            managed_teams: managedTeams,
-            can_edit_request: canEditRequest,
-            first_split_pct: isNaN(firstSplitPct) ? 0.5 : firstSplitPct,
-            table_split_pct: isNaN(tableSplitPct) ? 1.0 : tableSplitPct,
-          })
-          .eq("id", id)
-          .select()
-          .single();
-
-        if (error) {
-          if (error.code === "23505") return alert("❌ الكود أو الباسورد محجوز لحساب تاني!");
-          return alert("❌ تعذر التعديل: " + (error.message || "تأكد من تشغيل سطر SQL للأعمدة الجديدة في Supabase"));
-        }
-        const idx = state.accounts.findIndex((a) => a.id === id);
-        if (idx >= 0) state.accounts[idx] = data;
-        if (state.currentUser?.id === id) state.currentUser = data;
-        rebuildDerivedCaches();
-        closeModal("editAccountModal");
-        renderActiveViewOnly();
-        alert("✅ تم التعديل وتحديثه للجميع فوراً!");
-      }
-
-      async function deleteAccountById(accId) {
-        if (!confirm("هل أنت متأكد من حذف هذا الحساب؟")) return;
-        const { error } = await sb.from("accounts").delete().eq("id", accId);
-        if (error) return alert("❌ تعذر الحذف!");
-        state.accounts = state.accounts.filter((a) => a.id !== accId);
-        rebuildDerivedCaches();
-        renderActiveViewOnly();
-      }
-
-      async function saveDesignDimensions() {
-        const val = (document.getElementById("mgrDesignDimInput").value || "").trim();
-        if (!val) return alert("⚠️ اكتب الأبعاد!");
-        const { error } = await sb
-          .from("system_settings")
-          .upsert({ key: "design_dimensions", value: val });
-        if (error) return alert("❌ تعذر الحفظ!");
-        state.designDimensions = val;
-        alert("✅ تم حفظ أبعاد التصميم!");
-      }
-
       // ==================== OFFERS BANK (REAL `offers` TABLE) ====================
       function mapOfferRowToUI(row) {
         return {
@@ -10350,125 +8773,10 @@
         }
         acc.active_exhibition_ids = data?.active_exhibition_ids || nextIds;
         if (activeView === "managerView" && activeManagerTab === "mgrTabStudio") {
-          renderStaffAssignmentUI();
+          renderActiveViewOnly();
         } else if (activeView === "personalPortalView") {
           renderPersonalPortal();
         }
-      }
-
-      function renderStaffAssignmentUI() {
-        const exh = getActiveExhibition();
-        const lbl = document.getElementById("assignExhNameLabel");
-        const container = document.getElementById("mgrStaffAssignmentContainer");
-        if (!exh || !container) return;
-        if (lbl) lbl.textContent = exh.name;
-
-        const visibleOtherExhs = state.exhibitions.filter(
-          (e) => !e.hide_in_sales && e.id !== exh.id
-        );
-
-        const groups = [
-          { role: "exh_manager", title: "🎯 مديرو المعرض", warnMulti: true },
-          { role: "reception", title: "🛎️ الريسبشن", warnMulti: true },
-          { role: "usher", title: "🚶 الأشرز (الموصلاتية)", warnMulti: true },
-          { role: "team_leader", title: "🎖️ التيم ليدرز", warnMulti: false },
-          { role: "sales", title: "💼 سيلز بالمتر", warnMulti: true },
-          { role: "broker", title: "🏢 البروكرز", warnMulti: false },
-          { role: "developer", title: "🏗️ الشركات المطورة المشاركة", warnMulti: false },
-        ];
-
-        container.innerHTML = groups
-          .map((g) => {
-            const members = sortAccountsByCode(
-              state.accounts.filter((a) => accountHasRole(a, g.role))
-            );
-            if (members.length === 0) return "";
-            const assignedCount = members.filter((m) =>
-              getAccountActiveExhs(m).includes(exh.id)
-            ).length;
-
-            const chips = members
-              .map((m) => {
-                const ids = getAccountActiveExhs(m);
-                const isHere = ids.includes(exh.id);
-                const otherActive = g.warnMulti
-                  ? visibleOtherExhs.find((oe) => ids.includes(oe.id))
-                  : null;
-                const conflictBadge = otherActive
-                  ? ` <span class="badge badge-gold" style="font-size:0.66rem; padding:1px 5px;">⚠️ في: ${escapeHtml(otherActive.name)}</span>`
-                  : "";
-                const extraTag = m.role !== g.role ? ` <span style="opacity:0.75; font-size:0.7rem;">(إضافي)</span>` : "";
-                return `<button type="button" class="chip-btn ${isHere ? "selected" : ""}" onclick="toggleAccountExhibitionAssignment('${m.id}', '${exh.id}')">
-                  ${isHere ? "✅" : "⬜"} ${escapeHtml(m.code)} — ${escapeHtml(m.name)}${extraTag}${conflictBadge}
-                </button>`;
-              })
-              .join("");
-
-            return `
-            <div class="control-section-box" style="margin-bottom:10px;">
-              <div class="control-section-title">
-                <span>${g.title}</span>
-                <span class="badge badge-mint">${assignedCount} / ${members.length} نازلين</span>
-              </div>
-              <div class="chips-grid">${chips}</div>
-            </div>`;
-          })
-          .filter(Boolean)
-          .join("");
-      }
-
-      // ==================== EXHIBITION TEAM DISTRIBUTION RULES ====================
-      function renderTeamDistributionUI() {
-        const exh = getActiveExhibition();
-        const lbl = document.getElementById("distExhNameLabel");
-        const container = document.getElementById("mgrTeamDistList");
-        if (!exh || !container) return;
-        if (lbl) lbl.textContent = exh.name;
-
-        const savedDist = exh.layout_config?.teamDistribution || {};
-        container.innerHTML = state.teamsList
-          .map((t, idx) => {
-            const cfg = savedDist[t] || { active: true, weight: 1 };
-            return `
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; margin-bottom:7px;">
-              <label style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:0.84rem; cursor:pointer;">
-                <input type="checkbox" id="distTeamActive_${idx}" data-team="${escapeHtml(t)}" ${cfg.active !== false ? "checked" : ""} />
-                <span>🏷️ ${escapeHtml(t)}</span>
-              </label>
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">النسبة:</span>
-                <input type="number" id="distTeamWeight_${idx}" class="form-control" min="0" max="20" value="${Number(cfg.weight ?? 1)}" style="width:70px; padding:5px 8px; text-align:center;" />
-              </div>
-            </div>`;
-          })
-          .join("");
-      }
-
-      async function saveTeamDistributionSettings() {
-        const exh = getActiveExhibition();
-        if (!exh) return;
-        const dist = {};
-        state.teamsList.forEach((t, idx) => {
-          const active = document.getElementById(`distTeamActive_${idx}`)?.checked !== false;
-          const weight = Math.max(
-            0,
-            parseInt(document.getElementById(`distTeamWeight_${idx}`)?.value || "0", 10) || 0
-          );
-          dist[t] = { active, weight };
-        });
-
-        const updatedLayout = {
-          ...DEFAULT_LAYOUT,
-          ...(exh.layout_config || {}),
-          teamDistribution: dist,
-        };
-        const { error } = await sb
-          .from("exhibitions")
-          .update({ layout_config: updatedLayout })
-          .eq("id", exh.id);
-        if (error) return alert("❌ تعذر حفظ توزيع التيمات!");
-        exh.layout_config = updatedLayout;
-        alert(`✅ تم حفظ نسب التوزيع لمعرض «${exh.name}» بنجاح!`);
       }
 
       function renderMgrExhibitionsTable() {
@@ -10719,15 +9027,20 @@
       }
 
       // ==================== TAB 6: DEVOLEPOR_ONLY PANEL ====================
-      function unlockDevOnlyPanel() {
+      async function unlockDevOnlyPanel() {
         const inp = document.getElementById("devOnlyPassInput");
-        const val = (inp?.value || "").trim();
-        if (val !== DEV_PANEL_PASS) {
-          alert("❌ كلمة مرور لوحة Devolepor_only غير صحيحة!");
-          return;
+        if (!inp || !state.currentUser) return;
+        const val = (inp.value || "").trim();
+        if (!val) return;
+        const { data, error } = await sb.rpc("verify_dev_panel_pass", {
+          p_token: state.sessionToken,
+          p_pass: val,
+        });
+        if (error || !data?.ok) {
+          return alert("❌ " + (data?.message || "كلمة المرور غير صحيحة أو غير مصرّح لك!"));
         }
         devPanelUnlocked = true;
-        if (inp) inp.value = "";
+        inp.value = "";
         renderDevOnlyPanel();
       }
 
@@ -11394,3 +9707,4 @@
     </script>
   </body>
 </html>
+Preparing patched web files with replacement verification
