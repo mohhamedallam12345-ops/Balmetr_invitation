@@ -5470,7 +5470,7 @@
         if (state.currentUser) {
           if (confirm("هل تريد تسجيل الخروج من حسابك الحالي؟")) {
             const tok = state.sessionToken;
-            if (tok) sb.rpc("logout_session", { p_token: tok }).catch(() => {});
+            if (tok) try { sb.rpc("logout_session", { p_token: tok }).then(() => {}, () => {}); } catch (e) {}
             state.sessionToken = null;
             state.currentUser = null;
             state.activeLeaderTeam = null;
