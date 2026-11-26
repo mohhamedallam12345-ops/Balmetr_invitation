@@ -1242,6 +1242,148 @@
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
+
+      /* Hover Sidebar for Manager View */
+      .hover-sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 66px;
+        background: rgba(6, 20, 39, 0.96);
+        backdrop-filter: blur(14px);
+        border-left: 1px solid var(--border);
+        z-index: 220;
+        display: none;
+        flex-direction: column;
+        transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1), transform 0.24s ease;
+        overflow: hidden;
+        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.42);
+      }
+      body.has-hover-sidebar .hover-sidebar {
+        display: flex;
+      }
+      @media (min-width: 821px) {
+        .hover-sidebar:hover {
+          width: 242px;
+        }
+        body.has-hover-sidebar .app-container {
+          padding-right: 78px;
+        }
+      }
+      .hs-brand {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .hs-brand-ic {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(45, 212, 191, 0.16);
+        border: 1px solid var(--border-strong);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .hs-brand-txt {
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.16s ease;
+      }
+      .hover-sidebar:hover .hs-brand-txt,
+      .hover-sidebar.mobile-open .hs-brand-txt {
+        opacity: 1;
+      }
+      .hs-nav {
+        flex: 1;
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        overflow-y: auto;
+      }
+      .hs-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid transparent;
+        border-radius: 11px;
+        background: transparent;
+        color: var(--text-muted);
+        font-family: inherit;
+        font-size: 0.83rem;
+        font-weight: 800;
+        cursor: pointer;
+        text-align: right;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+      }
+      .hs-item .s-ic {
+        width: 24px;
+        text-align: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .hs-item .s-lbl {
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+      .hover-sidebar:hover .hs-item .s-lbl,
+      .hover-sidebar.mobile-open .hs-item .s-lbl {
+        opacity: 1;
+      }
+      .hs-item:hover {
+        background: rgba(45, 212, 191, 0.1);
+        color: #fff;
+      }
+      .hs-item.active {
+        background: linear-gradient(90deg, rgba(20, 184, 166, 0.22), rgba(45, 212, 191, 0.1));
+        border-color: var(--border-strong);
+        color: var(--primary-bright);
+      }
+      .hs-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 10, 22, 0.72);
+        z-index: 210;
+      }
+      .hs-backdrop.show {
+        display: block;
+      }
+      .hs-mobile-btn {
+        display: none;
+        padding: 6px 10px;
+        border-radius: 9px;
+        border: 1px solid var(--border-strong);
+        background: rgba(45, 212, 191, 0.14);
+        color: var(--primary-bright);
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      @media (max-width: 820px) {
+        .hover-sidebar {
+          width: 242px;
+          transform: translateX(100%);
+        }
+        .hover-sidebar.mobile-open {
+          transform: translateX(0);
+        }
+        body.has-hover-sidebar .hs-mobile-btn {
+          display: inline-flex;
+        }
+      }
     </style>
   </head>
   <body class="clean-header-mode is-loading">
@@ -1264,10 +1406,38 @@
       <img src="Logo_White.png" alt="" onerror="this.style.display='none'" />
     </div>
 
+        <div id="hsBackdrop" class="hs-backdrop" onclick="toggleInvMobileSidebar(false)"></div>
+    <aside id="invHoverSidebar" class="hover-sidebar">
+      <div class="hs-brand">
+        <div class="hs-brand-ic">🎫</div>
+        <div class="hs-brand-txt">
+          <strong style="display:block; font-size:0.88rem; color:var(--primary-bright);">إدارة الدعوات</strong>
+          <span style="display:block; font-size:0.68rem; color:var(--text-muted);">متابعة الكل والمعارض</span>
+        </div>
+      </div>
+      <nav class="hs-nav">
+        <button type="button" class="hs-item active" data-tab-id="mgrTabQuickReport" onclick="switchManagerTab('mgrTabQuickReport', this)">
+          <span class="s-ic">📊</span><span class="s-lbl">التقرير السريع</span>
+        </button>
+        <button type="button" class="hs-item" data-tab-id="mgrTabAchievements" onclick="switchManagerTab('mgrTabAchievements', this)">
+          <span class="s-ic">🏆</span><span class="s-lbl">الإنجازات</span>
+        </button>
+        <button type="button" class="hs-item" data-tab-id="mgrTabClients" onclick="switchManagerTab('mgrTabClients', this)">
+          <span class="s-ic">📋</span><span class="s-lbl">سجل العملاء (الكل)</span>
+        </button>
+        <button type="button" class="hs-item" data-tab-id="mgrTabStudio" onclick="switchManagerTab('mgrTabStudio', this)">
+          <span class="s-ic">🎨</span><span class="s-lbl">المعارض والقوالب</span>
+        </button>
+        <button type="button" class="hs-item" data-tab-id="mgrTabDevOnly" onclick="switchManagerTab('mgrTabDevOnly', this)">
+          <span class="s-ic">🔒</span><span class="s-lbl">Devolepor_only</span>
+        </button>
+      </nav>
+    </aside>
     <div class="app-container">
       <!-- Minimal Clean Header (3 Quick Taps on Logo -> Smart Login) -->
       <header class="top-header">
         <div class="brand-box">
+          <button type="button" id="invMobileMenuBtn" class="hs-mobile-btn" onclick="toggleInvMobileSidebar()">☰ القائمة</button>
           <div
             class="brand-logo-btn"
             onclick="handleLogoSecretTap()"
@@ -2614,7 +2784,7 @@
           </button>
         </div>
 
-        <nav class="admin-nav-grouped" id="managerGroupedNav">
+        <nav class="admin-nav-grouped" id="managerGroupedNav" style="display:none !important;">
           <div class="admin-nav-group-row" data-nav-group="reports">
             <div class="admin-nav-group-label">📊 التقارير والمتابعة</div>
             <div class="admin-nav-group-btns">
@@ -6293,6 +6463,7 @@
       }
 
       function showOnlyView(viewId) {
+        document.body.classList.toggle("has-hover-sidebar", viewId === "managerView");
         activeView = viewId;
         [
           "workspaceView",
@@ -8508,12 +8679,24 @@
       }
 
       // ==================== MANAGER DASHBOARD ====================
+      
+      function toggleInvMobileSidebar(forceState) {
+        const sbEl = document.getElementById("invHoverSidebar");
+        const bdEl = document.getElementById("hsBackdrop");
+        if (!sbEl || !bdEl) return;
+        const next = typeof forceState === "boolean" ? forceState : !sbEl.classList.contains("mobile-open");
+        sbEl.classList.toggle("mobile-open", next);
+        bdEl.classList.toggle("show", next);
+      }
+
       function switchManagerTab(tabId, btnEl) {
         activeManagerTab = tabId;
         document.querySelectorAll(".admin-page").forEach((p) => p.classList.remove("active"));
-        document.querySelectorAll(".admin-nav-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".admin-nav-btn, #invHoverSidebar .hs-item").forEach((b) => b.classList.remove("active"));
         document.getElementById(tabId)?.classList.add("active");
+        document.querySelectorAll(`[data-tab-id="${tabId}"]`).forEach((b) => b.classList.add("active"));
         if (btnEl) btnEl.classList.add("active");
+        toggleInvMobileSidebar(false);
         renderActiveManagerTab();
       }
 
