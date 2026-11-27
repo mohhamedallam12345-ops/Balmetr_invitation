@@ -1462,7 +1462,7 @@
     <!-- Minimal Breathing Logo Splash Loader -->
     <div id="appSplashLoader" class="splash-loader" aria-label="Loading">
       <img
-        src="Logo_White.png"
+        src="../Logo_White.png"
         alt="B.almetr"
         class="splash-logo"
         onerror="this.style.display='none'; document.getElementById('splashFallback').style.display='block';"
@@ -1475,7 +1475,7 @@
 
     <!-- Official B.almetr Watermark -->
     <div class="bg-watermark" aria-hidden="true">
-      <img src="Logo_White.png" alt="" onerror="this.style.display='none'" />
+      <img src="../Logo_White.png" alt="" onerror="this.style.display='none'" />
     </div>
 
         <div id="hsBackdrop" class="hs-backdrop" onclick="toggleInvMobileSidebar(false)"></div>
@@ -1516,7 +1516,7 @@
             title="B.almetr"
           >
             <img
-              src="Logo_White.png"
+              src="../Logo_White.png"
               alt="B.almetr"
               class="brand-logo-img"
               onerror="this.style.display='none'; document.getElementById('brandFallbackText').style.display='block';"
@@ -4223,6 +4223,17 @@
         return Array.isArray(acc.expo_roles) && acc.expo_roles.includes(roleName);
       }
 
+      function isWorkspaceSalesIssuer(acc) {
+        if (!acc) return false;
+        if (acc.role === "broker" && acc.parent_admin_id) return false;
+        return (
+          ["sales", "team_leader", "exh_manager", "usher", "reception"].includes(acc.role) ||
+          (acc.role === "broker" && !acc.parent_admin_id) ||
+          accountHasRole(acc, "sales") ||
+          accountHasRole(acc, "team_leader")
+        );
+      }
+
       function readCheckedValues(containerId) {
         const container = document.getElementById(containerId);
         if (!container) return [];
@@ -4329,7 +4340,7 @@
       function getOrderedTeamSales(teamName) {
         const teamSales = state.accounts.filter(
           (a) =>
-            (accountHasRole(a, "sales") || (teamName === "بروكر" && accountHasRole(a, "broker"))) &&
+            (accountHasRole(a, "sales") || accountHasRole(a, "team_leader") || (teamName === "بروكر" && accountHasRole(a, "broker"))) &&
             (a.team || "المعرض") === teamName
         );
         const savedOrder = Array.isArray(state.teamSalesOrder?.[teamName])
@@ -4517,7 +4528,7 @@
             const accRes = await sb
               .from("accounts")
               .select(PUBLIC_ACCOUNT_COLS)
-              .eq("role", "sales")
+              .in("role", ["sales", "team_leader", "exh_manager", "usher", "reception", "broker"])
               .order("created_at", { ascending: true });
             if (accRes.error) throw accRes.error;
             accData = accRes.data || [];
@@ -5102,7 +5113,7 @@
           const savedId = getSavedSalesId();
           if (
             savedId &&
-            state.accounts.some((a) => a.id === savedId && a.role === "sales")
+            state.accounts.some((a) => a.id === savedId && isWorkspaceSalesIssuer(a))
           ) {
             selectedSalesId = savedId;
           }
@@ -5841,7 +5852,7 @@
             const savedId = getSavedSalesId();
             if (
               savedId &&
-              state.accounts.some((a) => a.id === savedId && a.role === "sales")
+              state.accounts.some((a) => a.id === savedId && isWorkspaceSalesIssuer(a))
             ) {
               selectedSalesId = savedId;
             }
@@ -5877,7 +5888,7 @@
           ? salesAcc &&
             salesAcc.role === "dev_sales" &&
             salesAcc.parent_admin_id === state.publicHostAccount.id
-          : salesAcc && salesAcc.role === "sales";
+          : salesAcc && isWorkspaceSalesIssuer(salesAcc);
 
         if (isValidPinned) {
           pinnedBar.style.display = "flex";
@@ -5922,7 +5933,7 @@
         const salesList =
           state.publicHostAccount?.role === "developer" && devSalesPool.length > 0
             ? devSalesPool
-            : sortAccountsByCode(state.accounts.filter((a) => a.role === "sales"));
+            : sortAccountsByCode(state.accounts.filter((a) => isWorkspaceSalesIssuer(a)));
         const filtered = q
           ? salesList.filter(
               (s) =>
@@ -7511,7 +7522,7 @@
         const teamName = state.activeLeaderTeam || getLeaderManagedTeams(u)[0];
         const teamSalesIds = new Set(
           state.accounts
-            .filter((a) => a.role === "sales" && (a.team || "المعرض") === teamName)
+            .filter((a) => (accountHasRole(a, "sales") || accountHasRole(a, "team_leader")) && (a.team || "المعرض") === teamName)
             .map((a) => a.id)
         );
         teamSalesIds.add(u.id);
