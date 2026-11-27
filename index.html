@@ -1384,6 +1384,78 @@
           display: inline-flex;
         }
       }
+      /* V5 Visual Separation & Collapsible Panels */
+      .card {
+        border: 1.5px solid rgba(45, 212, 191, 0.28);
+        border-top: 3px solid rgba(45, 212, 191, 0.55);
+        margin-bottom: 18px;
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.44);
+      }
+      .control-section-box {
+        background: rgba(6, 20, 40, 0.92);
+        border: 1.5px solid rgba(45, 212, 191, 0.26);
+        border-right: 4px solid var(--primary-bright);
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+      }
+      .collapse-box {
+        background: rgba(6, 20, 40, 0.92);
+        border: 1.5px solid rgba(45, 212, 191, 0.28);
+        border-right: 4px solid var(--gold);
+        border-radius: 14px;
+        margin-bottom: 14px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+      }
+      .collapse-box.mint-accent {
+        border-right-color: var(--primary-bright);
+      }
+      .collapse-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 13px 15px;
+        background: rgba(11, 31, 60, 0.85);
+        border: none;
+        color: #f8fafc;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 900;
+        cursor: pointer;
+        text-align: right;
+        transition: background 0.16s ease;
+      }
+      .collapse-trigger:hover {
+        background: rgba(20, 184, 166, 0.14);
+      }
+      .collapse-trigger .c-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .collapse-trigger .c-arrow {
+        font-size: 0.82rem;
+        color: var(--primary-bright);
+        background: rgba(45, 212, 191, 0.14);
+        border: 1px solid var(--border-strong);
+        padding: 4px 10px;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .collapse-body {
+        display: none;
+        padding: 14px 15px;
+        border-top: 1px solid rgba(45, 212, 191, 0.18);
+      }
+      .collapse-box.open .collapse-body {
+        display: block;
+      }
+
     </style>
   </head>
   <body class="clean-header-mode is-loading">
@@ -1735,7 +1807,7 @@
             <div style="font-size: 0.84rem; font-weight: 800;">
               🚨 <strong>تنبيه مهم:</strong> لسة ما ضفتش عروض شركتك حتى الآن! أضف عروضك عشان تظهر لسيلز شركتك في المعرض.
             </div>
-            <button type="button" class="btn btn-gold" style="padding: 6px 12px; font-size: 0.78rem;" onclick="document.getElementById('portalDevOffersWrap')?.scrollIntoView({ behavior: 'smooth' })">
+            <button type="button" class="btn btn-gold" style="padding: 6px 12px; font-size: 0.78rem;" onclick="openCollapsibleBox('portalDevOffersWrap', true)">
               ⬇️ حط عروضك الآن
             </button>
           </div>
@@ -1808,12 +1880,16 @@
 
           <div
             id="portalDevTemplateWrap"
-            class="control-section-box"
+            class="collapse-box mint-accent"
             style="display: none"
           >
-            <div class="control-section-title" id="portalTemplateTitle">
-              🖼️ تصميم الدعوة الخاص بك لكل معرض (يُضغط أوتوماتيك والأماكن ثابتة)
-            </div>
+            <button type="button" class="collapse-trigger" onclick="toggleCollapsibleBox('portalDevTemplateWrap')">
+              <span class="c-right">
+                <span id="portalTemplateTitle">🖼️ تصميم الدعوة الخاص بك لكل معرض</span>
+              </span>
+              <span class="c-arrow" data-arrow-for="portalDevTemplateWrap">اضغط للفتح ▾</span>
+            </button>
+            <div class="collapse-body">
             <div class="dim-notice-box" id="portalDevDimNotice"></div>
             <div class="form-group" style="margin-bottom: 10px">
               <label class="form-label">1️⃣ اختر المعرض أولاً:</label>
@@ -1863,6 +1939,7 @@
               class="chips-grid"
               style="margin-top: 8px"
             ></div>
+            </div>
           </div>
 
           <!-- Developer Sales Team Management (Shown ONLY for Developer role) -->
@@ -1916,7 +1993,7 @@
                 "
               >
                 <input type="checkbox" id="devNewSalesIsMgr" />
-                <span>👑 مدير مطور</span>
+                <span>👑 مدير مطور (واحد فقط)</span>
               </label>
               <button
                 type="button"
@@ -1944,43 +2021,54 @@
             </div>
           </div>
 
-          <!-- Developer Specialized Projects & Systems (Shown ONLY for Developer role) -->
+          <!-- Developer Specialized Projects & Systems (Collapsible Button) -->
           <div
             id="portalDevSpecWrap"
-            class="control-section-box"
+            class="collapse-box"
             style="display: none"
           >
-            <div class="control-section-title">
-              <span>🎯 تخصص مشاريع شركتك (النشاط والمناطق بدقة) + الأنظمة</span>
-              <button
-                type="button"
-                class="btn btn-gold"
-                style="padding: 5px 12px; min-height: 34px; font-size: 0.78rem"
-                onclick="savePortalDeveloperSpecialization()"
-              >
-                💾 حفظ التخصص
-              </button>
+            <button type="button" class="collapse-trigger" onclick="toggleCollapsibleBox('portalDevSpecWrap')">
+              <span class="c-right">
+                <span>🎯 تخصص مشاريع شركتك (النشاط والمناطق والأنظمة)</span>
+              </span>
+              <span class="c-arrow" data-arrow-for="portalDevSpecWrap">اضغط للتعديل ▾</span>
+            </button>
+            <div class="collapse-body">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                <span style="font-size: 0.78rem; color: var(--text-muted);">
+                  حدّد لكل نشاط المناطق المتاحة لديكم بالظبط ليتم ترشيح شركتكم للعملاء المناسبين بدقة 100%:
+                </span>
+                <button
+                  type="button"
+                  class="btn btn-gold"
+                  style="padding: 6px 14px; min-height: 36px; font-size: 0.8rem"
+                  onclick="savePortalDeveloperSpecialization()"
+                >
+                  💾 حفظ التخصص
+                </button>
+              </div>
+              <div id="portalDevInventoryMatrix" style="margin-bottom: 12px"></div>
+              <div style="font-size: 0.8rem; font-weight: 800; color: #fcd34d; margin-bottom: 6px">
+                ⚙️ الأنظمة المتاحة لديكم (تُطابق تلقائياً عملاء الوديعة والجمعية):
+              </div>
+              <div id="portalDevSystemsGrid" class="role-check-grid"></div>
             </div>
-            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px">
-              حدّد لكل نشاط المناطق المتاحة لديكم بالظبط ليتم ترشيح شركتكم للعملاء المناسبين بدقة 100%:
-            </div>
-            <div id="portalDevInventoryMatrix" style="margin-bottom: 12px"></div>
-            <div style="font-size: 0.8rem; font-weight: 800; color: #fcd34d; margin-bottom: 6px">
-              ⚙️ الأنظمة المتاحة لديكم (تُطابق تلقائياً عملاء الوديعة والجمعية):
-            </div>
-            <div id="portalDevSystemsGrid" class="role-check-grid"></div>
           </div>
 
-          <!-- Developer Offers Bank (Shown ONLY for Developer role) -->
+          <!-- Developer Offers Bank (Collapsible Button) -->
           <div
             id="portalDevOffersWrap"
-            class="control-section-box"
+            class="collapse-box mint-accent"
             style="display: none"
           >
-            <div class="control-section-title">
-              <span>🏢 بنك عروض شركتك (يظهر لسيلز شركتك في المعرض — حتى 20 عرض)</span>
-              <span id="portalDevOffersCountBadge" class="badge badge-gold">0 / 20 عرض</span>
-            </div>
+            <button type="button" class="collapse-trigger" onclick="toggleCollapsibleBox('portalDevOffersWrap')">
+              <span class="c-right">
+                <span>🏢 بنك عروض شركتك (حتى 20 عرض)</span>
+                <span id="portalDevOffersCountBadge" class="badge badge-gold">0 / 20 عرض</span>
+              </span>
+              <span class="c-arrow" data-arrow-for="portalDevOffersWrap">اضغط للفتح ▾</span>
+            </button>
+            <div class="collapse-body">
             <div
               style="
                 display: grid;
@@ -2078,11 +2166,16 @@
                 <tbody id="portalDevOffersTbody"></tbody>
               </table>
             </div>
+            </div>
           </div>
 
-          <!-- Self-Service Phone & Password Settings Card -->
-          <div class="control-section-box">
-            <div class="control-section-title">📱 رقم تليفونك وإعدادات كلمة السر</div>
+          <!-- Self-Service Phone & Password Settings Card (Collapsible) -->
+          <div id="portalPassSettingsBox" class="collapse-box">
+            <button type="button" class="collapse-trigger" onclick="toggleCollapsibleBox('portalPassSettingsBox')">
+              <span class="c-right"><span>📱 رقم تليفونك وإعدادات كلمة السر</span></span>
+              <span class="c-arrow" data-arrow-for="portalPassSettingsBox">اضغط للفتح ▾</span>
+            </button>
+            <div class="collapse-body">
             <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border)">
               <label class="form-label">رقم تليفونك (للتواصل / التقرير حسب صلاحيات الإدارة):</label>
               <div class="pass-input-group">
@@ -2142,6 +2235,7 @@
                   </button>
                 </div>
               </div>
+            </div>
             </div>
           </div>
 
@@ -4023,8 +4117,22 @@
         return "";
       }
 
+      function toggleCollapsibleBox(id, forceOpen = null) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const willOpen = forceOpen === null ? !el.classList.contains("open") : Boolean(forceOpen);
+        el.classList.toggle("open", willOpen);
+        const arrow = document.querySelector(`[data-arrow-for="${id}"]`);
+        if (arrow) arrow.textContent = willOpen ? "إغلاق ▴" : "اضغط للفتح ▾";
+      }
+      function openCollapsibleBox(id, scroll = false) {
+        toggleCollapsibleBox(id, true);
+        if (scroll) document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
       let state = {
         sessionToken: null,
+        sessionPlainPass: "",
         exhibitions: [],
         accounts: [],
         invitations: [],
@@ -4466,8 +4574,8 @@
 
             applySettingsRows(setRes.data || []);
 
-            state.currentUser =
-              state.accounts.find((a) => a.id === u.id) || state.currentUser;
+            const foundMgr = state.accounts.find((a) => a.id === u.id) || state.currentUser;
+            state.currentUser = { ...foundMgr, password: state.sessionPlainPass || foundMgr.password || "" };
             state.invitations = firstBatch;
             state.invitationsScope = "ALL";
             rebuildDerivedCaches();
@@ -4577,11 +4685,12 @@
             if (accRes.error) throw accRes.error;
 
             state.exhibitions = exhRes.data || [];
-            const ownPass = u.password;
+            const ownPass = state.sessionPlainPass || u.password || "";
             state.accounts = (accRes.data || []).map((a) =>
               a.id === u.id ? { ...a, password: ownPass } : a
             );
-            state.currentUser = state.accounts.find((a) => a.id === u.id) || u;
+            const foundTl = state.accounts.find((a) => a.id === u.id) || u;
+            state.currentUser = { ...foundTl, password: ownPass };
 
             applySettingsRows(setRes.data || []);
 
@@ -4639,8 +4748,9 @@
 
           state.exhibitions = exhRes.data || [];
           const devSalesList = devSalesRes.data || [];
-          state.accounts = [u, ...devSalesList];
-          state.currentUser = u;
+          const hydratedU = { ...u, password: state.sessionPlainPass || u.password || "" };
+          state.accounts = [hydratedU, ...devSalesList];
+          state.currentUser = hydratedU;
           applySettingsRows(setRes.data || []);
           if (u.role === "developer" && !offersRes.error) {
             state.offersBank[u.id] = (offersRes.data || []).map(mapOfferRowToUI);
@@ -5200,6 +5310,7 @@
           if (data?.status !== "UPDATED") {
             return alert("❌ " + (data?.message || "تعذر تغيير كلمة السر"));
           }
+          state.sessionPlainPass = newPass;
           u.password = newPass;
           const acc = cache.accountsById.get(u.id);
           if (acc) acc.password = newPass;
@@ -5472,6 +5583,7 @@
             const tok = state.sessionToken;
             if (tok) try { sb.rpc("logout_session", { p_token: tok }).then(() => {}, () => {}); } catch (e) {}
             state.sessionToken = null;
+            state.sessionPlainPass = "";
             state.currentUser = null;
             state.activeLeaderTeam = null;
             devPanelUnlocked = false;
@@ -5540,7 +5652,8 @@
 
           if (data.status === "ACCOUNT" && data.account) {
             state.sessionToken = data.session_token || null;
-            state.currentUser = data.account;
+            state.sessionPlainPass = pass;
+            state.currentUser = { ...data.account, password: pass };
             closeModal("smartLoginModal");
             document.body.classList.remove("clean-header-mode", "public-client-mode");
             routeLoggedInUser();
@@ -6412,7 +6525,7 @@
         document.getElementById("portalKpiCode").textContent = u.code;
 
         const currPassEl = document.getElementById("portalCurrPassDisplay");
-        if (currPassEl) currPassEl.value = u.password || "";
+        if (currPassEl) currPassEl.value = state.sessionPlainPass || u.password || "";
         const ownPhoneEl = document.getElementById("portalOwnPhoneInput");
         if (ownPhoneEl) ownPhoneEl.value = getAccountContact(u.id).phone || "";
 
@@ -6707,7 +6820,11 @@
           return;
         }
         const activeExh = getActiveExhibition();
-        const visibleExhs = getVisibleExhibitionsPool();
+        const devAllowedIds = getAccountActiveExhs(state.currentUser);
+        const allVisExhs = getVisibleExhibitionsPool();
+        const visibleExhs = devAllowedIds.length > 0
+          ? allVisExhs.filter((e) => devAllowedIds.includes(e.id))
+          : allVisExhs;
         tbody.innerHTML = myDevSales
           .map((s) => {
             const actC = activeExh
@@ -6752,11 +6869,28 @@
 
       async function toggleDevSalesManagerRole(salesId) {
         const acc = cache.accountsById.get(salesId);
-        if (!acc) return;
+        const u = state.currentUser;
+        if (!acc || !u) return;
         const curr = Array.isArray(acc.expo_roles) ? [...acc.expo_roles] : [];
         const has = curr.includes("dev_manager");
         const next = has ? curr.filter((r) => r !== "dev_manager") : [...curr, "dev_manager"];
         try {
+          // Enforce ONLY ONE dev_manager per developer company
+          if (!has) {
+            const others = state.accounts.filter(
+              (a) =>
+                a.id !== salesId &&
+                a.role === "dev_sales" &&
+                a.parent_admin_id === u.id &&
+                Array.isArray(a.expo_roles) &&
+                a.expo_roles.includes("dev_manager")
+            );
+            for (const oth of others) {
+              const cleaned = oth.expo_roles.filter((r) => r !== "dev_manager");
+              await sb.from("accounts").update({ expo_roles: cleaned }).eq("id", oth.id);
+              oth.expo_roles = cleaned;
+            }
+          }
           const { error } = await sb.from("accounts").update({ expo_roles: next }).eq("id", salesId);
           if (error) throw error;
           acc.expo_roles = next;
@@ -6797,6 +6931,21 @@
           btn.textContent = "⏳ جاري الإضافة...";
         }
         try {
+          const wantMgr = Boolean(document.getElementById("devNewSalesIsMgr")?.checked);
+          if (wantMgr) {
+            const others = state.accounts.filter(
+              (a) =>
+                a.role === "dev_sales" &&
+                a.parent_admin_id === u.id &&
+                Array.isArray(a.expo_roles) &&
+                a.expo_roles.includes("dev_manager")
+            );
+            for (const oth of others) {
+              const cleaned = oth.expo_roles.filter((r) => r !== "dev_manager");
+              await sb.from("accounts").update({ expo_roles: cleaned }).eq("id", oth.id);
+              oth.expo_roles = cleaned;
+            }
+          }
           const { data, error } = await sb
             .from("accounts")
             .insert({
@@ -6806,7 +6955,7 @@
               password: pass,
               team: u.name,
               parent_admin_id: u.id,
-              expo_roles: document.getElementById("devNewSalesIsMgr")?.checked ? ["dev_manager"] : [],
+              expo_roles: wantMgr ? ["dev_manager"] : [],
             })
             .select()
             .single();
@@ -6966,7 +7115,7 @@
           buildDimensionsNoticeHtml("أماكن الاسم والرقم والـ QR ثابتة أوتوماتيك.");
 
         const currPassEl = document.getElementById("abCurrPassDisplay");
-        if (currPassEl) currPassEl.value = u.password || "";
+        if (currPassEl) currPassEl.value = state.sessionPlainPass || u.password || "";
         const ownPhoneEl = document.getElementById("abOwnPhoneInput");
         if (ownPhoneEl) ownPhoneEl.value = getAccountContact(u.id).phone || "";
 
@@ -7243,7 +7392,7 @@
         document.getElementById("tlKpiTeamName").textContent = teamName;
 
         const currPassEl = document.getElementById("tlCurrPassDisplay");
-        if (currPassEl) currPassEl.value = u.password || "";
+        if (currPassEl) currPassEl.value = state.sessionPlainPass || u.password || "";
         const ownPhoneEl = document.getElementById("tlOwnPhoneInput");
         if (ownPhoneEl) ownPhoneEl.value = getAccountContact(u.id).phone || "";
 
@@ -7543,7 +7692,8 @@
               .eq("id", data.developer.id);
             data.developer.dev_inventory = devRegInventory;
             data.developer.dev_systems = devRegSystems;
-            state.currentUser = data.developer;
+            state.sessionPlainPass = personalPass;
+            state.currentUser = { ...data.developer, password: personalPass };
             if (!cache.accountsById.has(data.developer.id)) {
               state.accounts.push(data.developer);
               rebuildDerivedCaches();
